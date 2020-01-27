@@ -13,10 +13,8 @@ package de.cognicrypt.staticanalyzer.markerresolution;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;

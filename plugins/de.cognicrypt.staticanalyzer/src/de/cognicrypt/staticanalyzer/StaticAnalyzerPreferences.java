@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -40,7 +39,6 @@ import org.eclipse.ui.PlatformUI;
 import org.ini4j.Profile.Section;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.properties.PreferenceListener;
 import de.cognicrypt.staticanalyzer.utilities.AddNewRulesetDialog;

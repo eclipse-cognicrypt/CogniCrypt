@@ -52,11 +52,11 @@ import crypto.rules.CrySLPredicate;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.utilities.Utils;
 import de.cognicrypt.staticanalyzer.view.AnalysisData;
 import de.cognicrypt.staticanalyzer.view.ResultsUnit;
 import de.cognicrypt.staticanalyzer.view.StatisticsView;
 import de.cognicrypt.staticanalyzer.view.Stats;
-import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.XMLParser;
 import soot.SootClass;
 import soot.Value;
@@ -132,15 +132,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		final int stmtId = error.hashCode();
 		HashMap<String, String> errorInfoMap = new HashMap<>();
 
-		ICompilationUnit javaFile = (ICompilationUnit) JavaCore.create(sourceFile);
-		String className = "";
-		try {
-			for (IPackageDeclaration decl : javaFile.getPackageDeclarations()) {
-				className += decl.getElementName() + ".";
-			}
-		} catch (JavaModelException e1) {
-		}
-		className += javaFile.getElementName().substring(0, javaFile.getElementName().lastIndexOf("."));
+		String className = sourceFile.getName();
 		
 		if (stat.getClassesAnalysed().containsKey(className)) {
 			AnalysisData data = stat.getClassesAnalysed().get(className);

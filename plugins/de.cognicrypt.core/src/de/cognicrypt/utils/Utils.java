@@ -11,6 +11,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.OptionalInt;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -31,6 +33,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
@@ -55,7 +58,9 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
+
 import com.google.common.base.CharMatcher;
+
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.cryslhandler.CrySLModelReader;
 import crypto.rules.CrySLRule;
@@ -96,28 +101,6 @@ public class Utils {
 		}
 
 		return javaProjects;
-	}
-
-	public static IResource findClassByName(final String className, final IProject currentProject) throws ClassNotFoundException {
-		try {
-			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
-				for (final ICompilationUnit cu : l.getCompilationUnits()) {
-					final IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
-					String name = cuResource.getParent().getElementName() + "." + cuResource.getElementName();
-
-					if (name.startsWith(".")) {
-						name = name.substring(1);
-					}
-					if (name.startsWith(className)) {
-						return cu.getCorrespondingResource();
-					}
-				}
-			}
-		}
-		catch (final JavaModelException e) {
-			throw new ClassNotFoundException("Class " + className + " not found.", e);
-		}
-		throw new ClassNotFoundException("Class " + className + " not found.");
 	}
 
 	/**

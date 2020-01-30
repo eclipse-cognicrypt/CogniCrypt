@@ -39,6 +39,11 @@
       <name>soot release</name>
       <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
     </repository>
+    <repository>
+     	<id>kotlin</id>
+     	<layout>p2</layout>
+     	<url>https://dl.bintray.com/jetbrains/kotlin/eclipse-plugin/last/</url>
+     </repository>
   </repositories>
 
   <pluginRepositories>

@@ -91,7 +91,7 @@ public class Utils {
  		IProject p = javaProject.getProject();
  		IFile pomFile = p.getFile("pom.xml");
  		try {
- 			MavenProject project = loadProject(pomFile.getFullPath().toFile());
+ 			MavenProject project = loadProject(pomFile.getLocation().toFile());
  			List<Dependency> dependencies = project.getDependencies();
  			boolean isPresent = false;
  			for (Dependency dependency : dependencies) {
@@ -102,14 +102,7 @@ public class Utils {
  			if(!isPresent) {
  				boolean accepted = requestUsersPermission();
  				if(accepted) {
- 					Dependency kotlinDependency = new Dependency();
- 					kotlinDependency.setGroupId("org.jetbrains.kotlin");
- 					kotlinDependency.setArtifactId("kotlin-stdlib");
- 					kotlinDependency.setVersion("1.3.61");
- 					kotlinDependency.setType("jar");
- 					dependencies.add(kotlinDependency);
- 					project.setDependencies(dependencies);
- 					storeProject(project);
+ 					addKotlinDependency(project, dependencies);
  					return true;
  				}
  				return false;
@@ -119,6 +112,17 @@ public class Utils {
  		}
  		return true;
  	}
+
+	private static void addKotlinDependency(MavenProject project, List<Dependency> dependencies) {
+		Dependency kotlinDependency = new Dependency();
+		kotlinDependency.setGroupId("org.jetbrains.kotlin");
+		kotlinDependency.setArtifactId("kotlin-stdlib");
+		kotlinDependency.setVersion("1.3.61");
+		kotlinDependency.setType("jar");
+		dependencies.add(kotlinDependency);
+		project.setDependencies(dependencies);
+		storeProject(project);
+	}
 	
 	private static void storeProject(MavenProject project) {
  		MavenXpp3Writer mavenWriter = new MavenXpp3Writer();

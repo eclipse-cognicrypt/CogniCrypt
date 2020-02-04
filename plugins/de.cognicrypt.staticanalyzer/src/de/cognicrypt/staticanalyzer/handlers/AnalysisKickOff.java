@@ -7,6 +7,8 @@
 
 package de.cognicrypt.staticanalyzer.handlers;
 
+import java.util.concurrent.TimeUnit;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -38,6 +40,7 @@ public class AnalysisKickOff {
 	private static ResultsCCUIListener resultsReporter;
 	private IJavaProject curProj;
 	private boolean depOnly = false;
+	private IProject ip;
 
 	public void analyzeDependenciesOnly(final Boolean depOnly) {
 		this.depOnly = depOnly;
@@ -55,7 +58,6 @@ public class AnalysisKickOff {
 	 */
 	public boolean setUp(final IJavaElement iJavaElement) {
 
-		IProject ip = null;
 		if (iJavaElement == null) {
 			ip = Utils.getCurrentProject();
 		} else {
@@ -97,13 +99,29 @@ public class AnalysisKickOff {
 		
 		if(Platform.getBundle("org.jetbrains.kotlin.core") != null) {
  			if(KotlinNature.hasKotlinNature(ip)) {
- 				KotlinCompiler.compileKotlinFiles(javaProject);
- 				Activator.getDefault().logInfo("Finished compiling kotlin source files");
  				try {
  					if(ip.hasNature("org.eclipse.m2e.core.maven2Nature")) {
  						if(de.cognicrypt.staticanalyzer.utilities.Utils.checkKotlinDependency(javaProject)) {
-
- 							ip.build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+ 							
+ 							
+ 							final Job builder = new Job("Custom builder") {
+								
+								@Override
+								protected IStatus run(IProgressMonitor monitor) {
+									try {
+										ip.build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+										TimeUnit.SECONDS.sleep(5);
+									} catch (CoreException | InterruptedException e) {
+										e.printStackTrace();
+									}
+									return Status.OK_STATUS;
+								}
+							};
+							builder.setPriority(Job.LONG);
+							builder.schedule();
+							builder.join();
+ 							
+							KotlinCompiler.compileKotlinFiles(javaProject);
  							Activator.getDefault().logInfo("Finished compiling kotlin source files.");
  						}
  						else {
@@ -111,8 +129,7 @@ public class AnalysisKickOff {
  							Activator.getDefault().logInfo("Static analysis skipped kotlin source files.");
  						}
  					}
- 					KotlinCompiler.compileKotlinFiles(javaProject);
- 				} catch (CoreException e) {
+ 				} catch (CoreException | InterruptedException e) {
  					e.printStackTrace();
  				}
  			}

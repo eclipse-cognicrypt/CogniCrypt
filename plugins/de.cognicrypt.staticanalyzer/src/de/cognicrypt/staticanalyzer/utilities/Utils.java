@@ -1,18 +1,32 @@
 package de.cognicrypt.staticanalyzer.utilities;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.jetbrains.kotlin.core.model.KotlinNature;
 
 public class Utils {
@@ -71,5 +85,84 @@ public class Utils {
  			throw new ClassNotFoundException("Class " + className + " not found.", e);
  		}
  		throw new ClassNotFoundException("Class " + className + " not found.");
+ 	}
+	
+	public static boolean checkKotlinDependency(IJavaProject javaProject) {
+ 		IProject p = javaProject.getProject();
+ 		IFile pomFile = p.getFile("pom.xml");
+ 		try {
+ 			MavenProject project = loadProject(pomFile.getFullPath().toFile());
+ 			List<Dependency> dependencies = project.getDependencies();
+ 			boolean isPresent = false;
+ 			for (Dependency dependency : dependencies) {
+ 				System.out.println(dependency);
+ 				if(dependency.getArtifactId().equals("kotlin-stdlib"))
+ 					isPresent = true;
+ 			}
+ 			if(!isPresent) {
+ 				boolean accepted = requestUsersPermission();
+ 				if(accepted) {
+ 					Dependency kotlinDependency = new Dependency();
+ 					kotlinDependency.setGroupId("org.jetbrains.kotlin");
+ 					kotlinDependency.setArtifactId("kotlin-stdlib");
+ 					kotlinDependency.setVersion("1.3.61");
+ 					kotlinDependency.setType("jar");
+ 					dependencies.add(kotlinDependency);
+ 					project.setDependencies(dependencies);
+ 					storeProject(project);
+ 					return true;
+ 				}
+ 				return false;
+ 			}
+ 		} catch (Exception e) {
+ 			e.printStackTrace();
+ 		}
+ 		return true;
+ 	}
+	
+	private static void storeProject(MavenProject project) {
+ 		MavenXpp3Writer mavenWriter = new MavenXpp3Writer();
+ 		Model model = project.getModel();
+ 		try {
+ 			FileWriter writer = new FileWriter(model.getPomFile());
+ 			mavenWriter.write(writer, model);
+ 		} catch (IOException e) {
+ 			e.printStackTrace();
+ 		}
+ 	}
+
+ 	private static MavenProject loadProject(File pomFile) throws Exception
+ 	{
+ 		MavenProject ret = null;
+ 		MavenXpp3Reader mavenReader = new MavenXpp3Reader();
+
+ 		if (pomFile != null && pomFile.exists())
+ 		{
+ 			FileReader reader = null;
+ 			try
+ 			{
+ 				reader = new FileReader(pomFile);
+ 				Model model = mavenReader.read(reader);
+ 				model.setPomFile(pomFile);
+ 				ret = new MavenProject(model);
+ 			}
+ 			finally
+ 			{
+ 				reader.close();
+ 			}
+ 		}
+ 		return ret;
+ 	}
+ 	
+ 	private static boolean requestUsersPermission() {
+ 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+ 		MessageBox dialog = new MessageBox(window.getShell(),
+ 				SWT.APPLICATION_MODAL | SWT.ICON_QUESTION | SWT.YES | SWT.NO);
+ 		dialog.setMessage("The project's POM doesn't have kotlin dependency. Would you like to add them and continue?");
+ 		int opt = dialog.open();
+ 		if (opt == SWT.YES)
+ 			return true;
+ 		else
+ 			return false;
  	}
 }

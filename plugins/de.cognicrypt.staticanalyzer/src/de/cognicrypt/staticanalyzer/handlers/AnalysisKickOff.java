@@ -8,6 +8,7 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -95,15 +96,31 @@ public class AnalysisKickOff {
 		}
 		
 		if(Platform.getBundle("org.jetbrains.kotlin.core") != null) {
-  			if(KotlinNature.hasKotlinNature(ip)) {
-  				KotlinCompiler.compileKotlinFiles(javaProject);
-  				Activator.getDefault().logInfo("Finished compiling kotlin source files");
-  			}
-  		}
-		
-		this.curProj = javaProject;
-		return true;
-	}
+ 			if(KotlinNature.hasKotlinNature(ip)) {
+ 				KotlinCompiler.compileKotlinFiles(javaProject);
+ 				Activator.getDefault().logInfo("Finished compiling kotlin source files");
+ 				try {
+ 					if(ip.hasNature("org.eclipse.m2e.core.maven2Nature")) {
+ 						if(de.cognicrypt.staticanalyzer.utilities.Utils.checkKotlinDependency(javaProject)) {
+
+ 							ip.build(IncrementalProjectBuilder.CLEAN_BUILD, null);
+ 							Activator.getDefault().logInfo("Finished compiling kotlin source files.");
+ 						}
+ 						else {
+ 							Activator.getDefault().logInfo("Cannot compile kotlin source files.");
+ 							Activator.getDefault().logInfo("Static analysis skipped kotlin source files.");
+ 						}
+ 					}
+ 					KotlinCompiler.compileKotlinFiles(javaProject);
+ 				} catch (CoreException e) {
+ 					e.printStackTrace();
+ 				}
+ 			}
+ 		}
+
+ 		this.curProj = javaProject;
+ 		return true;
+ 	}
 
 	/**
 	 * This method executes the actual analysis.

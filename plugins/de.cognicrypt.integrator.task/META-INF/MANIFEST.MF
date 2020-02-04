@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Task Integrator
-Bundle-SymbolicName: de.cognicrypt.integrator.task
+Bundle-SymbolicName: de.cognicrypt.integrator.task;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: de.cognicrypt.integrator.task.Activator
 Bundle-Vendor: TU Darmstadt

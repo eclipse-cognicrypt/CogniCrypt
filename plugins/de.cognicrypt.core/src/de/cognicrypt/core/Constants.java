@@ -141,7 +141,7 @@ public class Constants {
 	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesInDevProject = "libs";
 	public static final String AuthorTag = "@author CogniCrypt";
-	public static final String pathToInstanceFile = "savedSelections.xml";
+	public static final String pathToInstanceFile = "savedSelections";
 
 	// Output of Code Generation
 	public static final String AdditionalOutputFile = "Output.java";

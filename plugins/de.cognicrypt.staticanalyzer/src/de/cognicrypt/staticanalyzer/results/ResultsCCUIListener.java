@@ -6,6 +6,11 @@
 package de.cognicrypt.staticanalyzer.results;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -68,6 +73,9 @@ import soot.jimple.internal.JimpleLocalBox;
 import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 /**
  * This listener is notified of any misuses the analysis finds. It also reports
  * the results of the analysis to the Statistics View
@@ -123,8 +131,40 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (this.depOnly) {
 			return;
 		}
+		
 		final String errorMessage = error.toErrorMarkerString();
 		final Statement errorLocation = error.getErrorLocation();
+		final String path = this.currentProject.getLocation().toOSString() + "/" + Constants.pathToInstanceFile + "SecureCommunication.json";
+//		System.out.println("error message is:---------------------------------- " + errorMessage);
+		
+		if (errorMessage.equals("First parameter (with value \"TLSv\") should be any of {TLSv1.2}")) {
+			JSONParser parser = new JSONParser();
+			try {
+//				System.out.println("the path is------------" + Paths.get(path));
+				if (Files.exists(Paths.get(path))) {
+//					Object obj;
+					try {
+						Object obj = parser.parse(new InputStreamReader(new FileInputStream(path)));
+						JSONObject jsonObject = (JSONObject) obj;
+						System.out.println("object will be ..........." + jsonObject);
+						System.out.println("answeer 4 -------" + jsonObject.get("answer4"));
+						
+						if (jsonObject.containsKey("answer4") && jsonObject.get("answer4").equals("Legacy Clients (since 2001)")) {
+							return;
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}else{
+					System.out.println("no path");
+				}	
+			} catch (ParseException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+		}
 
 		sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();

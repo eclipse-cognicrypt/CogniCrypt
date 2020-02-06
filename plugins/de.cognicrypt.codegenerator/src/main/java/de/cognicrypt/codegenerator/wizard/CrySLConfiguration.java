@@ -21,8 +21,8 @@ public class CrySLConfiguration extends Configuration {
 
 	private final GeneratorClass template;
 
-	public CrySLConfiguration(String pathOnDisk, GeneratorClass templateClass) {
-		super(new HashMap<>(), pathOnDisk);
+	public CrySLConfiguration(String pathOnDisk, GeneratorClass templateClass, String selectedTask) throws IOException {
+		super(new HashMap<>(), pathOnDisk, selectedTask);
 		this.template = templateClass;
 	}
 

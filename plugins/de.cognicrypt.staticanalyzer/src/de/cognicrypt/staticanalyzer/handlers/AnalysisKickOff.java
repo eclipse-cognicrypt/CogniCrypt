@@ -129,6 +129,10 @@ public class AnalysisKickOff {
  							Activator.getDefault().logInfo("Static analysis skipped kotlin source files.");
  						}
  					}
+ 					else {
+ 						KotlinCompiler.compileKotlinFiles(javaProject);
+ 		 				Activator.getDefault().logInfo("Finished compiling kotlin source files");
+ 					}	
  				} catch (CoreException | InterruptedException e) {
  					e.printStackTrace();
  				}

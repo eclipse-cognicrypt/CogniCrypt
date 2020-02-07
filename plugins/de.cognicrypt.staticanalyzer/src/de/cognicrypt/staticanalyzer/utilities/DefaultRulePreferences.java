@@ -27,6 +27,7 @@ public class DefaultRulePreferences {
 			 			add(new Ruleset(ini.get(Constants.INI_JCA_NEXUS), true));
 			 			add(new Ruleset(ini.get(Constants.INI_BC_NEXUS)));
 			 			add(new Ruleset(ini.get(Constants.INI_TINK_NEXUS)));
+			 			add(new Ruleset(ini.get(Constants.INI_BCJCA_NEXUS)));
 			 		}
 			 	};
 			 	for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {

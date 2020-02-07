@@ -40,6 +40,7 @@ public class ArtifactUtils {
 		defaultRulesetUrls.put(ini.get(Constants.INI_JCA_NEXUS), Constants.MIN_JCA_RULE_VERSION);
 		defaultRulesetUrls.put(ini.get(Constants.INI_BC_NEXUS), Constants.MIN_BC_RULE_VERSION);
 		defaultRulesetUrls.put(ini.get(Constants.INI_TINK_NEXUS), Constants.MIN_TINK_RULE_VERSION);
+		defaultRulesetUrls.put(ini.get(Constants.INI_BCJCA_NEXUS), Constants.MIN_BCJCA_RULE_VERSION);
 
 		Iterator<Entry<String, Double>> it = defaultRulesetUrls.entrySet().iterator();
 		while (it.hasNext()) {

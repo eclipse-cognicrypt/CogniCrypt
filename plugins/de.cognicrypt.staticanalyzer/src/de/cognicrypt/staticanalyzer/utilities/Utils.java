@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +16,9 @@ import org.apache.maven.project.MavenProject;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -28,6 +31,8 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.jetbrains.kotlin.core.model.KotlinNature;
+
+import de.cognicrypt.staticanalyzer.Activator;
 
 public class Utils {
 
@@ -87,13 +92,14 @@ public class Utils {
  		throw new ClassNotFoundException("Class " + className + " not found.");
  	}
 	
-	public static boolean checkKotlinDependency(IJavaProject javaProject) {
+	public static boolean verifyKotlinDependency(IJavaProject javaProject) {
  		IProject p = javaProject.getProject();
  		IFile pomFile = p.getFile("pom.xml");
+ 		boolean isPresent = false;
  		try {
  			MavenProject project = loadProject(pomFile.getLocation().toFile());
  			List<Dependency> dependencies = project.getDependencies();
- 			boolean isPresent = false;
+ 			
  			for (Dependency dependency : dependencies) {
  				System.out.println(dependency);
  				if(dependency.getArtifactId().equals("kotlin-stdlib"))
@@ -103,15 +109,46 @@ public class Utils {
  				boolean accepted = requestUsersPermission();
  				if(accepted) {
  					addKotlinDependency(project, dependencies);
- 					return true;
+ 					isPresent = true;
  				}
- 				return false;
  			}
  		} catch (Exception e) {
  			e.printStackTrace();
  		}
- 		return true;
+ 		return isPresent;
  	}
+	
+	public static void waitForBuildAndRefreshJobs() {
+		ArrayList<Job> jobs = new ArrayList<Job>();
+		Job[] jobsArray;
+		while(true)
+		{
+			jobs.clear();
+			jobsArray = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_BUILD);
+			jobs.addAll(Arrays.asList(jobsArray));
+			jobsArray = Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH);
+			jobs.addAll(Arrays.asList(jobsArray));
+			jobsArray = Job.getJobManager().find(ResourcesPlugin.FAMILY_MANUAL_BUILD);
+			jobs.addAll(Arrays.asList(jobsArray));
+			jobsArray = Job.getJobManager().find(ResourcesPlugin.FAMILY_MANUAL_REFRESH);
+			jobs.addAll(Arrays.asList(jobsArray));
+			if(jobs.size() == 0) {
+				System.out.println("No pending jobs found.");
+				return;
+			}
+			System.out.println("Waiting for " + jobs.size() + " Jobs to finish...");
+			
+			boolean buildSuccess;
+			do {
+				buildSuccess = true;
+				for (Job job : jobs) {
+					if(job.getState() != Job.NONE)
+						buildSuccess = false;
+				}
+			}
+			while(!buildSuccess);
+		}
+	}
 
 	private static void addKotlinDependency(MavenProject project, List<Dependency> dependencies) {
 		Dependency kotlinDependency = new Dependency();
@@ -130,6 +167,7 @@ public class Utils {
  		try {
  			FileWriter writer = new FileWriter(model.getPomFile());
  			mavenWriter.write(writer, model);
+ 			Activator.getDefault().logInfo("Required kotlin dependency added to pom.");
  		} catch (IOException e) {
  			e.printStackTrace();
  		}
@@ -162,7 +200,8 @@ public class Utils {
  		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
  		MessageBox dialog = new MessageBox(window.getShell(),
  				SWT.APPLICATION_MODAL | SWT.ICON_QUESTION | SWT.YES | SWT.NO);
- 		dialog.setMessage("The project's POM doesn't have kotlin dependency. Would you like to add them and continue?");
+ 		dialog.setMessage("Analysis requires maven kotlin-stdlib dependency. Would you like to add it?");
+ 		dialog.setText("CAUTION");
  		int opt = dialog.open();
  		if (opt == SWT.YES)
  			return true;

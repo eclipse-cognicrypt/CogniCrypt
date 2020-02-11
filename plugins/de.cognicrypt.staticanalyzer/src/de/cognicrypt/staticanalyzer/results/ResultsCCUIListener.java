@@ -251,7 +251,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		JSONParser parser = new JSONParser();
 		try {
 			if (Files.exists(Paths.get(path))) {
-				try {
+				
 					Object obj = parser.parse(new InputStreamReader(new FileInputStream(path)));
 					JSONObject jsonObject = (JSONObject) obj;
 					String clientsQuestion = "Which clients should the server should at least support?";
@@ -259,14 +259,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					if (jsonObject.containsKey(clientsQuestion) && jsonObject.get(clientsQuestion).equals("Legacy Clients (since 2001)")) {
 						return true;
 					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
 			}
-		} catch (ParseException e2) {
-			// TODO Auto-generated catch block
+		} catch (ParseException | IOException e2) {
 			e2.printStackTrace();
 		}
 		return false;

@@ -131,40 +131,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		if (this.depOnly) {
 			return;
 		}
-		
-		final String errorMessage = error.toErrorMarkerString();
-		final Statement errorLocation = error.getErrorLocation();
-		final String path = this.currentProject.getLocation().toOSString() + "/" + Constants.pathToInstanceFile + "SecureCommunication.json";
-//		System.out.println("error message is:---------------------------------- " + errorMessage);
-		
-		if (errorMessage.equals("First parameter (with value \"TLSv\") should be any of {TLSv1.2}")) {
-			JSONParser parser = new JSONParser();
-			try {
-//				System.out.println("the path is------------" + Paths.get(path));
-				if (Files.exists(Paths.get(path))) {
-//					Object obj;
-					try {
-						Object obj = parser.parse(new InputStreamReader(new FileInputStream(path)));
-						JSONObject jsonObject = (JSONObject) obj;
-						System.out.println("object will be ..........." + jsonObject);
-						System.out.println("answeer 4 -------" + jsonObject.get("answer4"));
-						
-						if (jsonObject.containsKey("answer4") && jsonObject.get("answer4").equals("Legacy Clients (since 2001)")) {
-							return;
-						}
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}else{
-					System.out.println("no path");
-				}	
-			} catch (ParseException e2) {
-				// TODO Auto-generated catch block
-				e2.printStackTrace();
+		if (error instanceof ConstraintError) {
+			ConstraintError conError = (ConstraintError) error;
+//			System.out.println("type of error ---------------" + );
+			if (conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
+				return;
 			}
 		}
+		final String errorMessage = error.toErrorMarkerString();
+		final Statement errorLocation = error.getErrorLocation();
 
 		sourceFile = unitToResource(errorLocation);
 		final int lineNumber = ((AbstractHost) errorLocation.getUnit().get()).getJavaSourceStartLineNumber();
@@ -268,6 +243,33 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 			}
 		}
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Boolean isLegacyClient() {
+		final String path = this.currentProject.getLocation().toOSString() + "/" + Constants.pathToInstanceFile + "SecureCommunication.json";
+		JSONParser parser = new JSONParser();
+		try {
+			if (Files.exists(Paths.get(path))) {
+				try {
+					Object obj = parser.parse(new InputStreamReader(new FileInputStream(path)));
+					JSONObject jsonObject = (JSONObject) obj;
+					String clientsQuestion = "Which clients should the server should at least support?";
+					
+					if (jsonObject.containsKey(clientsQuestion) && jsonObject.get(clientsQuestion).equals("Legacy Clients (since 2001)")) {
+						return true;
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		} catch (ParseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		return false;
 	}
 
 	// It only works when the secure object checkbox in preference page is checked

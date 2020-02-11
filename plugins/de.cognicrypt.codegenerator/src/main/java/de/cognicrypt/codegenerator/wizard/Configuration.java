@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.io.XMLWriter;
-import org.eclipse.core.resources.IProject;
 
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
@@ -49,43 +48,15 @@ public abstract class Configuration {
 		this.taskName = taskName;
 		
 		JSONObject obj = new JSONObject();
-		
-		int m = 1;
-        for (Question i: this.options.keySet()) {
-//        	System.out.println("finaally the msg--------" + i.getQuestionText());
-        	obj.put("question" + m , i.getQuestionText());
-        	m += 1;
-        }
-        m = 1;
-        for (Answer j: this.options.values()) {
-//        	System.out.println("finaally the msg answer--------" + j.getValue());
-//        	answr = j;
-        	obj.put("answer" + m,  j.getValue());
-        	m +=1 ;
-        	
-        }
+		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
+		String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + "/" +Constants.pathToInstanceFile + taskName + ".json";
 
-		String path2 = Utils.getCurrentProject().getLocation().toOSString() + "/" +Constants.pathToInstanceFile + taskName + ".json";
-
-		File file=new File(path2);  
+		File file=new File(jsonPath);  
         file.createNewFile();  
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(obj.toJSONString());  
         fileWriter.flush();  
         fileWriter.close();
-         
-//	    XMLEncoder XMLencoder;
-//		try {
-//			XMLencoder = new XMLEncoder(
-//			       new BufferedOutputStream(
-//			           new FileOutputStream(path)));
-//			XMLencoder.writeObject(this.options);
-//			XMLencoder.close();
-//		} catch (FileNotFoundException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-	
 	}
 
 	/**

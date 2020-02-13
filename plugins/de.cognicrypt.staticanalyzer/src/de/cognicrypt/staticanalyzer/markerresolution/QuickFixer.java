@@ -62,7 +62,7 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
 		}
-		quickFixes.add(new FalsePositiveReporter(Constants.FALSEPOSTIVEREPORTER_FIX));
+		quickFixes.add(new IssueReportFix(Constants.FALSEPOSTIVEREPORTER_FIX));
 		return quickFixes.toArray(new IMarkerResolution[quickFixes.size()]);
 	}
 

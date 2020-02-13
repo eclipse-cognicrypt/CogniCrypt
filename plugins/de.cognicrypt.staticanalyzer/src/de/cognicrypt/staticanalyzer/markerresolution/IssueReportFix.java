@@ -1,33 +1,42 @@
 package de.cognicrypt.staticanalyzer.markerresolution;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.io.File;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JToolBar;
-import javax.swing.border.TitledBorder;
-
-//import javax.mail.*;
-//import javax.mail.internet.*;
-//import javax.activation.*;
-//import java.util.Properties;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.Label;
+import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.IssueService;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IMarkerResolution;
+import org.eclipse.ui.PlatformUI;
 
-public class FalsePositiveReporter implements IMarkerResolution {
+import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.Severities;
+import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
+
+public class IssueReportFix implements IMarkerResolution {
 
 	private final String label;
+	private IMarker marker;
 
-	public FalsePositiveReporter(String label) {
+	public IssueReportFix(String label) {
 		super();
 		this.label = label;
 	}
@@ -38,135 +47,172 @@ public class FalsePositiveReporter implements IMarkerResolution {
 
 	@Override
 	public void run(IMarker arg0) {
-
-		JDialog reporterDialog = new JDialog();
-		reporterDialog.setTitle("Issue reporter");
-		reporterDialog.setLocationRelativeTo(null);
-		reporterDialog.setSize(480, 320);
-		reporterDialog.setLayout(new BorderLayout());
-		reporterDialog.setModal(false);
-
-		TitledBorder title = BorderFactory.createTitledBorder("Issue Description");
-		JTextArea reportField = new JTextArea();
-		reportField.setFont(reportField.getFont().deriveFont(13f));
-		reportField.setBorder(title);
-		reportField.setEditable(true);
-		reportField.setLineWrap(true);
-		reportField.setWrapStyleWord(true);
-        JScrollPane reportScrollPane = new JScrollPane(reportField);       
-
-		JToolBar controlBar = new JToolBar();
-		controlBar.setFloatable(false);
-		controlBar.setRollover(true);
-
-		JLabel infoLabel = new JLabel(
-				"<html>Additonaly, to the issue description the affected file "+arg0.getResource().getName()+" will be send.</html>");
-
-		JButton sendButton = new JButton("Send");
-		sendButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				send(reportField.getText());
-				close(reporterDialog);				
+		marker = arg0;
+		
+		Reporter dialog = new Reporter(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), marker.getResource().getName());
+		dialog.create();
+		
+		if (dialog.open() == Window.OK) {
+			String attachment = getAttachment(dialog.getAttachmentIndex());
+			try {
+				send(dialog.getIssueTitle(), dialog.getIssueText(), dialog.getAttachmentIndex(), attachment);
+			} catch (CoreException e) {
+				Activator.getDefault().logError(e);
 			}
-		});
+		}
+	}
 
-		JButton candelButton = new JButton("Cancel");
-		candelButton.addActionListener(new ActionListener() {
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				close(reporterDialog);
+	private void send(String issueTitle, String issueText, int attachmentIndex ,String attachment) throws CoreException{
+
+		GitHubClient client = new GitHubClient();
+
+		Issue issue = new Issue();
+		
+		if(issueTitle.trim().isEmpty()) {
+			issueTitle = "Bug Report";
+		}
+		issue.setTitle(issueTitle);
+
+		StringBuilder builder = new StringBuilder();		
+		builder.append("**User Issue Description**\n");
+		builder.append(issueText+"\n\n");
+		builder.append("**Configuration:**\n");
+		builder.append("- Eclipse version: "+
+		Platform.getBundle("org.eclipse.platform").getVersion() +"\n");
+		builder.append("- Java version: " + System.getProperty("java.version") + "\n");
+		builder.append("- OS: " + System.getProperty("os.name").toLowerCase() + "\n\n");
+		builder.append("**CogniCrypt Error Information:**\n");
+		builder.append("- Violated CrySL rule: "+ (String) marker.getAttribute("crySLRuleName")+ "\n");
+		builder.append("- Error type: "+ QuickFixUtils.getErrorTypeFromMarkerType((String) marker.getAttribute("errorType"))+ "\n");
+		builder.append("- Error message: "+ (String) marker.getAttribute(IMarker.MESSAGE)+ "\n");
+		builder.append("- Severity: "+Severities.get((int) marker.getAttribute(IMarker.SEVERITY)).toString()+ "\n\n");
+		
+		if(!attachment.isEmpty()) {
+			builder.append("**Java Code**\n\n");
+			builder.append("Error code: `"+getErrorLineCode()+"`\n");
+			builder.append("```java\n"+attachment+"\n```");
+			builder.append("\n\n");
+			
+			if(attachmentIndex == 1) {
+				builder.append("**Jimple**\n\n");
+				builder.append("```java\n"+(String) marker.getAttribute("errorJimpleCode")+"```");
+				builder.append("\n\n");
 			}
-		});
+			
+		}
+		
+		String body = builder.toString();
+		issue.setBody(body);
 
-		controlBar.add(infoLabel);
-		controlBar.add(sendButton);
-		controlBar.add(candelButton);
+		Label bugLabel = new Label();
+		bugLabel.setName("bug");
+		Label feedBackLabel = new Label();
+		feedBackLabel.setName("UserFeedback");
+		Label sastLabel = new Label();
+		feedBackLabel.setName("SAST");
+		ArrayList<Label> labelList = new ArrayList<>();
+		labelList.add(bugLabel);
+		labelList.add(feedBackLabel);
+		labelList.add(sastLabel);
 
-		reporterDialog.add(reportScrollPane, BorderLayout.CENTER);
-		reporterDialog.add(controlBar, BorderLayout.SOUTH);
-		reporterDialog.setVisible(true);
+		issue.setLabels(labelList);
+
+		
+		IssueService issueService = new IssueService(client);
+		try {
+//			issueService.createIssue("eclipse-cognicrypt", "CogniCrypt", issue);
+			issueService.createIssue("MyBot","TestGitHubAPIRepo", issue);
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);			
+		}
 	}
-	
-	
-	/**
-	 * This method returns the {@link File} with the reported misuse
-	 * @param m
-	 * @return affected {@link File}
-	 */
-	private File getFile(IMarker m) {
-		return new File(m.getResource().getLocation().toOSString());
+
+	private String getAttachment(int i) {
+		String attachment = "";
+		switch (i) {
+		case 0:	attachment = getFileContent();
+			break;
+		case 1: attachment = getMethodBody();
+			break;
+		case 2:
+				attachment = "";
+			break;
+		}
+		return attachment;
 	}
-	
-	/**
-	 * This method closes a {@link JDialog}
-	 * @param reporterDialog - dialog to be closed
-	 */
-	private void close(JDialog reporterDialog) {
-		reporterDialog.setVisible(false);
-		reporterDialog.dispatchEvent(new WindowEvent(
-				reporterDialog, WindowEvent.WINDOW_CLOSING));
+
+	private String getMethodBody() {
+		String methodBody = "";
+		ICompilationUnit sourceUnit = null;
+		try {
+			sourceUnit = QuickFixUtils.getCompilationUnitFromMarker(marker);
+			final ASTParser parser = ASTParser.newParser(AST.JLS9);
+			parser.setKind(ASTParser.K_COMPILATION_UNIT);
+			parser.setSource(sourceUnit);
+			final CompilationUnit unit = (CompilationUnit) parser.createAST(null);
+			HashMap<Integer, MethodDeclaration> methodMap = new HashMap<>();
+			
+			unit.accept(new ASTVisitor() {
+				@Override
+				public boolean visit(final MethodDeclaration node) {
+					methodMap.put(unit.getLineNumber(node.getStartPosition()), node);
+					return true;
+				}
+				
+			
+			});
+
+			int errorLineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
+			ArrayList<Integer> methodStartLineNumber = new ArrayList<>(methodMap.keySet());
+			Collections.sort(methodStartLineNumber);
+
+			if (errorLineNumber < methodStartLineNumber.get(0)) {
+				// error in the variable declarations
+			} else if (errorLineNumber > methodStartLineNumber.get(methodStartLineNumber.size() - 1)) {
+				methodBody = methodMap.get(methodStartLineNumber.get(methodStartLineNumber.size() - 1)).toString();
+			} else {
+				for (int i = 0; i < methodStartLineNumber.size() - 1; i++) {
+					int start = methodStartLineNumber.get(i);
+					int end = methodStartLineNumber.get(i + 1);
+
+					if (errorLineNumber > start && errorLineNumber < end) {
+						methodBody = methodMap.get(methodStartLineNumber.get(i)).toString();
+						break;
+					}
+				}
+			}
+
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
+		}
+
+		return methodBody;
 	}
+
 	
-	
+	private String getErrorLineCode() {
+	    String errorLine = "";
+		try {
+		List<String> lines = Files.readAllLines(Paths.get(marker.getResource().getLocation().toOSString()));
+		errorLine = lines.get((int) marker.getAttribute(IMarker.LINE_NUMBER)-1);
+		
+		} catch (IOException e) {
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
+			e.printStackTrace();
+		}
+		return errorLine;
+	}
 
-	/**
-	 * This method sends the issue report and the file with the misuse to the CogniCrypt server
-	 * @param issueReport report to be sent
-	 */
-	private void send(String issueReport) {
-
-//		String to = "";// change accordingly
-//		final String user = "";// change accordingly
-//		final String password = "";// change accordingly
-//
-//		// 1) get the session object
-//		Properties properties = System.getProperties();
-//		properties.setProperty("mail.smtp.host", "mail.gmx.net");
-//		properties.put("mail.smtp.auth", "true");
-//
-//		Session session = Session.getDefaultInstance(properties, new javax.mail.Authenticator() {
-//			protected PasswordAuthentication getPasswordAuthentication() {
-//				return new PasswordAuthentication(user, password);
-//			}
-//		});
-//
-//		// 2) compose message
-//		try {
-//			MimeMessage message = new MimeMessage(session);
-//			message.setFrom(new InternetAddress(user));
-//			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-//			message.setSubject("Message Aleart");
-//
-//			// 3) create MimeBodyPart object and set your message text
-//			BodyPart messageBodyPart1 = new MimeBodyPart();
-//			messageBodyPart1.setText("This is message body");
-//
-//			// 4) create new MimeBodyPart object and set DataHandler object to this object
-//			MimeBodyPart messageBodyPart2 = new MimeBodyPart();
-//
-//			String filename = "SuppressWarningFix.java";// change accordingly
-//			DataSource source = new FileDataSource(filename);
-//			messageBodyPart2.setDataHandler(new DataHandler(source));
-//			messageBodyPart2.setFileName(filename);
-//
-//			// 5) create Multipart object and add MimeBodyPart objects to this object
-//			Multipart multipart = new MimeMultipart();
-//			multipart.addBodyPart(messageBodyPart1);
-//			multipart.addBodyPart(messageBodyPart2);
-//
-//			// 6) set the multiplart object to the message object
-//			message.setContent(multipart);
-//
-//			// 7) send message
-//			Transport.send(message);
-//
-//			System.out.println("message sent....");
-//		} catch (MessagingException ex) {
-//			ex.printStackTrace();
-//		}
-
+	private String getFileContent() {
+	    String fileContent = "";
+		try {
+			fileContent = new String(Files.readAllBytes(Paths.get(marker.getResource().getLocation().toOSString())), StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+		}
+		return fileContent;
 	}
 }

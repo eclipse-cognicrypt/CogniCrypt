@@ -91,7 +91,9 @@ public class SootRunner {
 					String detectedProvider = providerDetection.doAnalysis(icfg, rootRulesDirectory);
 					if(detectedProvider != null) {
 						rules.clear();
-						rules.addAll(providerDetection.chooseRules(rootRulesDirectory+File.separator+detectedProvider));
+						String newRulesDirectory = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator + 
+													Utils.getRuleVersions(detectedProvider)[Utils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider;
+						rules.addAll(providerDetection.chooseRules(newRulesDirectory));
 					}
 				}
 				scanner.scan(rules);

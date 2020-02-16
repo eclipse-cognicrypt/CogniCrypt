@@ -236,6 +236,7 @@ Export-Package: boomerang;
    org.eclipse.aether.repository",
  org.ini4j;uses:="org.ini4j.spi,new org.ini4j",
  org.ini4j.spi,
+ org.json.simple,
  soot;
   uses:="soot.jimple.toolkits.scalar,
    soot.toolkits.graph,

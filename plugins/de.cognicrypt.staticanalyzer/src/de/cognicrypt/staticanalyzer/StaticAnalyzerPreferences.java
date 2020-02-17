@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -37,10 +36,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.ini4j.Profile.Section;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.properties.PreferenceListener;
 import de.cognicrypt.staticanalyzer.utilities.AddNewRulesetDialog;
@@ -66,17 +63,8 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Combo neverType;
 	private Combo incompleteOp;
 	private Combo typestate;
-	
-	private Section ini = Utils.getConfig().get(Constants.INI_URL_HEADER);
-	
-	private List<Ruleset> listOfRulesets = new ArrayList<Ruleset>() {
- 		private static final long serialVersionUID = 1L;
- 		{
- 			add(new Ruleset(ini.get(Constants.INI_JCA_NEXUS), true));
- 			add(new Ruleset(ini.get(Constants.INI_BC_NEXUS)));
- 			add(new Ruleset(ini.get(Constants.INI_TINK_NEXUS)));
- 		}
- 	};
+		
+	private List<Ruleset> listOfRulesets = new ArrayList<Ruleset>();
 
 	@Override
 	public void compileBasicPreferences(Composite parent) {
@@ -161,7 +149,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  				ruleSets.add(loadedRuleset);
  			}
  		} catch (BackingStoreException e) {
- 			e.printStackTrace();
+ 			Activator.getDefault().logError(e);
  		}
  		return ruleSets;
  	}
@@ -180,8 +168,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  		versionsColumn.getColumn().setWidth(100);
  		rulesURL.getColumn().setWidth(200);
 
- 		if (getRulesetsFromPrefs().size() > 0)
- 			listOfRulesets = getRulesetsFromPrefs();
+		listOfRulesets = getRulesetsFromPrefs();
 
  		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
  			Ruleset ruleset = (Ruleset) itr.next();

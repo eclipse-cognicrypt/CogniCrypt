@@ -13,10 +13,8 @@ package de.cognicrypt.staticanalyzer.markerresolution;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -129,7 +127,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 			createRule(filePath, predicate);
 		}
 		
-		final ASTParser parser = ASTParser.newParser(AST.JLS9);
+		final ASTParser parser = ASTParser.newParser(AST.JLS11);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(sourceUnit);
 		final CompilationUnit unit = (CompilationUnit) parser.createAST(null);

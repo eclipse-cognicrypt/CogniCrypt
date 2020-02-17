@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -41,12 +40,10 @@ import org.eclipse.xtext.common.types.access.jdt.IJavaProjectProvider;
 import org.eclipse.xtext.common.types.access.jdt.JdtTypeProviderFactory;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.inject.Injector;
-
 import crypto.interfaces.ICrySLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CrySLArithmeticConstraint;
@@ -113,7 +110,6 @@ public class CrySLModelReader {
 	private List<CrySLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
 	private XtextResourceSet resourceSet;
-	private boolean testMode = false;
 
 	private static final String INT = "int";
 	private static final String THIS = "this";
@@ -164,8 +160,6 @@ public class CrySLModelReader {
 		this.resourceSet.setClasspathURIContext(new URLClassLoader(classpath));
 		new ClasspathTypeProvider(ucl, this.resourceSet, null, null);
 		this.resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-
-		testMode = true;
 	}
 
 	public CrySLRule readRule(File ruleFile) {
@@ -222,11 +216,6 @@ public class CrySLModelReader {
 			}
 		}
 		final CrySLRule rule = new CrySLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
-		if(!rule.getClassName().equalsIgnoreCase("void")) {
-			System.out.println(rule.getClassName());
-			System.out.println("===========================================");
-			System.out.println("");
-		}
 		
 		return rule;
 	}
@@ -294,7 +283,7 @@ public class CrySLModelReader {
 						Files.copy(resAsFile, to);
 					}
 					catch (IOException e) {
-						e.printStackTrace();
+						Activator.getDefault().logError(e);
 					}
 				}
 			} else if (res instanceof IFolder) {
@@ -535,9 +524,7 @@ public class CrySLModelReader {
 			final List<ICrySLPredicateParameter> vars = new ArrayList<>();
 			final Pred innerPredicate = (Pred) un.getEnclosedExpression();
 			if (innerPredicate.getParList() != null) {
-				for (final SuPar sup : innerPredicate.getParList().getParameters()) {
-					vars.add(new CrySLObject(UNDERSCORE, NULL));
-				}
+				innerPredicate.getParList().getParameters().forEach(e -> vars.add(new CrySLObject(UNDERSCORE, NULL)));
 			}
 			slci = new CrySLPredicate(null, innerPredicate.getPredName(), vars, true);
 		} else if (cons instanceof Pred) {
@@ -546,9 +533,7 @@ public class CrySLModelReader {
 
 				final SuParList parList = ((Pred) cons).getParList();
 				if (parList != null) {
-					for (final SuPar sup : parList.getParameters()) {
-						vars.add(new CrySLObject(UNDERSCORE, NULL));
-					}
+					parList.getParameters().forEach(e -> vars.add(new CrySLObject(UNDERSCORE, NULL)));
 				}
 				slci = new CrySLPredicate(null, ((Pred) cons).getPredName(), vars, false);
 			}
@@ -566,7 +551,7 @@ public class CrySLModelReader {
 						op = LogOps.or;
 						break;
 					default:
-						System.err.println("Sign " + operator.toString() + " was not properly translated.");
+						Activator.getDefault().logError("Sign " + operator.toString() + " was not properly translated.");
 						op = LogOps.and;
 				}
 			}

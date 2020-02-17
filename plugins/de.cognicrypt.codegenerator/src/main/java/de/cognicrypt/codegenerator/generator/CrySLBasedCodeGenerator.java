@@ -237,7 +237,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 						}
 					}
 					if (candidates.size() == 1) {
-						toBeEnsuredPred = new SimpleEntry(candidates.get(0), new SimpleEntry(rule, null));
+						toBeEnsuredPred = new SimpleEntry<CrySLPredicate, Entry<CrySLRule, CrySLRule>>(candidates.get(0), new SimpleEntry<CrySLRule, CrySLRule>(rule, null));
 					} else if (candidates.size() > 1) {
 						Entry<CrySLPredicate, Integer> candHD = null;
 						for (CrySLPredicate candidate : candidates) {
@@ -251,7 +251,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 								candHD = new SimpleEntry<CrySLPredicate, Integer>(candidate, getHD(retName, candName));
 							}
 						}
-						toBeEnsuredPred = new SimpleEntry(candHD.getKey(), new SimpleEntry(rule, null));
+						toBeEnsuredPred = new SimpleEntry<CrySLPredicate, Entry<CrySLRule, CrySLRule>>(candHD.getKey(), new SimpleEntry<CrySLRule, CrySLRule>(rule, null));
 					}
 					if (toBeEnsuredPred == null) {
 						for (CrySLPredicate reqPred : rule.getPredicates()) {
@@ -266,7 +266,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 									continue;
 								}
 							}
-							toBeEnsuredPred = new SimpleEntry(reqPred, new SimpleEntry(rule, null));
+							toBeEnsuredPred = new SimpleEntry<CrySLPredicate, Entry<CrySLRule, CrySLRule>>(reqPred, new SimpleEntry<CrySLRule, CrySLRule>(rule, null));
 //							break;
 						}
 					}
@@ -672,8 +672,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					methodParameter[i] = Class.forName(parameter.getValue());
 					i++;
 				} catch (ClassNotFoundException e) {
-					System.out.println("No class found for type: " + parameter.getValue().toString());
-					e.printStackTrace();
+					Activator.getDefault().logError(e, "No class found for type: " + parameter.getValue().toString());
 				}
 			}
 		}
@@ -1197,7 +1196,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	}
 
 	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) {
-		ASTParser parser = ASTParser.newParser(AST.JLS9);
+		ASTParser parser = ASTParser.newParser(AST.JLS11);
 		parser.setSource((ICompilationUnit) JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile)));
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
@@ -1217,7 +1216,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			
 			List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
 
-			@SuppressWarnings("unchecked")
+			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public boolean visit(MethodInvocation node) {
 				MethodInvocation mi = node;

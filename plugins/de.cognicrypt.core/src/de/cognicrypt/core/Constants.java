@@ -529,6 +529,7 @@ public class Constants {
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";
+	public static final String SUPPRESS_TLS_ERRORS = "de.cognicrypt.staticanalyzer.suppressTLSErrors";
 
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 

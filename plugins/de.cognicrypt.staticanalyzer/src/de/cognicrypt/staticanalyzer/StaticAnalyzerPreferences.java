@@ -54,6 +54,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
 	private Button addNewRulesetButton, selectCustomRulesCheckBox;
+	private Button suppressTLSErrorsCheckBox;
  	private CheckboxTableViewer table;
 
 	private Combo CGSelection;
@@ -85,6 +86,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 		selectCustomRulesCheckBox.setSelection(preferences.getBoolean(Constants.SELECT_CUSTOM_RULES));
+		suppressTLSErrorsCheckBox.setSelection(preferences.getBoolean(Constants.SUPPRESS_TLS_ERRORS));
 	}
 
 	private void performBasicDefaults() {
@@ -93,6 +95,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setDefault(Constants.SHOW_SECURE_OBJECTS, false);
 		preferences.setDefault(Constants.ANALYSE_DEPENDENCIES, true);
 		preferences.setDefault(Constants.CALL_GRAPH_SELECTION, 0);
+		preferences.setDefault(Constants.SUPPRESS_TLS_ERRORS, false);
 	}
 	
 	/***
@@ -263,6 +266,10 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 		
+ 		suppressTLSErrorsCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
+ 		suppressTLSErrorsCheckBox.setText("Suppress Errors related to TLS protocol");
+ 		suppressTLSErrorsCheckBox.setSelection(preferences.getBoolean(Constants.SUPPRESS_TLS_ERRORS));
+ 		
 		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
  		addNewRulesetButton.setText("Add ruleset");
  		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
@@ -412,6 +419,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
+		suppressTLSErrorsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SUPPRESS_TLS_ERRORS));
 		
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
  			Ruleset ruleset = (Ruleset) itr.next();
@@ -446,6 +454,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setValue(Constants.NEVER_TYPEOF_MARKER_TYPE, neverType.getSelectionIndex());
 		preferences.setValue(Constants.REQUIRED_PREDICATE_MARKER_TYPE, reqPred.getSelectionIndex());
 		preferences.setValue(Constants.TYPESTATE_ERROR_MARKER_TYPE, typestate.getSelectionIndex());
+		preferences.setValue(Constants.SUPPRESS_TLS_ERRORS, suppressTLSErrorsCheckBox.getSelection());
 		
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
  			Ruleset ruleset = (Ruleset) itr.next();

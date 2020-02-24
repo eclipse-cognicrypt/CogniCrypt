@@ -589,6 +589,7 @@ public class Constants {
  	public static final Double MIN_JCA_RULE_VERSION = 1.4;
  	public static final Double MIN_BC_RULE_VERSION = 0.7;
  	public static final Double MIN_TINK_RULE_VERSION = 0.3;
+ 	public static final Double MIN_BCJCA_RULE_VERSION = 0.2;
 
  	//Configuration.ini keys
  	public static final String INI_URL_HEADER = "URLS";
@@ -596,6 +597,7 @@ public class Constants {
  	public static final String INI_JCA_NEXUS = "JCA_NEXUS";
  	public static final String INI_BC_NEXUS = "BC_NEXUS";
  	public static final String INI_TINK_NEXUS = "TINK_NEXUS";
+ 	public static final String INI_BCJCA_NEXUS = "BCJCA_NEXUS";
  	
  	public final static String CONFIG_FILE_PATH = "configuration.ini";
 

@@ -18,6 +18,7 @@ import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
+import de.cognicrypt.codegenerator.generator.test.Constants;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.utils.DeveloperProject;
 
@@ -42,12 +43,12 @@ public class EncryptionCodeGenTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.testJavaProject = TestUtils.createJavaProject("TestProject");
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
+		this.testJavaProject = TestUtils.createJavaProject(Constants.PROJECT_NAME);
+		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME, Constants.CLASS_NAME);
 		this.encTask = TestUtils.getTask("Encryption");
 		this.generatorEnc = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorEnc.getDeveloperProject();
-		this.testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
+		this.testClassUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
 		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", this.testClassUnit);
 
 	}

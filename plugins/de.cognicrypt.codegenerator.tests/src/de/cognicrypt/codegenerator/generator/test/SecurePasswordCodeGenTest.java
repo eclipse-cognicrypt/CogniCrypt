@@ -17,6 +17,7 @@ import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
+import de.cognicrypt.codegenerator.generator.test.Constants;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.utils.DeveloperProject;
 
@@ -40,16 +41,16 @@ public class SecurePasswordCodeGenTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.testJavaProject = TestUtils.createJavaProject("TestProject");
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
+		this.testJavaProject = TestUtils.createJavaProject(Constants.PROJECT_NAME);
+		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME, Constants.CLASS_NAME);
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
 		this.generatorSecPassword = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorSecPassword.getDeveloperProject();
 	}
 	@Test
 	public void testCodeGenerationSecurePassword() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
+		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
+		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
 
 		this.configSecPassword = TestUtils.createCrySLConfiguration("securepassword", testClassUnit.getResource(), generatorSecPassword, this.developerProject);
 		final boolean encCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());

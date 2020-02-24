@@ -17,6 +17,7 @@ import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
+import de.cognicrypt.codegenerator.generator.test.Constants;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.utils.DeveloperProject;
 
@@ -39,16 +40,16 @@ public class DigitalSignaturesCodeGenTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.testJavaProject = TestUtils.createJavaProject("TestProject");
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
+		this.testJavaProject = TestUtils.createJavaProject(Constants.PROJECT_NAME);
+		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME, Constants.CLASS_NAME);
 		this.digSignatureTask = TestUtils.getTask("DigitalSignatures");
 		this.generatorDigSignature = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorDigSignature.getDeveloperProject();
 	}
 	@Test
 	public void testCodeGenerationEncryption() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
+		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
+		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
 
 		this.configDigSignature = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(), generatorDigSignature, this.developerProject);
 		final boolean encCheck = this.generatorDigSignature.generateCodeTemplates(this.configDigSignature, this.digSignatureTask.getAdditionalResources());

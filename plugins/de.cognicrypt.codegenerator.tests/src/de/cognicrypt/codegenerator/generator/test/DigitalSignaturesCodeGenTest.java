@@ -26,9 +26,9 @@ import de.cognicrypt.utils.DeveloperProject;
 public class DigitalSignaturesCodeGenTest {
 	Logger log = Logger.getLogger(DigitalSignaturesCodeGenTest.class.getName());
 	IJavaProject testJavaProject;
-	CodeGenerator generatorDigSigniture;
-	Task digSignitureTask;
-	Configuration configDigSigniture;
+	CodeGenerator generatorDigSignature;
+	Task digSignatureTask;
+	Configuration configDigSignature;
 	DeveloperProject developerProject;
 	IResource targetFile;
 	
@@ -41,17 +41,17 @@ public class DigitalSignaturesCodeGenTest {
 	public void setUp() throws Exception {
 		this.testJavaProject = TestUtils.createJavaProject("TestProject");
 		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
-		this.digSignitureTask = TestUtils.getTask("DigitalSignatures");
-		this.generatorDigSigniture = new CrySLBasedCodeGenerator(targetFile);
-		this.developerProject = this.generatorDigSigniture.getDeveloperProject();
+		this.digSignatureTask = TestUtils.getTask("DigitalSignatures");
+		this.generatorDigSignature = new CrySLBasedCodeGenerator(targetFile);
+		this.developerProject = this.generatorDigSignature.getDeveloperProject();
 	}
 	@Test
 	public void testCodeGenerationEncryption() throws CoreException, IOException {
 		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
 		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
-		this.configDigSigniture = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(), generatorDigSigniture, this.developerProject);
-		final boolean encCheck = this.generatorDigSigniture.generateCodeTemplates(this.configDigSigniture, this.digSignitureTask.getAdditionalResources());
+		this.configDigSignature = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(), generatorDigSignature, this.developerProject);
+		final boolean encCheck = this.generatorDigSignature.generateCodeTemplates(this.configDigSignature, this.digSignatureTask.getAdditionalResources());
 		assertTrue(encCheck);
 		
 	}

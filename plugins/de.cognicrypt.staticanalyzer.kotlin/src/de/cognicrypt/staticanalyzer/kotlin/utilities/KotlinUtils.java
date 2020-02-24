@@ -176,7 +176,7 @@ public class KotlinUtils {
 			jobs.addAll(Arrays.asList(Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_REFRESH)));
 			jobs.addAll(Arrays.asList(Job.getJobManager().find(ResourcesPlugin.FAMILY_MANUAL_BUILD)));
 			jobs.addAll(Arrays.asList(Job.getJobManager().find(ResourcesPlugin.FAMILY_MANUAL_REFRESH)));
-			if(jobs.size() == 0) {
+			if(jobs.isEmpty()) {
 				System.out.println("No pending jobs found.");
 				return;
 			}
@@ -244,14 +244,18 @@ public class KotlinUtils {
  		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
  		MessageBox dialog = new MessageBox(window.getShell(),
  				SWT.APPLICATION_MODAL | SWT.ICON_QUESTION | SWT.YES | SWT.NO);
- 		dialog.setMessage("Analysis requires maven kotlin-stdlib dependency. Would you like to add it?");
+ 		return selectedDialogOption(dialog);
+ 	}
+
+	private static boolean selectedDialogOption(MessageBox dialog) {
+		dialog.setMessage("Analysis requires maven kotlin-stdlib dependency. Would you like to add it?");
  		dialog.setText("CAUTION");
  		int opt = dialog.open();
  		if (opt == SWT.YES)
  			return true;
  		else
  			return false;
- 	}
+	}
  	
  	
 }

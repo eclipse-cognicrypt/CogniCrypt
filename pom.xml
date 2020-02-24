@@ -98,6 +98,7 @@
     <module>plugins/de.cognicrypt.codegenerator/</module>
     <module>plugins/de.cognicrypt.codegenerator.tests/</module>
     <module>plugins/de.cognicrypt.staticanalyzer/</module>
+    <module>plugins/de.cognicrypt.staticanalyzer.kotlin/</module>
 	<module>plugins/de.cognicrypt.integrator.task/</module>
 	<module>plugins/de.cognicrypt.integrator.primitive/</module>
 	<module>features/de.cognicrypt.core.feature/</module>

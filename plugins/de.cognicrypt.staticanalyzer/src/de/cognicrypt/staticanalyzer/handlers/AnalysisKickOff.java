@@ -8,24 +8,19 @@
 package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.jetbrains.kotlin.core.compiler.KotlinCompiler;
-import org.jetbrains.kotlin.core.compiler.KotlinCompilerResult;
-import org.jetbrains.kotlin.core.model.KotlinNature;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.kotlin.utilities.KotlinUtils;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
@@ -97,58 +92,7 @@ public class AnalysisKickOff {
 			return false;
 		}
 		
-		if(Platform.getBundle("org.jetbrains.kotlin.core") != null) {
- 			if(KotlinNature.hasKotlinNature(ip)) {
- 				try {
- 					if(ip.hasNature("org.eclipse.m2e.core.maven2Nature")) {
- 						if(de.cognicrypt.staticanalyzer.utilities.Utils.verifyKotlinDependency(javaProject)) {
- 							
- 							System.out.println("Custom Builder started.");
- 							final Job builder = new Job("Custom Builder") {
-								
-								@Override
-								protected IStatus run(IProgressMonitor monitor) {
-									try {
-										ip.build(IncrementalProjectBuilder.CLEAN_BUILD, null);
-									} catch (CoreException e) {
-										e.printStackTrace();
-									}
-									return Status.OK_STATUS;
-								}
-							};
-							builder.setPriority(Job.LONG);
-							builder.schedule();
- 							
- 							while(builder.getState() != Job.NONE) {
-								Thread.sleep(3);
-							}
- 							System.out.println("Custom Builder finished.");
- 			
- 							de.cognicrypt.staticanalyzer.utilities.Utils.waitForBuildAndRefreshJobs();
- 							
-							KotlinCompilerResult result = KotlinCompiler.compileKotlinFiles(javaProject);
-							if(result.compiledCorrectly())
-								Activator.getDefault().logInfo("Finished compiling kotlin files.");
-							else
-								Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
- 						}
- 						else {
- 							Activator.getDefault().logInfo("Cannot compile kotlin files without dependency.");
- 							Activator.getDefault().logInfo("Static analysis skipped all kotlin files.");
- 						}
- 					}
- 					else {
- 						KotlinCompilerResult result = KotlinCompiler.compileKotlinFiles(javaProject);
- 						if(result.compiledCorrectly())
-							Activator.getDefault().logInfo("Finished compiling kotlin files.");
-						else
-							Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
- 					}	
- 				} catch (CoreException | OperationCanceledException | InterruptedException e) {
- 					e.printStackTrace();
- 				}
- 			}
- 		}
+		KotlinUtils.compileKotlinFiles(ip);
 
  		this.curProj = javaProject;
  		return true;

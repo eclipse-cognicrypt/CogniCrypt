@@ -164,7 +164,7 @@
 	        {
 	            "id": "0",
 	            "element": "radio",
-	            "note": "1$$$It is highly discouraged to enable support for legacy clients. This may have grave security implications.",      
+	            "note": "1$$$It is highly discouraged to enable support for legacy clients. This may have grave security implications.$$$\nPlease note that CogniCrypt only suppress errors related to this constraint if the checkbox in preference page is selected.",      
 	           	"questionText": "Which clients should the server should at least support?",
 				"answers": [
 					{

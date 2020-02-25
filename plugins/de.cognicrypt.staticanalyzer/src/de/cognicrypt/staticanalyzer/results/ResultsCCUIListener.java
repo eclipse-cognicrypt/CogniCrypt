@@ -128,13 +128,13 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void reportError(final AbstractError error) {
 		IResource sourceFile = null;
+		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
 		if (this.depOnly) {
 			return;
 		}
 		if (error instanceof ConstraintError) {
 			ConstraintError conError = (ConstraintError) error;
-//			System.out.println("type of error ---------------" + );
-			if (conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
+			if (prefStore.getBoolean(Constants.SUPPRESS_TLS_ERRORS) && conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
 				return;
 			}
 		}

@@ -25,7 +25,7 @@ import java.util.HashMap;
 public class QuestionsToTemplateTests {
 	
 	@Test
-	public void testEncryption1() {
+	public void testEncryptionTaskWithEncryptedDigitalChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -50,7 +50,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption2() {
+	public void testEncryptionTaskWithEncryptedDigitalChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -75,7 +75,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption3() {
+	public void testEncryptionTaskWithEncryptedDigitalChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -100,7 +100,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption4() {
+	public void testEncryptionTaskWithEncryptedDigitalChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -125,7 +125,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption5() {
+	public void testEncryptionTaskWithEncryptedHardDriveAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -150,7 +150,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption6() {
+	public void testEncryptionTaskWithEncryptedHardDriveAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -175,7 +175,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption7() {
+	public void testEncryptionTaskWithEncryptedHardDriveAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -200,7 +200,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption8() {
+	public void testEncryptionTaskWithEncryptedHardDriveAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -225,7 +225,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption9() {
+	public void testEncryptionTaskWithUnencryptedDigitalChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -250,7 +250,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption10() {
+	public void testEncryptionTaskWithUnencryptedDigitalChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -275,7 +275,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption11() {
+	public void testEncryptionTaskWithUnencryptedDigitalChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -300,7 +300,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption12() {
+	public void testEncryptionTaskWithUnencryptedDigitalChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -325,7 +325,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption13() {
+	public void testEncryptionTaskWithUnencryptedAnalogChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -350,7 +350,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption14() {
+	public void testEncryptionTaskWithUnencryptedAnalogChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -375,7 +375,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption15() {
+	public void testEncryptionTaskWithUnencryptedAnalogChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -400,7 +400,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption16() {
+	public void testEncryptionTaskWithUnencryptedAnalogChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -425,7 +425,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption17() {
+	public void testEncryptionTaskWithNoSharingAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -450,7 +450,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption18() {
+	public void testEncryptionTaskWithNoSharingAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -475,7 +475,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption19() {
+	public void testEncryptionTaskWithNoSharingAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -500,7 +500,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testEncryption20() {
+	public void testEncryptionTaskWithNoSharingAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task encryption = TestUtils.getTask("Encryption");
 		wizard.setSelectedTask(encryption);
@@ -525,7 +525,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testSecurePassword1() {
+	public void testSecurePasswordTask() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task securepassword = TestUtils.getTask("SecurePassword");
 		wizard.setSelectedTask(securepassword);
@@ -534,7 +534,7 @@ public class QuestionsToTemplateTests {
 	}
 	
 	@Test
-	public void testDigitalSignatures1() {
+	public void testDigitalSignaturesTask() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		Task digitalsignatures = TestUtils.getTask("DigitalSignatures");
 		wizard.setSelectedTask(digitalsignatures);

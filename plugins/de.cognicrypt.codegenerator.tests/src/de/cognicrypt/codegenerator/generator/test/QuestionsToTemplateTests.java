@@ -46,7 +46,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer1);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -71,7 +71,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer2);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -96,7 +96,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer3);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -121,7 +121,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer4);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -146,7 +146,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer1);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -171,7 +171,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer2);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -196,7 +196,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer3);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -221,7 +221,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer4);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -246,7 +246,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer1);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybrid";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -271,7 +271,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer2);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybridfiles";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -296,7 +296,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer3);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybridstrings";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -321,7 +321,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer4);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybrid";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -346,7 +346,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer1);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -371,7 +371,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer2);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -396,7 +396,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer3);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -421,7 +421,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer4);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -446,7 +446,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer1);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -471,7 +471,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer2);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -496,7 +496,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer3);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -521,7 +521,7 @@ public class QuestionsToTemplateTests {
 		constraints.put(question2, question2answer4);
 		wizard.constructConstraints(constraints);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -530,7 +530,7 @@ public class QuestionsToTemplateTests {
 		Task securepassword = TestUtils.getTask("SecurePassword");
 		wizard.setSelectedTask(securepassword);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/securepassword";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 	
 	@Test
@@ -539,6 +539,6 @@ public class QuestionsToTemplateTests {
 		Task digitalsignatures = TestUtils.getTask("DigitalSignatures");
 		wizard.setSelectedTask(digitalsignatures);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/digitalsignatures";
-		assertEquals(wizard.constructTemplateName(), expected);
+		assertEquals(expected, wizard.constructTemplateName());
 	}
 }

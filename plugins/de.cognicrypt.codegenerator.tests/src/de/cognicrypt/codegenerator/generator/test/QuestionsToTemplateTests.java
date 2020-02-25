@@ -27,501 +27,181 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer1 = new Answer();
-		question1answer1.setValue("Encrypted digital channel");
-		question1answer1.setOption("");
-		Answer question2answer1 = new Answer();
-		question2answer1.setValue("Byte Array");
-		question2answer1.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer1);
-		constraints.put(question2, question2answer1);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "", "Byte Array", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer1 = new Answer();
-		question1answer1.setValue("Encrypted digital channel");
-		question1answer1.setOption("");
-		Answer question2answer2 = new Answer();
-		question2answer2.setValue("File");
-		question2answer2.setOption("files");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer1);
-		constraints.put(question2, question2answer2);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "", "File", "files");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer1 = new Answer();
-		question1answer1.setValue("Encrypted digital channel");
-		question1answer1.setOption("");
-		Answer question2answer3 = new Answer();
-		question2answer3.setValue("String");
-		question2answer3.setOption("strings");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer1);
-		constraints.put(question2, question2answer3);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "", "String", "strings");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer1 = new Answer();
-		question1answer1.setValue("Encrypted digital channel");
-		question1answer1.setOption("");
-		Answer question2answer4 = new Answer();
-		question2answer4.setValue("Other/Do not know");
-		question2answer4.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer1);
-		constraints.put(question2, question2answer4);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "", "Other/Do not know", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer2 = new Answer();
-		question1answer2.setValue("Encrypted Hard Drive");
-		question1answer2.setOption("");
-		Answer question2answer1 = new Answer();
-		question2answer1.setValue("Byte Array");
-		question2answer1.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer2);
-		constraints.put(question2, question2answer1);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "", "Byte Array", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer2 = new Answer();
-		question1answer2.setValue("Encrypted Hard Drive");
-		question1answer2.setOption("");
-		Answer question2answer2 = new Answer();
-		question2answer2.setValue("File");
-		question2answer2.setOption("files");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer2);
-		constraints.put(question2, question2answer2);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "", "File", "files");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer2 = new Answer();
-		question1answer2.setValue("Encrypted Hard Drive");
-		question1answer2.setOption("");
-		Answer question2answer3 = new Answer();
-		question2answer3.setValue("String");
-		question2answer3.setOption("strings");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer2);
-		constraints.put(question2, question2answer3);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "", "String", "strings");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer2 = new Answer();
-		question1answer2.setValue("Encrypted Hard Drive");
-		question1answer2.setOption("");
-		Answer question2answer4 = new Answer();
-		question2answer4.setValue("Other/Do not know");
-		question2answer4.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer2);
-		constraints.put(question2, question2answer4);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "", "Other/Do not know", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer3 = new Answer();
-		question1answer3.setValue("Unencrypted digital channel (e.g. email)");
-		question1answer3.setOption("hybrid");
-		Answer question2answer1 = new Answer();
-		question2answer1.setValue("Byte Array");
-		question2answer1.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer3);
-		constraints.put(question2, question2answer1);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)", "hybrid", "Byte Array", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybrid";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer3 = new Answer();
-		question1answer3.setValue("Unencrypted digital channel (e.g. email)");
-		question1answer3.setOption("hybrid");
-		Answer question2answer2 = new Answer();
-		question2answer2.setValue("File");
-		question2answer2.setOption("files");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer3);
-		constraints.put(question2, question2answer2);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)", "hybrid", "File", "files");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybridfiles";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer3 = new Answer();
-		question1answer3.setValue("Unencrypted digital channel (e.g. email)");
-		question1answer3.setOption("hybrid");
-		Answer question2answer3 = new Answer();
-		question2answer3.setValue("String");
-		question2answer3.setOption("strings");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer3);
-		constraints.put(question2, question2answer3);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)", "hybrid", "String", "strings");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybridstrings";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer3 = new Answer();
-		question1answer3.setValue("Unencrypted digital channel (e.g. email)");
-		question1answer3.setOption("hybrid");
-		Answer question2answer4 = new Answer();
-		question2answer4.setValue("Other/Do not know");
-		question2answer4.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer3);
-		constraints.put(question2, question2answer4);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)", "hybrid", "Other/Do not know", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybrid";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer4 = new Answer();
-		question1answer4.setValue("Unencrypted analog channel (e.g. phone, mail)");
-		question1answer4.setOption("");
-		Answer question2answer1 = new Answer();
-		question2answer1.setValue("Byte Array");
-		question2answer1.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer4);
-		constraints.put(question2, question2answer1);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted analog channel (e.g. phone, mail)", "", "Byte Array", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer4 = new Answer();
-		question1answer4.setValue("Unencrypted analog channel (e.g. phone, mail)");
-		question1answer4.setOption("");
-		Answer question2answer2 = new Answer();
-		question2answer2.setValue("File");
-		question2answer2.setOption("files");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer4);
-		constraints.put(question2, question2answer2);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted analog channel (e.g. phone, mail)", "", "File", "files");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer4 = new Answer();
-		question1answer4.setValue("Unencrypted analog channel (e.g. phone, mail)");
-		question1answer4.setOption("");
-		Answer question2answer3 = new Answer();
-		question2answer3.setValue("String");
-		question2answer3.setOption("strings");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer4);
-		constraints.put(question2, question2answer3);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted analog channel (e.g. phone, mail)", "", "String", "strings");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer4 = new Answer();
-		question1answer4.setValue("Unencrypted analog channel (e.g. phone, mail)");
-		question1answer4.setOption("");
-		Answer question2answer4 = new Answer();
-		question2answer4.setValue("Other/Do not know");
-		question2answer4.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer4);
-		constraints.put(question2, question2answer4);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted analog channel (e.g. phone, mail)", "", "Other/Do not know", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithNoSharingAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer question1answer5 = new Answer();
-		question1answer5.setValue("No Sharing");
-		question1answer5.setOption("");
-		Answer question2answer1 = new Answer();
-		question2answer1.setValue("Byte Array");
-		question2answer1.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer5);
-		constraints.put(question2, question2answer1);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "Byte Array", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithNoSharingAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer5 = new Answer();
-		question1answer5.setValue("No Sharing");
-		question1answer5.setOption("");
-		Answer question2answer2 = new Answer();
-		question2answer2.setValue("File");
-		question2answer2.setOption("files");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer5);
-		constraints.put(question2, question2answer2);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "File", "files");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithNoSharingAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer5 = new Answer();
-		question1answer5.setValue("No Sharing");
-		question1answer5.setOption("");
-		Answer question2answer3 = new Answer();
-		question2answer3.setValue("String");
-		question2answer3.setOption("strings");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer5);
-		constraints.put(question2, question2answer3);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "String", "strings");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
 	public void testEncryptionTaskWithNoSharingAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		Task encryption = TestUtils.getTask("Encryption");
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-        question2.setQuestionText("What data type do you wish to encrypt?");
-        Answer question1answer5 = new Answer();
-		question1answer5.setValue("No Sharing");
-		question1answer5.setOption("");
-		Answer question2answer4 = new Answer();
-		question2answer4.setValue("Other/Do not know");
-		question2answer4.setOption("");
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
-		constraints.put(question1, question1answer5);
-		constraints.put(question2, question2answer4);
-		wizard.constructConstraints(constraints);
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "Other/Do not know", "");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
-		assertEquals(expected, wizard.constructTemplateName());
+		String actual = wizard.constructTemplateName();
+		assertEquals(expected, actual);
 	}
 	
 	@Test
@@ -540,5 +220,27 @@ public class QuestionsToTemplateTests {
 		wizard.setSelectedTask(digitalsignatures);
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/digitalsignatures";
 		assertEquals(expected, wizard.constructTemplateName());
+	}
+	
+	private AltConfigWizard constructTemplateForEncryptionTask(AltConfigWizard wizard, String task, String firstAnswer, String firstAnswerOption, String secondAnswer, String secondAnswerOption) {
+		Task encryption = TestUtils.getTask(task);
+		wizard.setSelectedTask(encryption);
+		Question question1 = new Question();
+		question1.setId(0);
+        question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
+		Question question2 = new Question();
+		question2.setId(1);
+        question2.setQuestionText("What data type do you wish to encrypt?");
+        Answer answer1 = new Answer();
+		answer1.setValue(firstAnswer);
+		answer1.setOption(firstAnswerOption);
+		Answer answer2 = new Answer();
+		answer2.setValue(secondAnswer);
+		answer2.setOption(secondAnswerOption);
+		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
+		constraints.put(question1, answer1);
+		constraints.put(question2, answer2);
+		wizard.constructConstraints(constraints);
+		return wizard;
 	}
 }

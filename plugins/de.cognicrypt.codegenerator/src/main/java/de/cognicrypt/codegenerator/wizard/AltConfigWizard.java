@@ -167,7 +167,7 @@ public class AltConfigWizard extends Wizard {
 		return selectedTemplate;
 	}
 	
-	public void constructConstraints(HashMap<Question, Answer> constraint) {
+	public void addConstraints(HashMap<Question, Answer> constraint) {
 			this.constraints.putAll(constraint);
 	}
 	

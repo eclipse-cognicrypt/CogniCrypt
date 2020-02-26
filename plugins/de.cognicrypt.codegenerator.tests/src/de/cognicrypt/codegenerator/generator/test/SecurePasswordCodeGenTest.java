@@ -25,7 +25,7 @@ import de.cognicrypt.utils.DeveloperProject;
  * @author Shahrzad Asghari
  */
 public class SecurePasswordCodeGenTest {
-	
+
 	Logger log = Logger.getLogger(SecurePasswordCodeGenTest.class.getName());
 	IJavaProject testJavaProject;
 	CodeGenerator generatorSecPassword;
@@ -33,7 +33,7 @@ public class SecurePasswordCodeGenTest {
 	Configuration configSecPassword;
 	DeveloperProject developerProject;
 	IResource targetFile;
-	
+
 	@After
 	public void tearDown() throws CoreException {
 		TestUtils.deleteProject(this.testJavaProject.getProject());
@@ -42,19 +42,23 @@ public class SecurePasswordCodeGenTest {
 	@Before
 	public void setUp() throws Exception {
 		this.testJavaProject = TestUtils.createJavaProject(Constants.PROJECT_NAME);
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME, Constants.CLASS_NAME);
+		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME,
+				Constants.CLASS_NAME);
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
 		this.generatorSecPassword = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorSecPassword.getDeveloperProject();
 	}
+
 	@Test
 	public void testCodeGenerationSecurePassword() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
+		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject,
+				Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
 		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
 
-		this.configSecPassword = TestUtils.createCrySLConfiguration("securepassword", testClassUnit.getResource(), generatorSecPassword, this.developerProject);
-		final boolean encCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
+		this.configSecPassword = TestUtils.createCrySLConfiguration("securepassword", testClassUnit.getResource(),
+				generatorSecPassword, this.developerProject);
+		final boolean encCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword,
+				this.secPasswordTask.getAdditionalResources());
 		assertTrue(encCheck);
-		
 	}
 }

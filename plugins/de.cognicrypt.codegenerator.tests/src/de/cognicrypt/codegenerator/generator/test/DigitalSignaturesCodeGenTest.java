@@ -32,7 +32,7 @@ public class DigitalSignaturesCodeGenTest {
 	Configuration configDigSignature;
 	DeveloperProject developerProject;
 	IResource targetFile;
-	
+
 	@After
 	public void tearDown() throws CoreException {
 		TestUtils.deleteProject(this.testJavaProject.getProject());
@@ -41,19 +41,23 @@ public class DigitalSignaturesCodeGenTest {
 	@Before
 	public void setUp() throws Exception {
 		this.testJavaProject = TestUtils.createJavaProject(Constants.PROJECT_NAME);
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME, Constants.CLASS_NAME);
+		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME,
+				Constants.CLASS_NAME);
 		this.digSignatureTask = TestUtils.getTask("DigitalSignatures");
 		this.generatorDigSignature = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorDigSignature.getDeveloperProject();
 	}
+
 	@Test
-	public void testCodeGenerationEncryption() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
+	public void testCodeGenerationDigSignatures() throws CoreException, IOException {
+		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject,
+				Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
 		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
 
-		this.configDigSignature = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(), generatorDigSignature, this.developerProject);
-		final boolean encCheck = this.generatorDigSignature.generateCodeTemplates(this.configDigSignature, this.digSignatureTask.getAdditionalResources());
+		this.configDigSignature = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(),
+				generatorDigSignature, this.developerProject);
+		final boolean encCheck = this.generatorDigSignature.generateCodeTemplates(this.configDigSignature,
+				this.digSignatureTask.getAdditionalResources());
 		assertTrue(encCheck);
-		
 	}
 }

@@ -10,6 +10,7 @@ import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.AltConfigWizard;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * The JUnit Plug-in tests check the correctness of CogniCrypt's code generation
@@ -252,7 +253,7 @@ public class QuestionsToTemplateTests {
 		Answer answer2 = new Answer();
 		answer2.setValue(secondAnswer);
 		answer2.setOption(secondAnswerOption);
-		HashMap<Question, Answer> constraints = new HashMap<Question, Answer>();
+		HashMap<Question, Answer> constraints = new LinkedHashMap<>();
 		constraints.put(question1, answer1);
 		constraints.put(question2, answer2);
 		wizard.addConstraints(constraints);

@@ -137,10 +137,7 @@ public class AltConfigWizard extends Wizard {
 		} else {
 			CodeGenerators generator = selectedTask.getCodeGen();
 			if (generator == CodeGenerators.CrySL) {
-				String selectedTemplate = selectedTask.getCodeTemplate();
-				for (Answer resp : this.constraints.values()) {
-					selectedTemplate += resp.getOption();
-				}
+				String selectedTemplate = constructTemplateName();
 				selectedTask.setCodeTemplate(selectedTemplate);
 				return addLocatorPage();
 			} else if (generator == CodeGenerators.XSL) {
@@ -159,7 +156,7 @@ public class AltConfigWizard extends Wizard {
 		return currentPage;
 	}
 	
-	public  String constructTemplateName() {
+	public String constructTemplateName() {
 		String selectedTemplate = selectedTask.getCodeTemplate();
 		for (Answer resp : this.constraints.values()) {
 			selectedTemplate += resp.getOption();

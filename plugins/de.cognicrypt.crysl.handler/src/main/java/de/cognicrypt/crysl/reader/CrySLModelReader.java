@@ -1,8 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
-
- * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.crysl.reader;
@@ -116,7 +113,7 @@ public class CrySLModelReader {
 	private static final String ANY_TYPE = "AnyType";
 	private static final String NULL = "null";
 	private static final String UNDERSCORE = "_";
-	
+
 	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CrySLActivator.getInstance().getInjector(CrySLActivator.DE_DARMSTADT_TU_CROSSING_CRYSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
@@ -136,23 +133,20 @@ public class CrySLModelReader {
 	/**
 	 * This constructor use the CogniCyrpt Core plugin lib folder as classpath
 	 */
-	public CrySLModelReader(){
+	public CrySLModelReader() {
 		CrySLStandaloneSetup crySLStandaloneSetup = new CrySLStandaloneSetup();
 		final Injector injector = crySLStandaloneSetup.createInjectorAndDoEMFRegistration();
 		this.resourceSet = injector.getInstance(XtextResourceSet.class);
-		String coreLibFolderPath = Utils.getResourceFromWithin("lib").getAbsolutePath();
-		
 		List<File> jars = new ArrayList<>();
-		for (String file : Utils.getResourceFromWithin("lib").list()) {
-			jars.add(new File(coreLibFolderPath+Constants.innerFileSeparator+file));
-		}
+		String[] l = System.getProperty("java.class.path").split(";");
 
-		URL[] classpath = new URL[jars.size()];
+		URL[] classpath = new URL[l.length];
 		for (int i = 0; i < classpath.length; i++) {
 			try {
-				classpath[i] = jars.get(i).toURI().toURL();
-			} catch (MalformedURLException e) {
-				Activator.getDefault().logError("File path: "+jars.get(i)+" could not converted to java.net.URI object");
+				classpath[i] = new File(l[i]).toURI().toURL();
+			}
+			catch (MalformedURLException e) {
+				Activator.getDefault().logError("File path: " + jars.get(i) + " could not converted to java.net.URI object");
 			}
 		}
 
@@ -216,7 +210,7 @@ public class CrySLModelReader {
 			}
 		}
 		final CrySLRule rule = new CrySLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
-		
+
 		return rule;
 	}
 
@@ -277,8 +271,8 @@ public class CrySLModelReader {
 				CrySLRule rule = readRule(resAsFile);
 				if (rule != null) {
 					rules.add(rule);
-					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator
-							+ rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
+					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath()
+							+ Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
 					try {
 						Files.copy(resAsFile, to);
 					}
@@ -712,10 +706,10 @@ public class CrySLModelReader {
 					firstPar = false;
 				}
 			}
-			
+
 			final CrySLPredicate ensPredCons = extractReqPred(cons.getPredLit());
 			final String meth = pred.getPredName();
-			final SuperType cond = cons.getLabelCond(); 
+			final SuperType cond = cons.getLabelCond();
 			if (cond == null) {
 				preds.put(new ParEqualsPredicate(null, meth, variables, false, ensPredCons.getConstraint()), null);
 			} else {

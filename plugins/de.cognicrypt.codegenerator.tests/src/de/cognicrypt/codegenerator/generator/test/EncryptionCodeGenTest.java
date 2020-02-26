@@ -27,14 +27,14 @@ import de.cognicrypt.utils.DeveloperProject;
  */
 public class EncryptionCodeGenTest {
 
-	Logger log = Logger.getLogger(EncryptionCodeGenTest.class.getName());
-	IJavaProject testJavaProject;
-	CodeGenerator generatorEnc;
-	Task encTask;
-	Configuration configEnc;
-	DeveloperProject developerProject;
-	IResource targetFile;
-	ICompilationUnit testClassUnit;
+	private Logger log = Logger.getLogger(EncryptionCodeGenTest.class.getName());
+	private IJavaProject testJavaProject;
+	private CodeGenerator generatorEnc;
+	private Task encTask;
+	private Configuration configEnc;
+	private DeveloperProject developerProject;
+	private IResource targetFile;
+	private ICompilationUnit testClassUnit;
 
 	@After
 	public void tearDown() throws CoreException {

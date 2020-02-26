@@ -26,13 +26,13 @@ import de.cognicrypt.utils.DeveloperProject;
  */
 public class SecurePasswordCodeGenTest {
 
-	Logger log = Logger.getLogger(SecurePasswordCodeGenTest.class.getName());
-	IJavaProject testJavaProject;
-	CodeGenerator generatorSecPassword;
-	Task secPasswordTask;
-	Configuration configSecPassword;
-	DeveloperProject developerProject;
-	IResource targetFile;
+	private Logger log = Logger.getLogger(SecurePasswordCodeGenTest.class.getName());
+	private IJavaProject testJavaProject;
+	private CodeGenerator generatorSecPassword;
+	private Task secPasswordTask;
+	private Configuration configSecPassword;
+	private DeveloperProject developerProject;
+	private IResource targetFile;
 
 	@After
 	public void tearDown() throws CoreException {

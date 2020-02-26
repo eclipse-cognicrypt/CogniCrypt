@@ -25,13 +25,13 @@ import de.cognicrypt.utils.DeveloperProject;
  * @author Shahrzad Asghari
  */
 public class DigitalSignaturesCodeGenTest {
-	Logger log = Logger.getLogger(DigitalSignaturesCodeGenTest.class.getName());
-	IJavaProject testJavaProject;
-	CodeGenerator generatorDigSignature;
-	Task digSignatureTask;
-	Configuration configDigSignature;
-	DeveloperProject developerProject;
-	IResource targetFile;
+	private Logger log = Logger.getLogger(DigitalSignaturesCodeGenTest.class.getName());
+	private IJavaProject testJavaProject;
+	private CodeGenerator generatorDigSignature;
+	private Task digSignatureTask;
+	private Configuration configDigSignature;
+	private DeveloperProject developerProject;
+	private IResource targetFile;
 
 	@After
 	public void tearDown() throws CoreException {

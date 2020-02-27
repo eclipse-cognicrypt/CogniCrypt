@@ -183,8 +183,6 @@ public class TwoTimesCogniCryptRunTests {
 		encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 		assertNotNull(encClass);
 
-		System.out.println(encClass.getSource());
-
 		int secureEncryptorMethodCount = TestUtils.countMethods(encClass);
 
 		assertEquals(4, secureEncryptorMethodCount);

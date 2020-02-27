@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Logger;
@@ -185,6 +186,35 @@ public class TestUtils {
 			nextID = tempID == -100 ? pageList.get(nextID).getNextID() : tempID;
 		}
 
+		return contraintsForTask;
+	}
+	
+	/**
+	 * This method creates a HashMap. This HashMap contains the Questions and the associated given Answers for the selected Task.
+	 *
+	 * @param task Task
+	 * @return An ArrayList<String> containing answers for the selected task
+	 */
+	public static HashMap<Question, Answer> setConstraintsForTask(final Task task, ArrayList<String> answers) {
+		final List<Page> pageList = (new QuestionsJSONReader()).getPages(task.getQuestionsJSONFile());
+		final HashMap<Question, Answer> contraintsForTask = new LinkedHashMap<>();
+		
+		if (pageList.isEmpty()) {
+			return contraintsForTask;
+		}
+		
+		for(Page page : pageList) {
+			for (int i = 0; i < page.getContent().size(); i++) {
+				Question tmpQuestion = page.getContent().get(i);
+				for(Answer answer : tmpQuestion.getAnswers()) {
+					if(answer.getValue().equals(answers.get(i))) {
+						contraintsForTask.put(tmpQuestion, answer);
+						break;
+					}
+				}
+			}
+		}
+		
 		return contraintsForTask;
 	}
 

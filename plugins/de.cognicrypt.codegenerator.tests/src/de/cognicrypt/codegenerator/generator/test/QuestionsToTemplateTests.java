@@ -9,8 +9,9 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.AltConfigWizard;
+
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  * The JUnit Plug-in tests check the correctness of CogniCrypt's code generation
@@ -28,8 +29,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "", "Byte Array",
-				"");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "Byte Array");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -38,8 +38,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "", "File",
-				"files");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "File");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -48,8 +47,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "", "String",
-				"strings");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "String");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -58,8 +56,8 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedDigitalChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel", "",
-				"Other/Do not know", "");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted digital channel",
+				"Other/Do not know");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -68,7 +66,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "", "Byte Array", "");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "Byte Array");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -77,7 +75,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "", "File", "files");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "File");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -86,8 +84,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "", "String",
-				"strings");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "String");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -96,8 +93,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithEncryptedHardDriveAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "",
-				"Other/Do not know", "");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Encrypted Hard Drive", "Other/Do not know");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -107,7 +103,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)",
-				"hybrid", "Byte Array", "");
+				"Byte Array");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybrid";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -117,7 +113,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)",
-				"hybrid", "File", "files");
+				"File");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybridfiles";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -127,7 +123,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)",
-				"hybrid", "String", "strings");
+				"String");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybridstrings";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -137,7 +133,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedDigitalChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "Unencrypted digital channel (e.g. email)",
-				"hybrid", "Other/Do not know", "");
+				"Other/Do not know");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionhybrid";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -147,7 +143,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption",
-				"Unencrypted analog channel (e.g. phone, mail)", "", "Byte Array", "");
+				"Unencrypted analog channel (e.g. phone, mail)", "Byte Array");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -157,7 +153,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption",
-				"Unencrypted analog channel (e.g. phone, mail)", "", "File", "files");
+				"Unencrypted analog channel (e.g. phone, mail)", "File");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -167,7 +163,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption",
-				"Unencrypted analog channel (e.g. phone, mail)", "", "String", "strings");
+				"Unencrypted analog channel (e.g. phone, mail)", "String");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -177,7 +173,7 @@ public class QuestionsToTemplateTests {
 	public void testEncryptionTaskWithUnencryptedAnalogChannelAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
 		wizard = constructTemplateForEncryptionTask(wizard, "Encryption",
-				"Unencrypted analog channel (e.g. phone, mail)", "", "Other/Do not know", "");
+				"Unencrypted analog channel (e.g. phone, mail)", "Other/Do not know");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -186,7 +182,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithNoSharingAndByteArray() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "Byte Array", "");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "Byte Array");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -195,7 +191,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithNoSharingAndFile() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "File", "files");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "File");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionfiles";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -204,7 +200,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithNoSharingAndString() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "String", "strings");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "String");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryptionstrings";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -213,7 +209,7 @@ public class QuestionsToTemplateTests {
 	@Test
 	public void testEncryptionTaskWithNoSharingAndOther() {
 		AltConfigWizard wizard = new AltConfigWizard();
-		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "", "Other/Do not know", "");
+		wizard = constructTemplateForEncryptionTask(wizard, "Encryption", "No Sharing", "Other/Do not know");
 		String expected = "src/main/java/de/cognicrypt/codegenerator/crysl/templates/encryption";
 		String actual = wizard.constructTemplateName();
 		assertEquals(expected, actual);
@@ -238,24 +234,13 @@ public class QuestionsToTemplateTests {
 	}
 
 	private AltConfigWizard constructTemplateForEncryptionTask(AltConfigWizard wizard, String task, String firstAnswer,
-			String firstAnswerOption, String secondAnswer, String secondAnswerOption) {
-		Task encryption = TestUtils.getTask(task);
-		wizard.setSelectedTask(encryption);
-		Question question1 = new Question();
-		question1.setId(0);
-		question1.setQuestionText("Which method of communication would you prefer to use for key exchange?");
-		Question question2 = new Question();
-		question2.setId(1);
-		question2.setQuestionText("What data type do you wish to encrypt?");
-		Answer answer1 = new Answer();
-		answer1.setValue(firstAnswer);
-		answer1.setOption(firstAnswerOption);
-		Answer answer2 = new Answer();
-		answer2.setValue(secondAnswer);
-		answer2.setOption(secondAnswerOption);
-		HashMap<Question, Answer> constraints = new LinkedHashMap<>();
-		constraints.put(question1, answer1);
-		constraints.put(question2, answer2);
+			String secondAnswer) {
+		Task encryptionTask = TestUtils.getTask(task);
+		wizard.setSelectedTask(encryptionTask);
+		ArrayList<String> answers = new ArrayList<String>();
+		answers.add(firstAnswer);
+		answers.add(secondAnswer);
+		HashMap<Question, Answer> constraints = TestUtils.setConstraintsForTask(encryptionTask, answers);
 		wizard.addConstraints(constraints);
 		return wizard;
 	}

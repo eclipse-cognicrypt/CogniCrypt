@@ -108,9 +108,14 @@ public abstract class CodeGenerator {
 	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, final boolean openFileFlag, final boolean authorFlag, final boolean tempFlag) throws BadLocationException, CoreException, IOException {
-		if (this.targetFile != null) {
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), targetFile);
-		}
+			if (this.targetFile != null) {	
+				if(this.targetFile.getRawLocation().toOSString().equals(Paths.get(temporaryOutputFile).toString())) {
+					return true;
+				}
+				else {
+					IDE.openEditor(Utils.getCurrentlyOpenPage(), targetFile);
+				}
+			}
 
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
 			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
@@ -170,7 +175,7 @@ public abstract class CodeGenerator {
 			}
 		}
 
-		final int imports = docContent.startsWith("package") ? docContent.indexOf(Constants.lineSeparator) : 0;
+		final int imports = docContent.startsWith("package") ? docContent.indexOf("\n") : 0;
 		final String[] callsForGenClasses = getCallsForGenClasses(temporaryOutputFile);
 		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
 		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);

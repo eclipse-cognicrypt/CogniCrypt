@@ -254,7 +254,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 				
 					Object obj = parser.parse(new InputStreamReader(new FileInputStream(path)));
 					JSONObject jsonObject = (JSONObject) obj;
-					String clientsQuestion = "Which clients should the server should at least support?";
+					String clientsQuestion = "Which clients should the server at least support?";
 					
 					if (jsonObject.containsKey(clientsQuestion) && jsonObject.get(clientsQuestion).equals("Legacy Clients (since 2001)")) {
 						return true;

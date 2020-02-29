@@ -34,7 +34,7 @@ public class FileHelper {
 			}
 		}
 		catch (final IOException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 			return false;
 		}
 		return true;
@@ -68,11 +68,11 @@ public class FileHelper {
 		if (!(f.exists() && Files.isReadable(f.toPath()))) {
 			Activator.getDefault().logError("Output file" + filePath + " could not be trimmed. It does either not exist or is not readable.");
 		}
-
 		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath))).trim();
-		final FileWriter writer = new FileWriter(f);
-		writer.write(contentStringAlt);
-		writer.close();
+		
+		try (final FileWriter writer = new FileWriter(f)) {
+			writer.write(contentStringAlt);
+		}
 	}
 
 }

@@ -183,7 +183,7 @@ public class DeveloperProject {
 			return true;
 		}
 		catch (final CoreException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_REMOVE_PACKAGE);
 		}
 		return false;
 	}
@@ -197,7 +197,7 @@ public class DeveloperProject {
 		try {
 			return this.project.hasNature(Constants.MavenNatureID);
 		}	catch (CoreException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, Constants.NOT_MAVEN_PROJECT);
 		}
 		return false;
 	}

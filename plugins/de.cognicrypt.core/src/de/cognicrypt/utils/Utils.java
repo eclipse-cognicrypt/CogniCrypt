@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -228,7 +229,7 @@ public class Utils {
 			se.search(sp, searchParticipants, scope, requestor, null);
 		}
 		catch (final CoreException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, "Could not find main method in the project "+project.getProject().getName());
 		}
 	}
 
@@ -324,7 +325,9 @@ public class Utils {
 				return new File(resolvedURI);
 			}
 		}
-		catch (final Exception ex) {
+		catch (final IOException ex) {
+			Activator.getDefault().logError(ex, Constants.ERROR_MESSAGE_NO_FILE);
+		} catch (URISyntaxException ex) {
 			Activator.getDefault().logError(ex);
 		}
 

@@ -186,8 +186,10 @@ public class Constants {
 	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
 	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
-
+	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
+	
 	public static final String NOT_JAVA_PROJECT = "The nature of the project is not Java";
+	public static final String NOT_MAVEN_PROJECT = "The nature of the project is not Maven";
 
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";

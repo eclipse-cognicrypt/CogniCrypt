@@ -31,7 +31,7 @@ public class RunRuleConverterHandler extends AbstractHandler {
 			Activator.getDefault().logInfo("Converted selected rule " + cryslRule.getName() + " successfully.");
 		}
 		catch (CoreException | IOException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, "Error when converting selected rule: " + cryslRule.getName());
 		}
 		return null;
 	}

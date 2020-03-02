@@ -37,7 +37,7 @@ public class CrySLRuleCreator {
 
 		if (Strings.isNullOrEmpty(spec) || Utils.isNullOrEmpty(objects) || Utils.isNullOrEmpty(events)
 				|| Strings.isNullOrEmpty(order) || Utils.isNullOrEmpty(ensures)) {
-			Activator.getDefault().logError(null, "One or more mandatory sections are null or empty");
+			Activator.getDefault().logError("One or more mandatory sections are null or empty");
 			return false;
 		}
 
@@ -75,14 +75,14 @@ public class CrySLRuleCreator {
 				List<String> rule = Files.readAllLines(Paths.get(filePath));
 				for (int i = 0; i < rule.size(); i++) {
 					if (rule.get(i).trim().toUpperCase().equals(section.trim())) {
-						boolean doublicate = false;
+						boolean duplicate = false;
 						for(int j = i; j < rule.size(); j++) {
 							if(rule.get(j).trim().equals(content.trim())) {
-								doublicate = true;
+								duplicate = true;
 								break;
 							}
 						}
-						if(!doublicate) {
+						if(!duplicate) {
 							rule.add(i + 1, "\t" + content);
 							successful = true;
 							break;
@@ -91,10 +91,10 @@ public class CrySLRuleCreator {
 				}
 				createCrySLFile(f.getAbsolutePath(), rule);
 			} catch (IOException e) {
-				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+				Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 			}		
 		} else {
-			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 		return successful;
 	}
@@ -122,10 +122,10 @@ public class CrySLRuleCreator {
 				}
 				createCrySLFile(f.getAbsolutePath(), rule);
 			} catch (IOException e) {
-				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+				Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 			}
 		} else {
-			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 		return successful;
 	}

@@ -52,26 +52,35 @@ public class CrySLBuilderUtils {
 			project.setDescription(description, null);
 		}
 		catch (CoreException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, "Could not get or set project description.");
 		}
 	}
 
-	static boolean hasCrySLFiles(IContainer cont) throws CoreException {
+	static boolean hasCrySLFiles(IContainer cont) {
 		boolean hasCrySLFiles = false;
-		for (IResource member : cont.members()) {
-			if (member instanceof IContainer) {
-				hasCrySLFiles = hasCrySLFiles((IContainer) member);
-			}
+		try {
+			for (IResource member : cont.members()) {
+				if (member instanceof IContainer) {
+					hasCrySLFiles = hasCrySLFiles((IContainer) member);
+				}
 
-			if (member instanceof IFile && Constants.cryslFileEnding.equals(((IFile) member).getFileExtension())) {
-				return true;
+				if (member instanceof IFile && Constants.cryslFileEnding.equals(((IFile) member).getFileExtension())) {
+					return true;
+				}
 			}
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
 		}
 		return hasCrySLFiles;
 	}
 
-	public static boolean hasCrySLBuilder(IProject project) throws CoreException {
-		return Arrays.asList(project.getDescription().getBuildSpec()).stream().anyMatch(e -> CrySLBuilder.BUILDER_ID.equals(e.getBuilderName()));
+	public static boolean hasCrySLBuilder(IProject project) {
+		try {
+			return Arrays.asList(project.getDescription().getBuildSpec()).stream().anyMatch(e -> CrySLBuilder.BUILDER_ID.equals(e.getBuilderName()));
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Error when retrieving project desciption.");
+		}
+		return false;
 	}
 
 }

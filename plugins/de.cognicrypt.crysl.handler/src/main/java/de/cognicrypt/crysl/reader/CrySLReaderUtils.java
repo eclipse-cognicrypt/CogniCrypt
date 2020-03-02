@@ -18,6 +18,7 @@ import com.google.common.io.Files;
 import crypto.rules.CrySLMethod;
 import crypto.rules.CrySLRule;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.handler.Activator;
 import de.darmstadt.tu.crossing.crySL.Aggregate;
 import de.darmstadt.tu.crossing.crySL.Event;
 import de.darmstadt.tu.crossing.crySL.Method;
@@ -100,12 +101,16 @@ public class CrySLReaderUtils {
 		return new CrySLMethod(qualifiedName, pars, new ArrayList<Boolean>(), returnObject);
 	}
 
-	public static void storeRuletoFile(final CrySLRule rule, final String folderPath) throws IOException {
+	public static void storeRuletoFile(final CrySLRule rule, final String folderPath) {
 		File written = new File(folderPath + Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
-		Files.write(rule.toString(), written, StandardCharsets.UTF_8);
+		try {
+			Files.write(rule.toString(), written, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			Activator.getDefault().logError(e, "Could not store rule "+rule.getClassName()+" to folder path "+folderPath);
+		}
 	}
 
-	public static void storeRulesToFile(final List<CrySLRule> rules, final String folder) throws IOException {
+	public static void storeRulesToFile(final List<CrySLRule> rules, final String folder) {
 		for (CrySLRule rule : rules) {
 			storeRuletoFile(rule, folder);
 		}

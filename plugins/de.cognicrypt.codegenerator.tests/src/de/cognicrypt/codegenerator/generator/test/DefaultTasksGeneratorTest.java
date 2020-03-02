@@ -12,6 +12,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.XSLBasedGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -36,10 +38,14 @@ public class DefaultTasksGeneratorTest {
 	static int counter = 0;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 
 		DefaultTasksGeneratorTest.counter++;
-		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
+		try {
+			this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project.");
+		}
 
 		this.SECCOMTask = TestUtils.getTask("SecureCommunication");
 		this.generatorSECCOM = new XSLBasedGenerator(this.testJavaProject.getProject(), this.SECCOMTask.getCodeTemplate());
@@ -51,8 +57,12 @@ public class DefaultTasksGeneratorTest {
 	}
 
 	@After
-	public void tearDown() throws CoreException {
-		TestUtils.deleteProject(this.testJavaProject.getProject());
+	public void tearDown() {
+		try {
+			TestUtils.deleteProject(this.testJavaProject.getProject());
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to delete test project.");
+		}
 	}
 
 	@Test

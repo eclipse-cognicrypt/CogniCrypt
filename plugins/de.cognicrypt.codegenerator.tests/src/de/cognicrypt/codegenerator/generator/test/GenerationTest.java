@@ -55,15 +55,23 @@ public class GenerationTest {
 	IResource targetFile;
 
 	@After
-	public void tearDown() throws CoreException {
-		TestUtils.deleteProject(this.testJavaProject.getProject());
+	public void tearDown() {
+		try {
+			TestUtils.deleteProject(this.testJavaProject.getProject());
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to delete test project.");
+		}
 	}
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		GenerationTest.counter++;
-		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
+		try {
+			this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
+			targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, "testPackage", "Test");
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create or generate Java class in project.");
+		}
 		this.encTask = TestUtils.getTask("Encryption");
 		this.generatorEnc = new CrySLBasedCodeGenerator(targetFile);
 		this.secPasswordTask = TestUtils.getTask("SecurePassword");
@@ -127,7 +135,7 @@ public class GenerationTest {
 	 * Test if the codegeneration puts the templageUsage-method in the open Enc class.
 	 */
 	// @Test
-	public void testCodeGenerationInEncClass() throws CoreException, IOException {
+	public void testCodeGenerationInEncClass() {
 		try {
 			this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, this.developerProject);
 			this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());

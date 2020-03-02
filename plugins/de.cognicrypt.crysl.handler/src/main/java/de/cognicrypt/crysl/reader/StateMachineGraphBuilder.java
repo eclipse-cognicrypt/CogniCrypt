@@ -202,6 +202,25 @@ public class StateMachineGraphBuilder {
 			if ("|".equals(orderOp)) {
 				leftOvers.put(level + 1, new HashMap.SimpleEntry<>(orderOp, prevNode));
 				prevNode = process(right, level + 1, leftOvers, leftPrev);
+				
+				if ((rightElOp != null && ("+".equals(rightElOp) || "*".equals(rightElOp))) &&
+						leftElOp != null && ("+".equals(leftElOp) || "*".equals(leftElOp))) {
+					final StateNode finPrevNode = prevNode;
+					addRegularEdge(result.getAllTransitions().parallelStream().filter(e -> leftPrev.equals(e.from()) && rightPrev.equals(e.to())).findFirst().get().getLabel(), prevNode, rightPrev, true);
+					addRegularEdge(result.getAllTransitions().parallelStream().filter(e -> leftPrev.equals(e.from()) && finPrevNode.equals(e.to())).findFirst().get().getLabel(), rightPrev, prevNode, true);
+					
+					List<StateNode> collect = result.getAllTransitions().parallelStream().filter(e -> e.from().equals(leftPrev) && !leftPrev.equals(e.to()) && !rightPrev.equals(e.to()) && !finPrevNode.equals(e.to())).map(e -> e.to()).collect(Collectors.toList());
+					collect.stream().forEach(e -> {
+						TransitionEdge edge = fetchEdge(leftPrev, e);
+						if (fetchEdge(e, rightPrev) != null) {
+							addRegularEdge(edge.getLabel(), finPrevNode, e, true);
+						} else if (fetchEdge(e, finPrevNode) != null) {
+							addRegularEdge(edge.getLabel(), rightPrev, e, true);
+						}
+						
+					});
+				}
+				
 			} else {
 				prevNode = process(right, level + 1, leftOvers, prevNode);
 			}
@@ -474,6 +493,15 @@ public class StateMachineGraphBuilder {
 			return getLeftMostChild(ex.getLeft());
 		}
 		return null;
+	}
+	
+	private TransitionEdge fetchEdge(StateNode start, StateNode goal) {
+		Optional<TransitionEdge> edgeOpt = result.getAllTransitions().parallelStream().filter(e -> e.from().equals(start) && e.to().equals(goal)).findFirst();
+		if (edgeOpt.isPresent()) {
+			return edgeOpt.get();
+		} else {
+			return null;
+		}
 	}
 
 }

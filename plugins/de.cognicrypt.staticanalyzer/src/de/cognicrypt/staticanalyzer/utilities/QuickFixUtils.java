@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -36,7 +37,7 @@ public class QuickFixUtils {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if the import (not) exists
 	 * @throws CoreException
 	 */
-	public static boolean hasJarImport(final ICompilationUnit unit, final String packagePath) throws CoreException {
+	public static boolean hasJarImport(final ICompilationUnit unit, final String packagePath) {
 		return unit.getImport(packagePath).exists();
 	}
 
@@ -45,9 +46,10 @@ public class QuickFixUtils {
 	 * 
 	 * @param unit ICompilationUnit of the source file
 	 * @param packagePath path of the annotation
+	 * @throws JavaModelException 
 	 * @throws CoreException
 	 */
-	public static void insertJarImport(final ICompilationUnit unit, final String packagePath) throws CoreException {
+	public static void insertJarImport(final ICompilationUnit unit, final String packagePath) throws JavaModelException {
 		unit.createImport(packagePath, null, null);
 		unit.save(null, true);
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().doSave(null);

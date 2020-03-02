@@ -312,6 +312,7 @@ public class SootRunner {
 			}
 		}
 		catch (CoreException e1) {
+			Activator.getDefault().logError(e1);
 			e1.printStackTrace();
 		}
 		return libraryClassPath;

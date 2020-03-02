@@ -22,6 +22,8 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -75,8 +77,12 @@ public class GenerationTest {
 	 * @throws CoreException 
 	 */
 	@Test
-	public void testCodeGeneration() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, developerProject);
+	public void testCodeGeneration() {
+		try {
+			this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, developerProject);
+		} catch (CoreException | IOException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_CREATE_TEST_CODE_GEN);
+		}
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
@@ -85,30 +91,36 @@ public class GenerationTest {
 	 * Test if the codegeneration for SymmetricEncrytion works with an open Test class.
 	 */
 	@Test
-	public void testCodeGenerationInTestClass() throws CoreException, IOException {
+	public void testCodeGenerationInTestClass() {
+		try {
+			final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
+			TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
 
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject, "testPackage", "Test.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", testClassUnit);
-
-		this.configEnc = TestUtils.createCrySLConfiguration("encryption", testClassUnit.getResource(), generatorEnc, this.developerProject);
-		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
-		assertEquals(1, countMethods(testClassUnit));
+			this.configEnc = TestUtils.createCrySLConfiguration("encryption", testClassUnit.getResource(), generatorEnc, this.developerProject);
+			this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
+			assertEquals(1, countMethods(testClassUnit));
+		} catch(CoreException | IOException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_CREATE_TEST_CODE_GEN);
+		}
 	}
 
 	/**
 	 * Test if the Output class has the right methods, after the codegeneration runs two times (different tasks), without any open class.
 	 */
 	@Test
-	public void testCodeGenerationTwoTimesNoClassOpen() throws CoreException, IOException {
+	public void testCodeGenerationTwoTimesNoClassOpen() {
+		try {
+			this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, this.developerProject);
+			this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
 
-		this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, this.developerProject);
-		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
+			this.configSecPassword = TestUtils.createCrySLConfiguration("securePassword", targetFile, generatorSecPassword, this.developerProject);
+			this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
 
-		this.configSecPassword = TestUtils.createCrySLConfiguration("securePassword", targetFile, generatorSecPassword, this.developerProject);
-		this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
-
-		final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageNameAsName, "Output.java");
-		assertEquals(2, countMethods(outputUnit));
+			final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageNameAsName, "Output.java");
+			assertEquals(2, countMethods(outputUnit));
+		} catch(CoreException | IOException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_CREATE_TEST_CODE_GEN);
+		}
 	}
 
 	/**
@@ -116,16 +128,20 @@ public class GenerationTest {
 	 */
 	// @Test
 	public void testCodeGenerationInEncClass() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, this.developerProject);
-		this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
-		final ICompilationUnit encUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName, "Enc.java");
-		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PackageName, encUnit);
+		try {
+			this.configEnc = TestUtils.createCrySLConfiguration("encryption", targetFile, generatorEnc, this.developerProject);
+			this.generatorEnc.generateCodeTemplates(this.configEnc, this.encTask.getAdditionalResources());
+			final ICompilationUnit encUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName, "Enc.java");
+			TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PackageName, encUnit);
 
-		this.configSecPassword = TestUtils.createCrySLConfiguration("securePassword", targetFile, generatorSecPassword, this.developerProject);
-		this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
+			this.configSecPassword = TestUtils.createCrySLConfiguration("securePassword", targetFile, generatorSecPassword, this.developerProject);
+			this.generatorSecPassword.generateCodeTemplates(this.configSecPassword, this.secPasswordTask.getAdditionalResources());
 
-		final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName, "Output.java");
-		assertEquals(2, countMethods(outputUnit));
+			final ICompilationUnit outputUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PackageName, "Output.java");
+			assertEquals(2, countMethods(outputUnit));
+		} catch(CoreException | IOException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_CREATE_TEST_CODE_GEN);
+		}
 	}
 
 	/**

@@ -57,6 +57,7 @@ import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.codegenerator.wizard.XSLConfiguration;
+import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
@@ -255,22 +256,26 @@ public class TestUtils {
 	 * @return IComplitationUnit
 	 * @throws CoreException
 	 */
-	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName, final String cuName) throws CoreException, NoSuchElementException {
+	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName, final String cuName) throws CoreException {
 		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
 		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
 			if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
 				return packageFragment.getCompilationUnits()[i];
 			}
 		}
-		throw new NoSuchElementException();
+		return null;
 	}
 
-	public static void printSourceCode(final DeveloperProject project, final String packageName) throws CoreException, NoSuchElementException {
-		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
-		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
-			log.info("\n" + packageFragment.getCompilationUnits()[i].getSource());
+	public static void printSourceCode(final DeveloperProject project, final String packageName) {
+		IPackageFragment packageFragment;
+		try {
+			packageFragment = project.getPackagesOfProject(packageName);
+			for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
+				log.info("\n" + packageFragment.getCompilationUnits()[i].getSource());
+			}
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_PRINT_SRC_CODE);
 		}
-
 	}
 
 	/**
@@ -283,14 +288,15 @@ public class TestUtils {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	public static byte[] fileToByteArray(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws IOException, CoreException {
-
-		final File f = new File(getFilePathInProject(project, packageName, cu));
-		if (!(f.exists() && Files.isReadable(f.toPath()))) {
-			throw new IOException();
+	public static byte[] fileToByteArray(final DeveloperProject project, final String packageName, final ICompilationUnit cu) {
+		File f;
+		try {
+			f = new File(getFilePathInProject(project, packageName, cu));
+			return Files.readAllBytes(Paths.get(f.getPath()));
+		} catch (CoreException | IOException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_FILE_TO_BYTEARRAY);
 		}
-
-		return Files.readAllBytes(Paths.get(f.getPath()));
+		return null;
 	}
 
 	/**

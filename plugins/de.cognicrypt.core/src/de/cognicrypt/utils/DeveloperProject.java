@@ -197,7 +197,7 @@ public class DeveloperProject {
 		try {
 			return this.project.hasNature(Constants.MavenNatureID);
 		}	catch (CoreException e) {
-			Activator.getDefault().logError(e, Constants.NOT_MAVEN_PROJECT);
+			Activator.getDefault().logError(e, Constants.NOT_HAVE_NATURE);
 		}
 		return false;
 	}

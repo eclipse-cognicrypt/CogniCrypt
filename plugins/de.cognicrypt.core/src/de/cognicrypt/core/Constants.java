@@ -188,8 +188,12 @@ public class Constants {
 	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
 	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
 	
+	public static final String ERROR_CANNOT_FIND_NODE = "The requested node could not be found";
+	public static final String ERROR_CANNOT_FILE_TO_BYTEARRAY = "Error occured when passing a Java file into a byte array.";
+	public static final String ERROR_CANNOT_CREATE_TEST_CODE_GEN = "Error occured when generating code for testing purposes.";
+	public static final String ERROR_CANNOT_PRINT_SRC_CODE = "An error occured when printing source code.";
 	public static final String NOT_JAVA_PROJECT = "The nature of the project is not Java";
-	public static final String NOT_MAVEN_PROJECT = "The nature of the project is not Maven";
+	public static final String NOT_HAVE_NATURE = "The nature of the project does not exist or the project is not open";
 
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";

@@ -38,6 +38,7 @@ import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
+import crypto.providerdetection.ProviderDetection;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CrySLRule;
 import crypto.rules.CrySLRuleReader;
@@ -71,6 +72,7 @@ public class SootRunner {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
+				IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 				BoomerangPretransformer.v().apply();
 				final ObservableDynamicICFG icfg = new ObservableDynamicICFG(true);
 				CryptoScanner scanner = new CryptoScanner() {
@@ -82,7 +84,19 @@ public class SootRunner {
 
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
-				scanner.scan(getRules(resultsReporter.getReporterProject()));
+				List<CrySLRule> rules = getRules(resultsReporter.getReporterProject());
+				if (store.getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
+					ProviderDetection providerDetection = new ProviderDetection();
+					String rootRulesDirectory = Constants.ECLIPSE_RULES_DIR;
+					String detectedProvider = providerDetection.doAnalysis(icfg, rootRulesDirectory);
+					if(detectedProvider != null) {
+						rules.clear();
+						String newRulesDirectory = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator + 
+													Utils.getRuleVersions(detectedProvider)[Utils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider;
+						rules.addAll(providerDetection.chooseRules(newRulesDirectory));
+					}
+				}
+				scanner.scan(rules);
 			}
 		};
 	}

@@ -181,6 +181,7 @@ Export-Package: boomerang;
    boomerang.results,
    boomerang",
  crypto.interfaces;uses:="boomerang.jimple",
+ crypto.providerdetection,
  crypto.rules;uses:="boomerang.jimple,crypto.interfaces",
  de.cognicrypt.core;uses:="org.osgi.framework,org.eclipse.swt.graphics,org.eclipse.ui.plugin",
  de.cognicrypt.core.properties;uses:="org.eclipse.ui,org.eclipse.swt.widgets,org.eclipse.jface.preference",

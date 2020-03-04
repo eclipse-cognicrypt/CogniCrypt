@@ -56,10 +56,6 @@ public class StartupHandler implements IStartup {
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
 				return;
-			} else if (Utils.isIncompatibleJavaVersion()) {
-				Activator.getDefault()
-						.logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
-				return;
 			} else {
 				final List<IJavaElement> changedJavaElements = new ArrayList<>();
 				Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");

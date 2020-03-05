@@ -512,7 +512,7 @@ public class Constants {
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 	public static final String UNSUPPRESSWARNING_FIX = "UnSuppress Warning: ";
 	public static final String ENSUREPREDICATE_FIX = "This object comes from a stream/database/other external source and is actually secure.";
-	public static final String FALSEPOSTIVEREPORTER_FIX = "Report FalsePositive";
+	public static final String FALSEPOSTIVEREPORTER_FIX = "Report false positive";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";

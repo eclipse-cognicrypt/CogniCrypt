@@ -160,8 +160,7 @@ public class DeveloperProject {
 			final DeveloperProject other = (DeveloperProject) obj;
 			return !(this.project == null || other.project != null) && this.project.equals(other.project);
 		} else if (obj instanceof IProject) {
-			final IProject other = (IProject) obj;
-			return this.project.equals(other);
+			return this.project.equals((IProject) obj);
 		}
 		return false;
 	}
@@ -190,18 +189,15 @@ public class DeveloperProject {
 	}
 
 	/**
-	 * This method checks if a project contains the MavenNature
+	 * This method checks if a project possesses the Maven nature, marking it as a Maven project.
 	 * 
-	 * @return <CODE>true</CODE>/<CODE>false</CODE> if MavenNature is existing.
+	 * @return <CODE>true</CODE>/<CODE>false</CODE> if project is Maven project.
 	 */
 	public boolean isMavenProject() {
 		try {
-			if (this.project.hasNature(Constants.MavenNatureID)) {
-				return true;
-			}
-		}
-		catch (CoreException e) {
-			e.printStackTrace();
+			return this.project.hasNature(Constants.MavenNatureID);
+		}	catch (CoreException e) {
+			Activator.getDefault().logError(e);
 		}
 		return false;
 	}
@@ -211,16 +207,8 @@ public class DeveloperProject {
 	 * 
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if pom.xml is existing.
 	 */
-	private boolean pomExists() {
-		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");
-		File parentPom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent" + Constants.outerFileSeparator + "pom.xml");
-		if (pom.exists()) {
-			return true;
-		} else if (parentPom.exists()) {
-			return true;
-		} else {
-			return false;
-		}
+	private boolean doesPomExists() {
+		return new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml").exists()|| new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent" + Constants.outerFileSeparator + "pom.xml").exists();
 	}
 
 	/**
@@ -229,12 +217,11 @@ public class DeveloperProject {
 	 * @return pom.xml
 	 */
 	private File getPomFile() {
-		File pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml");
-		File parentPom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent" + Constants.outerFileSeparator + "pom.xml");
-		if (pom.exists()) {
+		File pom = null; 
+		if ((pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml")).exists()) {
 			return pom;
-		} else if (parentPom.exists()) {
-			return parentPom;
+		} else if ((pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent" + Constants.outerFileSeparator + "pom.xml")).exists()) {
+			return pom;
 		} else {
 			return null;
 		}
@@ -251,7 +238,7 @@ public class DeveloperProject {
 	public boolean addMavenDependency(String groupId, String artifactId, String version) {
 
 		if (isMavenProject()) {
-			if (pomExists()) {
+			if (doesPomExists()) {
 				XMLParser xmlParser;
 				File pom = getPomFile();
 				xmlParser = new XMLParser(pom);
@@ -284,7 +271,7 @@ public class DeveloperProject {
 				return false;
 			}
 		} else {
-			Activator.getDefault().logError("Project " + project.getName() + " is not a Maven Project [no MavenNature available]");
+			Activator.getDefault().logError("Project " + project.getName() + " is not a Maven Project [no Maven Nature available]");
 			return false;
 		}
 	}
@@ -310,22 +297,21 @@ public class DeveloperProject {
 				Node currentDependencyNode = dependencyNodeList.item(j);
 				if (currentDependencyNode.getNodeType() == Node.ELEMENT_NODE) {
 					String nodeName = currentDependencyNode.getNodeName();
-					if (nodeName.equals(Constants.GROUPID_TAG)) {
-						groupIdNode = currentDependencyNode;
-					} else if (nodeName.equals(Constants.ARTIFACTID_TAG)) {
-						artifactIdNode = currentDependencyNode;
-					} else if (nodeName.equals(Constants.VERSION_TAG)) {
-						versionNode = currentDependencyNode;
+					switch(nodeName) {
+						case Constants.GROUPID_TAG:
+							groupIdNode = currentDependencyNode;
+							break;
+						case Constants.ARTIFACTID_TAG:
+							artifactIdNode = currentDependencyNode;
+							break;
+						case Constants.VERSION_TAG:
+							versionNode = currentDependencyNode;
+							break;
 					}
 				}
 			}
 		}
-		if (groupIdNode != null && artifactIdNode != null && versionNode != null) {
-			if (groupIdNode.getTextContent().equals(groupId) && artifactIdNode.getTextContent().equals(artifactId) && versionNode.getTextContent().equals(version)) {
-				return true;
-			}
-		}
-		return false;
+		return groupIdNode != null && artifactIdNode != null && versionNode != null && groupIdNode.getTextContent().equals(groupId) && artifactIdNode.getTextContent().equals(artifactId) && versionNode.getTextContent().equals(version);
 	}
 
 	/**
@@ -336,10 +322,9 @@ public class DeveloperProject {
 	 */
 	public void execMaven(String[] commands) {
 		if (isMavenProject()) {
-			MavenCli maven = new MavenCli();
-			maven.doMain(commands, getProjectPath(), System.out, System.out);
+			(new MavenCli()).doMain(commands, getProjectPath(), System.out, System.out);
 		} else {
-			Activator.getDefault().logError("Project " + project.getName() + " is not a Maven Project [no MavenNature available]");
+			Activator.getDefault().logError("Project " + project.getName() + " is not a Maven Project [no Maven Nature available]");
 		}
 	}
 }

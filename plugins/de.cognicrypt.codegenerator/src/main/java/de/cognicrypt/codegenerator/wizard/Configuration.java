@@ -33,6 +33,7 @@ public abstract class Configuration {
 	final protected Map<Question, Answer> options;
 	final protected String pathOnDisk;
 
+	@SuppressWarnings("unchecked")
 	public Configuration(Map<?, ?> constraints, String pathOnDisk) {
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;

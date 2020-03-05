@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -32,11 +31,9 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-
 import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
@@ -101,13 +98,13 @@ public class SootRunner {
 			CrySLModelReader r = new CrySLModelReader(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
+//				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
+//				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 			
@@ -147,7 +144,7 @@ public class SootRunner {
  					}
  				}
  			} catch (BackingStoreException e) {
- 				e.printStackTrace();
+ 				Activator.getDefault().logError(e);
  			}
  			
 		}
@@ -268,7 +265,6 @@ public class SootRunner {
 		Collection<String> libraryClassPath = libraryClassPath(javaProject, dependencyAnalyser);
 
 		libraryClassPath.addAll(applicationClassPath);
-		System.out.println(Joiner.on(File.pathSeparator).join(libraryClassPath));
 		return Joiner.on(File.pathSeparator).join(libraryClassPath);
 	}
 

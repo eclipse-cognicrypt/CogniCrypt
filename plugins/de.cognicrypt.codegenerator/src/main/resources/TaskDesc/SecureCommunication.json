@@ -165,7 +165,7 @@
 	            "id": "0",
 	            "element": "radio",
 	            "note": "1$$$It is highly discouraged to enable support for legacy clients. This may have grave security implications.",      
-	           	"questionText": "Which clients should the server should at least support?",
+	           	"questionText": "Which clients should the server at least support?",
 				"answers": [
 					{
 						"value": "Modern Clients (since 2013)",

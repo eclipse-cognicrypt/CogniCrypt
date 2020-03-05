@@ -1,4 +1,4 @@
-package de.cognicrypt.staticanalyzer.markerresolution;
+package de.cognicrypt.staticanalyzer.utilities;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -27,7 +27,7 @@ public class Reporter extends TitleAreaDialog {
 	
 	private String fileName;
 
-	protected Reporter(Shell parentShell, String fileName) {
+	public Reporter(Shell parentShell, String fileName) {
 		super(parentShell);
 		this.fileName = fileName;
 	}

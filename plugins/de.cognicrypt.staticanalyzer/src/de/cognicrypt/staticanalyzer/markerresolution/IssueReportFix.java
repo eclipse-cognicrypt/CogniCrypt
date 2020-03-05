@@ -5,9 +5,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -30,6 +32,7 @@ import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.Severities;
 import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
+import de.cognicrypt.staticanalyzer.utilities.Reporter;
 
 public class IssueReportFix implements IMarkerResolution {
 
@@ -44,6 +47,16 @@ public class IssueReportFix implements IMarkerResolution {
 	public String getLabel() {
 		return this.label;
 	}
+	
+	/**
+	 * Reads and decodes the CROSSINGExtServices GitHub personal access token
+	 * @return
+	 */
+	private String readToken() {
+		Scanner scanner = new Scanner(IssueReportFix.class.getResourceAsStream(Constants.innerFileSeparator+"Token.txt"));
+		String base64Token = new String(Base64.getDecoder().decode(scanner.nextLine()));
+		return base64Token;
+	}
 
 	@Override
 	public void run(IMarker arg0) {
@@ -55,7 +68,7 @@ public class IssueReportFix implements IMarkerResolution {
 		if (dialog.open() == Window.OK) {
 			String attachment = getAttachment(dialog.getAttachmentIndex());
 			try {
-				send(dialog.getIssueTitle(), dialog.getIssueText(), dialog.getAttachmentIndex(), attachment);
+				createIssue(dialog.getIssueTitle(), dialog.getIssueText(), dialog.getAttachmentIndex(), attachment);
 			} catch (CoreException e) {
 				Activator.getDefault().logError(e);
 			}
@@ -63,9 +76,31 @@ public class IssueReportFix implements IMarkerResolution {
 	}
 
 
-	private void send(String issueTitle, String issueText, int attachmentIndex ,String attachment) throws CoreException{
-
+	/**
+	 * sends the {@link Issue} to the eclipse-cognicrypt/CogniCrypt GitHub repository. 
+	 * @param issue issue to send
+	 */
+	private void send(Issue issue) {
 		GitHubClient client = new GitHubClient();
+		client.setOAuth2Token(readToken());
+		IssueService issueService = new IssueService(client);
+		try {
+			issueService.createIssue("eclipse-cognicrypt","CogniCrypt", issue);
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);			
+		}
+	}
+	
+	
+	/**
+	 * Creates a {@link Issue} object.
+	 * @param issueTitle issue title
+	 * @param issueText issue description
+	 * @param attachmentIndex index of selected attachment
+	 * @param attachment error Java and Jimple code
+	 * @throws CoreException
+	 */
+	private void createIssue(String issueTitle, String issueText, int attachmentIndex ,String attachment) throws CoreException{
 
 		Issue issue = new Issue();
 		
@@ -74,6 +109,19 @@ public class IssueReportFix implements IMarkerResolution {
 		}
 		issue.setTitle(issueTitle);
 
+		Label bugLabel = new Label();
+		bugLabel.setName("bug");
+		Label feedBackLabel = new Label();
+		feedBackLabel.setName("UserFeedback");
+		Label sastLabel = new Label();
+		sastLabel.setName("SAST");
+		ArrayList<Label> labelList = new ArrayList<>();
+		labelList.add(bugLabel);
+		labelList.add(feedBackLabel);
+		labelList.add(sastLabel);
+		issue.setLabels(labelList);
+		
+		
 		StringBuilder builder = new StringBuilder();		
 		builder.append("**User Issue Description**\n");
 		builder.append(issueText+"\n\n");
@@ -90,12 +138,12 @@ public class IssueReportFix implements IMarkerResolution {
 		
 		if(!attachment.isEmpty()) {
 			builder.append("**Java Code**\n\n");
-			builder.append("Error code: `"+getErrorLineCode()+"`\n");
+			builder.append("Error line: `"+getErrorLineCode()+"`\n");
 			builder.append("```java\n"+attachment+"\n```");
 			builder.append("\n\n");
 			
-			if(attachmentIndex == 1) {
-				builder.append("**Jimple**\n\n");
+			if(attachmentIndex == 1 || attachmentIndex == 0) {
+				builder.append("**Jimple Code**\n\n");
 				builder.append("```java\n"+(String) marker.getAttribute("errorJimpleCode")+"```");
 				builder.append("\n\n");
 			}
@@ -104,30 +152,15 @@ public class IssueReportFix implements IMarkerResolution {
 		
 		String body = builder.toString();
 		issue.setBody(body);
-
-		Label bugLabel = new Label();
-		bugLabel.setName("bug");
-		Label feedBackLabel = new Label();
-		feedBackLabel.setName("UserFeedback");
-		Label sastLabel = new Label();
-		feedBackLabel.setName("SAST");
-		ArrayList<Label> labelList = new ArrayList<>();
-		labelList.add(bugLabel);
-		labelList.add(feedBackLabel);
-		labelList.add(sastLabel);
-
-		issue.setLabels(labelList);
-
 		
-		IssueService issueService = new IssueService(client);
-		try {
-//			issueService.createIssue("eclipse-cognicrypt", "CogniCrypt", issue);
-			issueService.createIssue("MyBot","TestGitHubAPIRepo", issue);
-		} catch (IOException e) {
-			Activator.getDefault().logError(e);			
-		}
+		send(issue);
 	}
-
+	
+	/**
+	 * Returns the content for the attachment
+	 * @param i selected attachment index 
+	 * @return content of the attachment
+	 */
 	private String getAttachment(int i) {
 		String attachment = "";
 		switch (i) {
@@ -142,6 +175,10 @@ public class IssueReportFix implements IMarkerResolution {
 		return attachment;
 	}
 
+	/**
+	 * Returns the Java method body that contains the error.
+	 * @return method body as {@link String}
+	 */
 	private String getMethodBody() {
 		String methodBody = "";
 		ICompilationUnit sourceUnit = null;
@@ -159,8 +196,6 @@ public class IssueReportFix implements IMarkerResolution {
 					methodMap.put(unit.getLineNumber(node.getStartPosition()), node);
 					return true;
 				}
-				
-			
 			});
 
 			int errorLineNumber = (int) marker.getAttribute(IMarker.LINE_NUMBER);
@@ -191,6 +226,10 @@ public class IssueReportFix implements IMarkerResolution {
 	}
 
 	
+	/**
+	 * Returns the Java line code of the error.
+	 * @return error line code
+	 */
 	private String getErrorLineCode() {
 	    String errorLine = "";
 		try {
@@ -205,7 +244,11 @@ public class IssueReportFix implements IMarkerResolution {
 		}
 		return errorLine;
 	}
-
+	
+	/**
+	 * Returns the Java file as {@link String}.
+	 * @return Java file content
+	 */
 	private String getFileContent() {
 	    String fileContent = "";
 		try {

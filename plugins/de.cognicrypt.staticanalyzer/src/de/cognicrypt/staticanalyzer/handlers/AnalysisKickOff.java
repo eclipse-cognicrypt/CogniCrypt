@@ -99,11 +99,7 @@ public class AnalysisKickOff {
 	public void run() {
 		if (this.curProj == null)
 			return;
-		if (Utils.isIncompatibleJavaVersion()) {
-			Activator.getDefault()
-					.logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
-			return;
-		}
+		
 		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {
 
 			@SuppressWarnings("deprecation")

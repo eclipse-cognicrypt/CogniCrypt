@@ -129,5 +129,14 @@ public class QuickFixUtils {
 		}
 		return true;
 	}
+	
+	public static String getErrorTypeFromMarkerType(String markerType) {
+		
+		String temp = markerType.substring(0, markerType.length() - 6);
+		String[] parts = temp.split("\\.");
+		String type = parts[parts.length-1];		
+
+		return type;
+	}
 
 }

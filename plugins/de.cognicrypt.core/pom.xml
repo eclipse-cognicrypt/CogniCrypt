@@ -12,11 +12,11 @@
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
-	
+
 	<properties>
- 		<aetherVersion>1.1.0</aetherVersion>
- 		<mavenVersion>3.3.3</mavenVersion>
- 	</properties>
+		<aetherVersion>1.1.0</aetherVersion>
+		<mavenVersion>3.3.3</mavenVersion>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -25,60 +25,65 @@
 			<version>2.7.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
- 			<groupId>org.eclipse.aether</groupId>
- 			<artifactId>aether-api</artifactId>
- 			<version>1.1.0</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.eclipse.aether</groupId>
- 			<artifactId>aether-spi</artifactId>
- 			<version>${aetherVersion}</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.eclipse.aether</groupId>
- 			<artifactId>aether-impl</artifactId>
- 			<version>${aetherVersion}</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.eclipse.aether</groupId>
- 			<artifactId>aether-connector-basic</artifactId>
- 			<version>${aetherVersion}</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.eclipse.aether</groupId>
- 			<artifactId>aether-transport-file</artifactId>
- 			<version>${aetherVersion}</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.eclipse.aether</groupId>
- 			<artifactId>aether-transport-http</artifactId>
- 			<version>${aetherVersion}</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.apache.maven</groupId>
- 			<artifactId>maven-aether-provider</artifactId>
- 			<version>${mavenVersion}</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>net.lingala.zip4j</groupId>
- 			<artifactId>zip4j</artifactId>
- 			<version>2.1.1</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>org.apache.httpcomponents</groupId>
- 			<artifactId>httpclient</artifactId>
- 			<version>4.5.9</version>
- 		</dependency>
- 		<dependency>
- 			<groupId>commons-logging</groupId>
- 			<artifactId>commons-logging</artifactId>
- 			<version>1.1.1</version>
- 		</dependency>
- 		<dependency>
- 		    <groupId>org.ini4j</groupId>
- 		    <artifactId>ini4j</artifactId>
- 		    <version>0.5.1</version>
- 		</dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-api</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-spi</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-impl</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-connector-basic</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-transport-file</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.aether</groupId>
+			<artifactId>aether-transport-http</artifactId>
+			<version>${aetherVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-aether-provider</artifactId>
+			<version>${mavenVersion}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lingala.zip4j</groupId>
+			<artifactId>zip4j</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.9</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>0.5.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.mylyn.github</groupId>
+			<artifactId>org.eclipse.egit.github.core</artifactId>
+			<version>2.1.5</version>
+		</dependency>
 	</dependencies>
 	<build>
 	<plugins>
@@ -109,51 +114,51 @@
 		</plugin>
 
 		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-surefire-plugin</artifactId>
-			<version>2.17</version>
-			<configuration>
-				<reportsDirectory>../../shippable/testresults</reportsDirectory>
-			</configuration>
-			<dependencies>
-				<dependency>
-					<groupId>org.apache.maven.surefire</groupId>
-					<artifactId>surefire-junit4</artifactId>
-					<version>2.17</version>
-				</dependency>
-				<dependency>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-					<version>4.12</version>
-				</dependency>
-			</dependencies>
-		</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<reportsDirectory>../../shippable/testresults</reportsDirectory>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.surefire</groupId>
+						<artifactId>surefire-junit4</artifactId>
+						<version>2.17</version>
+					</dependency>
+					<dependency>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+						<version>4.12</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.5.1</version>
-			<dependencies>
-				<dependency>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-					<version>4.12</version>
-				</dependency>
-			</dependencies>
-			<executions>
-				<execution>
-					<id>compiletests</id>
-					<phase>test-compile</phase>
-					<goals>
-						<goal>testCompile</goal>
-					</goals>
-					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
-					</configuration>
-				</execution>
-			</executions>
-		</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>junit</groupId>
+						<artifactId>junit</artifactId>
+						<version>4.12</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>compiletests</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<configuration>
+							<source>1.8</source>
+							<target>1.8</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<!--This plugin's configuration is used to store Eclipse m2e settings 
 				only. It has no influence on the Maven build itself. -->
 			<plugin>

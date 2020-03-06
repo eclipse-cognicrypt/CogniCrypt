@@ -51,7 +51,7 @@ import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.ComparableEntry;
 import de.cognicrypt.utils.DeveloperProject;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.UIUtils;
 
 public abstract class CodeGenerator {
 
@@ -113,7 +113,7 @@ public abstract class CodeGenerator {
 					return true;
 				}
 				else {
-					IDE.openEditor(Utils.getCurrentlyOpenPage(), targetFile);
+					IDE.openEditor(UIUtils.getCurrentlyOpenPage(), targetFile);
 				}
 			}
 
@@ -121,10 +121,10 @@ public abstract class CodeGenerator {
 			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
 			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
 			final IFile output = tempFlag == true ? this.project.getIFile(sb.toString()) : this.project.getIFile(temporaryOutputFile);
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), output);
+			IDE.openEditor(UIUtils.getCurrentlyOpenPage(), output);
 		}
 
-		final IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+		final IEditorPart currentlyOpenPart = UIUtils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
 			Activator.getDefault().logError(null,
 				"Could not open access the editor of the file. Therefore, an outputfile containing calls to the generated classes in the Crypto package was generated.");
@@ -334,8 +334,8 @@ public abstract class CodeGenerator {
 
 		if(editor == null && generatedCUnits[0].getResource().getType() == IResource.FILE) {
 			    IFile genClass = (IFile) generatedCUnits[0].getResource();
-				IDE.openEditor(Utils.getCurrentlyOpenPage(), genClass);
-				editor = Utils.getCurrentlyOpenPage().getActiveEditor();
+				IDE.openEditor(UIUtils.getCurrentlyOpenPage(), genClass);
+				editor = UIUtils.getCurrentlyOpenPage().getActiveEditor();
 				anyFileOpen = true;
 		}
 
@@ -345,10 +345,10 @@ public abstract class CodeGenerator {
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
 		if (anyFileOpen) {
-			Utils.closeEditor(editor);
+			UIUtils.closeEditor(editor);
 		}
 		
-		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
+		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(UIUtils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);

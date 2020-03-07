@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import com.google.common.base.Strings;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.handler.Activator;
+import de.cognicrypt.crysl.Activator;
 import de.cognicrypt.utils.CrySLUtils;
 
 /**

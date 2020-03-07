@@ -24,15 +24,15 @@ import crypto.rules.CrySLRule;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
+import de.cognicrypt.crysl.reader.CrySLParser;
 
 public class SMGBuilderTests {
 
-	private static CrySLModelReader csmr = null;
+	private static CrySLParser csmr = null;
 
 	@BeforeClass
 	public static void setUp() throws MalformedURLException {
-		csmr = new CrySLModelReader();
+		csmr = new CrySLParser();
 	}
 
 	private CrySLRule readRuleFromFuleName(String ruleName) {

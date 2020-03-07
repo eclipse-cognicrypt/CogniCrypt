@@ -62,7 +62,7 @@ import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.handler.Activator;
+import de.cognicrypt.crysl.Activator;
 import de.cognicrypt.utils.Utils;
 import de.darmstadt.tu.crossing.CrySLStandaloneSetup;
 import de.darmstadt.tu.crossing.CrySL.ui.internal.CrySLActivator;
@@ -102,7 +102,7 @@ import de.darmstadt.tu.crossing.crySL.UseBlock;
 import de.darmstadt.tu.crossing.crySL.impl.DomainmodelImpl;
 import de.darmstadt.tu.crossing.crySL.impl.ObjectImpl;
 
-public class CrySLModelReader {
+public class CrySLParser {
 
 	private List<CrySLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
@@ -114,7 +114,7 @@ public class CrySLModelReader {
 	private static final String NULL = "null";
 	private static final String UNDERSCORE = "_";
 
-	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
+	public CrySLParser(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CrySLActivator.getInstance().getInjector(CrySLActivator.DE_DARMSTADT_TU_CROSSING_CRYSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
 
@@ -133,7 +133,7 @@ public class CrySLModelReader {
 	/**
 	 * This constructor use the CogniCyrpt Core plugin lib folder as classpath
 	 */
-	public CrySLModelReader() {
+	public CrySLParser() {
 		CrySLStandaloneSetup crySLStandaloneSetup = new CrySLStandaloneSetup();
 		final Injector injector = crySLStandaloneSetup.createInjectorAndDoEMFRegistration();
 		this.resourceSet = injector.getInstance(XtextResourceSet.class);
@@ -206,7 +206,7 @@ public class CrySLModelReader {
 				actPreds.add(pred.tobasicPredicate());
 			} else {
 				actPreds.add(new CrySLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(),
-						getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
+						getStatesForMethods(CrySLParserUtils.resolveAggregateToMethodeNames(cond))));
 			}
 		}
 		final CrySLRule rule = new CrySLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
@@ -568,7 +568,7 @@ public class CrySLModelReader {
 
 			final Event alternative = fm.getRep();
 			if (alternative != null) {
-				crysl.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(alternative));
+				crysl.addAll(CrySLParserUtils.resolveAggregateToMethodeNames(alternative));
 			}
 			methodSignatures.add(new CrySLForbiddenMethod(
 					new CrySLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<>(UNDERSCORE, ANY_TYPE)), false, crysl));
@@ -627,12 +627,12 @@ public class CrySLModelReader {
 		switch (pred) {
 			case "callTo":
 				final List<ICrySLPredicateParameter> methodsToBeCalled = new ArrayList<>();
-				methodsToBeCalled.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
+				methodsToBeCalled.addAll(CrySLParserUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
 				slci = new CrySLPredicate(null, pred, methodsToBeCalled, false);
 				break;
 			case "noCallTo":
 				final List<ICrySLPredicateParameter> methodsNotToBeCalled = new ArrayList<>();
-				final List<CrySLMethod> resolvedMethodNames = CrySLReaderUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0));
+				final List<CrySLMethod> resolvedMethodNames = CrySLParserUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0));
 				for (final CrySLMethod csm : resolvedMethodNames) {
 					this.forbiddenMethods.add(new CrySLForbiddenMethod(csm, true));
 					methodsNotToBeCalled.add(csm);

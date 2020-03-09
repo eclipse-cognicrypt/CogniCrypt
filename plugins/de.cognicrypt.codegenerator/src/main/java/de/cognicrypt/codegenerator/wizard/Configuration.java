@@ -23,8 +23,8 @@ import org.dom4j.io.XMLWriter;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.utils.FileHelper;
 import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.FileUtils;
 
 import org.json.simple.JSONObject;
 /**
@@ -78,6 +78,6 @@ public abstract class Configuration {
 	 * Deletes config file from hard disk.
 	 */
 	public void deleteConfFromDisk() {
-		FileHelper.deleteFile(this.pathOnDisk);
+		FileUtils.deleteFile(this.pathOnDisk);
 	}
 }

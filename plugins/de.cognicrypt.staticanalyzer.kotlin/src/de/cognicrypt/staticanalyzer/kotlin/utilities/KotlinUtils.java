@@ -13,6 +13,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -35,13 +36,14 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.jetbrains.kotlin.core.compiler.KotlinCompiler;
-import org.jetbrains.kotlin.core.compiler.KotlinCompilerResult;
 import org.jetbrains.kotlin.core.model.KotlinNature;
 
 import de.cognicrypt.staticanalyzer.kotlin.Activator;
 
 public class KotlinUtils {
 	
+	private static final String KOTLIN_FILE_EXTENSION = ".kt";
+
 	public static void compileKotlinFiles(IProject ip) {
 		IJavaProject javaProject = JavaCore.create(ip);
 		
@@ -51,7 +53,6 @@ public class KotlinUtils {
  					if(ip.hasNature("org.eclipse.m2e.core.maven2Nature")) {
  						if(KotlinUtils.verifyKotlinDependency(javaProject)) {
  							
- 							System.out.println("Custom Builder started.");
  							final Job builder = new Job("Custom Builder") {
 								
 								@Override
@@ -59,7 +60,7 @@ public class KotlinUtils {
 									try {
 										ip.build(IncrementalProjectBuilder.CLEAN_BUILD, null);
 									} catch (CoreException e) {
-										e.printStackTrace();
+										Activator.getDefault().logError(e);
 									}
 									return Status.OK_STATUS;
 								}
@@ -70,30 +71,29 @@ public class KotlinUtils {
  							while(builder.getState() != Job.NONE) {
 								Thread.sleep(3);
 							}
- 							System.out.println("Custom Builder finished.");
  			
  							KotlinUtils.waitForBuildAndRefreshJobs();
  							
-							KotlinCompilerResult result = KotlinCompiler.compileKotlinFiles(javaProject);
-							if(result.compiledCorrectly())
+							if(KotlinCompiler.compileKotlinFiles(javaProject).compiledCorrectly()) {
 								Activator.getDefault().logInfo("Finished compiling kotlin files.");
-							else
+							} else {
 								Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
+							}
  						}
  						else {
- 							Activator.getDefault().logInfo("Cannot compile kotlin files without dependency.");
+ 							Activator.getDefault().logInfo("Cannot compile kotlin files without kotlin-stdlib dependency.");
  							Activator.getDefault().logInfo("Static analysis skipped all kotlin files.");
  						}
  					}
  					else {
- 						KotlinCompilerResult result = KotlinCompiler.compileKotlinFiles(javaProject);
- 						if(result.compiledCorrectly())
+ 						if(KotlinCompiler.compileKotlinFiles(javaProject).compiledCorrectly()) {
 							Activator.getDefault().logInfo("Finished compiling kotlin files.");
-						else
+ 						} else {
 							Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
+						}
  					}	
  				} catch (CoreException | OperationCanceledException | InterruptedException e) {
- 					e.printStackTrace();
+ 					Activator.getDefault().logError(e);
  				}
  			}
  		}
@@ -113,14 +113,15 @@ public class KotlinUtils {
 				String srcFilename = "";
 
 				if(classFileName.substring(classFileName.length()-2).equals("Kt")) {
-					srcFilename = classFileName.substring(0, classFileName.length()-2) + ".kt";
+					srcFilename = classFileName.substring(0, classFileName.length()-2) + KOTLIN_FILE_EXTENSION;
 				}
 				else if(classFileName.contains("$")) {
-					srcFilename = Arrays.asList(classFileName.split("\\$")).get(0) + ".kt";
+					srcFilename = Arrays.asList(classFileName.split("\\$")).get(0) + KOTLIN_FILE_EXTENSION;
 				}
 				// because in some projects the class names aren't renamed
-				else
-					srcFilename = classFileName + ".kt";
+				else {
+					srcFilename = classFileName + KOTLIN_FILE_EXTENSION;
+				}
 
 				for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
 					// this check is needed because IJavaProject.getPackageFragments() returns dependencies as well
@@ -131,8 +132,9 @@ public class KotlinUtils {
 						String packageName = String.join(File.separator, modifiedPath);
 
 						IFile sourceFile = currentProject.getFile(packageName + File.separator + srcFilename);
-						if(sourceFile.exists())
+						if(sourceFile.exists()) {
 							return (IResource) sourceFile;
+						}
 					}
 				}
 			}
@@ -142,27 +144,26 @@ public class KotlinUtils {
 	}
 	
 	public static boolean verifyKotlinDependency(IJavaProject javaProject) {
- 		IProject p = javaProject.getProject();
- 		IFile pomFile = p.getFile("pom.xml");
+ 		IProject project = javaProject.getProject();
+ 		IFile pomFile = project.getFile("pom.xml");
  		boolean isPresent = false;
  		try {
- 			MavenProject project = loadProject(pomFile.getLocation().toFile());
- 			List<Dependency> dependencies = project.getDependencies();
+ 			MavenProject mavenProject = loadProject(pomFile.getLocation().toFile());
+ 			List<Dependency> dependencies = mavenProject.getDependencies();
  			
  			for (Dependency dependency : dependencies) {
- 				System.out.println(dependency);
- 				if(dependency.getArtifactId().equals("kotlin-stdlib"))
+ 				if("kotlin-stdlib".equals(dependency.getArtifactId())) {
  					isPresent = true;
+ 				}
  			}
  			if(!isPresent) {
- 				boolean accepted = requestUsersPermission();
- 				if(accepted) {
- 					addKotlinDependency(project, dependencies);
+ 				if(requestUsersPermission() == SWT.YES) {
+ 					addKotlinDependency(mavenProject, dependencies);
  					isPresent = true;
  				}
  			}
  		} catch (Exception e) {
- 			e.printStackTrace();
+ 			Activator.getDefault().logError(e);
  		}
  		return isPresent;
  	}
@@ -177,10 +178,8 @@ public class KotlinUtils {
 			jobs.addAll(Arrays.asList(Job.getJobManager().find(ResourcesPlugin.FAMILY_MANUAL_BUILD)));
 			jobs.addAll(Arrays.asList(Job.getJobManager().find(ResourcesPlugin.FAMILY_MANUAL_REFRESH)));
 			if(jobs.isEmpty()) {
-				System.out.println("No pending jobs found.");
 				return;
 			}
-			System.out.println("Waiting for " + jobs.size() + " Jobs to finish...");
 			
 			boolean buildSuccess;
 			do {
@@ -213,48 +212,37 @@ public class KotlinUtils {
  			mavenWriter.write(writer, model);
  			Activator.getDefault().logInfo("Required kotlin dependency added to pom.");
  		} catch (IOException e) {
- 			e.printStackTrace();
+ 			Activator.getDefault().logError(e);
  		}
  	}
 
- 	private static MavenProject loadProject(File pomFile) throws Exception
+ 	private static MavenProject loadProject(File pomFile) throws IOException, XmlPullParserException
  	{
  		MavenProject ret = null;
  		MavenXpp3Reader mavenReader = new MavenXpp3Reader();
 
  		if (pomFile != null && pomFile.exists())
  		{
- 			FileReader reader = null;
- 			try
- 			{
- 				reader = new FileReader(pomFile);
+ 			try	(FileReader reader = new FileReader(pomFile)) {
  				Model model = mavenReader.read(reader);
  				model.setPomFile(pomFile);
  				ret = new MavenProject(model);
- 			}
- 			finally
- 			{
- 				reader.close();
  			}
  		}
  		return ret;
  	}
  	
- 	private static boolean requestUsersPermission() {
+ 	private static int requestUsersPermission() {
  		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
  		MessageBox dialog = new MessageBox(window.getShell(),
  				SWT.APPLICATION_MODAL | SWT.ICON_QUESTION | SWT.YES | SWT.NO);
  		return selectedDialogOption(dialog);
  	}
 
-	private static boolean selectedDialogOption(MessageBox dialog) {
+	private static int selectedDialogOption(MessageBox dialog) {
 		dialog.setMessage("Analysis requires maven kotlin-stdlib dependency. Would you like to add it?");
  		dialog.setText("CAUTION");
- 		int opt = dialog.open();
- 		if (opt == SWT.YES)
- 			return true;
- 		else
- 			return false;
+ 		return dialog.open();
 	}
  	
  	

@@ -18,6 +18,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IStartup;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.Activator;
+import de.cognicrypt.crysl.builder.CrySLBuilderUtils;
+import de.cognicrypt.crysl.builder.CrySLNature;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.

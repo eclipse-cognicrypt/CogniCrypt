@@ -14,7 +14,7 @@
    		name="CrySL Builder" 
    		point="org.eclipse.core.resources.builders"> 
       	<builder hasNature="true"> 
-			<run class="de.cognicrypt.crysl.handler.CrySLBuilder"/>
+			<run class="de.cognicrypt.crysl.builder.CrySLBuilder"/>
       	</builder> 
    </extension> 
    
@@ -23,7 +23,7 @@
    		name="CrySL Nature" 
    		point="org.eclipse.core.resources.natures"> 
       	<runtime> 
-        	<run class="de.cognicrypt.crysl.handler.CrySLNature"/> 
+        	<run class="de.cognicrypt.crysl.builder.CrySLNature"/> 
       	</runtime> 
        	<requires-nature
             id="org.eclipse.jdt.core.javanature">

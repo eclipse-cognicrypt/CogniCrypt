@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.IEditorPart;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.utils.UIUtils;
 import de.cognicrypt.utils.Utils;
 
 public class RunAnalysisHandler extends AbstractHandler {
@@ -34,7 +35,7 @@ public class RunAnalysisHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		final AnalysisKickOff akf = new AnalysisKickOff();
 		IProject ip = Utils.getCurrentlySelectedIProject();
-		IEditorPart openEditor = Utils.getCurrentlyOpenEditor();
+		IEditorPart openEditor = UIUtils.getCurrentlyOpenEditor();
 
 		// check if there are unsaved changes
 		if (openEditor != null && openEditor.isDirty()) {

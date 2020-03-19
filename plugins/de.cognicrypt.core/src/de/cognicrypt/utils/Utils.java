@@ -7,18 +7,11 @@ package de.cognicrypt.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -41,33 +34,19 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
 import com.google.common.base.CharMatcher;
-import crypto.analysis.CrySLRulesetSelector.RuleFormat;
-import crypto.cryslhandler.CrySLModelReader;
-import crypto.rules.CrySLRule;
-import crypto.rules.CrySLRuleReader;
-import crypto.rules.StateNode;
-import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
 public class Utils {
 
-	private static IWorkbenchWindow window = null;
+	static IWorkbenchWindow window = null;
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
@@ -77,7 +56,7 @@ public class Utils {
 	 */
 	public static boolean checkIfJavaProjectSelected(final IProject project) {
 		try {
-			return project.hasNature("org.eclipse.jdt.core.javanature");
+			return project.hasNature(Constants.JavaNatureID);
 		}
 		catch (final CoreException e) {
 			return false;
@@ -121,54 +100,12 @@ public class Utils {
 	}
 
 	/**
-	 * This method returns the currently open editor as an {@link IEditorPart}.
-	 *
-	 * @return Current editor.
-	 */
-	public static IEditorPart getCurrentlyOpenEditor() {
-		final Display defaultDisplay = Display.getDefault();
-		final Runnable getWindow = () -> setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		defaultDisplay.syncExec(getWindow);
-		if (Utils.window == null) {
-			try {
-				Thread.sleep(500);
-			}
-			catch (final InterruptedException e) {
-				Activator.getDefault().logError(e);
-			}
-			defaultDisplay.asyncExec(getWindow);
-		}
-
-		if (Utils.window != null) {
-			return Utils.window.getActivePage().getActiveEditor();
-		}
-		return null;
-	}
-
-	/**
-	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
+	 * Overload for {@link UIUtils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
 	 *
 	 * @return Currently open file.
 	 */
 	public static IFile getCurrentlyOpenFile() {
-		return getCurrentlyOpenFile(getCurrentlyOpenEditor());
-	}
-
-	/**
-	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
-	 *
-	 * @param part Editor part that contains the file.
-	 * @return Currently open file.
-	 */
-	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
-		if (part != null) {
-			final IEditorInput editorInput = part.getEditorInput();
-			if (editorInput instanceof FileEditorInput) {
-				final FileEditorInput inputFile = (FileEditorInput) part.getEditorInput();
-				return inputFile.getFile();
-			}
-		}
-		return null;
+		return UIUtils.getCurrentlyOpenFile(UIUtils.getCurrentlyOpenEditor());
 	}
 
 	public static IProject getCurrentProject() {
@@ -184,31 +121,6 @@ public class Utils {
 			return selectedProject;
 		}
 		return null;
-	}
-
-	/**
-	 * This method returns the currently open page as an {@link IWorkbenchPage}.
-	 *
-	 * @return Current editor.
-	 */
-	public static IWorkbenchPage getCurrentlyOpenPage() {
-		final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window != null) {
-			return window.getActivePage();
-		}
-		return null;
-	}
-
-	/**
-	 * This method closes the currently open editor.
-	 *
-	 * @param editor
-	 */
-	public static void closeEditor(final IEditorPart editor) {
-		final IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
-		if (workbenchPage != null) {
-			workbenchPage.closeEditor(editor, true);
-		}
 	}
 
 	/**
@@ -347,43 +259,7 @@ public class Utils {
  		return ini;
  	}
 
- 	/***
- 	 * This method returns all sub-directories in a directory of the first level.
- 	 * @param ruleSet JavaCryptographicArchitecture, BouncyCastle, Tink
- 	 * @return array of version numbers
- 	 */
- 	public static String[] getRuleVersions(String ruleSet){
- 		List<String> versions = new ArrayList<String>();
- 		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
- 		File[] innerDirs = path.listFiles();
- 		if (innerDirs == null) {
- 			return null;
- 		}
- 			for (File f: innerDirs) {
- 			if (f.isDirectory()) {
- 				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
- 				versions.add(versionNumber[versionNumber.length - 1]);
- 			}
- 		}
-
- 		versions.sort(new Comparator<String>() {
- 			@Override
- 			public int compare(String o1, String o2) {
- 				DefaultArtifactVersion v1 = new DefaultArtifactVersion(o1);
-  				DefaultArtifactVersion v2 = new DefaultArtifactVersion(o2);
-  				return v1.compareTo(v2);
- 			}
- 		});
-
- 		// https://shipilev.net/blog/2016/arrays-wisdom-ancients/
- 		return versions.toArray(new String[0]);
- 	}
-
-	protected static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
-		Utils.window = activeWorkbenchWindow;
-	}
-
-	public static String filterQuotes(final String dirty) {
+ 	public static String filterQuotes(final String dirty) {
 		return CharMatcher.anyOf("\"").removeFrom(dirty);
 	}
 
@@ -396,56 +272,6 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * Returns the crysl rule with the name that is defined by the method parameter cryslRule.
-	 * 
-	 * @param cryslRule Name of crysl rule that should by returend.
-	 * @return Returns the crysl rule with the name that is defined by the parameter cryslRule.
-	 * @throws MalformedURLException
-	 */
-
-	public static CrySLRule getCrySLRule(String cryslRule) throws MalformedURLException {
-		File ruleRes = new File(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
-								getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
-								Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString());
-		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
-		}
-		return (new CrySLModelReader()).readRule(ruleRes);
-	}
-
-	public static List<CrySLRule> readCrySLRules() {
-		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
-				readCrySLRules(Constants.ECLIPSE_RULES_DIR + Constants.outerFileSeparator + "JavaCryptographicArchitecture")).flatMap(Collection::stream).collect(Collectors.toList());
-	}
-
-	protected static List<CrySLRule> readCrySLRules(String rulesFolder) {
-		List<CrySLRule> rules = new ArrayList<CrySLRule>();
-
-		for (File rule : (new File(rulesFolder)).listFiles()) {
-			if (rule.isDirectory()) {
-				rules.addAll(readCrySLRules(rule.getAbsolutePath()));
-				continue;
-			}
-
-			CrySLRule readFromSourceFile = CrySLRuleReader.readFromSourceFile(rule);
-			if (readFromSourceFile != null) {
-				rules.add(readFromSourceFile);
-			}
-		}
-		return rules;
-	}
-
-	public static List<TransitionEdge> getOutgoingEdges(Collection<TransitionEdge> collection, final StateNode curNode, final StateNode notTo) {
-		final List<TransitionEdge> outgoingEdges = new ArrayList<>();
-		for (final TransitionEdge comp : collection) {
-			if (comp.getLeft().equals(curNode) && !(comp.getRight().equals(curNode) || comp.getRight().equals(notTo))) {
-				outgoingEdges.add(comp);
-			}
-		}
-		return outgoingEdges;
-	}
-
 	public static boolean isSubType(String typeOne, String typeTwo) {
 		boolean subTypes = typeOne.equals(typeTwo);
 		subTypes |= ("byte".equals(typeOne) && (typeOne + "[]").equals(typeTwo));
@@ -456,29 +282,5 @@ public class Utils {
 			catch (ClassNotFoundException e) {}
 		}
 		return subTypes;
-	}
-
-	public static Group addHeaderGroup(Composite parent, String text) {
-		final Group headerGroup = new Group(parent, SWT.SHADOW_IN);
-		headerGroup.setText(text);
-		headerGroup.setLayout(new GridLayout(1, true));
-		return headerGroup;
-	}
-
-	public static boolean isIncompatibleJavaVersion() {
-		return isIncompatibleJavaVersion(System.getProperty("java.version", null));
-	}
-
-	public static boolean isIncompatibleJavaVersion(String javaVersion) {
-		return javaVersion == null || !javaVersion.startsWith("1.");
-	}
-	
-	/**
-	 * This method checks if a Collection is null or empty
-	 * @param c
-	 * @return 
-	 */
-	public static boolean isNullOrEmpty( final Collection< ? > c ) {
-	    return c == null || c.isEmpty();
 	}
 }

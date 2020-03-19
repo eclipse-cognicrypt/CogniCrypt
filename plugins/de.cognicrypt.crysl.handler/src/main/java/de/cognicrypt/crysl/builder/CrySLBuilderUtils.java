@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package de.cognicrypt.crysl.handler;
+package de.cognicrypt.crysl.builder;
 
 import java.util.Arrays;
 import org.eclipse.core.resources.ICommand;
@@ -22,6 +22,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.Activator;
 
 public class CrySLBuilderUtils {
 
@@ -56,7 +57,7 @@ public class CrySLBuilderUtils {
 		}
 	}
 
-	static boolean hasCrySLFiles(IContainer cont) throws CoreException {
+	public static boolean hasCrySLFiles(IContainer cont) throws CoreException {
 		boolean hasCrySLFiles = false;
 		for (IResource member : cont.members()) {
 			if (member instanceof IContainer) {

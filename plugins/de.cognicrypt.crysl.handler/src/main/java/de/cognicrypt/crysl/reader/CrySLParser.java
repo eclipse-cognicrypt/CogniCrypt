@@ -1,8 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
-
- * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.crysl.reader;
@@ -65,7 +62,7 @@ import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.handler.Activator;
+import de.cognicrypt.crysl.Activator;
 import de.cognicrypt.utils.Utils;
 import de.darmstadt.tu.crossing.CrySLStandaloneSetup;
 import de.darmstadt.tu.crossing.CrySL.ui.internal.CrySLActivator;
@@ -105,7 +102,7 @@ import de.darmstadt.tu.crossing.crySL.UseBlock;
 import de.darmstadt.tu.crossing.crySL.impl.DomainmodelImpl;
 import de.darmstadt.tu.crossing.crySL.impl.ObjectImpl;
 
-public class CrySLModelReader {
+public class CrySLParser {
 
 	private List<CrySLForbiddenMethod> forbiddenMethods = null;
 	private StateMachineGraph smg = null;
@@ -116,8 +113,8 @@ public class CrySLModelReader {
 	private static final String ANY_TYPE = "AnyType";
 	private static final String NULL = "null";
 	private static final String UNDERSCORE = "_";
-	
-	public CrySLModelReader(IProject iProject) throws CoreException, IOException {
+
+	public CrySLParser(IProject iProject) throws CoreException, IOException {
 		final Injector injector = CrySLActivator.getInstance().getInjector(CrySLActivator.DE_DARMSTADT_TU_CROSSING_CRYSL);
 		resourceSet = injector.getInstance(XtextResourceSet.class);
 
@@ -136,23 +133,20 @@ public class CrySLModelReader {
 	/**
 	 * This constructor use the CogniCyrpt Core plugin lib folder as classpath
 	 */
-	public CrySLModelReader(){
+	public CrySLParser() {
 		CrySLStandaloneSetup crySLStandaloneSetup = new CrySLStandaloneSetup();
 		final Injector injector = crySLStandaloneSetup.createInjectorAndDoEMFRegistration();
 		this.resourceSet = injector.getInstance(XtextResourceSet.class);
-		String coreLibFolderPath = Utils.getResourceFromWithin("lib").getAbsolutePath();
-		
 		List<File> jars = new ArrayList<>();
-		for (String file : Utils.getResourceFromWithin("lib").list()) {
-			jars.add(new File(coreLibFolderPath+Constants.innerFileSeparator+file));
-		}
+		String[] l = System.getProperty("java.class.path").split(";");
 
-		URL[] classpath = new URL[jars.size()];
+		URL[] classpath = new URL[l.length];
 		for (int i = 0; i < classpath.length; i++) {
 			try {
-				classpath[i] = jars.get(i).toURI().toURL();
-			} catch (MalformedURLException e) {
-				Activator.getDefault().logError("File path: "+jars.get(i)+" could not converted to java.net.URI object");
+				classpath[i] = new File(l[i]).toURI().toURL();
+			}
+			catch (MalformedURLException e) {
+				Activator.getDefault().logError("File path: " + jars.get(i) + " could not converted to java.net.URI object");
 			}
 		}
 
@@ -212,11 +206,11 @@ public class CrySLModelReader {
 				actPreds.add(pred.tobasicPredicate());
 			} else {
 				actPreds.add(new CrySLCondPredicate(pred.getBaseObject(), pred.getPredName(), pred.getParameters(), pred.isNegated(),
-						getStatesForMethods(CrySLReaderUtils.resolveAggregateToMethodeNames(cond))));
+						getStatesForMethods(CrySLParserUtils.resolveAggregateToMethodeNames(cond))));
 			}
 		}
 		final CrySLRule rule = new CrySLRule(curClass, objects, this.forbiddenMethods, this.smg, constraints, actPreds);
-		
+
 		return rule;
 	}
 
@@ -277,8 +271,8 @@ public class CrySLModelReader {
 				CrySLRule rule = readRule(resAsFile);
 				if (rule != null) {
 					rules.add(rule);
-					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath() + Constants.innerFileSeparator
-							+ rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
+					File to = new File(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR, de.cognicrypt.core.Activator.PLUGIN_ID).getAbsolutePath()
+							+ Constants.innerFileSeparator + rule.getClassName().substring(rule.getClassName().lastIndexOf(".") + 1) + Constants.cryslFileEnding);
 					try {
 						Files.copy(resAsFile, to);
 					}
@@ -574,7 +568,7 @@ public class CrySLModelReader {
 
 			final Event alternative = fm.getRep();
 			if (alternative != null) {
-				crysl.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(alternative));
+				crysl.addAll(CrySLParserUtils.resolveAggregateToMethodeNames(alternative));
 			}
 			methodSignatures.add(new CrySLForbiddenMethod(
 					new CrySLMethod(meth.getDeclaringType().getIdentifier() + "." + meth.getSimpleName(), pars, null, new SimpleEntry<>(UNDERSCORE, ANY_TYPE)), false, crysl));
@@ -633,12 +627,12 @@ public class CrySLModelReader {
 		switch (pred) {
 			case "callTo":
 				final List<ICrySLPredicateParameter> methodsToBeCalled = new ArrayList<>();
-				methodsToBeCalled.addAll(CrySLReaderUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
+				methodsToBeCalled.addAll(CrySLParserUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0)));
 				slci = new CrySLPredicate(null, pred, methodsToBeCalled, false);
 				break;
 			case "noCallTo":
 				final List<ICrySLPredicateParameter> methodsNotToBeCalled = new ArrayList<>();
-				final List<CrySLMethod> resolvedMethodNames = CrySLReaderUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0));
+				final List<CrySLMethod> resolvedMethodNames = CrySLParserUtils.resolveAggregateToMethodeNames(((PreDefinedPredicates) lit.getCons()).getObj().get(0));
 				for (final CrySLMethod csm : resolvedMethodNames) {
 					this.forbiddenMethods.add(new CrySLForbiddenMethod(csm, true));
 					methodsNotToBeCalled.add(csm);
@@ -712,10 +706,10 @@ public class CrySLModelReader {
 					firstPar = false;
 				}
 			}
-			
+
 			final CrySLPredicate ensPredCons = extractReqPred(cons.getPredLit());
 			final String meth = pred.getPredName();
-			final SuperType cond = cons.getLabelCond(); 
+			final SuperType cond = cons.getLabelCond();
 			if (cond == null) {
 				preds.put(new ParEqualsPredicate(null, meth, variables, false, ensPredCons.getConstraint()), null);
 			} else {

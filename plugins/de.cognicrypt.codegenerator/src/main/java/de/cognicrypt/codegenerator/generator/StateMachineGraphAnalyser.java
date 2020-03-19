@@ -16,7 +16,7 @@ import java.util.List;
 import crypto.rules.StateMachineGraph;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.CrySLUtils;
 
 /**
  * 
@@ -75,7 +75,7 @@ public class StateMachineGraphAnalyser {
 		//usedTransitions.add(currentNode.getName());
 
 		// get all adjacent nodes from the current node
-		transitionsToAdjacentNodes.addAll(Utils.getOutgoingEdges(stateMachine.getAllTransitions(), currentTransition.getRight(), currentTransition.getRight()));
+		transitionsToAdjacentNodes.addAll(CrySLUtils.getOutgoingEdges(stateMachine.getAllTransitions(), currentTransition.getRight(), currentTransition.getRight()));
 		//		for (TransitionEdge edge : edges) {
 		//			
 		//			if (edge.getLeft().getName().equals(currentTransition.getRight().getName()))

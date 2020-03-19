@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package de.cognicrypt.crysl.handler;
+package de.cognicrypt.crysl.builder;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,9 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
-import de.cognicrypt.crysl.reader.CrySLReaderUtils;
+import de.cognicrypt.crysl.Activator;
+import de.cognicrypt.crysl.reader.CrySLParser;
+import de.cognicrypt.crysl.reader.CrySLParserUtils;
 
 public class CrySLBuilder extends IncrementalProjectBuilder {
 
@@ -37,7 +38,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		try {
-			CrySLModelReader csmr = new CrySLModelReader(getProject());
+			CrySLParser csmr = new CrySLParser(getProject());
 			final IProject curProject = getProject();
 			List<IPath> resourcesPaths = new ArrayList<IPath>();
 			List<IPath> outputPaths = new ArrayList<IPath>();
@@ -54,7 +55,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			for (int i = 0; i < resourcesPaths.size(); i++) {
-				CrySLReaderUtils.storeRulesToFile(csmr.readRulesWithin(resourcesPaths.get(i).toOSString()),
+				CrySLParserUtils.storeRulesToFile(csmr.readRulesWithin(resourcesPaths.get(i).toOSString()),
 						ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
 			}
 		}

@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package de.cognicrypt.crysl.handler;
+package de.cognicrypt.crysl;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -16,8 +16,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IPartListener2;
 import org.eclipse.ui.IWorkbenchPartReference;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.builder.CrySLBuilderUtils;
 
-public class CrySLFileOpenerListener implements IPartListener2 {
+public class CrySLProjectTransformer implements IPartListener2 {
 
 	@Override
 	public void partOpened(IWorkbenchPartReference partRef) {

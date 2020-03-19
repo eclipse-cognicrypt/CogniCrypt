@@ -1,8 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
-
- * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.utils;
@@ -52,18 +49,17 @@ public class DeveloperProject {
 	 *         and {@link org.eclipse.jdt.core.IJavaProject#setRawClassPath() setRawClassPath()}
 	 */
 	public boolean addJar(final String pathToJar) throws CoreException {
-		if (this.project.isOpen() && this.project.hasNature(Constants.JavaNatureID)) {
-			final IJavaProject projectAsJavaProject = JavaCore.create(this.project);
-			final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<>();
-
-			classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
-			classPathEntryList.add(JavaCore.newLibraryEntry(this.project.getFile(pathToJar).getFullPath(), null, null, false));
-
-			projectAsJavaProject.setRawClasspath(classPathEntryList.toArray(new IClasspathEntry[1]), null);
-			return true;
+		if (!this.project.isOpen() || !this.project.hasNature(Constants.JavaNatureID)) {
+			return false;
 		}
+		final IJavaProject projectAsJavaProject = JavaCore.create(this.project);
+		final LinkedHashSet<IClasspathEntry> classPathEntryList = new LinkedHashSet<>();
 
-		return false;
+		classPathEntryList.addAll(Arrays.asList(projectAsJavaProject.getRawClasspath()));
+		classPathEntryList.add(JavaCore.newLibraryEntry(this.project.getFile(pathToJar).getFullPath(), null, null, false));
+
+		projectAsJavaProject.setRawClasspath(classPathEntryList.toArray(new IClasspathEntry[1]), null);
+		return true;
 	}
 
 	/**
@@ -85,7 +81,7 @@ public class DeveloperProject {
 	public IFile getIFile(final String path) {
 		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
 	}
-	
+
 	public IFile getFile(final String path) {
 		return this.project.getFile(path);
 	}
@@ -196,7 +192,8 @@ public class DeveloperProject {
 	public boolean isMavenProject() {
 		try {
 			return this.project.hasNature(Constants.MavenNatureID);
-		}	catch (CoreException e) {
+		}
+		catch (CoreException e) {
 			Activator.getDefault().logError(e);
 		}
 		return false;
@@ -208,7 +205,7 @@ public class DeveloperProject {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if pom.xml is existing.
 	 */
 	private boolean doesPomExists() {
-		return new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml").exists()|| new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent" + Constants.outerFileSeparator + "pom.xml").exists();
+		return getPomFile() != null;
 	}
 
 	/**
@@ -217,7 +214,7 @@ public class DeveloperProject {
 	 * @return pom.xml
 	 */
 	private File getPomFile() {
-		File pom = null; 
+		File pom = null;
 		if ((pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "pom.xml")).exists()) {
 			return pom;
 		} else if ((pom = new File(project.getLocation().toOSString() + Constants.outerFileSeparator + "parent" + Constants.outerFileSeparator + "pom.xml")).exists()) {
@@ -296,8 +293,7 @@ public class DeveloperProject {
 			for (int j = 0; j < dependencyNodeList.getLength(); j++) {
 				Node currentDependencyNode = dependencyNodeList.item(j);
 				if (currentDependencyNode.getNodeType() == Node.ELEMENT_NODE) {
-					String nodeName = currentDependencyNode.getNodeName();
-					switch(nodeName) {
+					switch (currentDependencyNode.getNodeName()) {
 						case Constants.GROUPID_TAG:
 							groupIdNode = currentDependencyNode;
 							break;
@@ -311,7 +307,8 @@ public class DeveloperProject {
 				}
 			}
 		}
-		return groupIdNode != null && artifactIdNode != null && versionNode != null && groupIdNode.getTextContent().equals(groupId) && artifactIdNode.getTextContent().equals(artifactId) && versionNode.getTextContent().equals(version);
+		return groupIdNode != null && artifactIdNode != null && versionNode != null && groupIdNode.getTextContent().equals(groupId)
+				&& artifactIdNode.getTextContent().equals(artifactId) && versionNode.getTextContent().equals(version);
 	}
 
 	/**

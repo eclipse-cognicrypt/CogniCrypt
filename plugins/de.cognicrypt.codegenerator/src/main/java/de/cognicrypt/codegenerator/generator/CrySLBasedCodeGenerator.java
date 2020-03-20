@@ -75,6 +75,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.CrySLUtils;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -154,7 +155,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		tmplUsage.setReturnType("void");
 		tmplUsage.setName(Constants.NameOfTemporaryMethod);
 
-		RuleDependencyTree rdt = new RuleDependencyTree(Utils.readCrySLRules());
+		RuleDependencyTree rdt = new RuleDependencyTree(CrySLUtils.readCrySLRules());
 
 		for (GeneratorMethod method : ruleClass.getMethods()) {
 			tmpUsagePars.put(method.getName(), new ArrayList<String>());
@@ -1250,7 +1251,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					String rule = Utils.filterQuotes(arguments.get(0).toString());
 					String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
 					try {
-						CrySLRule crySLRule = Utils.getCrySLRule(simpleRuleName);
+						CrySLRule crySLRule = CrySLUtils.getCrySLRule(simpleRuleName);
 						for (CodeGenCrySLObject o : pars) {
 							for (TransitionEdge edge : crySLRule.getUsagePattern().getEdges()) {
 								for (CrySLMethod method : edge.getLabel()) {

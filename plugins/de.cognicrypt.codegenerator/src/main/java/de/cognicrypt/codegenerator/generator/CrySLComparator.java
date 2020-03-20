@@ -13,14 +13,14 @@ package de.cognicrypt.codegenerator.generator;
 import java.util.Comparator;
 
 import crypto.rules.CrySLRule;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.CrySLUtils;
 
 public class CrySLComparator implements Comparator<CrySLRule> {
 
 	RuleDependencyTree rdt;
 
 	public CrySLComparator() {
-		rdt = new RuleDependencyTree(Utils.readCrySLRules());
+		rdt = new RuleDependencyTree(CrySLUtils.readCrySLRules());
 	}
 
 	@Override

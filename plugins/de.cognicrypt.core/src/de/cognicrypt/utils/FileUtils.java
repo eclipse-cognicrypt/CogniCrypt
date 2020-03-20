@@ -18,7 +18,7 @@ import de.cognicrypt.core.Constants;
 /**
  * A helper class for files.
  */
-public class FileHelper {
+public class FileUtils {
 
 	/**
 	 * Deletes file with given name.
@@ -28,16 +28,15 @@ public class FileHelper {
 	 */
 	public static boolean deleteFile(final String fileName) {
 		try {
-			final File f = new File(fileName);
-			if (f.exists()) {
+			if (new File(fileName).exists()) {
 				Files.delete(Paths.get(fileName));
 			}
+			return true;
 		}
 		catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -49,8 +48,8 @@ public class FileHelper {
 	 * @throws IOException
 	 */
 	public static boolean checkFileForString(final String filePath, final String searchString) throws IOException {
-		final File f = new File(filePath);
-		if (!(f.exists() && Files.isReadable(f.toPath()))) {
+		final File file = new File(filePath);
+		if (!(file.exists() && Files.isReadable(file.toPath()))) {
 			return false;
 		}
 
@@ -64,13 +63,13 @@ public class FileHelper {
 	 * @throws IOException
 	 */
 	public static void trimFile(final String filePath) throws IOException {
-		final File f = new File(filePath);
-		if (!(f.exists() && Files.isReadable(f.toPath()))) {
+		final File file = new File(filePath);
+		if (!(file.exists() && Files.isReadable(file.toPath()))) {
 			Activator.getDefault().logError("Output file" + filePath + " could not be trimmed. It does either not exist or is not readable.");
 		}
 
 		final String contentStringAlt = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath))).trim();
-		final FileWriter writer = new FileWriter(f);
+		final FileWriter writer = new FileWriter(file);
 		writer.write(contentStringAlt);
 		writer.close();
 	}

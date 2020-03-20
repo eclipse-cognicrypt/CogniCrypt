@@ -8,8 +8,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import com.google.common.base.Strings;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.handler.Activator;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.crysl.Activator;
+import de.cognicrypt.utils.CrySLUtils;
 
 /**
  * This class creates programmatically a CrySL rule 
@@ -35,8 +35,8 @@ public class CrySLRuleCreator {
 	public boolean createRule(String filePath, String spec, List<String> objects, List<String> events, String order,
 			List<String> constraints, List<String> requires, List<String> ensures) {
 
-		if (Strings.isNullOrEmpty(spec) || Utils.isNullOrEmpty(objects) || Utils.isNullOrEmpty(events)
-				|| Strings.isNullOrEmpty(order) || Utils.isNullOrEmpty(ensures)) {
+		if (Strings.isNullOrEmpty(spec) || CrySLUtils.isNullOrEmpty(objects) || CrySLUtils.isNullOrEmpty(events)
+				|| Strings.isNullOrEmpty(order) || CrySLUtils.isNullOrEmpty(ensures)) {
 			Activator.getDefault().logError(null, "One or more mandatory sections are null or empty");
 			return false;
 		}
@@ -172,7 +172,7 @@ public class CrySLRuleCreator {
 	 */
 	private String buildCrySLSectionString(String section, List<String> values) {
 
-		if (Utils.isNullOrEmpty(values)) {
+		if (CrySLUtils.isNullOrEmpty(values)) {
 			return "";
 		}
 

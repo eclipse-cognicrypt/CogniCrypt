@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.CompilationUnit;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
@@ -82,13 +83,15 @@ public class Utils {
 			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
 				for (final ICompilationUnit cu : l.getCompilationUnits()) {
 					final IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
-					String name = cuResource.getParent().getElementName() + "." + cuResource.getElementName();
+					for (IJavaElement a : (ArrayList<IJavaElement>)((CompilationUnit) cuResource).getChildrenOfType(7)) {
+						String name = cuResource.getParent().getElementName() + "." + a.getElementName();
 
-					if (name.startsWith(".")) {
-						name = name.substring(1);
-					}
-					if (name.startsWith(className)) {
-						return cu.getCorrespondingResource();
+						if (name.startsWith(".")) {
+							name = name.substring(1);
+						}
+						if (name.startsWith(className)) {
+							return cu.getCorrespondingResource();
+						}
 					}
 				}
 			}

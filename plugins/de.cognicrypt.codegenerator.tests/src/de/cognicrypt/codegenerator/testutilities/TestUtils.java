@@ -289,6 +289,7 @@ public class TestUtils {
 		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
 		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
 			if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
+				
 				return packageFragment.getCompilationUnits()[i];
 			}
 		}
@@ -357,6 +358,17 @@ public class TestUtils {
 		}
 
 		return -1;
+	}
+
+	public static IPackageFragment generatePackageInJavaProject(IJavaProject generatedProject, String packageName) throws JavaModelException {
+		final IPackageFragment pack = generatedProject.getPackageFragmentRoot(generatedProject.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
+		return pack;
+	}
+
+
+	public static boolean packageExists(IJavaProject generatedProject, String packagenameasname) throws JavaModelException {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

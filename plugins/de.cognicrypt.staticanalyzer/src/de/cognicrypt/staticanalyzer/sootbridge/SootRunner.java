@@ -38,6 +38,7 @@ import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
+import crypto.providerdetection.ProviderDetection;
 import crypto.analysis.CryptoScanner;
 import crypto.rules.CrySLRule;
 import crypto.rules.CrySLRuleReader;
@@ -72,6 +73,7 @@ public class SootRunner {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
+				IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 				BoomerangPretransformer.v().apply();
 				final ObservableDynamicICFG icfg = new ObservableDynamicICFG(true);
 				CryptoScanner scanner = new CryptoScanner() {

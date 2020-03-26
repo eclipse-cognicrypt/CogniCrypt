@@ -14,8 +14,7 @@ import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.utils.DeveloperProject;
 
-public class CodeGenOthersTest { 
-
+public class CodeGenLocationSelectionTest {
 //	/**
 //	 * Scenario: user doesn't select a specific class or package.
 //	 * Expected behavior: CC generates its own package with the necessary classes

@@ -366,9 +366,11 @@ public class TestUtils {
 	}
 
 
-	public static boolean packageExists(IJavaProject generatedProject, String packagenameasname) throws JavaModelException {
-		// TODO Auto-generated method stub
-		return true;
+	public static boolean packageExists(IJavaProject generatedProject, String packagenameasname) {
+		final IPackageFragment expectedPackage = generatedProject.getPackageFragmentRoot(generatedProject.getProject().getFolder("src")).getPackageFragment(packagenameasname);
+		if (expectedPackage != null) {
+			return true;
+		}return false;
 	}
 
 }

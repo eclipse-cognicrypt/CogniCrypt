@@ -251,7 +251,6 @@ public class IssueReportFix implements IMarkerResolution {
 		}
 		catch (CoreException e) {
 			Activator.getDefault().logError(e);
-			e.printStackTrace();
 		}
 		return errorLine;
 	}

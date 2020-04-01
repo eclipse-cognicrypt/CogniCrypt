@@ -40,6 +40,7 @@ import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.providerdetection.ProviderDetection;
 import crypto.analysis.CryptoScanner;
+import crypto.rules.CrySLMethod;
 import crypto.rules.CrySLRule;
 import crypto.rules.CrySLRuleReader;
 import de.cognicrypt.core.Constants;
@@ -260,7 +261,7 @@ public class SootRunner {
 		final List<String> excludeList = new LinkedList<String>();
 		for (final CrySLRule r : getRules(project.getProject())) {
 			try {
-				String fullyQualifiedName = crypto.Utils.getFullyQualifiedName(r);
+				String fullyQualifiedName = getFullyQualifiedName(r);
 				excludeList.add(fullyQualifiedName);
 			}
 			catch (RuntimeException e) {
@@ -268,6 +269,14 @@ public class SootRunner {
 			}
 		}
 		return excludeList;
+	}
+
+	public static String getFullyQualifiedName(CrySLRule r) {
+		for(CrySLMethod l : r.getUsagePattern().getInitialTransition().getLabel()) {
+			return l.toString().substring(0, l.toString().lastIndexOf("."));
+		}
+		
+		throw new RuntimeException("Could not get fully qualified class name for rule" + r);
 	}
 
 	private static void registerTransformers(final ResultsCCUIListener resultsReporter) {

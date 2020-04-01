@@ -26,9 +26,9 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 
 /**
- * @author André Sonntag
+ * @author Andre Sonntag
  */
-public class TwoTimesCogniCryptRunTests {
+public class TwoTimesCogniCryptRunTest {
 
 	/**
 	 * Scenario: User runs CogniCrypt two times without selecting a specific class

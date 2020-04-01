@@ -12,7 +12,9 @@ package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +23,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.junit.Test;
+
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
@@ -30,12 +33,13 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 
 public class CrySLCodeGenTest {
-
+	
 	@Test
 	public void generateSymEnc() throws IOException {
 		String template = "secretkeyencryption";
 		try {
-			IResource targetFile = TestUtils.generateJavaClassInJavaProject(TestUtils.createJavaProject("TestProject_SYMENC"), "testPackage", "Test");
+			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SYMENC");
+			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
@@ -53,6 +57,8 @@ public class CrySLCodeGenTest {
 			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
 			assertEquals(13, TestUtils.countStatements(encClassUnit, "encrypt"));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "decrypt"));
+			TestUtils.deleteProject(testJavaProject.getProject());
+
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -60,7 +66,6 @@ public class CrySLCodeGenTest {
 		catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
 		}
-
 	}
 
 	@Test
@@ -86,6 +91,8 @@ public class CrySLCodeGenTest {
 			assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
 			assertEquals(13, TestUtils.countStatements(encClassUnit, "encrypt"));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "decrypt"));
+			TestUtils.deleteProject(testJavaProject.getProject());
+
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -96,7 +103,6 @@ public class CrySLCodeGenTest {
 		catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
-
 	}
 
 	@Test
@@ -122,6 +128,8 @@ public class CrySLCodeGenTest {
 			assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
 			assertEquals(15, TestUtils.countStatements(encClassUnit, "encrypt"));
 			assertEquals(13, TestUtils.countStatements(encClassUnit, "decrypt"));
+			TestUtils.deleteProject(testJavaProject.getProject());
+
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -132,7 +140,6 @@ public class CrySLCodeGenTest {
 		catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
-
 	}
 
 	@Test
@@ -158,6 +165,7 @@ public class CrySLCodeGenTest {
 			assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
 			assertEquals(14, TestUtils.countStatements(encClassUnit, "encrypt"));
 			assertEquals(12, TestUtils.countStatements(encClassUnit, "decrypt"));
+			TestUtils.deleteProject(testJavaProject.getProject());
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -168,7 +176,6 @@ public class CrySLCodeGenTest {
 		catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
-
 	}
 
 	@Test
@@ -196,6 +203,7 @@ public class CrySLCodeGenTest {
 			assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
 			assertEquals(13, TestUtils.countStatements(encClassUnit, "encryptData"));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "decryptData"));
+			TestUtils.deleteProject(testJavaProject.getProject());
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -233,6 +241,7 @@ public class CrySLCodeGenTest {
 			assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
 			assertEquals(15, TestUtils.countStatements(encClassUnit, "encryptData"));
 			assertEquals(13, TestUtils.countStatements(encClassUnit, "decryptData"));
+			TestUtils.deleteProject(testJavaProject.getProject());
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -243,9 +252,9 @@ public class CrySLCodeGenTest {
 		catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
-
 	}
 
+	//TODO: NullPointerException
 	@Test
 	public void generateHybridEncStrings() {
 		String template = "encryptionhybridstrings";
@@ -271,6 +280,7 @@ public class CrySLCodeGenTest {
 			assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
 			assertEquals(15, TestUtils.countStatements(encClassUnit, "encryptData"));
 			assertEquals(13, TestUtils.countStatements(encClassUnit, "decryptData"));
+			TestUtils.deleteProject(testJavaProject.getProject());
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -281,9 +291,9 @@ public class CrySLCodeGenTest {
 		catch (IOException e) {
 			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
-
 	}
 
+	//TODO: NullPointerException
 	@Test
 	public void generateSecPwd() {
 		String template = "securePassword";
@@ -306,6 +316,7 @@ public class CrySLCodeGenTest {
 			assertEquals(5, TestUtils.countMethods(encClassUnit));
 			assertEquals(11, TestUtils.countStatements(encClassUnit, "createPWHash"));
 			assertEquals(10, TestUtils.countStatements(encClassUnit, "verifyPWHash"));
+			TestUtils.deleteProject(testJavaProject.getProject());
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -318,6 +329,7 @@ public class CrySLCodeGenTest {
 		}
 	}
 
+	//TODO: NullPointerException
 	@Test
 	public void generatedigSign() {
 		String template = "digitalsignatures";
@@ -341,6 +353,7 @@ public class CrySLCodeGenTest {
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
 			assertEquals(7, TestUtils.countStatements(encClassUnit, "sign"));
 			// assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
+			TestUtils.deleteProject(testJavaProject.getProject());
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -375,6 +388,7 @@ public class CrySLCodeGenTest {
 			assertEquals(2, TestUtils.countMethods(encClassUnit));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "createHash"));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "verifyHash"));
+			TestUtils.deleteProject(testJavaProject.getProject());
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");

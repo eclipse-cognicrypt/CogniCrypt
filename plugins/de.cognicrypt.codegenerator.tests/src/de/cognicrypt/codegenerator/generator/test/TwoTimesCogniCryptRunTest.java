@@ -14,10 +14,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
 import org.junit.Test;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
@@ -33,159 +38,187 @@ public class TwoTimesCogniCryptRunTest {
 	/**
 	 * Scenario: User runs CogniCrypt two times without selecting a specific class
 	 * or package.
+	 * @throws IOException 
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void runCCTwoTimesNoSpecificSelection() throws Exception {
+	public void runCCTwoTimesNoSpecificSelection() throws IOException{
 		// task template
 		String templateSecEnc = "secretkeyencryption";
 		String templateSecPwd = "securepassword";
 
-		// create Java project without any package or class
-		IJavaProject generatedProject = TestUtils.createJavaProject("TestProject1");
+		try {
+			// create Java project without any package or class
+			IJavaProject generatedProject = TestUtils.createJavaProject("TestProject1");
 
-		// setup for code generation
-		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
-		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
-				generatedProject.getResource(), codeGenerator, developerProject);
+			// setup for code generation
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
+					generatedProject.getResource(), codeGenerator, developerProject);
 
-		// first generation run
-		boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
-		assertTrue(secEncCheck); // check if code generation is successful for the first run
+			// first generation run
+			boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(secEncCheck); // check if code generation is successful for the first run
 
-		// setup for second generation
-		chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, generatedProject.getResource(), codeGenerator,
-				developerProject);
+			// setup for second generation
+			chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, generatedProject.getResource(),
+					codeGenerator, developerProject);
 
-		// second generation run
-		boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
-		assertTrue(secPwdCheck); // check if code generation is successful for the second run
+			// second generation run
+			boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(secPwdCheck); // check if code generation is successful for the second run
 
-		ICompilationUnit encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"SecureEncryptor.java");
-		assertNotNull(encClass); // check if SecureEncryptor.java is created
+			ICompilationUnit encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
+					"SecureEncryptor.java");
+			assertNotNull(encClass); // check if SecureEncryptor.java is created
 
-		ICompilationUnit pwdHasherClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"PasswordHasher.java");
-		assertNotNull(pwdHasherClass); // check if PasswordHasher.java is created
+			ICompilationUnit pwdHasherClass = TestUtils.getICompilationUnit(developerProject,
+					Constants.PackageNameAsName, "PasswordHasher.java");
+			assertNotNull(pwdHasherClass); // check if PasswordHasher.java is created
 
-		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"Output.java");
-		assertNotNull(outputClass); // check if Output.java is created
-		assertEquals(1, TestUtils.countMethods(outputClass));
+			ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
+					"Output.java");
+			assertNotNull(outputClass); // check if Output.java is created
+			assertEquals(1, TestUtils.countMethods(outputClass));
+			TestUtils.deleteProject(generatedProject.getProject());
 
-		TestUtils.deleteProject(generatedProject.getProject());
+		} catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+
 	}
 
 	/**
 	 * Scenario: User runs CogniCrypt two times and selects the previous generated
 	 * output class.
+	 * @throws IOException 
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void runCCTwoTimesOutputClassSelection() throws Exception {
-		// task template
-		String templateSecEnc = "secretkeyencryption";
-		String templateSecPwd = "securepassword";
+	public void runCCTwoTimesOutputClassSelection() throws IOException {
+		try {
+			// task template
+			String templateSecEnc = "secretkeyencryption";
+			String templateSecPwd = "securepassword";
 
-		// create Java project without any package or class
-		IJavaProject generatedProject = TestUtils.createJavaProject("TestProject2");
+			// create Java project without any package or class
+			IJavaProject generatedProject = TestUtils.createJavaProject("TestProject2");
 
-		// setup for first generation
-		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
-		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
-				generatedProject.getResource(), codeGenerator, developerProject);
+			// setup for first generation
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
+					generatedProject.getResource(), codeGenerator, developerProject);
 
-		// first generation run
-		boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
-		assertTrue(secEncCheck); // check if code generation is successful for the first run
+			// first generation run
+			boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(secEncCheck); // check if code generation is successful for the first run
 
-		ICompilationUnit encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"SecureEncryptor.java");
-		assertNotNull(encClass); // check if SecureEncryptor.java is created
+			ICompilationUnit encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
+					"SecureEncryptor.java");
+			assertNotNull(encClass); // check if SecureEncryptor.java is created
 
-		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"Output.java");
-		assertNotNull(outputClass);
+			ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
+					"Output.java");
+			assertNotNull(outputClass);
 
-		// setup for second generation
-		codeGenerator = new CrySLBasedCodeGenerator(outputClass.getResource());
-		developerProject = codeGenerator.getDeveloperProject();
-		chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, outputClass.getResource(), codeGenerator,
-				developerProject);
+			// setup for second generation
+			codeGenerator = new CrySLBasedCodeGenerator(outputClass.getResource());
+			developerProject = codeGenerator.getDeveloperProject();
+			chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, outputClass.getResource(), codeGenerator,
+					developerProject);
 
-		// second generation run
-		boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
-		assertTrue(secPwdCheck); // check if code generation is successful for the second run
+			// second generation run
+			boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(secPwdCheck); // check if code generation is successful for the second run
 
-		ICompilationUnit pwdHasherClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"PasswordHasher.java");
-		assertNotNull(pwdHasherClass); // check if PasswordHasher.java is created
+			ICompilationUnit pwdHasherClass = TestUtils.getICompilationUnit(developerProject,
+					Constants.PackageNameAsName, "PasswordHasher.java");
+			assertNotNull(pwdHasherClass); // check if PasswordHasher.java is created
 
-		outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "Output.java");
-		assertNotNull(outputClass);
+			outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "Output.java");
+			assertNotNull(outputClass);
 
-		int outputMethodCount = TestUtils.countMethods(outputClass);
-		assertEquals(1, outputMethodCount);
+			int outputMethodCount = TestUtils.countMethods(outputClass);
+			assertEquals(1, outputMethodCount);
+
+			TestUtils.deleteProject(generatedProject.getProject());
+
+		} catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
 	}
 
 	/**
 	 * Scenario: User runs CogniCrypt two times and selects a previous generated
 	 * "logic" class.
+	 * @throws IOException 
 	 * 
 	 * @throws Exception
 	 */
 	@Test
-	public void runCCTwoTimesLogicClassSelection() throws Exception {
-		// task template
-		String templateSecEnc = "secretkeyencryption";
-		String templateSecPwd = "securepassword";
+	public void runCCTwoTimesLogicClassSelection() throws IOException {
+		try {
+			// task template
+			String templateSecEnc = "secretkeyencryption";
+			String templateSecPwd = "securepassword";
 
-		// create Java project without any package or class
-		IJavaProject generatedProject = TestUtils.createJavaProject("TestProject3");
+			// create Java project without any package or class
+			IJavaProject generatedProject = TestUtils.createJavaProject("TestProject3");
 
-		// setup for first generation
-		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
-		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
-				generatedProject.getResource(), codeGenerator, developerProject);
+			// setup for first generation
+			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
+			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
+					generatedProject.getResource(), codeGenerator, developerProject);
 
-		// first generation run
-		boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
-		assertTrue(secEncCheck); // check if code generation is successful for the first run
+			// first generation run
+			boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(secEncCheck); // check if code generation is successful for the first run
 
-		ICompilationUnit encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"SecureEncryptor.java");
-		assertNotNull(encClass); // check if SecureEncryptor.java is created
+			ICompilationUnit encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
+					"SecureEncryptor.java");
+			assertNotNull(encClass); // check if SecureEncryptor.java is created
 
-		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"Output.java");
-		assertNotNull(outputClass);
+			ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
+					"Output.java");
+			assertNotNull(outputClass);
 
-		// setup for second generation
-		codeGenerator = new CrySLBasedCodeGenerator(encClass.getResource());
-		developerProject = codeGenerator.getDeveloperProject();
-		chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, encClass.getResource(), codeGenerator,
-				developerProject);
+			// setup for second generation
+			codeGenerator = new CrySLBasedCodeGenerator(encClass.getResource());
+			developerProject = codeGenerator.getDeveloperProject();
+			chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, encClass.getResource(), codeGenerator,
+					developerProject);
 
-		// second generation run
-		boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
-		assertTrue(secPwdCheck); // check if code generation is successful for the second run
+			// second generation run
+			boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
+			assertTrue(secPwdCheck); // check if code generation is successful for the second run
 
-		ICompilationUnit pwdHasherClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
-				"PasswordHasher.java");
-		assertNotNull(pwdHasherClass); // check if PasswordHasher.java is created
+			ICompilationUnit pwdHasherClass = TestUtils.getICompilationUnit(developerProject,
+					Constants.PackageNameAsName, "PasswordHasher.java");
+			assertNotNull(pwdHasherClass); // check if PasswordHasher.java is created
 
-		encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
-		assertNotNull(encClass);
+			encClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
+					"SecureEncryptor.java");
+			assertNotNull(encClass);
 
-		int secureEncryptorMethodCount = TestUtils.countMethods(encClass);
+			int secureEncryptorMethodCount = TestUtils.countMethods(encClass);
 
-		assertEquals(4, secureEncryptorMethodCount);
+			assertEquals(4, secureEncryptorMethodCount);
 
+			TestUtils.deleteProject(generatedProject.getProject());
+
+		} catch (JavaModelException e) {
+			Activator.getDefault().logError(e, "Could not create Java class in test project.");
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
 	}
 }

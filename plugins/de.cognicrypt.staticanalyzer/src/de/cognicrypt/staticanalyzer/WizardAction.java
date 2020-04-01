@@ -14,8 +14,6 @@ package de.cognicrypt.staticanalyzer;
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -61,9 +59,7 @@ public class WizardAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(final IAction action) {
 		final AnalysisKickOff akf = new AnalysisKickOff();
-		IProject ip = Utils.getCurrentlySelectedIProject();
-		final IJavaElement iJavaElement = JavaCore.create(ip);
-		akf.setUp(iJavaElement);
+		akf.setUp(JavaCore.create(Utils.getCurrentlySelectedIProject()));
 		akf.run();
 	}
 

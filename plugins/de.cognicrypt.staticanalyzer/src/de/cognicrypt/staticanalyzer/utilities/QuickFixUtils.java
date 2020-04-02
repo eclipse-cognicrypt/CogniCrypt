@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0
+ * which is available at http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.utilities;
@@ -129,14 +124,10 @@ public class QuickFixUtils {
 		}
 		return true;
 	}
-	
-	public static String getErrorTypeFromMarkerType(String markerType) {
-		
-		String temp = markerType.substring(0, markerType.length() - 6);
-		String[] parts = temp.split("\\.");
-		String type = parts[parts.length-1];		
 
-		return type;
+	public static String getErrorTypeFromMarkerType(String markerType) {
+		String[] parts = markerType.substring(0, markerType.length() - 6).split("\\.");
+		return parts[parts.length - 1];
 	}
 
 }

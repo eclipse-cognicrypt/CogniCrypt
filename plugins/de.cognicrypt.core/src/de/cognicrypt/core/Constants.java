@@ -537,6 +537,7 @@ public class Constants {
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
+	public static final String STATVIEWID = "de.cognicrypt.staticanalyzer.view.StatisticsView";
 
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";

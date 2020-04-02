@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 import crypto.rules.CrySLPredicate;
 import crypto.rules.CrySLRule;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
+import de.cognicrypt.crysl.reader.CrySLParser;
 
 public class PredicateConsistencyCheck {
 
 	@Test
 	public void predicateParameterNumberConsistencyTest() throws MalformedURLException, CoreException {
-		List<CrySLRule> rules = (new CrySLModelReader()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
+		List<CrySLRule> rules = (new CrySLParser()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
 		Map<String, List<PredicateDetails>> predicates = new HashMap<String, List<PredicateDetails>>();
 		for (CrySLRule rule : rules) {
 

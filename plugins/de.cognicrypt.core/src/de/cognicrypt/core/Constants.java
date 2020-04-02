@@ -512,6 +512,8 @@ public class Constants {
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 	public static final String UNSUPPRESSWARNING_FIX = "UnSuppress Warning: ";
+	public static final String ENSUREPREDICATE_FIX = "This object comes from a stream/database/other external source and is actually secure.";
+	public static final String FALSEPOSTIVEREPORTER_FIX = "Report false positive";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
@@ -526,6 +528,7 @@ public class Constants {
 
 	public static final String RULE_SELECTION = "de.cognicrypt.staticanalyzer.ruleSelection";
 	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
+	public static final String PROVIDER_DETECTION_ANALYSIS = "de.cognicrypt.staticanalyzer.providerDetectionAnalysis";
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";

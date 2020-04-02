@@ -48,6 +48,7 @@ import de.cognicrypt.crysl.creator.CrySLRuleCreator;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.utilities.QuickFixUtils;
 import de.cognicrypt.utils.DeveloperProject;
+import de.cognicrypt.utils.UIUtils;
 import de.cognicrypt.utils.Utils;
 
 /**
@@ -72,7 +73,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 	@Override
 	public void run(final IMarker marker) {
 
-		Utils.getCurrentlyOpenEditor().doSave(null);
+		UIUtils.getCurrentlyOpenEditor().doSave(null);
 
 		String errorVarName = "";
 		int errorVarIndex = 0;
@@ -93,7 +94,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		if(predicateParamCount > 1) {
 			final SuppressWarningFix tempFix = new SuppressWarningFix("");
 			tempFix.run(marker);
-			Utils.getCurrentlyOpenEditor().doSave(null);
+			UIUtils.getCurrentlyOpenEditor().doSave(null);
 			return;
 		}
 		
@@ -135,7 +136,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		
 		waitingDialog.setVisible(false);
 		waitingDialog.dispose();
-		Utils.getCurrentlyOpenEditor().doSave(null);
+		UIUtils.getCurrentlyOpenEditor().doSave(null);
 	}
 
 	/**
@@ -187,7 +188,7 @@ public class EnsuresPredicateFix implements IMarkerResolution {
 		if(varName.contains("$") || varName.contains("varReplacer")) {
 			final SuppressWarningFix tempFix = new SuppressWarningFix("");
 			tempFix.run(marker);
-			Utils.getCurrentlyOpenEditor().doSave(null);
+			UIUtils.getCurrentlyOpenEditor().doSave(null);
 		}
 		
 		final AST ast = unit.getAST();

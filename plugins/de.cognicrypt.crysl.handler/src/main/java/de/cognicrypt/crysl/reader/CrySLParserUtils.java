@@ -25,8 +25,9 @@ import de.darmstadt.tu.crossing.crySL.ObjectDecl;
 import de.darmstadt.tu.crossing.crySL.Par;
 import de.darmstadt.tu.crossing.crySL.ParList;
 import de.darmstadt.tu.crossing.crySL.SuperType;
+import de.cognicrypt.utils.CrySLUtils;
 
-public class CrySLReaderUtils {
+public class CrySLParserUtils extends CrySLUtils {
 
 	protected static List<CrySLMethod> dealWithAggregate(final Aggregate ev) {
 		final List<CrySLMethod> statements = new ArrayList<>();

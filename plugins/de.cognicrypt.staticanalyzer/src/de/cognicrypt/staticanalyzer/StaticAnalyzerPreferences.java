@@ -43,7 +43,8 @@ import de.cognicrypt.core.properties.PreferenceListener;
 import de.cognicrypt.staticanalyzer.utilities.AddNewRulesetDialog;
 import de.cognicrypt.staticanalyzer.utilities.ArtifactUtils;
 import de.cognicrypt.staticanalyzer.utilities.Ruleset;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.CrySLUtils;
+import de.cognicrypt.utils.UIUtils;
 
 public class StaticAnalyzerPreferences extends PreferenceListener {
 
@@ -51,6 +52,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Preferences rulePreferences = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 
 	private Button automatedAnalysisCheckBox;
+	private Button providerDetectionCheckBox;
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
 	private Button addNewRulesetButton, selectCustomRulesCheckBox;
@@ -83,6 +85,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	private void initializeBasicValues() {
 		automatedAnalysisCheckBox.setSelection(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
+		providerDetectionCheckBox.setSelection(preferences.getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 		selectCustomRulesCheckBox.setSelection(preferences.getBoolean(Constants.SELECT_CUSTOM_RULES));
@@ -92,6 +95,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private void performBasicDefaults() {
 		preferences.setDefault(Constants.RULE_SELECTION, 0);
 		preferences.setDefault(Constants.AUTOMATED_ANALYSIS, true);
+		preferences.setDefault(Constants.PROVIDER_DETECTION_ANALYSIS, false);
 		preferences.setDefault(Constants.SHOW_SECURE_OBJECTS, false);
 		preferences.setDefault(Constants.ANALYSE_DEPENDENCIES, true);
 		preferences.setDefault(Constants.CALL_GRAPH_SELECTION, 0);
@@ -176,11 +180,11 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
  			Ruleset ruleset = (Ruleset) itr.next();
  			ruleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
- 			String[] items = Utils.getRuleVersions(ruleset.getFolderName());
+ 			String[] items = CrySLUtils.getRuleVersions(ruleset.getFolderName());
  			if (items != null) {
 				ruleset.getVersions().setItems(items);
  			ruleset.getVersions()
- 					.setItems(Utils.getRuleVersions(ruleset.getFolderName()));
+ 					.setItems(CrySLUtils.getRuleVersions(ruleset.getFolderName()));
  			ruleset.setSelectedVersion((ruleset.getSelectedVersion().length() > 0) ? ruleset.getSelectedVersion()
  					: ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
  			ruleset.getVersions().select(ruleset.getVersions().indexOf(ruleset.getSelectedVersion()));
@@ -205,7 +209,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  	private void modifyRulesTable(Ruleset newRuleset) {
  		newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
  		newRuleset.getVersions()
- 				.setItems(Utils.getRuleVersions(newRuleset.getFolderName()));
+ 				.setItems(CrySLUtils.getRuleVersions(newRuleset.getFolderName()));
  		newRuleset.setSelectedVersion(newRuleset.getVersions().getItem(newRuleset.getVersions().getItemCount() - 1));
  		newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
  		createRulesTableRow(newRuleset);
@@ -226,7 +230,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
  	 *               for CogniCrypt are added.
  	 */
 	private void createBasicContents(Composite parent) {
-		final Group staticAnalysisGroup = Utils.addHeaderGroup(parent, "Analysis");
+		final Group staticAnalysisGroup = UIUtils.addHeaderGroup(parent, "Analysis");
 
 		final Composite source = new Composite(staticAnalysisGroup, SWT.FILL);
 		source.setLayout(new GridLayout(3, true));
@@ -258,6 +262,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable automated analysis when saving");
+		
+		providerDetectionCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
+		providerDetectionCheckBox.setText("Enable provider detection analysis");
 
 		secureObjectsCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		secureObjectsCheckBox.setText("Show secure objects");
@@ -347,7 +354,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	}
 
 	private void createAdvancedContents(Composite parent) {
-		final Group staticAnalysisGroup = Utils.addHeaderGroup(parent, "Analysis");
+		final Group staticAnalysisGroup = UIUtils.addHeaderGroup(parent, "Analysis");
 
 		final Composite callGraphContainer = new Composite(staticAnalysisGroup, SWT.None);
 		callGraphContainer.setLayout(new GridLayout(2, true));
@@ -417,6 +424,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	public void setDefaultValues() {
 		selectCustomRulesCheckBox.setSelection(true);
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
+		providerDetectionCheckBox.setSelection(preferences.getDefaultBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
 		suppressTLSErrorsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SUPPRESS_TLS_ERRORS));
@@ -445,6 +453,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	@Override
 	protected void storeValues() {
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
+		preferences.setValue(Constants.PROVIDER_DETECTION_ANALYSIS, providerDetectionCheckBox.getSelection());
 		preferences.setValue(Constants.SHOW_SECURE_OBJECTS, secureObjectsCheckBox.getSelection());
 		preferences.setValue(Constants.ANALYSE_DEPENDENCIES, analyseDependenciesCheckBox.getSelection());
 		preferences.setValue(Constants.CALL_GRAPH_SELECTION, CGSelection.getSelectionIndex());

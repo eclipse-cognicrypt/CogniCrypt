@@ -46,17 +46,16 @@ public class ArtifactDownload {
 	/**
 	 * This method fetches the artifact from the remote server using aether library
 	 * 
-	 * @param groupId         group ID of the artifact
-	 * @param artifactId      artifact ID of the artifact
-	 * @param version         artifact version to be downloaded
-	 * @param classifier      classifier of the artifact
-	 * @param packaging       packaging of the artifact
+	 * @param groupId group ID of the artifact
+	 * @param artifactId artifact ID of the artifact
+	 * @param version artifact version to be downloaded
+	 * @param classifier classifier of the artifact
+	 * @param packaging packaging of the artifact
 	 * @param localRepository destination path
 	 * @return location of the downloaded artifact in the local system
 	 * @throws IOException
 	 */
-	public static File getArtifactByAether(String groupId, String artifactId, String version, String classifier,
-			String packaging, File localRepository) throws IOException {
+	public static File getArtifactByAether(String groupId, String artifactId, String version, String classifier, String packaging, File localRepository) throws IOException {
 		RepositorySystem repositorySystem = newRepositorySystem();
 		RepositorySystemSession session = newSession(repositorySystem, localRepository);
 
@@ -67,25 +66,22 @@ public class ArtifactDownload {
 		List<RemoteRepository> repositories = new ArrayList<>();
 		Section ini = Utils.getConfig().get(Constants.INI_URL_HEADER);
 
-		RemoteRepository remoteRepository = new RemoteRepository.Builder("public", "default",
-				ini.get(Constants.INI_NEXUS_SOOT_RELEASE)).build();
+		RemoteRepository remoteRepository = new RemoteRepository.Builder("public", "default", ini.get(Constants.INI_NEXUS_SOOT_RELEASE)).build();
 
 		repositories.add(remoteRepository);
 
 		artifactRequest.setRepositories(repositories);
-		File result;
+		File result = null;
 
 		try {
 			ArtifactResult artifactResult = repositorySystem.resolveArtifact(session, artifactRequest);
 			artifact = artifactResult.getArtifact();
 			if (artifact != null) {
 				result = artifact.getFile();
-			} else {
-				result = null;
 			}
-		} catch (ArtifactResolutionException e) {
-			throw new IOException("Artifact " + groupId + ":" + artifactId + ":" + version
-					+ " could not be downloaded due to " + e.getMessage());
+		}
+		catch (ArtifactResolutionException e) {
+			throw new IOException("Artifact " + groupId + ":" + artifactId + ":" + version + " could not be downloaded due to " + e.getMessage());
 		}
 
 		return result;

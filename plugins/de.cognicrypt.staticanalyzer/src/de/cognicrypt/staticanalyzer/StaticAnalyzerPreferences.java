@@ -247,7 +247,13 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		selectCustomRulesCheckBox.setText("Select custom rules");
-
+		selectCustomRulesCheckBox.addListener(SWT.Selection, new Listener() {
+			@Override
+			public void handleEvent(Event e) {
+				preferences.setValue(Constants.SELECT_CUSTOM_RULES,selectCustomRulesCheckBox.getSelection());
+			}
+		});
+		
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable automated analysis when saving");
 
@@ -404,7 +410,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	public void setDefaultValues() {
-		selectCustomRulesCheckBox.setSelection(true);
+		selectCustomRulesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SELECT_CUSTOM_RULES));
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
 		providerDetectionCheckBox.setSelection(preferences.getDefaultBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));

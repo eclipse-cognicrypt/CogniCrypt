@@ -119,7 +119,7 @@ public class SootRunner {
 				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,
 						(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString())).map(path -> {
 							readRules.add(path.getFileName().toString());
-							return CrySLRuleReader.readFromSourceFile(path.toFile());
+							return r.readRule(path.toFile());
 						}).collect(Collectors.toList()));
 			}
 
@@ -240,7 +240,7 @@ public class SootRunner {
 		final List<String> excludeList = new LinkedList<String>();
 		for (final CrySLRule r : getRules(project.getProject())) {
 			try {
-				String fullyQualifiedName = getFullyQualifiedName(r);
+				String fullyQualifiedName = r.getClassName();
 				excludeList.add(fullyQualifiedName);
 			}
 			catch (RuntimeException e) {

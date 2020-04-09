@@ -47,6 +47,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Preferences rulePreferences = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 
 	private Button automatedAnalysisCheckBox;
+	private Button providerDetectionCheckBox;
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
 	private Button addNewRulesetButton, selectCustomRulesCheckBox;
@@ -78,6 +79,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	private void initializeBasicValues() {
 		automatedAnalysisCheckBox.setSelection(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
+		providerDetectionCheckBox.setSelection(preferences.getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 		selectCustomRulesCheckBox.setSelection(preferences.getBoolean(Constants.SELECT_CUSTOM_RULES));
@@ -86,6 +88,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private void performBasicDefaults() {
 		preferences.setDefault(Constants.RULE_SELECTION, 0);
 		preferences.setDefault(Constants.AUTOMATED_ANALYSIS, true);
+		preferences.setDefault(Constants.PROVIDER_DETECTION_ANALYSIS, false);
 		preferences.setDefault(Constants.SHOW_SECURE_OBJECTS, false);
 		preferences.setDefault(Constants.ANALYSE_DEPENDENCIES, true);
 		preferences.setDefault(Constants.CALL_GRAPH_SELECTION, 0);
@@ -403,6 +406,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	public void setDefaultValues() {
 		selectCustomRulesCheckBox.setSelection(true);
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
+		providerDetectionCheckBox.setSelection(preferences.getDefaultBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
 
@@ -430,6 +434,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	@Override
 	protected void storeValues() {
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
+		preferences.setValue(Constants.PROVIDER_DETECTION_ANALYSIS, providerDetectionCheckBox.getSelection());
 		preferences.setValue(Constants.SHOW_SECURE_OBJECTS, secureObjectsCheckBox.getSelection());
 		preferences.setValue(Constants.ANALYSE_DEPENDENCIES, analyseDependenciesCheckBox.getSelection());
 		preferences.setValue(Constants.CALL_GRAPH_SELECTION, CGSelection.getSelectionIndex());

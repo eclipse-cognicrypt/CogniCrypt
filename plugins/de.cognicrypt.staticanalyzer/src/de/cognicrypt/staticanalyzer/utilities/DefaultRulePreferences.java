@@ -3,13 +3,12 @@ package de.cognicrypt.staticanalyzer.utilities;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.ini4j.Profile.Section;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.Utils;
 
 public class DefaultRulePreferences {
@@ -41,7 +40,7 @@ public class DefaultRulePreferences {
 		 		}
 			}
 		} catch (BackingStoreException e) {
-			e.printStackTrace();
+			Activator.getDefault().logError(e);
 		}
 	}
 }

@@ -25,10 +25,8 @@ public class RunRuleConverterHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IResource cryslRule = Utils.getCurrentlySelectedIResource();
-		CrySLParser csmr;
 		try {
-			csmr = new CrySLParser(cryslRule.getProject());
-			csmr.readRule(cryslRule.getRawLocation().makeAbsolute().toFile());
+			new CrySLParser(cryslRule.getProject()).readRule(cryslRule.getRawLocation().makeAbsolute().toFile());
 			Activator.getDefault().logInfo("Converted selected rule " + cryslRule.getName() + " successfully.");
 		}
 		catch (CoreException | IOException e) {

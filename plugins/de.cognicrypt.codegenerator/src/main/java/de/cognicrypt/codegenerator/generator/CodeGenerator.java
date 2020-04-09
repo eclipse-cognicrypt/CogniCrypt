@@ -61,7 +61,6 @@ public abstract class CodeGenerator {
 	private int endPosForImports = -1;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
-	private String temporaryOutputFile;
 
 	protected CodeGenerator(final IResource target) {
 		this.project = new DeveloperProject(target.getProject());
@@ -108,14 +107,13 @@ public abstract class CodeGenerator {
 	 *         See {@link DeveloperProject.crossing.opencce.cryptogen.CryptoProject#refresh() refresh()}
 	 */
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, final boolean openFileFlag, final boolean authorFlag, final boolean tempFlag) throws BadLocationException, CoreException, IOException {
-			if (this.targetFile != null) {	
-				if(this.targetFile.getRawLocation().toOSString().equals(Paths.get(temporaryOutputFile).toString())) {
-					return true;
-				}
-				else {
-					IDE.openEditor(UIUtils.getCurrentlyOpenPage(), targetFile);
-				}
+		if (this.targetFile != null) {
+			if (this.targetFile.getRawLocation().toOSString().equals(Paths.get(temporaryOutputFile).toString())) {
+				return true;
+			} else {
+				IDE.openEditor(UIUtils.getCurrentlyOpenPage(), targetFile);
 			}
+		}
 
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
 			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
@@ -332,11 +330,11 @@ public abstract class CodeGenerator {
 		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
 		boolean anyFileOpen = false;
 
-		if(editor == null && generatedCUnits[0].getResource().getType() == IResource.FILE) {
-			    IFile genClass = (IFile) generatedCUnits[0].getResource();
-				IDE.openEditor(UIUtils.getCurrentlyOpenPage(), genClass);
-				editor = UIUtils.getCurrentlyOpenPage().getActiveEditor();
-				anyFileOpen = true;
+		if (editor == null && generatedCUnits[0].getResource().getType() == IResource.FILE) {
+			IFile genClass = (IFile) generatedCUnits[0].getResource();
+			IDE.openEditor(UIUtils.getCurrentlyOpenPage(), genClass);
+			editor = UIUtils.getCurrentlyOpenPage().getActiveEditor();
+			anyFileOpen = true;
 		}
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
@@ -347,7 +345,7 @@ public abstract class CodeGenerator {
 		if (anyFileOpen) {
 			UIUtils.closeEditor(editor);
 		}
-		
+
 		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(UIUtils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });

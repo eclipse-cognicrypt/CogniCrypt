@@ -269,8 +269,8 @@ public class CrySLCodeGenTest {
 			assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "generateKeyPair"));
 			assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
-			assertEquals(15, TestUtils.countStatements(encClassUnit, "encryptData"));
-			assertEquals(13, TestUtils.countStatements(encClassUnit, "decryptData"));
+			assertEquals(14, TestUtils.countStatements(encClassUnit, "encryptData"));
+			assertEquals(12, TestUtils.countStatements(encClassUnit, "decryptData"));
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -304,8 +304,8 @@ public class CrySLCodeGenTest {
 			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "PasswordHasher.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(5, TestUtils.countMethods(encClassUnit));
-			assertEquals(11, TestUtils.countStatements(encClassUnit, "createPWHash"));
-			assertEquals(10, TestUtils.countStatements(encClassUnit, "verifyPWHash"));
+			assertEquals(12, TestUtils.countStatements(encClassUnit, "createPWHash"));
+			assertEquals(11, TestUtils.countStatements(encClassUnit, "verifyPWHash"));
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");
@@ -335,11 +335,11 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, "testPackage", testClassUnit);
 			assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "Signer.java");
+			ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureSigner.java");
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(3, TestUtils.countMethods(encClassUnit));
 			assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
-			assertEquals(7, TestUtils.countStatements(encClassUnit, "sign"));
+			assertEquals(8, TestUtils.countStatements(encClassUnit, "sign"));
 			// assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
 		}
 		catch (JavaModelException e) {

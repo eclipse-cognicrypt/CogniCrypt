@@ -65,9 +65,8 @@ public class ArtifactUtils {
 	 */
 	public static boolean downloadRulesets(String url) {
 
-		String metaFilePath = url + File.separator + "maven-metadata.xml";
 		try {
-			ArtifactUtils.parseMetaData(metaFilePath);
+			ArtifactUtils.parseMetaData(url + File.separator + "maven-metadata.xml");
 		}
 		catch (IOException | ParserConfigurationException | SAXException e) {
 			Activator.getDefault().logError(e);

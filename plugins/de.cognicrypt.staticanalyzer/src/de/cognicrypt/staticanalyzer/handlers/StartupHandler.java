@@ -53,10 +53,7 @@ public class StartupHandler implements IStartup {
 		 */
 		@Override
 		public void resourceChanged(final IResourceChangeEvent event) {
-			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-			if (store.getBoolean(Constants.AUTOMATED_ANALYSIS) == false) {
-				return;
-			} else {
+			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.AUTOMATED_ANALYSIS)) {
 				final List<IJavaElement> changedJavaElements = new ArrayList<>();
 				Activator.getDefault().logInfo("ResourcechangeListener has been triggered.");
 				try {
@@ -112,11 +109,9 @@ public class StartupHandler implements IStartup {
 				if (changedJavaElements.isEmpty()) {
 					Activator.getDefault().logInfo("No changed resource found. Abort.");
 					return;
-				}
-				if (!changedJavaElements.isEmpty()) {
+				} else  {
 					final AnalysisKickOff ako = new AnalysisKickOff();
-					final boolean stat = ako.setUp(changedJavaElements.get(0));
-					if (stat) {
+					if (ako.setUp(changedJavaElements.get(0))) {
 						analysis_Queue.add(ako);
 					}
 					while (analysis_Queue.size() > 0) {

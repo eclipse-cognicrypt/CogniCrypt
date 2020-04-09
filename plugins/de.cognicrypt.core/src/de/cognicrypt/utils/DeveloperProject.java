@@ -79,7 +79,7 @@ public class DeveloperProject {
 	 * @see org.eclipse.core.resources.IProject#getFile(String) IProject.getFile()
 	 */
 	public IFile getIFile(final String path) {
-		return this.project.getFile(path.substring(path.indexOf(this.project.getName()) + this.project.getName().length()));
+		return this.project.getFile(path.substring(project.getLocation().toOSString().length()));
 	}
 
 	public IFile getFile(final String path) {

@@ -229,6 +229,9 @@ public class Utils {
 				return new File(inputPath);
 			} else {
 				final URL entry = bundle.getEntry(inputPath);
+				if (entry == null) {
+					return null;
+				}
 				final URL resolvedURL = FileLocator.toFileURL(entry);
 				URI resolvedURI = null;
 				if (!(resolvedURL == null)) {

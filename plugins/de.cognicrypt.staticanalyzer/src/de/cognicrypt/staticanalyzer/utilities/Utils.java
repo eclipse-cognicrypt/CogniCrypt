@@ -2,13 +2,17 @@ package de.cognicrypt.staticanalyzer.utilities;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
-import de.cognicrypt.staticanalyzer.kotlin.utilities.KotlinUtils;
+import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.IListener;
 
 public class Utils {
 
@@ -27,11 +31,23 @@ public class Utils {
  					}
  				}
  			}
-
- 			return KotlinUtils.findKotlinClassByName(className, currentProject);
+ 			
+ 			IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor("de.cognicrypt.staticanalyzer.listeners");
+ 			try {
+ 	            for (IConfigurationElement e : config) {
+ 	                final Object o =
+ 	                        e.createExecutableExtension("class");
+ 	                if (o instanceof IListener) {
+ 	                	return ((IListener) o).listen2(className, currentProject);
+ 	                }
+ 	            }
+ 	        } catch (CoreException ex) {
+ 	        	Activator.getDefault().logError(ex);
+ 	        }
  		}
  		catch (final JavaModelException e) {
  			throw new ClassNotFoundException("Class " + className + " not found.", e);
  		}
+ 		throw new ClassNotFoundException("Class " + className + " not found.");
  	}	
 }

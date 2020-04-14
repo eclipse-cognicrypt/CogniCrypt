@@ -23,5 +23,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  resources/
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
-Import-Package: de.cognicrypt.staticanalyzer.kotlin.utilities,
- org.eclipse.ui.texteditor
+Import-Package: org.eclipse.ui.texteditor
+Export-Package: de.cognicrypt.staticanalyzer

@@ -21,7 +21,7 @@ import org.dom4j.io.XMLWriter;
 
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.utils.FileHelper;
+import de.cognicrypt.utils.FileUtils;
 
 /**
  * This class is a storage for the configuration chosen by the user.
@@ -58,6 +58,6 @@ public abstract class Configuration {
 	 * Deletes config file from hard disk.
 	 */
 	public void deleteConfFromDisk() {
-		FileHelper.deleteFile(this.pathOnDisk);
+		FileUtils.deleteFile(this.pathOnDisk);
 	}
 }

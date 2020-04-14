@@ -27,15 +27,15 @@ import crypto.rules.CrySLConstraint.LogOps;
 import crypto.rules.CrySLLiteral;
 import crypto.rules.CrySLRule;
 import crypto.rules.CrySLValueConstraint;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
+import de.cognicrypt.crysl.reader.CrySLParser;
 
 public class ConstraintTests {
 
-	private static CrySLModelReader csmr;
+	private static CrySLParser csmr;
 
 	@BeforeClass
 	public static void setup() throws MalformedURLException {
-		csmr = new CrySLModelReader();
+		csmr = new CrySLParser();
 	}
 
 	private CrySLRule readRuleFromFuleName(String ruleName) {

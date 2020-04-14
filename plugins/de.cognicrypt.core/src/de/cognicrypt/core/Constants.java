@@ -511,6 +511,8 @@ public class Constants {
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 	public static final String UNSUPPRESSWARNING_FIX = "UnSuppress Warning: ";
+	public static final String ENSUREPREDICATE_FIX = "This object comes from a stream/database/other external source and is actually secure.";
+	public static final String FALSEPOSTIVEREPORTER_FIX = "Report false positive";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
@@ -525,6 +527,7 @@ public class Constants {
 
 	public static final String RULE_SELECTION = "de.cognicrypt.staticanalyzer.ruleSelection";
 	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
+	public static final String PROVIDER_DETECTION_ANALYSIS = "de.cognicrypt.staticanalyzer.providerDetectionAnalysis";
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";
@@ -532,6 +535,7 @@ public class Constants {
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
+	public static final String STATVIEWID = "de.cognicrypt.staticanalyzer.view.StatisticsView";
 
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -589,6 +593,7 @@ public class Constants {
  	public static final Double MIN_JCA_RULE_VERSION = 1.4;
  	public static final Double MIN_BC_RULE_VERSION = 0.7;
  	public static final Double MIN_TINK_RULE_VERSION = 0.3;
+ 	public static final Double MIN_BCJCA_RULE_VERSION = 0.2;
 
  	//Configuration.ini keys
  	public static final String INI_URL_HEADER = "URLS";
@@ -596,6 +601,7 @@ public class Constants {
  	public static final String INI_JCA_NEXUS = "JCA_NEXUS";
  	public static final String INI_BC_NEXUS = "BC_NEXUS";
  	public static final String INI_TINK_NEXUS = "TINK_NEXUS";
+ 	public static final String INI_BCJCA_NEXUS = "BCJCA_NEXUS";
  	
  	public final static String CONFIG_FILE_PATH = "configuration.ini";
 

@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0
+ * which is available at http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.markerresolution;
@@ -27,7 +22,7 @@ import de.cognicrypt.staticanalyzer.Activator;
  */
 public class QuickFixer implements IMarkerResolutionGenerator {
 
-	private List<String> secureExtenernalSources = Arrays.asList(new String[] {"randomized", "generatedKey", "generatedKeyPair", "generatedPubKey", "generatedPrivKey"});
+	private List<String> secureExtenernalSources = Arrays.asList(new String[] {"randomized", "generatedKey", "generatedKeyPair", "generatedPubKey", "generatedPrivKey", "preparedIV"});
 	private List<IMarkerResolution> quickFixes;
 	private boolean isSuppressed = false;
 
@@ -36,7 +31,9 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 		quickFixes = new ArrayList<>();
 		String message = "";
 		String errorType = "";
-		int severity;
+		int severity = -1 ;
+		
+		
 		try {
 			severity = (int) mk.getAttribute(IMarker.SEVERITY);
 			errorType = (String) mk.getAttribute("errorType");
@@ -44,25 +41,27 @@ public class QuickFixer implements IMarkerResolutionGenerator {
 			if (severity == 2) {
 				isSuppressed = false;
 				quickFixes.add(new SuppressWarningFix(Constants.SUPPRESSWARNING_FIX + message));
-			} else if (severity == 0) {				
+			} else if (severity == 0) {
 				isSuppressed = true;
 				quickFixes.add(new UnSuppressWarningFix(Constants.UNSUPPRESSWARNING_FIX + message));
 			}
-			
-			// we need this check, because the ensuring of a predicate with more as one parameter does not work currently.
-			if(!isSuppressed) {
+
+			// we need to check this, because the ensuring of a predicate with more as one parameter does not work currently.
+			if (!isSuppressed) {
 				String predicate = (String) mk.getAttribute("predicate");
 				if (errorType.equals(Constants.REQUIRED_PREDICATE_MARKER_TYPE) && predicate != null) {
-					if(secureExtenernalSources.contains(predicate)) {					
-						quickFixes.add(new EnsuresPredicateFix("This object comes from a stream/database/other external source and is actually secure."));
+					if (secureExtenernalSources.contains(predicate)) {
+						quickFixes.add(new EnsuresPredicateFix(Constants.ENSUREPREDICATE_FIX));
 					}
 				}
 			}
-			
 		}
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);
+		} catch (final NullPointerException e) {
+			Activator.getDefault().logError(e, "Marker " + mk + " not found.");
 		}
+		quickFixes.add(new IssueReportFix(Constants.FALSEPOSTIVEREPORTER_FIX));
 		return quickFixes.toArray(new IMarkerResolution[quickFixes.size()]);
 	}
 

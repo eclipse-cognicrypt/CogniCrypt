@@ -262,7 +262,7 @@ public class TestUtils {
 				return packageFragment.getCompilationUnits()[i];
 			}
 		}
-		throw new NoSuchElementException();
+		return null;
 	}
 
 	public static void printSourceCode(final DeveloperProject project, final String packageName) throws CoreException, NoSuchElementException {

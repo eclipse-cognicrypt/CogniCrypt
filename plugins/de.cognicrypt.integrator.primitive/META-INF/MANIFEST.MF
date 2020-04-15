@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Primitive Integrator
 Bundle-SymbolicName: de.cognicrypt.integrator.primitive
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: de.cognicrypt.integrator.primitive.Activator
-Bundle-Vendor: TU Darmstadt
+Bundle-Vendor: TU Darmstadt, Paderborn University
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,

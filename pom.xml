@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.cognicrypt</groupId>
   <artifactId>de.cognicrypt.parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -47,11 +47,6 @@
       <name>JBoss Public Repository Group</name>
       <url>http://repository.jboss.org/nexus/content/groups/public/</url>
     </pluginRepository>
-    <pluginRepository>
-      <id>jboss-snapshots-repository</id>
-      <name>JBoss Snapshots Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/snapshots/</url>
-    </pluginRepository>
   </pluginRepositories>
 
   <build>
@@ -91,10 +86,7 @@
     <module>plugins/de.cognicrypt.core/</module>
     <module>plugins/de.cognicrypt.crysl.handler/</module>
     <module>plugins/de.cognicrypt.codegenerator/</module>
-    <module>plugins/de.cognicrypt.codegenerator.tests/</module>
     <module>plugins/de.cognicrypt.staticanalyzer/</module>
-	<module>plugins/de.cognicrypt.integrator.task/</module>
-	<module>plugins/de.cognicrypt.integrator.primitive/</module>
 	<module>features/de.cognicrypt.core.feature/</module>
     <module>features/de.cognicrypt.codegenerator.feature/</module>
     <module>features/de.cognicrypt.cryslhandler.feature/</module>

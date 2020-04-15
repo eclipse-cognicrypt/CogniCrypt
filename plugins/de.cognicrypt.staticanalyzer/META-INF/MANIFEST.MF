@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CogniCrypt Static Analyzer
 Bundle-SymbolicName: de.cognicrypt.staticanalyzer;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: de.cognicrypt.staticanalyzer.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -24,3 +24,4 @@ Bundle-ClassPath: .,
  resources/
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
 Import-Package: org.eclipse.ui.texteditor
+Bundle-Vendor: TU Darmstadt, Paderborn University

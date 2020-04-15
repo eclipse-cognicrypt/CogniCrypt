@@ -131,6 +131,8 @@ public class TwoTimesCogniCryptRunTest {
 
 		int outputMethodCount = TestUtils.countMethods(outputClass);
 		assertEquals(1, outputMethodCount);
+		
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 
 	/**
@@ -186,6 +188,7 @@ public class TwoTimesCogniCryptRunTest {
 		int secureEncryptorMethodCount = TestUtils.countMethods(encClass);
 
 		assertEquals(4, secureEncryptorMethodCount);
-
+		
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 }

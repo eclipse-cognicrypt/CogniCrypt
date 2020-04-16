@@ -244,7 +244,15 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 				}
 			}
 		});
+		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
+		addNewRulesetButton.setText("Add ruleset");
+		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
 
+			@Override
+			public void handleEvent(Event e) {
+				addNewRuleset();
+			}
+		});
 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		selectCustomRulesCheckBox.setText("Select custom rules");
 		selectCustomRulesCheckBox.addListener(SWT.Selection, new Listener() {
@@ -267,15 +275,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 
-		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
-		addNewRulesetButton.setText("Add ruleset");
-		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event e) {
-				addNewRuleset();
-			}
-		});
 	}
 
 	protected void addNewRuleset() {

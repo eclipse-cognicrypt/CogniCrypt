@@ -89,7 +89,7 @@ public class Utils {
 						if (name.startsWith(".")) {
 							name = name.substring(1);
 						}
-						if (name.startsWith(className)) {
+						if (name.equals(className)) {
 							return cu.getCorrespondingResource();
 						}
 					}

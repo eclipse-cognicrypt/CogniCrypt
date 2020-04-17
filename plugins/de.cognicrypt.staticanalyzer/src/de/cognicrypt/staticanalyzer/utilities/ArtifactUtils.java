@@ -185,7 +185,7 @@ public class ArtifactUtils {
 					zipFile.extractAll(artifactPath + File.separator + version);
 				}
 				catch (ZipException e) {
-					Activator.getDefault().logError(e);
+					Activator.getDefault().logError(e, "Error occured when extracting zip file.");
 				}
 				Files.delete(Paths.get(artifactPath + File.separator + downloadedZipFilename));
 				new File(artifactPath + File.separator + artifactId).renameTo(new File(artifactPath + File.separator + version));

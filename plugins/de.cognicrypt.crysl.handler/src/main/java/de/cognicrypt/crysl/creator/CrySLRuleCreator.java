@@ -91,7 +91,7 @@ public class CrySLRuleCreator {
 				}
 				createCrySLFile(ruleFile.getAbsolutePath(), rule);
 			} catch (IOException e) {
-				Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+				Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 			}		
 		} else {
 			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
@@ -122,10 +122,10 @@ public class CrySLRuleCreator {
 				}
 				createCrySLFile(f.getAbsolutePath(), rule);
 			} catch (IOException e) {
-				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+				Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 			}
 		} else {
-			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 		return successful;
 	}

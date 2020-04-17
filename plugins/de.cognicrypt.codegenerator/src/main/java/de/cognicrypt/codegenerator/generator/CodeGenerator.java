@@ -124,8 +124,7 @@ public abstract class CodeGenerator {
 
 		final IEditorPart currentlyOpenPart = UIUtils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
-			Activator.getDefault().logError(null,
-				"Could not open access the editor of the file. Therefore, an outputfile containing calls to the generated classes in the Crypto package was generated.");
+			Activator.getDefault().logError("Could not open access the editor of the file. Therefore, an outputfile containing calls to the generated classes in the Crypto package was generated.");
 			return false;
 		}
 
@@ -195,7 +194,7 @@ public abstract class CodeGenerator {
 		// Checks whether file exists
 		final File f = new File(filePath);
 		if (!(f.exists() && Files.isWritable(f.toPath()))) {
-			Activator.getDefault().logError(null, Constants.NoTemporaryOutputFile);
+			Activator.getDefault().logError(Constants.NoTemporaryOutputFile);
 			return null;
 		}
 		// Retrieve complete content from file

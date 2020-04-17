@@ -31,7 +31,7 @@ public class ClaferModelUtilsTest {
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.claferModel = new ClaferModel(Constants.claferPath);
 	}
 
@@ -39,7 +39,7 @@ public class ClaferModelUtilsTest {
 	 * @throws java.lang.Exception
 	 */
 	@After
-	public void tearDown() throws Exception {}
+	public void tearDown() {}
 
 	/**
 	 * Test method for {@link crossing.e1.featuremodel.clafer.test.ClaferModelUtils#findClaferByName(org.clafer.ast.AstClafer, java.lang.String)} .

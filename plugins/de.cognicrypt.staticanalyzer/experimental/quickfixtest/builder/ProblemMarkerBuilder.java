@@ -69,7 +69,9 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 			// correctly
 			marker.setAttribute(IJavaModelMarker.ID, Constants.JDT_PROBLEM_ID);
 		}
-		catch (final CoreException e) {}
+		catch (final CoreException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 
 	/**
@@ -95,17 +97,15 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 			// call this method.
 			System.out.println(integer);
 		}
-
 	}
 
 	/**
 	 * startMarking Method that starts the Marking process by getting the IPackageFragments
 	 *
 	 * @param project Needed for getting the PackageFragments
-	 * @throws JavaModelException
 	 * @throws CoreException
 	 */
-	private void startMarking(final IProject project) throws JavaModelException, CoreException {
+	private void startMarking(final IProject project) throws CoreException {
 		if (project.isNatureEnabled("org.eclipse.jdt.core.javanature")) {
 			final IPackageFragment[] packages = JavaCore.create(project).getPackageFragments();
 			for (final IPackageFragment mypackage : packages) {
@@ -120,11 +120,15 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	 * @param mypackage IPackageFragment from startMarking
 	 * @throws JavaModelException
 	 */
-	private void getUnitForParser(final IPackageFragment mypackage) throws JavaModelException {
-		if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
-			for (final ICompilationUnit unit : mypackage.getCompilationUnits()) {
-				setupParser(unit);
+	private void getUnitForParser(final IPackageFragment mypackage) {
+		try {
+			if (mypackage.getKind() == IPackageFragmentRoot.K_SOURCE) {
+				for (final ICompilationUnit unit : mypackage.getCompilationUnits()) {
+					setupParser(unit);
+				}
 			}
+		} catch(final JavaModelException e) {
+			Activator.getDefault().logError(e);
 		}
 	}
 
@@ -171,9 +175,10 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 
 	/**
 	 * build The standard method that gets called by eclipse when initiating a build for its specified Nature
+	 * @throws CoreException 
 	 */
 	@Override
-	protected IProject[] build(final int kind, final Map args, final IProgressMonitor monitor) throws CoreException {
+	protected IProject[] build(final int kind, final Map args, final IProgressMonitor monitor) {
 		clean(null);
 		this.parser = ASTParser.newParser(AST.JLS10);
 		this.parser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -191,7 +196,11 @@ public class ProblemMarkerBuilder extends IncrementalProjectBuilder {
 	 * clean Method to clean a file of its Markers. Needs to be done before adding new ones
 	 */
 	@Override
-	protected void clean(final IProgressMonitor monitor) throws CoreException {
-		getProject().deleteMarkers(Constants.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+	protected void clean(final IProgressMonitor monitor) {
+		try {
+			getProject().deleteMarkers(Constants.MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+		} catch (final CoreException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 }

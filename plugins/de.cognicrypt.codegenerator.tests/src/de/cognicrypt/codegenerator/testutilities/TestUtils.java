@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0
+ * which is available at http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.codegenerator.testutilities;
@@ -189,7 +184,7 @@ public class TestUtils {
 
 		return contraintsForTask;
 	}
-	
+
 	/**
 	 * This method creates a HashMap. This HashMap contains the Questions and the associated given Answers for the selected Task.
 	 *
@@ -199,23 +194,23 @@ public class TestUtils {
 	public static HashMap<Question, Answer> setConstraintsForTask(final Task task, ArrayList<String> answers) {
 		final List<Page> pageList = (new QuestionsJSONReader()).getPages(task.getQuestionsJSONFile());
 		final HashMap<Question, Answer> contraintsForTask = new LinkedHashMap<>();
-		
+
 		if (pageList.isEmpty()) {
 			return contraintsForTask;
 		}
-		
-		for(Page page : pageList) {
+
+		for (Page page : pageList) {
 			for (int i = 0; i < page.getContent().size(); i++) {
 				Question tmpQuestion = page.getContent().get(i);
-				for(Answer answer : tmpQuestion.getAnswers()) {
-					if(answer.getValue().equals(answers.get(i))) {
+				for (Answer answer : tmpQuestion.getAnswers()) {
+					if (answer.getValue().equals(answers.get(i))) {
 						contraintsForTask.put(tmpQuestion, answer);
 						break;
 					}
 				}
 			}
 		}
-		
+
 		return contraintsForTask;
 	}
 
@@ -290,7 +285,7 @@ public class TestUtils {
 		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
 		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
 			if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
-				
+
 				return packageFragment.getCompilationUnits()[i];
 			}
 		}
@@ -304,7 +299,8 @@ public class TestUtils {
 			for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
 				log.info("\n" + packageFragment.getCompilationUnits()[i].getSource());
 			}
-		} catch (CoreException e) {
+		}
+		catch (CoreException e) {
 			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_PRINT_SRC_CODE);
 		}
 	}
@@ -324,7 +320,8 @@ public class TestUtils {
 		try {
 			f = new File(getFilePathInProject(project, packageName, cu));
 			return Files.readAllBytes(Paths.get(f.getPath()));
-		} catch (CoreException | IOException e) {
+		}
+		catch (CoreException | IOException e) {
 			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_FILE_TO_BYTEARRAY);
 		}
 		return null;
@@ -340,9 +337,8 @@ public class TestUtils {
 	 * @throws CoreException
 	 */
 	private static String getFilePathInProject(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws CoreException {
-		final String srcPath = project.getProjectPath() + Constants.innerFileSeparator + project.getSourcePath();
-		final String cuPath = srcPath + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator + cu.getElementName();
-		return cuPath;
+		return project.getProjectPath() + Constants.innerFileSeparator + project.getSourcePath() + Constants.innerFileSeparator + packageName + Constants.innerFileSeparator
+				+ cu.getElementName();
 	}
 
 	/**
@@ -367,16 +363,12 @@ public class TestUtils {
 	}
 
 	public static IPackageFragment generatePackageInJavaProject(IJavaProject generatedProject, String packageName) throws JavaModelException {
-		final IPackageFragment pack = generatedProject.getPackageFragmentRoot(generatedProject.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
-		return pack;
+		return generatedProject.getPackageFragmentRoot(generatedProject.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
 	}
-
 
 	public static boolean packageExists(IJavaProject generatedProject, String packagenameasname) {
 		final IPackageFragment expectedPackage = generatedProject.getPackageFragmentRoot(generatedProject.getProject().getFolder("src")).getPackageFragment(packagenameasname);
-		if (expectedPackage != null) {
-			return true;
-		}return false;
+		return expectedPackage != null;
 	}
 
 }

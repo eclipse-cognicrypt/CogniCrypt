@@ -38,8 +38,6 @@ import org.eclipse.ui.PlatformUI;
 import org.jetbrains.kotlin.core.compiler.KotlinCompiler;
 import org.jetbrains.kotlin.core.model.KotlinNature;
 
-import de.cognicrypt.staticanalyzer.kotlin.Activator;
-
 public class KotlinUtils {
 	
 	private static final String KOTLIN_FILE_EXTENSION = ".kt";
@@ -60,7 +58,7 @@ public class KotlinUtils {
 									try {
 										ip.build(IncrementalProjectBuilder.CLEAN_BUILD, null);
 									} catch (CoreException e) {
-										Activator.getDefault().logError(e);
+										de.cognicrypt.staticanalyzer.Activator.getDefault().logError(e);
 									}
 									return Status.OK_STATUS;
 								}
@@ -75,25 +73,25 @@ public class KotlinUtils {
  							KotlinUtils.waitForBuildAndRefreshJobs();
  							
 							if(KotlinCompiler.compileKotlinFiles(javaProject).compiledCorrectly()) {
-								Activator.getDefault().logInfo("Finished compiling kotlin files.");
+								de.cognicrypt.staticanalyzer.Activator.getDefault().logInfo("Finished compiling kotlin files.");
 							} else {
-								Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
+								de.cognicrypt.staticanalyzer.Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
 							}
  						}
  						else {
- 							Activator.getDefault().logInfo("Cannot compile kotlin files without kotlin-stdlib dependency.");
- 							Activator.getDefault().logInfo("Static analysis skipped all kotlin files.");
+ 							de.cognicrypt.staticanalyzer.Activator.getDefault().logInfo("Cannot compile kotlin files without kotlin-stdlib dependency.");
+ 							de.cognicrypt.staticanalyzer.Activator.getDefault().logInfo("Static analysis skipped all kotlin files.");
  						}
  					}
  					else {
  						if(KotlinCompiler.compileKotlinFiles(javaProject).compiledCorrectly()) {
-							Activator.getDefault().logInfo("Finished compiling kotlin files.");
+ 							de.cognicrypt.staticanalyzer.Activator.getDefault().logInfo("Finished compiling kotlin files.");
  						} else {
-							Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
+ 							de.cognicrypt.staticanalyzer.Activator.getDefault().logInfo("Cannot compile some kotlin files due to errors. Static analysis skipped them.");
 						}
  					}	
  				} catch (CoreException | OperationCanceledException | InterruptedException e) {
- 					Activator.getDefault().logError(e);
+ 					de.cognicrypt.staticanalyzer.Activator.getDefault().logError(e);
  				}
  			}
  		}
@@ -163,7 +161,7 @@ public class KotlinUtils {
  				}
  			}
  		} catch (Exception e) {
- 			Activator.getDefault().logError(e);
+ 			de.cognicrypt.staticanalyzer.Activator.getDefault().logError(e);
  		}
  		return isPresent;
  	}
@@ -210,9 +208,9 @@ public class KotlinUtils {
  		try {
  			FileWriter writer = new FileWriter(model.getPomFile());
  			mavenWriter.write(writer, model);
- 			Activator.getDefault().logInfo("Required kotlin dependency added to pom.");
+ 			de.cognicrypt.staticanalyzer.Activator.getDefault().logInfo("Required kotlin dependency added to pom.");
  		} catch (IOException e) {
- 			Activator.getDefault().logError(e);
+ 			de.cognicrypt.staticanalyzer.Activator.getDefault().logError(e);
  		}
  	}
 

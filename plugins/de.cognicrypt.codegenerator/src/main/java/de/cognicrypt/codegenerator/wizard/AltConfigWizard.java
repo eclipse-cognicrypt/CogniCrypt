@@ -284,13 +284,12 @@ public class AltConfigWizard extends Wizard {
 			try {
 				codeGenerator.getDeveloperProject().refresh();
 			} catch (CoreException e1) {
-				Activator.getDefault().logError(e1);
+				Activator.getDefault().logError(e1, Constants.CodeGenerationErrorMessage);
 			}
 
 		} catch (Exception ex) {
-			Activator.getDefault().logError(ex);
+			Activator.getDefault().logError(ex, Constants.CodeGenerationErrorMessage);
 		} finally {
-
 			waitingDialog.setVisible(false);
 			waitingDialog.dispose();
 		}

@@ -35,6 +35,8 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.part.DrillDownComposite;
 
+import de.cognicrypt.core.Activator;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.Utils;
 
@@ -139,6 +141,7 @@ public class LocatorPage extends WizardPage {
 				String systemTargetPath = targetFolder.getFullPath().removeFirstSegments(1).toOSString();
 				return systemTargetPath.startsWith(new DeveloperProject(targetFolder.getProject()).getSourcePath());
 			} catch (CoreException e) {
+				Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 				return false;
 			}
 		}

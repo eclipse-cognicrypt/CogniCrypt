@@ -96,7 +96,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/***
 	 * This method creates a row for each of the rule set with a drop-down list of versions passed.
-	 * 
+	 *
 	 * @param ruleset rule set to be added
 	 */
 	private void createRulesTableRow(Ruleset ruleset) {
@@ -113,7 +113,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/**
 	 * This method fetches the list of rule sets which are stored in preference file
-	 * 
+	 *
 	 * @return list of rule sets
 	 */
 	private List<Ruleset> getRulesetsFromPrefs() {
@@ -194,7 +194,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/***
 	 * This method modifies the rule set table by adding a new rule set entry
-	 * 
+	 *
 	 * @param newRuleset The new rule set which is added to the table
 	 */
 	private void modifyRulesTable(Ruleset newRuleset) {
@@ -214,7 +214,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/***
 	 * This method creates the UI for the preference page.
-	 * 
+	 *
 	 * @param parent Instance of the eclipse preference window on which UI widgets for CogniCrypt are added.
 	 */
 	private void createBasicContents(Composite parent) {

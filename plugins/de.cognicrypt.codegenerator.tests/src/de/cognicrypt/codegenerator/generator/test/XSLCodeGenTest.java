@@ -24,9 +24,9 @@ import de.cognicrypt.utils.DeveloperProject;
 /**
  * @author Andre Sonntag, Enri Ozuni
  */
-public class DefaultTasksGeneratorTest {
+public class XSLCodeGenTest {
 
-	Logger log = Logger.getLogger(DefaultTasksGeneratorTest.class.getName());
+	Logger log = Logger.getLogger(XSLCodeGenTest.class.getName());
 	IJavaProject testJavaProject;
 	CodeGenerator generatorSECCOM;
 	CodeGenerator generatorSecMPComp;
@@ -39,8 +39,7 @@ public class DefaultTasksGeneratorTest {
 
 	@Before
 	public void setUp() {
-
-		DefaultTasksGeneratorTest.counter++;
+		XSLCodeGenTest.counter++;
 		try {
 			this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
 		} catch (CoreException e) {

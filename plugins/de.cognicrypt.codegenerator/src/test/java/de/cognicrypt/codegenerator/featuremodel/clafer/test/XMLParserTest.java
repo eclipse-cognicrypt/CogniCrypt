@@ -40,7 +40,7 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.utilities.XMLClaferParser;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.utils.FileHelper;
+import de.cognicrypt.utils.FileUtils;
 
 @RunWith(value = Parameterized.class)
 public class XMLParserTest {
@@ -75,7 +75,7 @@ public class XMLParserTest {
 
 	@After
 	public void tearDown() {
-		FileHelper.deleteFile(this.xmlTestFilePath);
+		FileUtils.deleteFile(this.xmlTestFilePath);
 	}
 
 	@Parameters(name = "testXmlParser{index}({0},{1})")

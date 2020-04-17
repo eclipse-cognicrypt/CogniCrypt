@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package de.cognicrypt.crysl.handler;
+package de.cognicrypt.crysl.builder;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,21 +26,19 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.Activator;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
-import de.cognicrypt.crysl.reader.CrySLReaderUtils;
+import de.cognicrypt.crysl.reader.CrySLParser;
+import de.cognicrypt.crysl.reader.CrySLParserUtils;
 
 public class CrySLBuilder extends IncrementalProjectBuilder {
 
 	public static final String BUILDER_ID = "de.cognicrypt.crysl.handler.cryslbuilder";
 
 	@Override
-	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) {
+	protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		try {
-			CrySLModelReader csmr = new CrySLModelReader(getProject());
+			CrySLParser csmr = new CrySLParser(getProject());
 			final IProject curProject = getProject();
 			List<IPath> resourcesPaths = new ArrayList<IPath>();
 			List<IPath> outputPaths = new ArrayList<IPath>();
@@ -57,33 +55,27 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			for (int i = 0; i < resourcesPaths.size(); i++) {
-				CrySLReaderUtils.storeRulesToFile(csmr.readRulesWithin(resourcesPaths.get(i).toOSString()),
+				CrySLParserUtils.storeRulesToFile(csmr.readRulesWithin(resourcesPaths.get(i).toOSString()),
 						ResourcesPlugin.getWorkspace().getRoot().findMember(outputPaths.get(i)).getLocation().toOSString());
 			}
 		}
 		catch (IOException e) {
 			Activator.getDefault().logError(e, "Build of CrySL rules failed.");
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e, "The project could not be built.");
 		}
 
 		return null;
 	}
 
-	protected void clean(IProgressMonitor monitor) {
+	protected void clean(IProgressMonitor monitor) throws CoreException {
 		IProject project = getProject();
-		try {
-			for (final IClasspathEntry entry : JavaCore.create(project).getResolvedClasspath(true)) {
-				if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE && !(entry.getPath().toPortableString().lastIndexOf(Constants.innerFileSeparator) < 1)) {
-					IPath outputLocation = entry.getOutputLocation();
-					if (outputLocation != null) {
-						Arrays.asList(new File(project.getLocation().toOSString() + Constants.outerFileSeparator + outputLocation.removeFirstSegments(1).toOSString()).listFiles())
-								.parallelStream().forEach(e -> e.delete());
-					}
+		for (final IClasspathEntry entry : JavaCore.create(project).getResolvedClasspath(true)) {
+			if (entry.getContentKind() == IPackageFragmentRoot.K_SOURCE && !(entry.getPath().toPortableString().lastIndexOf(Constants.innerFileSeparator) < 1)) {
+				IPath outputLocation = entry.getOutputLocation();
+				if (outputLocation != null) {
+					Arrays.asList(new File(project.getLocation().toOSString() + Constants.outerFileSeparator + outputLocation.removeFirstSegments(1).toOSString()).listFiles())
+							.parallelStream().filter(e -> e.exists()).forEach(e -> e.delete());
 				}
 			}
-		} catch (JavaModelException e) {
-			Activator.getDefault().logError(e, "The project could not be cleaned.");
 		}
 	}
 

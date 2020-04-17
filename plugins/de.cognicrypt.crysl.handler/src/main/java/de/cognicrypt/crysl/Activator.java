@@ -3,8 +3,7 @@
  * 
  * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
-
-package de.cognicrypt.crysl.handler;
+package de.cognicrypt.crysl;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -34,7 +33,7 @@ public class Activator extends AbstractUIPlugin {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new CrySLFileOpenerListener());
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().addPartListener(new CrySLProjectTransformer());
 			}
 		});
 	}

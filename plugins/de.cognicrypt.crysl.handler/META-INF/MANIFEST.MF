@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CogniCrypt CrySL Handler
 Bundle-SymbolicName: de.cognicrypt.crysl.handler;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: de.cognicrypt.crysl.handler.Activator
+Bundle-Activator: de.cognicrypt.crysl.Activator
 Bundle-Vendor: TU Darmstadt, Paderborn University
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

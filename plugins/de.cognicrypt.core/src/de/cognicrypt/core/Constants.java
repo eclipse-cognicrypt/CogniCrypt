@@ -517,6 +517,8 @@ public class Constants {
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 	public static final String UNSUPPRESSWARNING_FIX = "UnSuppress Warning: ";
+	public static final String ENSUREPREDICATE_FIX = "This object comes from a stream/database/other external source and is actually secure.";
+	public static final String FALSEPOSTIVEREPORTER_FIX = "Report false positive";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
@@ -539,6 +541,7 @@ public class Constants {
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
+	public static final String STATVIEWID = "de.cognicrypt.staticanalyzer.view.StatisticsView";
 
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";

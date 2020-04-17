@@ -18,8 +18,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 import crypto.rules.CrySLPredicate;
 import crypto.rules.CrySLRule;
-import de.cognicrypt.crysl.handler.Activator;
+import de.cognicrypt.crysl.Activator;
 import de.cognicrypt.crysl.reader.CrySLModelReader;
+import de.cognicrypt.crysl.reader.CrySLParser;
 
 public class PredicateConsistencyCheck {
 

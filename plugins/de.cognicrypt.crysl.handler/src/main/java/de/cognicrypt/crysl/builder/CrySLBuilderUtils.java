@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
-package de.cognicrypt.crysl.handler;
+package de.cognicrypt.crysl.builder;
 
 import java.util.Arrays;
 import org.eclipse.core.resources.ICommand;
@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.Activator;
-import de.cognicrypt.crysl.builder.CrySLNature;
 
 public class CrySLBuilderUtils {
 
@@ -54,35 +53,26 @@ public class CrySLBuilderUtils {
 			project.setDescription(description, null);
 		}
 		catch (CoreException e) {
-			Activator.getDefault().logError(e, "Could not get or set project description.");
+			Activator.getDefault().logError(e);
 		}
 	}
 
-	static boolean hasCrySLFiles(IContainer cont) {
+	public static boolean hasCrySLFiles(IContainer cont) throws CoreException {
 		boolean hasCrySLFiles = false;
-		try {
-			for (IResource member : cont.members()) {
-				if (member instanceof IContainer) {
-					hasCrySLFiles = hasCrySLFiles((IContainer) member);
-				}
-
-				if (member instanceof IFile && Constants.cryslFileEnding.equals(((IFile) member).getFileExtension())) {
-					return true;
-				}
+		for (IResource member : cont.members()) {
+			if (member instanceof IContainer) {
+				hasCrySLFiles = hasCrySLFiles((IContainer) member);
 			}
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e);
+
+			if (member instanceof IFile && Constants.cryslFileEnding.equals(((IFile) member).getFileExtension())) {
+				return true;
+			}
 		}
 		return hasCrySLFiles;
 	}
 
-	public static boolean hasCrySLBuilder(IProject project) {
-		try {
-			return Arrays.asList(project.getDescription().getBuildSpec()).stream().anyMatch(e -> CrySLBuilder.BUILDER_ID.equals(e.getBuilderName()));
-		} catch (CoreException e) {
-			Activator.getDefault().logError(e, "Error when retrieving project desciption.");
-		}
-		return false;
+	public static boolean hasCrySLBuilder(IProject project) throws CoreException {
+		return Arrays.asList(project.getDescription().getBuildSpec()).stream().anyMatch(e -> CrySLBuilder.BUILDER_ID.equals(e.getBuilderName()));
 	}
 
 }

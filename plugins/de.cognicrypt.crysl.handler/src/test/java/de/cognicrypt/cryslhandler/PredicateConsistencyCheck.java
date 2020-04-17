@@ -19,7 +19,6 @@ import org.junit.Test;
 import crypto.rules.CrySLPredicate;
 import crypto.rules.CrySLRule;
 import de.cognicrypt.crysl.Activator;
-import de.cognicrypt.crysl.reader.CrySLModelReader;
 import de.cognicrypt.crysl.reader.CrySLParser;
 
 public class PredicateConsistencyCheck {
@@ -27,7 +26,7 @@ public class PredicateConsistencyCheck {
 	@Test
 	public void predicateParameterNumberConsistencyTest() {
 		try {
-			List<CrySLRule> rules = (new CrySLModelReader()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
+			List<CrySLRule> rules = (new CrySLParser()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
 			Map<String, List<PredicateDetails>> predicates = new HashMap<String, List<PredicateDetails>>();
 			for (CrySLRule rule : rules) {
 

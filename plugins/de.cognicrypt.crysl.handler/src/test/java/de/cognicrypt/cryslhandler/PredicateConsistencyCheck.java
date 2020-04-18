@@ -10,7 +10,6 @@
 
 package de.cognicrypt.cryslhandler;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,50 +18,55 @@ import org.eclipse.core.runtime.CoreException;
 import org.junit.Test;
 import crypto.rules.CrySLPredicate;
 import crypto.rules.CrySLRule;
+import de.cognicrypt.crysl.Activator;
 import de.cognicrypt.crysl.reader.CrySLParser;
 
 public class PredicateConsistencyCheck {
 
 	@Test
-	public void predicateParameterNumberConsistencyTest() throws MalformedURLException, CoreException {
-		List<CrySLRule> rules = (new CrySLParser()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
-		Map<String, List<PredicateDetails>> predicates = new HashMap<String, List<PredicateDetails>>();
-		for (CrySLRule rule : rules) {
+	public void predicateParameterNumberConsistencyTest() {
+		try {
+			List<CrySLRule> rules = (new CrySLParser()).readRulesOutside("../de.cognicrypt.core/resources/CrySLRules/JavaCryptographicArchitecture");
+			Map<String, List<PredicateDetails>> predicates = new HashMap<String, List<PredicateDetails>>();
+			for (CrySLRule rule : rules) {
 
-			for (CrySLPredicate pred : rule.getPredicates()) {
-				String predName = pred.getPredName();
-				if (!predicates.containsKey(predName)) {
-					predicates.put(predName, new ArrayList<PredicateDetails>());
-				}
-				List<PredicateDetails> predDetails = predicates.get(predName);
-				predDetails.add(new PredicateDetails(rule.getClassName(), pred.getParameters().size()));
-			}
-
-			for (CrySLPredicate pred : rule.getRequiredPredicates()) {
-				String predName = pred.getPredName();
-				if (!predicates.containsKey(predName)) {
-					predicates.put(predName, new ArrayList<PredicateDetails>());
-				}
-				List<PredicateDetails> predDetails = predicates.get(predName);
-				predDetails.add(new PredicateDetails(rule.getClassName(), pred.getParameters().size()));
-			}
-
-			for (String predName : predicates.keySet()) {
-				PredicateDetails prev = null;
-				for (PredicateDetails details : predicates.get(predName)) {
-					if (prev == null) {
-						prev = details;
-						continue;
+				for (CrySLPredicate pred : rule.getPredicates()) {
+					String predName = pred.getPredName();
+					if (!predicates.containsKey(predName)) {
+						predicates.put(predName, new ArrayList<PredicateDetails>());
 					}
-					if (prev.parameterCount != details.parameterCount) {
-						System.err.println("There is a predicate mismatch.");
-						System.err.println(
-								"The predicate " + predName + " has " + prev.parameterCount + " parameters in " + prev.name + ", but " + details.parameterCount + " parameters in " + details.name);
+					List<PredicateDetails> predDetails = predicates.get(predName);
+					predDetails.add(new PredicateDetails(rule.getClassName(), pred.getParameters().size()));
+				}
+
+				for (CrySLPredicate pred : rule.getRequiredPredicates()) {
+					String predName = pred.getPredName();
+					if (!predicates.containsKey(predName)) {
+						predicates.put(predName, new ArrayList<PredicateDetails>());
 					}
-					// assertEquals(prev.parameterCount, details.parameterCount);
+					List<PredicateDetails> predDetails = predicates.get(predName);
+					predDetails.add(new PredicateDetails(rule.getClassName(), pred.getParameters().size()));
+				}
+
+				for (String predName : predicates.keySet()) {
+					PredicateDetails prev = null;
+					for (PredicateDetails details : predicates.get(predName)) {
+						if (prev == null) {
+							prev = details;
+							continue;
+						}
+						if (prev.parameterCount != details.parameterCount) {
+							System.err.println("There is a predicate mismatch.");
+							System.err.println(
+									"The predicate " + predName + " has " + prev.parameterCount + " parameters in " + prev.name + ", but " + details.parameterCount + " parameters in " + details.name);
+						}
+						// assertEquals(prev.parameterCount, details.parameterCount);
+					}
 				}
 			}
-		}
+		} catch(CoreException e) {
+			Activator.getDefault().logError(e);
+		} 
 	}
 
 	class PredicateDetails {

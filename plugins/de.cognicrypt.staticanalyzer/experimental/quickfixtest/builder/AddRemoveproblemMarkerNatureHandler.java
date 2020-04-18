@@ -38,12 +38,7 @@ public class AddRemoveproblemMarkerNatureHandler extends AbstractHandler {
 					project = ((IAdaptable) element).getAdapter(IProject.class);
 				}
 				if (project != null) {
-					try {
-						toggleNature(project);
-					}
-					catch (final CoreException e) {
-						Activator.getDefault().logError(e);
-					}
+					toggleNature(project);
 				}
 			}
 		}
@@ -56,28 +51,32 @@ public class AddRemoveproblemMarkerNatureHandler extends AbstractHandler {
 	 *
 	 * @param project to have sample nature added or removed
 	 */
-	private void toggleNature(final IProject project) throws CoreException {
-		final IProjectDescription description = project.getDescription();
-		final String[] natures = description.getNatureIds();
+	private void toggleNature(final IProject project) {
+		try {
+			final IProjectDescription description = project.getDescription();
+			final String[] natures = description.getNatureIds();
 
-		for (int i = 0; i < natures.length; ++i) {
-			if (ProblemMarkerNature.NATURE_ID.equals(natures[i])) {
-				// Remove the nature
-				final String[] newNatures = new String[natures.length - 1];
-				System.arraycopy(natures, 0, newNatures, 0, i);
-				System.arraycopy(natures, i + 1, newNatures, i, natures.length - i - 1);
-				description.setNatureIds(newNatures);
-				project.setDescription(description, null);
-				return;
+			for (int i = 0; i < natures.length; ++i) {
+				if (ProblemMarkerNature.NATURE_ID.equals(natures[i])) {
+					// Remove the nature
+					final String[] newNatures = new String[natures.length - 1];
+					System.arraycopy(natures, 0, newNatures, 0, i);
+					System.arraycopy(natures, i + 1, newNatures, i, natures.length - i - 1);
+					description.setNatureIds(newNatures);
+					project.setDescription(description, null);
+					return;
+				}
 			}
-		}
 
-		// Add the nature
-		final String[] newNatures = new String[natures.length + 1];
-		System.arraycopy(natures, 0, newNatures, 0, natures.length);
-		newNatures[natures.length] = ProblemMarkerNature.NATURE_ID;
-		description.setNatureIds(newNatures);
-		project.setDescription(description, null);
+			// Add the nature
+			final String[] newNatures = new String[natures.length + 1];
+			System.arraycopy(natures, 0, newNatures, 0, natures.length);
+			newNatures[natures.length] = ProblemMarkerNature.NATURE_ID;
+			description.setNatureIds(newNatures);
+			project.setDescription(description, null);
+		} catch(final CoreException e) {
+			Activator.getDefault().logError(e, "Error occured when trying to get or set project description.");
+		}
 	}
 
 }

@@ -96,7 +96,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/***
 	 * This method creates a row for each of the rule set with a drop-down list of versions passed.
-	 * 
+	 *
 	 * @param ruleset rule set to be added
 	 */
 	private void createRulesTableRow(Ruleset ruleset) {
@@ -113,7 +113,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/**
 	 * This method fetches the list of rule sets which are stored in preference file
-	 * 
+	 *
 	 * @return list of rule sets
 	 */
 	private List<Ruleset> getRulesetsFromPrefs() {
@@ -194,7 +194,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/***
 	 * This method modifies the rule set table by adding a new rule set entry
-	 * 
+	 *
 	 * @param newRuleset The new rule set which is added to the table
 	 */
 	private void modifyRulesTable(Ruleset newRuleset) {
@@ -214,7 +214,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	/***
 	 * This method creates the UI for the preference page.
-	 * 
+	 *
 	 * @param parent Instance of the eclipse preference window on which UI widgets for CogniCrypt are added.
 	 */
 	private void createBasicContents(Composite parent) {
@@ -223,7 +223,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite source = new Composite(staticAnalysisGroup, SWT.FILL);
 		source.setLayout(new GridLayout(3, true));
 		final Label ruleSource = new Label(source, SWT.NONE);
-		ruleSource.setText("Source of CrySL rules: ");
+		ruleSource.setText("Source of CrySL Rules: ");
 
 		table = CheckboxTableViewer.newCheckList(staticAnalysisGroup, SWT.CHECK);
 		table.getTable().setHeaderVisible(true);
@@ -244,9 +244,17 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 				}
 			}
 		});
+		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
+		addNewRulesetButton.setText("Add Ruleset");
+		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
 
+			@Override
+			public void handleEvent(Event e) {
+				addNewRuleset();
+			}
+		});
 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
-		selectCustomRulesCheckBox.setText("Select custom rules");
+		selectCustomRulesCheckBox.setText("Select Custom Rules");
 		selectCustomRulesCheckBox.addListener(SWT.Selection, new Listener() {
 			@Override
 			public void handleEvent(Event e) {
@@ -255,27 +263,18 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		});
 
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
-		automatedAnalysisCheckBox.setText("Enable automated analysis when saving");
+		automatedAnalysisCheckBox.setText("Enable Automated Analysis when Saving");
 
 		providerDetectionCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
-		providerDetectionCheckBox.setText("Enable provider detection analysis");
+		providerDetectionCheckBox.setText("Enable Provider-Detection Analysis");
 
 		secureObjectsCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
-		secureObjectsCheckBox.setText("Show secure objects");
+		secureObjectsCheckBox.setText("Show Secure Objects");
 
 		analyseDependenciesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
-		analyseDependenciesCheckBox.setText("Include dependencies to projects analysis");
+		analyseDependenciesCheckBox.setText("Include Dependencies into Project Analysis");
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 
-		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
-		addNewRulesetButton.setText("Add ruleset");
-		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
-
-			@Override
-			public void handleEvent(Event e) {
-				addNewRuleset();
-			}
-		});
 	}
 
 	protected void addNewRuleset() {
@@ -361,7 +360,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite constraintContainer = new Composite(errorTypeGroup, SWT.None);
 		constraintContainer.setLayout(new GridLayout(2, true));
 		final Label constraintLabel = new Label(constraintContainer, SWT.None);
-		constraintLabel.setText("Incorrect Parameter Problem:");
+		constraintLabel.setText("Incorrect-Parameter Problem:");
 		constraint = new Combo(constraintContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		constraint.setItems(Arrays.stream(Constants.Severities.values()).map(Enum::name).toArray(String[]::new));
 
@@ -369,7 +368,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite typestateContainer = new Composite(errorTypeGroup, SWT.None);
 		typestateContainer.setLayout(new GridLayout(2, true));
 		final Label typestateLabel = new Label(typestateContainer, SWT.None);
-		typestateLabel.setText("Incorrect Method Call Problem:");
+		typestateLabel.setText("Incorrect-Method-Call Problem:");
 		typestate = new Combo(typestateContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		typestate.setItems(Arrays.stream(Constants.Severities.values()).map(Enum::name).toArray(String[]::new));
 
@@ -377,14 +376,14 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite incompleteContainer = new Composite(errorTypeGroup, SWT.None);
 		incompleteContainer.setLayout(new GridLayout(2, true));
 		final Label incompleteLabel = new Label(incompleteContainer, SWT.None);
-		incompleteLabel.setText("Missing Method Call Problem:");
+		incompleteLabel.setText("Missing-Method-Call Problem:");
 		incompleteOp = new Combo(incompleteContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		incompleteOp.setItems(Arrays.stream(Constants.Severities.values()).map(Enum::name).toArray(String[]::new));
 
 		final Composite forbiddenContainer = new Composite(errorTypeGroup, SWT.None);
 		forbiddenContainer.setLayout(new GridLayout(2, true));
 		final Label forbiddenLabel = new Label(forbiddenContainer, SWT.None);
-		forbiddenLabel.setText("Forbidden Method Problem:");
+		forbiddenLabel.setText("Forbidden-Method Problem:");
 		forbidden = new Combo(forbiddenContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		forbidden.setItems(Arrays.stream(Constants.Severities.values()).map(Enum::name).toArray(String[]::new));
 
@@ -392,7 +391,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite reqPredContainer = new Composite(errorTypeGroup, SWT.None);
 		reqPredContainer.setLayout(new GridLayout(2, true));
 		final Label reqPredLabel = new Label(reqPredContainer, SWT.None);
-		reqPredLabel.setText("Insecure Class Composition Problem:");
+		reqPredLabel.setText("Insecure-Class-Composition Problem:");
 		reqPred = new Combo(reqPredContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		reqPred.setItems(Arrays.stream(Constants.Severities.values()).map(Enum::name).toArray(String[]::new));
 
@@ -400,7 +399,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		final Composite neverTypeContainer = new Composite(errorTypeGroup, SWT.None);
 		neverTypeContainer.setLayout(new GridLayout(2, true));
 		final Label neverTypeLabel = new Label(neverTypeContainer, SWT.None);
-		neverTypeLabel.setText("Wrong Type Problem:");
+		neverTypeLabel.setText("Wrong-Type Problem:");
 		neverType = new Combo(neverTypeContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
 		neverType.setItems(Arrays.stream(Constants.Severities.values()).map(Enum::name).toArray(String[]::new));
 	}

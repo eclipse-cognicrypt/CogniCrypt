@@ -8,11 +8,11 @@ package de.cognicrypt.utils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalInt;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -41,9 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
-
 import com.google.common.base.CharMatcher;
-
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
@@ -62,6 +60,7 @@ public class Utils {
 			return project.hasNature(Constants.JavaNatureID);
 		}
 		catch (final CoreException e) {
+			Activator.getDefault().logError(e, Constants.NOT_HAVE_NATURE);
 			return false;
 		}
 	}
@@ -121,7 +120,7 @@ public class Utils {
 			se.search(sp, searchParticipants, scope, requestor, null);
 		}
 		catch (final CoreException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, "Could not find main method in the project: "+project.getProject().getName());
 		}
 	}
 
@@ -132,16 +131,20 @@ public class Utils {
 	 * @param requestor Object that handles the search results
 	 * @throws CoreException
 	 */
-	public static IFile findFileInProject(IContainer container, String name) throws CoreException {
-		for (IResource res : container.members()) {
-			if (res instanceof IContainer) {
-				IFile file = findFileInProject((IContainer) res, name);
-				if (file != null) {
-					return file;
+	public static IFile findFileInProject(IContainer container, String name) {
+		try {
+			for (IResource res : container.members()) {
+				if (res instanceof IContainer) {
+					IFile file = findFileInProject((IContainer) res, name);
+					if (file != null) {
+						return file;
+					}
+				} else if (res instanceof IFile && (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
+					return (IFile) res;
 				}
-			} else if (res instanceof IFile && (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
-				return (IFile) res;
 			}
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
 		}
 
 		return null;
@@ -220,7 +223,9 @@ public class Utils {
 				return new File(resolvedURI);
 			}
 		}
-		catch (final Exception ex) {
+		catch (final IOException ex) {
+			Activator.getDefault().logError(ex, Constants.ERROR_MESSAGE_NO_FILE);
+		} catch (URISyntaxException ex) {
 			Activator.getDefault().logError(ex);
 		}
 
@@ -263,7 +268,9 @@ public class Utils {
 			try {
 				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));
 			}
-			catch (ClassNotFoundException e) {}
+			catch (ClassNotFoundException e) {
+				Activator.getDefault().logError(e);
+			}
 		}
 		return subTypes;
 	}

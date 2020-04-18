@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,11 +33,13 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.featuremodel.clafer.ClaferModel;
 import de.cognicrypt.codegenerator.featuremodel.clafer.InstanceGenerator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.utilities.XMLClaferParser;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.FileUtils;
 
 @RunWith(value = Parameterized.class)
@@ -63,7 +66,7 @@ public class XMLParserTest {
 	}
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		this.claferModel = new ClaferModel(this.jsFilePath);
 		this.instGen = new InstanceGenerator(this.jsFilePath, this.taskName, "description");
 		this.constraints = new HashMap<>();
@@ -82,34 +85,42 @@ public class XMLParserTest {
 	}
 
 	@Test
-	public void testWriteToFile() throws IOException, DocumentException {
-		final byte[] validBytes = new byte[2000];
-		final byte[] generatedBytes = new byte[2000];
+	public void testWriteToFile() {
+		try {
+			final byte[] validBytes = new byte[2000];
+			final byte[] generatedBytes = new byte[2000];
 
-		final FileInputStream validFile = new FileInputStream(this.validFilePath);
-		validFile.read(validBytes);
-		validFile.close();
+			final FileInputStream validFile = new FileInputStream(this.validFilePath);
+			validFile.read(validBytes);
+			validFile.close();
 
-		final XMLClaferParser xmlparser = new XMLClaferParser();
-		xmlparser.displayInstanceValues(this.inst, this.constraints);
-		xmlparser.writeXMLToFile(this.xmlTestFilePath);
+			final XMLClaferParser xmlparser = new XMLClaferParser();
+			xmlparser.displayInstanceValues(this.inst, this.constraints);
+			xmlparser.writeXMLToFile(this.xmlTestFilePath);
 
-		final FileInputStream testFile = new FileInputStream(this.xmlTestFilePath);
-		testFile.read(generatedBytes);
-		testFile.close();
+			final FileInputStream testFile = new FileInputStream(this.xmlTestFilePath);
+			testFile.read(generatedBytes);
+			testFile.close();
 
-		assertTrue(uglifyXML(new String(validBytes)).trim().contentEquals(uglifyXML(new String(generatedBytes)).trim()));
+			assertTrue(uglifyXML(new String(validBytes)).trim().contentEquals(uglifyXML(new String(generatedBytes)).trim()));
+		} catch(final IOException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
+		}
 	}
 
 	@Test
-	public void testXMLValidity() throws DocumentException, IOException {
-		final String encoding = "UTF-8";
-		final byte[] encoded = Files.readAllBytes(Paths.get(this.validFilePath));
-		final String validXML = new String(encoded, encoding);
-		final XMLClaferParser xmlparser = new XMLClaferParser();
+	public void testXMLValidity() {
+		try {
+			final String encoding = "UTF-8";
+			final byte[] encoded = Files.readAllBytes(Paths.get(this.validFilePath));
+			final String validXML = new String(encoded, encoding);
+			final XMLClaferParser xmlparser = new XMLClaferParser();
 
-		final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints).asXML();
-		assertEquals(uglifyXML(validXML), uglifyXML(xml));
+			final String xml = xmlparser.displayInstanceValues(this.inst, this.constraints).asXML();
+			assertEquals(uglifyXML(validXML), uglifyXML(xml));
+		} catch(final IOException e) {
+			Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
+		}
 	}
 
 	/**

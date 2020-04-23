@@ -29,14 +29,14 @@ public class CustomCompletionProposalComputer extends JavaCompletionProposalComp
 		ICompilationUnit cu = javaContext.getCompilationUnit();
 		int offset = context.getInvocationOffset();
 		SelectionFinder finder = new SelectionFinder(cu, offset);
-//		if (finder.getMemberName() == null) {
-//			return defaultProposals;
-//		}
+		
+		if (finder.getMemberName() == null) {
+			return defaultProposals;
+		}
 		
 		// FIXME analyze why ruleName for Cookie.crysl is void 
 		Set<String> ruleNames = new HashSet<String>();
 		for (CrySLRule rule : cryslRules) {
-			if(rule.getClassName().equals("void"))
 			ruleNames.add(rule.getClassName());
 		}
 		
@@ -47,8 +47,21 @@ public class CustomCompletionProposalComputer extends JavaCompletionProposalComp
 			customProposals.add(proposal);
 		}
 		
-		
-		defaultProposals.addAll(customProposals);
-		return defaultProposals;
+		customProposals.addAll(defaultProposals);
+		return customProposals;
 	}
+
+//	private IMethod findCurrentMethod() throws JavaModelException {
+//		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+//		ITextEditor editor = (ITextEditor) page.getActiveEditor();
+//		IJavaElement elem = JavaUI.getEditorInputJavaElement(editor.getEditorInput());
+//		if (elem instanceof ICompilationUnit) {
+//		    ITextSelection sel = (ITextSelection) editor.getSelectionProvider().getSelection();
+//		    IJavaElement selected = ((ICompilationUnit) elem).getElementAt(sel.getOffset());
+//		    if (selected != null && selected.getElementType() == IJavaElement.METHOD) {
+//		         return (IMethod) selected;
+//		    }
+//		}
+//		return null;
+//	}
 }

@@ -50,18 +50,4 @@ public class CustomCompletionProposalComputer extends JavaCompletionProposalComp
 		customProposals.addAll(defaultProposals);
 		return customProposals;
 	}
-
-//	private IMethod findCurrentMethod() throws JavaModelException {
-//		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-//		ITextEditor editor = (ITextEditor) page.getActiveEditor();
-//		IJavaElement elem = JavaUI.getEditorInputJavaElement(editor.getEditorInput());
-//		if (elem instanceof ICompilationUnit) {
-//		    ITextSelection sel = (ITextSelection) editor.getSelectionProvider().getSelection();
-//		    IJavaElement selected = ((ICompilationUnit) elem).getElementAt(sel.getOffset());
-//		    if (selected != null && selected.getElementType() == IJavaElement.METHOD) {
-//		         return (IMethod) selected;
-//		    }
-//		}
-//		return null;
-//	}
 }

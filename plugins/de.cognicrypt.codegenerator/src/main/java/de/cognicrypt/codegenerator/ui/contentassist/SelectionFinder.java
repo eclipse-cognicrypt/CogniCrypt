@@ -11,10 +11,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 public class SelectionFinder extends ASTVisitor {
 	private ICompilationUnit unit;
 	private int offset;
-
 	private String memberName;
-//	private IRegion region;
-//	private String selectionName;
 
 	public SelectionFinder(ICompilationUnit unit, int offset) {
 		this.unit = unit;
@@ -25,16 +22,6 @@ public class SelectionFinder extends ASTVisitor {
 		visit();
 		return memberName;
 	}
-
-//	public String getSelectionName() {
-//		visit();
-//		return selectionName;
-//	}
-//
-//	public IRegion getRegion() {
-//		visit();
-//		return region;
-//	}
 
 	private boolean visited = false;
 
@@ -50,30 +37,28 @@ public class SelectionFinder extends ASTVisitor {
 		ASTNode node = parser.createAST(new NullProgressMonitor());
 		node.accept(this);
 	}
-//	
-//	@Override
-//	public boolean preVisit2(ASTNode node) {
-//		int offset = node.getStartPosition();
-//		int length = node.getLength();
-//		System.out.println(offset <= this.offset && this.offset <= offset + length);
-//		return offset <= this.offset && this.offset <= offset + length;
-//	}
 	
-//	@Override
-//	public boolean visit(StringLiteral node) {
-//		ASTNode parent = node.getParent();
-//		String methodName = ((MethodInvocation) parent).getName().getFullyQualifiedName();
-//		if(("includeClass").equals(methodName)) {
-//			this.memberName = methodName;
-//			return true;
-//		}
-//		return false;
-//	}
-	
+	// Solution 1
 	@Override
 	public boolean visit(MethodInvocation node) {
         return treatMethodName(node);
 	}
+	
+	
+	// Solution 2
+//	@Override
+//	public boolean visit(SimpleName node) {
+//		int offset = node.getStartPosition();
+//		int length = node.getLength();
+//		if(node instanceof SimpleName)
+//			if(((SimpleName) node).getIdentifier().equals("includeClass")) {
+//				if(this.offset == offset+length+1) {
+//					this.memberName = node.getIdentifier();
+//					return true;
+//				}
+//			}
+//		return false;
+//	}
 
     private boolean treatMethodName(MethodInvocation node) {
         String methodName = node.getName().getFullyQualifiedName();

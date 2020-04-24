@@ -40,4 +40,19 @@
                   </toolbar>
                </menuContribution>
             </extension>
+            <extension
+                  id="crysltemplate_category"
+                  name="CrySL Template Proposals"
+                  point="org.eclipse.jdt.ui.javaCompletionProposalComputer">
+                  <proposalCategory/>
+            </extension>
+            <extension
+            	id="crysltemplate_proposal"
+                  point="org.eclipse.jdt.ui.javaCompletionProposalComputer">
+                  <javaCompletionProposalComputer
+                  	class="de.cognicrypt.codegenerator.ui.contentassist.CustomCompletionProposalComputer"
+      				categoryId="de.cognicrypt.codegenerator.ui.contentassist.crysltemplate_category"
+      				activate="true">
+   				</javaCompletionProposalComputer>
+            </extension>
 </plugin>

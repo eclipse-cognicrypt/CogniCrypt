@@ -12,6 +12,8 @@
 
 package de.cognicrypt.codegenerator.ui1718.test;
 
+import de.cognicrypt.codegenerator.Activator;
+
 public class Validation {
 
 	public int validationInteger(final String testInput) {
@@ -85,6 +87,7 @@ public class Validation {
 
 			}
 		} catch (final NumberFormatException ex) {
+			Activator.getDefault().logError(ex);
 			if (!ip.equals("")) {
 				count++;
 			}

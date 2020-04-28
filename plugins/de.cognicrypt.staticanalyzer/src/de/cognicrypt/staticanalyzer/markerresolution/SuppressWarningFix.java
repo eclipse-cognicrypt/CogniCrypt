@@ -82,7 +82,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
 		catch (final IOException e) {
-			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 		}
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);

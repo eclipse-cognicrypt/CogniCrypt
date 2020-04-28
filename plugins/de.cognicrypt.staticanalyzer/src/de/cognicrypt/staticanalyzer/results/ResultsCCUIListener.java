@@ -292,7 +292,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		final Value varName = var.getValue();
 		this.markerGenerator.addMarker(Constants.CC_MARKER_TYPE, -1, unitToResource(stmt), unit.getJavaSourceStartLineNumber(),
-				"Object " + (varName.toString().startsWith("$r") ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", "",
+				"Object " + (varName.toString().startsWith("$r") || varName.toString().startsWith("$stack")  ? " of Type " + var.getValue().getType().toQuotedString() : varName) + " is secure.", "",
 				secureObject.getMethod().getActiveBody().toString(), Severities.Info, new HashMap<>(), false);
 	}
 

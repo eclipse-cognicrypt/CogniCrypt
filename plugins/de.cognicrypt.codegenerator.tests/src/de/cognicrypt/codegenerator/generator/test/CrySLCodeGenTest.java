@@ -32,7 +32,7 @@ import de.cognicrypt.utils.DeveloperProject;
 public class CrySLCodeGenTest {
 
 	@Test
-	public void generateSymEnc() throws IOException {
+	public void generateSymEnc() {
 		String template = "secretkeyencryption";
 		try {
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(TestUtils.createJavaProject("TestProject_SYMENC"), "testPackage", "Test");
@@ -59,6 +59,9 @@ public class CrySLCodeGenTest {
 		}
 		catch (CoreException e) {
 			Activator.getDefault().logError(e, "Failed to create test project or to retrieve compilation unit.");
+		}
+		catch (IOException e) {
+			Activator.getDefault().logError(e, "Reading of at least one CrySL rule failed.");
 		}
 
 	}

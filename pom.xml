@@ -16,11 +16,11 @@
     <repository>
       <id>eclipse-photon</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/photon</url>
+      <url>http://download.eclipse.org/releases/2020-03/</url>
     </repository>
     <repository>
       <id>crysl</id>
-      <url>https://it.crossing.tu-darmstadt.de/cognicrypt/</url>
+      <url>https://it.crossing.tu-darmstadt.de/cognicrypt/stable/</url>
       <layout>p2</layout>
     </repository>
     <repository>

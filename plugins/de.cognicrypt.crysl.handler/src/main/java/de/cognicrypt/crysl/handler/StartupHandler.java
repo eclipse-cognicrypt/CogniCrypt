@@ -62,7 +62,9 @@ public class StartupHandler implements IStartup {
 					return true;
 				});
 			}
-			catch (final CoreException e) {}
+			catch (final CoreException e) {
+				Activator.getDefault().logError(e);
+			}
 
 			if (!changedCrySLElements.isEmpty()) {
 				try {
@@ -94,13 +96,15 @@ public class StartupHandler implements IStartup {
 			IResource deltaResource = affectedChildren[0].getResource();
 			if (event.getType() == IResourceChangeEvent.POST_CHANGE && deltaResource instanceof IProject
 					&& (delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.CHANGED)) {
+				IProject project = (IProject) deltaResource;
 				try {
-					IProject project = (IProject) deltaResource;
 					if (!CrySLBuilderUtils.hasCrySLBuilder(project) && CrySLBuilderUtils.hasCrySLFiles(project)) {
 						CrySLBuilderUtils.addCrySLBuilderToProject(project);
 					}
 				}
-				catch (CoreException e) {}
+				catch (CoreException e) {
+					Activator.getDefault().logError(e);
+				}
 			}
 		}
 	}

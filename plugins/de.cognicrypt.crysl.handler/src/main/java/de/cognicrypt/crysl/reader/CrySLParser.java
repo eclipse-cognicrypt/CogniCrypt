@@ -146,7 +146,7 @@ public class CrySLParser {
 				classpath[i] = new File(l[i]).toURI().toURL();
 			}
 			catch (MalformedURLException e) {
-				Activator.getDefault().logError("File path: " + jars.get(i) + " could not converted to java.net.URI object");
+				Activator.getDefault().logError(e, "File path: " + jars.get(i) + " could not converted to java.net.URI object");
 			}
 		}
 
@@ -277,7 +277,7 @@ public class CrySLParser {
 						Files.copy(resAsFile, to);
 					}
 					catch (IOException e) {
-						Activator.getDefault().logError(e);
+						Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 					}
 				}
 			} else if (res instanceof IFolder) {

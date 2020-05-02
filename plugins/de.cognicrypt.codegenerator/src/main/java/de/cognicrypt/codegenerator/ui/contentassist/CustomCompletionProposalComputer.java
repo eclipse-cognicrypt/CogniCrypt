@@ -1,9 +1,11 @@
 package de.cognicrypt.codegenerator.ui.contentassist;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
@@ -13,13 +15,15 @@ import org.eclipse.jdt.ui.text.java.JavaContentAssistInvocationContext;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
-import crypto.rules.CrySLRule;
-import de.cognicrypt.utils.CrySLUtils;
+import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.Utils;
 
 
 @SuppressWarnings("restriction")
 public class CustomCompletionProposalComputer extends JavaCompletionProposalComputer {
-	static List<CrySLRule> cryslRules = CrySLUtils.readCrySLRules();
+	
+	static List<String> ruleNames = readClassnames(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath());
 	
 	@Override
 	public List<ICompletionProposal> computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {
@@ -34,12 +38,6 @@ public class CustomCompletionProposalComputer extends JavaCompletionProposalComp
 			return defaultProposals;
 		}
 		
-		// FIXME analyze why ruleName for Cookie.crysl is void 
-		Set<String> ruleNames = new HashSet<String>();
-		for (CrySLRule rule : cryslRules) {
-			ruleNames.add(rule.getClassName());
-		}
-		
 		List<ICompletionProposal> customProposals = new ArrayList<ICompletionProposal>();
 		for (String name : ruleNames) {
 			String s = '"' + name + '"';
@@ -49,5 +47,47 @@ public class CustomCompletionProposalComputer extends JavaCompletionProposalComp
 		
 		customProposals.addAll(defaultProposals);
 		return customProposals;
+	}
+	
+	private static List<String> readClassnames(String rulesFolder) {
+		List<String> classnames = new ArrayList<String>();
+		for (File rule : (new File(rulesFolder)).listFiles()) {
+			if (rule.isDirectory()) {
+				classnames.addAll(readClassnames(rule.getAbsolutePath()));
+				continue;
+			}
+	
+			String classname = null;
+			try {
+				classname = readClassnameFromRule(rule);
+			} catch (IOException e) {
+				Activator.getDefault().logError(e);
+			}
+			
+			if (classname != null) {
+				classnames.add(classname);
+			}
+		}
+		
+		return classnames;
+	}
+
+	private static String readClassnameFromRule(File ruleFile) throws IOException {
+		final String fileName = ruleFile.getName();
+		if (!fileName.endsWith(".crysl")) {
+			return null;
+		}
+		
+		BufferedReader reader = null;
+		String classname = null;
+		try {
+			reader = new BufferedReader(new FileReader(ruleFile));
+			String spec = reader.readLine();
+			classname = spec.split(" ")[1];
+		} finally {
+			reader.close();
+		}
+		
+		return classname;
 	}
 }

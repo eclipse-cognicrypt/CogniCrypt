@@ -308,7 +308,7 @@ public class CrySLCodeGenTest {
 			TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 			assertEquals(5, TestUtils.countMethods(encClassUnit));
 			assertEquals(12, TestUtils.countStatements(encClassUnit, "createPWHash"));
-			assertEquals(11, TestUtils.countStatements(encClassUnit, "verifyPWHash"));
+			assertEquals(13, TestUtils.countStatements(encClassUnit, "verifyPWHash"));
 		}
 		catch (JavaModelException e) {
 			Activator.getDefault().logError(e, "Could not create Java class in test project.");

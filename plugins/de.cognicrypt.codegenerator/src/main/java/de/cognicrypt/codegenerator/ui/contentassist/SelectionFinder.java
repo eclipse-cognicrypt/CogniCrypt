@@ -31,7 +31,7 @@ public class SelectionFinder extends ASTVisitor {
 		}
 		visited = true;
 
-		ASTParser parser = ASTParser.newParser(AST.JLS13);
+		ASTParser parser = ASTParser.newParser(AST.JLS12);
 		parser.setSource(unit);
 		parser.setSourceRange(offset, -1);
 		ASTNode node = parser.createAST(new NullProgressMonitor());

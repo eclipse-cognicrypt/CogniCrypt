@@ -17,13 +17,17 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.CrySLUtils;
 
 
 @SuppressWarnings("restriction")
 public class CustomCompletionProposalComputer extends JavaCompletionProposalComputer {
 	
-	static List<String> ruleNames = readClassnames(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath());
+	static private String rulesDir = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
+	CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+	Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString();
+	
+	static private List<String> ruleNames = readClassnames(rulesDir);
 	
 	@Override
 	public List<ICompletionProposal> computeCompletionProposals(ContentAssistInvocationContext context, IProgressMonitor monitor) {

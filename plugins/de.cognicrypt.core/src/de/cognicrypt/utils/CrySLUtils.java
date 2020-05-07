@@ -9,16 +9,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
 import crypto.cryslhandler.CrySLModelReader;
 import crypto.rules.CrySLRule;
 import crypto.rules.CrySLRuleReader;
 import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
-import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.core.Constants.Rules;
 
 public class CrySLUtils {
 
@@ -72,9 +72,7 @@ public class CrySLUtils {
 	 */
 	
 	public static CrySLRule getCrySLRule(String cryslRule) throws MalformedURLException {
-		File ruleRes = new File(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
-								CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
-								Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString());
+		File ruleRes = new File(Constants.JCA_LATEST_ECLIPSE_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString());
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
 			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}

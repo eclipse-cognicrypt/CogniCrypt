@@ -38,28 +38,11 @@ public class SelectionFinder extends ASTVisitor {
 		node.accept(this);
 	}
 	
-	// Solution 1
 	@Override
 	public boolean visit(MethodInvocation node) {
         return treatMethodName(node);
 	}
 	
-	
-	// Solution 2
-//	@Override
-//	public boolean visit(SimpleName node) {
-//		int offset = node.getStartPosition();
-//		int length = node.getLength();
-//		if(node instanceof SimpleName)
-//			if(((SimpleName) node).getIdentifier().equals("includeClass")) {
-//				if(this.offset == offset+length+1) {
-//					this.memberName = node.getIdentifier();
-//					return true;
-//				}
-//			}
-//		return false;
-//	}
-
     private boolean treatMethodName(MethodInvocation node) {
         String methodName = node.getName().getFullyQualifiedName();
         int currentOffset = node.getLength() + node.getStartPosition() - 1;

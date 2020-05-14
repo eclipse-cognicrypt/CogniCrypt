@@ -29,7 +29,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/polyglot.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-simple.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/soot-j9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/soot.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/synchronizedPDS.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/testCore.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/WPDS.jar"/>

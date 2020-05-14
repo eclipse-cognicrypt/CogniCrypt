@@ -137,10 +137,7 @@ public class AltConfigWizard extends Wizard {
 		} else {
 			CodeGenerators generator = selectedTask.getCodeGen();
 			if (generator == CodeGenerators.CrySL) {
-				String selectedTemplate = selectedTask.getCodeTemplate();
-				for (Answer resp : this.constraints.values()) {
-					selectedTemplate += resp.getOption();
-				}
+				String selectedTemplate = constructTemplateName();
 				selectedTask.setCodeTemplate(selectedTemplate);
 				return addLocatorPage();
 			} else if (generator == CodeGenerators.XSL) {
@@ -158,7 +155,23 @@ public class AltConfigWizard extends Wizard {
 		}
 		return currentPage;
 	}
-
+	
+	public String constructTemplateName() {
+		String selectedTemplate = selectedTask.getCodeTemplate();
+		for (Answer resp : this.constraints.values()) {
+			selectedTemplate += resp.getOption();
+		}
+		return selectedTemplate;
+	}
+	
+	public void addConstraints(HashMap<Question, Answer> constraint) {
+			this.constraints.putAll(constraint);
+	}
+	
+	public void setSelectedTask(Task selectedTask) {
+		this.selectedTask = selectedTask;
+	}
+	
 	private IWizardPage addLocatorPage() {
 		final LocatorPage locatorPage = new LocatorPage("Locator");
 		addPage(locatorPage);
@@ -271,14 +284,12 @@ public class AltConfigWizard extends Wizard {
 			try {
 				codeGenerator.getDeveloperProject().refresh();
 			} catch (CoreException e1) {
-				Activator.getDefault().logError(e1);
+				Activator.getDefault().logError(e1, Constants.CodeGenerationErrorMessage);
 			}
 
 		} catch (Exception ex) {
-			Activator.getDefault().logError(ex);
+			Activator.getDefault().logError(ex, Constants.CodeGenerationErrorMessage);
 		} finally {
-
-
 			waitingDialog.setVisible(false);
 			waitingDialog.dispose();
 		}

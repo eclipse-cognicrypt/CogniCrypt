@@ -252,7 +252,7 @@ public class XMLParser {
 	 * @return the filtered node
 	 * @throws NoSuchElementException
 	 */
-	public Node getNodeByAttrValue(final String nodeName, final String attrName, final String attrValue) throws NoSuchElementException {
+	public Node getNodeByAttrValue(final String nodeName, final String attrName, final String attrValue) {
 		final NodeList nl = this.doc.getElementsByTagName(nodeName);
 		for (int i = 0; i < nl.getLength(); i++) {
 			final NamedNodeMap map = nl.item(i).getAttributes();
@@ -262,7 +262,8 @@ public class XMLParser {
 				}
 			}
 		}
-		throw new NoSuchElementException();
+		Activator.getDefault().logError(Constants.ERROR_CANNOT_FIND_NODE);
+		return null;
 	}
 
 	/**

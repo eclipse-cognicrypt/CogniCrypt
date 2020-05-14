@@ -1,7 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
- * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.sootbridge;
@@ -28,7 +26,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import com.google.common.base.Joiner;
@@ -38,10 +35,9 @@ import boomerang.callgraph.ObservableDynamicICFG;
 import boomerang.callgraph.ObservableICFG;
 import boomerang.preanalysis.BoomerangPretransformer;
 import crypto.analysis.CrySLRulesetSelector.RuleFormat;
-import crypto.providerdetection.ProviderDetection;
 import crypto.analysis.CryptoScanner;
+import crypto.providerdetection.ProviderDetection;
 import crypto.rules.CrySLRule;
-import crypto.rules.CrySLRuleReader;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.crysl.reader.CrySLParser;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -73,7 +69,6 @@ public class SootRunner {
 
 			@Override
 			protected void internalTransform(final String phaseName, final Map<String, String> options) {
-				IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 				BoomerangPretransformer.v().apply();
 				final ObservableDynamicICFG icfg = new ObservableDynamicICFG(true);
 				CryptoScanner scanner = new CryptoScanner() {
@@ -86,15 +81,13 @@ public class SootRunner {
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
 				List<CrySLRule> rules = getRules(resultsReporter.getReporterProject());
-				if (store.getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
+				if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
 					ProviderDetection providerDetection = new ProviderDetection();
-					String rootRulesDirectory = Constants.ECLIPSE_RULES_DIR;
-					String detectedProvider = providerDetection.doAnalysis(icfg, rootRulesDirectory);
-					if(detectedProvider != null) {
+					String detectedProvider = providerDetection.doAnalysis(icfg, Constants.ECLIPSE_RULES_DIR);
+					if (detectedProvider != null) {
 						rules.clear();
-						String newRulesDirectory = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator + 
-													CrySLUtils.getRuleVersions(detectedProvider)[CrySLUtils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider;
-						rules.addAll(providerDetection.chooseRules(newRulesDirectory));
+						rules.addAll(providerDetection.chooseRules(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator
+								+ CrySLUtils.getRuleVersions(detectedProvider)[CrySLUtils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider));
 					}
 				}
 				scanner.scan(rules);
@@ -103,73 +96,59 @@ public class SootRunner {
 	}
 
 	private static List<CrySLRule> getRules(IProject project) {
-		
+
 		List<CrySLRule> rules = Lists.newArrayList();
-		// TODO Select rules according to selected rulesets in preference page. The CrySL rules for each ruleset are in a separate subdirectory of "/resources/CrySLRules/".
 		Set<String> readRules = Sets.newHashSet();
- 		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
- 		
+
 		try {
 			CrySLParser r = new CrySLParser(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-//				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-//				readRuleFromBinaryFiles.stream().forEach(e -> System.out.println(e.getClassName()));
 				rules.addAll(readRuleFromBinaryFiles);
 			}
-			
-			if (prefStore.getBoolean(Constants.SELECT_CUSTOM_RULES)) {
- 				Activator.getDefault().logInfo("Loading custom rules.");
- 				rules.addAll(Files
- 						.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), 
- 								Integer.MAX_VALUE,
- 								(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString()))
- 						.map(path -> {
- 								readRules.add(path.getFileName().toString());
- 								return CrySLRuleReader.readFromSourceFile(path.toFile());
- 						}).collect(Collectors.toList()));
- 			}
-			
+
+			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {
+				Activator.getDefault().logInfo("Loading custom rules.");
+				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,
+						(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString())).map(path -> {
+							readRules.add(path.getFileName().toString());
+							return r.readRule(path.toFile());
+						}).collect(Collectors.toList()));
+			}
+
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
- 			try {
- 				String[] listOfNodes = prefs.childrenNames();
- 				for (String currentNode : listOfNodes) {
- 					Preferences subPref = prefs.node(currentNode);
- 					Ruleset loadedRuleset = new Ruleset(subPref);
- 					if (loadedRuleset.isChecked()) {
- 						String folderPath = Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + 
- 								File.separator + loadedRuleset.getSelectedVersion();
- 						rules.addAll(Files
- 								.find(Paths.get(new File(folderPath).getPath()), Integer.MAX_VALUE,
- 										(file, attr) -> { 
- 											if (file.toString().endsWith(RuleFormat.SOURCE.toString()) && 
- 													!readRules.contains(file.getFileName().toString())) {
- 												return true;
- 											}
- 											return false;
- 										})
- 								.map(path -> {
- 										return r.readRule(path.toFile());
- 								}).collect(Collectors.toList()));
- 					}
- 				}
- 			} catch (BackingStoreException e) {
- 				Activator.getDefault().logError(e);
- 			}
- 			
+			try {
+				String[] listOfNodes = prefs.childrenNames();
+				for (String currentNode : listOfNodes) {
+					Ruleset loadedRuleset = new Ruleset(prefs.node(currentNode));
+					if (loadedRuleset.isChecked()) {
+						rules.addAll(Files.find(
+								Paths.get(new File(Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + File.separator + loadedRuleset.getSelectedVersion()).getPath()),
+								Integer.MAX_VALUE, (file, attr) -> {
+									return file.toString().endsWith(RuleFormat.SOURCE.toString()) && !readRules.contains(file.getFileName().toString());
+								}).map(path -> {
+									return r.readRule(path.toFile());
+								}).collect(Collectors.toList()));
+					}
+				}
+			}
+			catch (BackingStoreException e) {
+				Activator.getDefault().logError(e);
+			}
+
 		}
 		catch (IOException | CoreException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
-		} 
+		}
 		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
-		
+
 		return rules;
 	}
 
@@ -177,8 +156,7 @@ public class SootRunner {
 		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		try {
 			final List<String> urls = new ArrayList<>();
-			final URI uriString = workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI();
-			urls.add(new File(uriString).getAbsolutePath());
+			urls.add(new File(workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI()).getAbsolutePath());
 			return urls;
 		}
 		catch (final Exception e) {
@@ -211,7 +189,7 @@ public class SootRunner {
 
 	private static void setSootOptions(final IJavaProject project, final Boolean dependencyAnalyser) {
 
-		if (dependencyAnalyser == true) {
+		if (dependencyAnalyser) {
 			Options.v().set_soot_classpath(Joiner.on(File.pathSeparator).join(libraryClassPath(project, dependencyAnalyser)));
 			Options.v().set_process_dir(Lists.newArrayList(libraryClassPath(project, dependencyAnalyser)));
 		} else {
@@ -260,7 +238,7 @@ public class SootRunner {
 		final List<String> excludeList = new LinkedList<String>();
 		for (final CrySLRule r : getRules(project.getProject())) {
 			try {
-				String fullyQualifiedName = crypto.Utils.getFullyQualifiedName(r);
+				String fullyQualifiedName = r.getClassName();
 				excludeList.add(fullyQualifiedName);
 			}
 			catch (RuntimeException e) {
@@ -269,6 +247,7 @@ public class SootRunner {
 		}
 		return excludeList;
 	}
+
 
 	private static void registerTransformers(final ResultsCCUIListener resultsReporter) {
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ifds", createAnalysisTransformer(resultsReporter)));
@@ -298,13 +277,11 @@ public class SootRunner {
 	}
 
 	private static Collection<String> libraryClassPath(IJavaProject project, Boolean dependencyAnalyser) {
-		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-
 		Collection<String> libraryClassPath = Sets.newHashSet();
 		IClasspathEntry[] rentries;
 		try {
 			// check if "include dependencies" checkbox is checked in preference page or analysis is running for dependencies
-			if (store.getBoolean(Constants.ANALYSE_DEPENDENCIES) || dependencyAnalyser) {
+			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.ANALYSE_DEPENDENCIES) || dependencyAnalyser) {
 
 				rentries = project.getRawClasspath();
 				for (IClasspathEntry entry : rentries) {
@@ -312,8 +289,8 @@ public class SootRunner {
 				}
 			}
 		}
-		catch (CoreException e1) {
-			e1.printStackTrace();
+		catch (CoreException e) {
+			Activator.getDefault().logError(e, "Could not collect libraries from classpath.");
 		}
 		return libraryClassPath;
 	}
@@ -333,8 +310,8 @@ public class SootRunner {
 					}
 
 				}
-				catch (JavaModelException e1) {
-					Activator.getDefault().logError(e1);
+				catch (JavaModelException e) {
+					Activator.getDefault().logError(e);
 				}
 				break;
 			case IClasspathEntry.CPE_LIBRARY:
@@ -344,9 +321,6 @@ public class SootRunner {
 				} else {
 					libraryClassPath.add(entry.getPath().toOSString());
 				}
-				break;
-			case IClasspathEntry.CPE_VARIABLE:
-				// JRE entry
 				break;
 			case IClasspathEntry.CPE_CONTAINER:
 				try {
@@ -359,6 +333,8 @@ public class SootRunner {
 				catch (JavaModelException e) {
 					Activator.getDefault().logError(e);
 				}
+				break;
+			default:
 				break;
 		}
 	}

@@ -13,7 +13,7 @@ public class Ruleset {
 	private boolean isChecked = false;
 	private TableItem rulesRow;
 	
-	public Ruleset(Preferences subPrefs) throws BackingStoreException {
+	public Ruleset(Preferences subPrefs) throws BackingStoreException  {
 		String[] keys = subPrefs.keys();
 		for (String key : keys) {
 			switch (key) {

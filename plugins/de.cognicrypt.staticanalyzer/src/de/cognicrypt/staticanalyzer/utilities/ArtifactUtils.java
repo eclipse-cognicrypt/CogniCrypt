@@ -65,9 +65,8 @@ public class ArtifactUtils {
 	 */
 	public static boolean downloadRulesets(String url) {
 
-		String metaFilePath = url + File.separator + "maven-metadata.xml";
 		try {
-			ArtifactUtils.parseMetaData(metaFilePath);
+			ArtifactUtils.parseMetaData(url + File.separator + "maven-metadata.xml");
 		}
 		catch (IOException | ParserConfigurationException | SAXException e) {
 			Activator.getDefault().logError(e);
@@ -186,7 +185,7 @@ public class ArtifactUtils {
 					zipFile.extractAll(artifactPath + File.separator + version);
 				}
 				catch (ZipException e) {
-					Activator.getDefault().logError(e);
+					Activator.getDefault().logError(e, "Error occured when extracting zip file.");
 				}
 				Files.delete(Paths.get(artifactPath + File.separator + downloadedZipFilename));
 				new File(artifactPath + File.separator + artifactId).renameTo(new File(artifactPath + File.separator + version));

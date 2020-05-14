@@ -76,7 +76,7 @@ public class CodeHandler {
 	 * @throws CompilationFailedException
 	 *         If the compilation process was not successful an exception is thrown.
 	 */
-	public List<File> compile() throws CompilationFailedException, RuntimeException, IllegalStateException {
+	public List<File> compile() throws CompilationFailedException {
 		// setup compiler
 		//		JavaCompiler compiler = new EclipseCompiler();
 		//		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
@@ -164,7 +164,7 @@ public class CodeHandler {
 		try {
 			loadedClass.getMethod(method, parameterTypes).invoke(loadedClass.newInstance(), args);
 		} catch (Exception e) {
-			Activator.getDefault().logError(e, "Exception is occured during method execution.");
+			Activator.getDefault().logError(e, "Exception occured during method execution.");
 			return false;
 		}
 

@@ -25,7 +25,7 @@ public class AddNewRulesetDialog extends TitleAreaDialog {
     public void create() {
         super.create();
         setTitle("Add new ruleset");
-        setMessage("Please enter the url of the ruleset", IMessageProvider.INFORMATION);
+        setMessage("Please enter the URL of the ruleset", IMessageProvider.INFORMATION);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class AddNewRulesetDialog extends TitleAreaDialog {
     
     private void createRulesetUrl(Composite container) {
         Label lbtRulesetUrl = new Label(container, SWT.NONE);
-        lbtRulesetUrl.setText("Url");
+        lbtRulesetUrl.setText("URL");
 
         GridData dataRulesetUrl = new GridData();
         dataRulesetUrl.grabExcessHorizontalSpace = true;

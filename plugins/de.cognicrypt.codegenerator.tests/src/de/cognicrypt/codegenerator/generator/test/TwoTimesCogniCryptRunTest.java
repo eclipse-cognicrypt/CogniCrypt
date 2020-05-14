@@ -26,9 +26,9 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 
 /**
- * @author André Sonntag
+ * @author Andre Sonntag
  */
-public class TwoTimesCogniCryptRunTests {
+public class TwoTimesCogniCryptRunTest {
 
 	/**
 	 * Scenario: User runs CogniCrypt two times without selecting a specific class
@@ -131,6 +131,8 @@ public class TwoTimesCogniCryptRunTests {
 
 		int outputMethodCount = TestUtils.countMethods(outputClass);
 		assertEquals(1, outputMethodCount);
+		
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 
 	/**
@@ -186,6 +188,7 @@ public class TwoTimesCogniCryptRunTests {
 		int secureEncryptorMethodCount = TestUtils.countMethods(encClass);
 
 		assertEquals(4, secureEncryptorMethodCount);
-
+		
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 }

@@ -73,7 +73,7 @@ public class CrySLBuilder extends IncrementalProjectBuilder {
 				IPath outputLocation = entry.getOutputLocation();
 				if (outputLocation != null) {
 					Arrays.asList(new File(project.getLocation().toOSString() + Constants.outerFileSeparator + outputLocation.removeFirstSegments(1).toOSString()).listFiles())
-							.parallelStream().forEach(e -> e.delete());
+							.parallelStream().filter(e -> e.exists()).forEach(e -> e.delete());
 				}
 			}
 		}

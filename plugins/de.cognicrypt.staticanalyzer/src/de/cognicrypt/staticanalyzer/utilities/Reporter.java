@@ -4,7 +4,6 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,7 +23,7 @@ public class Reporter extends TitleAreaDialog {
 	private String issueTitle;
 	private String issueText;
 	private int attachmentIndex;
-	
+
 	private String fileName;
 
 	public Reporter(Shell parentShell, String fileName) {
@@ -48,10 +47,10 @@ public class Reporter extends TitleAreaDialog {
 		GridLayout layout = new GridLayout(1, false);
 		container.setLayout(layout);
 
-		txtTitle = new Text(container, SWT.BORDER);		
+		txtTitle = new Text(container, SWT.BORDER);
 		txtTitle.setMessage("Please enter issue title...");
 		txtTitle.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		
+
 		txtIssue = new Text(container, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
 		txtIssue.setMessage("Please enter issue description...");
 		txtIssue.setFocus();
@@ -68,7 +67,7 @@ public class Reporter extends TitleAreaDialog {
 		dataGrid.horizontalAlignment = GridData.FILL;
 
 		combo = new Combo(container2, SWT.DROP_DOWN | SWT.READ_ONLY);
-		String[] items = new String[] {fileName, "Method", "None" };
+		String[] items = new String[] {fileName, "Method", "None"};
 		combo.setItems(items);
 		combo.setLayoutData(dataGrid);
 		combo.select(1);
@@ -115,6 +114,5 @@ public class Reporter extends TitleAreaDialog {
 	public int getAttachmentIndex() {
 		return attachmentIndex;
 	}
-
 
 }

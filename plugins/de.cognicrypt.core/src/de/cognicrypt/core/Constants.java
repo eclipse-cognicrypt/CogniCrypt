@@ -10,6 +10,8 @@ package de.cognicrypt.core;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
+import de.cognicrypt.utils.CrySLUtils;
+
 /**
  * This class comprises all constants that are used by the plugin.
  */
@@ -186,8 +188,14 @@ public class Constants {
 	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
 	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
-
+	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
+	
+	public static final String ERROR_CANNOT_FIND_NODE = "The requested node could not be found";
+	public static final String ERROR_CANNOT_FILE_TO_BYTEARRAY = "Error occured when passing a Java file into a byte array.";
+	public static final String ERROR_CANNOT_CREATE_TEST_CODE_GEN = "Error occured when generating code for testing purposes.";
+	public static final String ERROR_CANNOT_PRINT_SRC_CODE = "An error occured when printing source code.";
 	public static final String NOT_JAVA_PROJECT = "The nature of the project is not Java";
+	public static final String NOT_HAVE_NATURE = "The nature of the project does not exist or the project is not open";
 
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";
@@ -575,6 +583,10 @@ public class Constants {
 	public static final int JDT_PROBLEM_ID = 10000000;
 	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
 	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
+	public final static String JCA_LATEST_ECLIPSE_RULES_DIR = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
+			CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+			Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString();
+			
 	public static final String cryslFileEnding = ".crysl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";

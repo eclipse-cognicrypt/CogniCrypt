@@ -51,7 +51,22 @@
 			<plugin>
 				<groupId>org.jboss.tools.tycho-plugins</groupId>
 				<artifactId>repository-utils</artifactId>
-				<version>1.4.0</version>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>generate-repository-facade</goal>
+						</goals>
+						<configuration>
+							<associateSites>
+								<associateSite>http://download.eclipse.org/cognicrypt/stable</associateSite>
+								<associateSite>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</associateSite>
+								<associateSite>http://it.crossing.tu-darmstadt.de/cognicrypt/stable</associateSite>
+							</associateSites>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

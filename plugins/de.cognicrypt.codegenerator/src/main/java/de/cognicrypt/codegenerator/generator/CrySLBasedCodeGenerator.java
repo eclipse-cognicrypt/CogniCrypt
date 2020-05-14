@@ -135,7 +135,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			genFolder = this.project.getProjectPath() + Constants.innerFileSeparator + this.project
 				.getSourcePath() + Constants.CodeGenerationCallFolder + Constants.innerFileSeparator;
 		} catch (CoreException e1) {
-			Activator.getDefault().logError(e1);
+			Activator.getDefault().logError(e1, Constants.CodeGenerationErrorMessage);
 		}
 		Set<GeneratorClass> generatedClasses = new HashSet<GeneratorClass>();
 		Map<String, List<CrySLPredicate>> reliablePreds = new HashMap<String, List<CrySLPredicate>>();
@@ -376,7 +376,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			codeHandler.writeToDisk(genFolder);
 			cleanUpProject(page.getActiveEditor());
 		} catch (Exception e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 		}
 
 		try {
@@ -384,7 +384,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				false);
 			removeCryptoPackageIfEmpty();
 		} catch (CoreException | BadLocationException | IOException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 		}
 
 		return generatedClasses != null;

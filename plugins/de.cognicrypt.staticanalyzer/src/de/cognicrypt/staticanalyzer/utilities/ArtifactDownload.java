@@ -23,6 +23,7 @@ import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.ini4j.Profile.Section;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.utils.Utils;
 
 public class ArtifactDownload {
@@ -55,7 +56,7 @@ public class ArtifactDownload {
 	 * @return location of the downloaded artifact in the local system
 	 * @throws IOException
 	 */
-	public static File getArtifactByAether(String groupId, String artifactId, String version, String classifier, String packaging, File localRepository) throws IOException {
+	public static File getArtifactByAether(String groupId, String artifactId, String version, String classifier, String packaging, File localRepository) {
 		RepositorySystem repositorySystem = newRepositorySystem();
 		RepositorySystemSession session = newSession(repositorySystem, localRepository);
 
@@ -81,7 +82,7 @@ public class ArtifactDownload {
 			}
 		}
 		catch (ArtifactResolutionException e) {
-			throw new IOException("Artifact " + groupId + ":" + artifactId + ":" + version + " could not be downloaded due to " + e.getMessage());
+			Activator.getDefault().logError(e, "Artifact " + groupId + ":" + artifactId + ":" + version + " could not be downloaded due to " + e.getMessage());
 		}
 
 		return result;

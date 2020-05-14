@@ -119,6 +119,7 @@ public class InstanceGenerator {
 					taskAlgorithm.addConstraint(getFunctionFromOperator(joinRef(join(joinRef($this()), rightOperand)), constant(valueAsInt), operator));
 				}
 			} catch (final NumberFormatException e) {
+				Activator.getDefault().logError(e);
 				if (operator.equals("=")) {
 					if (rightOperand != null) {
 						taskAlgorithm.addConstraint(equal(joinRef(join(joinRef($this()), rightOperand)), constant(value)));
@@ -243,7 +244,7 @@ public class InstanceGenerator {
 		try {
 			this.generatedInstances.sort(new ClaferComparator());
 		} catch (final Exception ex) {
-			Activator.getDefault().logError("Instances not sorted by security level. Be cautious");
+			Activator.getDefault().logError(ex, "Instances not sorted by security level. Be cautious");
 		}
 		final ArrayList<TreeMap<String, InstanceClafer>> separatedCombinations = new ArrayList<>();
 
@@ -330,7 +331,7 @@ public class InstanceGenerator {
 			}
 
 		} catch (final Exception e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, "Error occured when generating Clafer instances.");
 		}
 		this.generatedInstances = new ArrayList<>(this.uniqueInstances.values());
 		generateInstanceMapping();

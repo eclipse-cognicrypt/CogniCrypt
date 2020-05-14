@@ -10,6 +10,8 @@ package de.cognicrypt.core;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
+import de.cognicrypt.utils.CrySLUtils;
+
 /**
  * This class comprises all constants that are used by the plugin.
  */
@@ -582,6 +584,10 @@ public class Constants {
 	public static final int JDT_PROBLEM_ID = 10000000;
 	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
 	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
+	public final static String JCA_LATEST_ECLIPSE_RULES_DIR = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
+			CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+			Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString();
+			
 	public static final String cryslFileEnding = ".crysl";
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";

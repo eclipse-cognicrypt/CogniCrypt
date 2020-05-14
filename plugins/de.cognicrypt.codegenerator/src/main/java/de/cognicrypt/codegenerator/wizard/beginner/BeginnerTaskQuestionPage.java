@@ -220,7 +220,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				new Label(parent, SWT.NONE);
 				//added description for questions
 				if (!question.getNote().isEmpty()) {
-					
 					createNote(parent, question, true);
 				}
 				this.finish = true;
@@ -728,7 +727,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		
 			String[] noteText1 = noteText.split("\\$\\$\\$");
 			noteText = noteText1[1];
-			if (!prefStore.getBoolean(Constants.SUPPRESS_TLS_ERRORS)) {
+			if (!prefStore.getBoolean(Constants.SUPPRESS_CONSTRAINT_ERRORS)) {
 				noteText = noteText + noteText1[2];
 			}
 		}

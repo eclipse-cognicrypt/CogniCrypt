@@ -49,9 +49,9 @@ public abstract class Configuration {
 		
 		JSONObject obj = new JSONObject();
 		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
-		String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + "/" +Constants.pathToInstanceFile + taskName + ".json";
+		String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
 
-		File file=new File(jsonPath);  
+		File file = new File(jsonPath);  
         file.createNewFile();  
         FileWriter fileWriter = new FileWriter(file);
         fileWriter.write(obj.toJSONString());  

@@ -141,7 +141,6 @@ public class Constants {
 	public static final String NameOfTemporaryMethod = "templateUsage";
 	public static final String pathsForLibrariesInDevProject = "libs";
 	public static final String AuthorTag = "@author CogniCrypt";
-	public static final String pathToInstanceFile = "savedSelections";
 
 	// Output of Code Generation
 	public static final String AdditionalOutputFile = "Output.java";
@@ -532,7 +531,7 @@ public class Constants {
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";
-	public static final String SUPPRESS_TLS_ERRORS = "de.cognicrypt.staticanalyzer.suppressTLSErrors";
+	public static final String SUPPRESS_CONSTRAINT_ERRORS = "de.cognicrypt.staticanalyzer.suppressConstraintErrors";
 
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
@@ -611,4 +610,7 @@ public class Constants {
 	public static final String codeTemplateFolder =
 			"src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "java" + Constants.innerFileSeparator + "de" + Constants.innerFileSeparator + "cognicrypt"
 					+ Constants.innerFileSeparator + "codegenerator" + Constants.innerFileSeparator + "crysl" + Constants.innerFileSeparator + "templates" + Constants.innerFileSeparator;
+	
+	//name of tasks
+	public final static String SECURE_COMMUNICATION = "SecureCommunication";
 }

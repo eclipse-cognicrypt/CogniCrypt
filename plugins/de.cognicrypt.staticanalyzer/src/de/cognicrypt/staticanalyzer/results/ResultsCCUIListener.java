@@ -134,7 +134,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		if (error instanceof ConstraintError) {
 			ConstraintError conError = (ConstraintError) error;
-			if (prefStore.getBoolean(Constants.SUPPRESS_TLS_ERRORS) && conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
+			if (prefStore.getBoolean(Constants.SUPPRESS_CONSTRAINT_ERRORS) && conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
 				return;
 			}
 		}
@@ -249,7 +249,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	
 	@SuppressWarnings("unchecked")
 	public Boolean isLegacyClient() {
-		final String path = this.currentProject.getLocation().toOSString() + "/" + Constants.pathToInstanceFile + "SecureCommunication.json";
+		final String path = this.currentProject.getLocation().toOSString() + Constants.innerFileSeparator + Constants.SECURE_COMMUNICATION + Constants.JSON_EXTENSION;
 		JSONParser parser = new JSONParser();
 		try {
 			if (Files.exists(Paths.get(path))) {

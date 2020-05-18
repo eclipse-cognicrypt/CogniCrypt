@@ -2,4 +2,4 @@ bin/
 target/
 .metadata/
 .recommenders/
-*.cryptslbin
+*.cryslbin

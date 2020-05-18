@@ -272,7 +272,7 @@ public class StatisticsView extends ViewPart {
 	}
 
 	private static Optional<StatisticsView> getView() {
-		IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView("de.cognicrypt.staticanalyzer.view.StatisticsView");
+		IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(Constants.STATVIEWID);
 		if (viewPart != null) {
 			return Optional.of((StatisticsView) viewPart);
 		}

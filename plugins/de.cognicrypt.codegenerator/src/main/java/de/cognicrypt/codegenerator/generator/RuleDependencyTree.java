@@ -23,32 +23,32 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import crypto.rules.CryptSLObject;
-import crypto.rules.CryptSLPredicate;
-import crypto.rules.CryptSLRule;
+import crypto.rules.CrySLObject;
+import crypto.rules.CrySLPredicate;
+import crypto.rules.CrySLRule;
 import de.cognicrypt.utils.Utils;
 
 public class RuleDependencyTree {
 
-	List<CryptSLRule> cryslRules;
+	List<CrySLRule> cryslRules;
 
-	List<CryptSLRule> nodes;
+	List<CrySLRule> nodes;
 
-	Map<String, Set<CryptSLRule>> ruleToPred;
-	List<Entry<Entry<CryptSLRule, CryptSLRule>, String>> edges;
+	Map<String, Set<CrySLRule>> ruleToPred;
+	List<Entry<Entry<CrySLRule, CrySLRule>, String>> edges;
 
-	public RuleDependencyTree(List<CryptSLRule> rules) {
-		nodes = new ArrayList<CryptSLRule>();
-		edges = new ArrayList<Entry<Entry<CryptSLRule, CryptSLRule>, String>>();
-		ruleToPred = new HashMap<String, Set<CryptSLRule>>();
+	public RuleDependencyTree(List<CrySLRule> rules) {
+		nodes = new ArrayList<CrySLRule>();
+		edges = new ArrayList<Entry<Entry<CrySLRule, CrySLRule>, String>>();
+		ruleToPred = new HashMap<String, Set<CrySLRule>>();
 
-		for (CryptSLRule rule : rules) {
+		for (CrySLRule rule : rules) {
 			nodes.add(rule);
-			for (CryptSLPredicate pred : rule.getPredicates()) {
+			for (CrySLPredicate pred : rule.getPredicates()) {
 				if (!pred.isNegated()) {
-					Set<CryptSLRule> predsForRule = ruleToPred.get(pred.getPredName());
+					Set<CrySLRule> predsForRule = ruleToPred.get(pred.getPredName());
 					if (predsForRule == null) {
-						ruleToPred.put(pred.getPredName(), new HashSet<CryptSLRule>());
+						ruleToPred.put(pred.getPredName(), new HashSet<CrySLRule>());
 						predsForRule = ruleToPred.get(pred.getPredName());
 					}
 					predsForRule.add(rule);
@@ -56,16 +56,16 @@ public class RuleDependencyTree {
 			}
 		}
 
-		for (CryptSLRule rule : rules) {
-			for (CryptSLPredicate pred : rule.getRequiredPredicates()) {
-				Set<CryptSLRule> allPreds = ruleToPred.get(pred.getPredName());
+		for (CrySLRule rule : rules) {
+			for (CrySLPredicate pred : rule.getRequiredPredicates()) {
+				Set<CrySLRule> allPreds = ruleToPred.get(pred.getPredName());
 				if (allPreds == null) {
 					continue;
 				}
-				for (CryptSLRule predicate : allPreds) {
+				for (CrySLRule predicate : allPreds) {
 					if (predicate != null) {
-						Entry<CryptSLRule, CryptSLRule> rulePair = new SimpleEntry<CryptSLRule, CryptSLRule>(predicate, rule);
-						SimpleEntry<Entry<CryptSLRule, CryptSLRule>, String> predRuleEntry = new SimpleEntry<Entry<CryptSLRule, CryptSLRule>, String>(rulePair, pred.getPredName());
+						Entry<CrySLRule, CrySLRule> rulePair = new SimpleEntry<CrySLRule, CrySLRule>(predicate, rule);
+						SimpleEntry<Entry<CrySLRule, CrySLRule>, String> predRuleEntry = new SimpleEntry<Entry<CrySLRule, CrySLRule>, String>(rulePair, pred.getPredName());
 						edges.add(predRuleEntry);
 					}
 				}
@@ -75,8 +75,8 @@ public class RuleDependencyTree {
 
 	public void toDotFile(String rulesFolder) {
 		StringBuilder dotFileSB = new StringBuilder("digraph F {\n");
-		for (Entry<Entry<CryptSLRule, CryptSLRule>, String> edge : edges) {
-			Entry<CryptSLRule, CryptSLRule> nodes = edge.getKey();
+		for (Entry<Entry<CrySLRule, CrySLRule>, String> edge : edges) {
+			Entry<CrySLRule, CrySLRule> nodes = edge.getKey();
 			dotFileSB.append(nodes.getValue());
 			dotFileSB.append(" -> ");
 			dotFileSB.append(nodes.getKey());
@@ -96,18 +96,18 @@ public class RuleDependencyTree {
 	 * [label="javax.crypto.KeyGenerator.init(int)"]; 1 -> 2 [label="javax.crypto.KeyGenerator.generateK"]; 0 -> 2 [label="javax.crypto.KeyGenerator.generateK"]; }
 	 */
 
-	public boolean hasPath(CryptSLRule start, CryptSLRule goal) {
-		Set<CryptSLRule> visited = new HashSet<CryptSLRule>();
+	public boolean hasPath(CrySLRule start, CrySLRule goal) {
+		Set<CrySLRule> visited = new HashSet<CrySLRule>();
 		visited.add(start);
-		Set<CryptSLRule> toBeVisited = new HashSet<CryptSLRule>();
+		Set<CrySLRule> toBeVisited = new HashSet<CrySLRule>();
 		toBeVisited.add(start);
 
 		while (visited.size() != nodes.size()) {
-			Set<CryptSLRule> rights = new HashSet<CryptSLRule>();
-			for (CryptSLRule node : toBeVisited) {
-				for (Entry<Entry<CryptSLRule, CryptSLRule>, String> edge : edges) {
-					Entry<CryptSLRule, CryptSLRule> nodes = edge.getKey();
-					CryptSLRule right = nodes.getValue();
+			Set<CrySLRule> rights = new HashSet<CrySLRule>();
+			for (CrySLRule node : toBeVisited) {
+				for (Entry<Entry<CrySLRule, CrySLRule>, String> edge : edges) {
+					Entry<CrySLRule, CrySLRule> nodes = edge.getKey();
+					CrySLRule right = nodes.getValue();
 					if (nodes.getKey().equals(node) && !visited.contains(right)) {
 						rights.add(right);
 					}
@@ -126,15 +126,15 @@ public class RuleDependencyTree {
 		return false;
 	}
 
-	public boolean hasDirectPath(CryptSLRule start, CryptSLRule goal) {
+	public boolean hasDirectPath(CrySLRule start, CrySLRule goal) {
 		return getOutgoingEdges(start).stream().anyMatch(entry -> entry.getKey().getValue().equals(goal)) || start.getPredicates().stream().anyMatch(predicate -> {
-			String predType = ((CryptSLObject) predicate.getParameters().get(0)).getJavaType();
+			String predType = ((CrySLObject) predicate.getParameters().get(0)).getJavaType();
 			String goalType = goal.getClassName();
 			return Utils.isSubType(predType, goalType) || Utils.isSubType(goalType, predType);
 		});
 	}
 
-	public List<Entry<Entry<CryptSLRule, CryptSLRule>, String>> getOutgoingEdges(CryptSLRule node) {
+	public List<Entry<Entry<CrySLRule, CrySLRule>, String>> getOutgoingEdges(CrySLRule node) {
 		return edges.stream().filter(entry -> entry.getKey().getKey().equals(node)).collect(Collectors.toList());
 	}
 }

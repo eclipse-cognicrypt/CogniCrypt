@@ -27,6 +27,7 @@ public class GeneratorMethod {
 	private Set<String> exceptions;
 	private StringBuilder body;
 	private List<Entry<String, String>> variableDeclarations;
+	private List<Entry<String, String>> postCGVars;
 	private StringBuilder killStatements;
 	private int templateVariables;
 	private List<CodeGenCrySLRule> cryslRules;
@@ -34,6 +35,7 @@ public class GeneratorMethod {
 	public GeneratorMethod() {
 		body = new StringBuilder();
 		variableDeclarations = new ArrayList<Entry<String, String>>();
+		postCGVars = new ArrayList<Entry<String, String>>();
 		parameters = new ArrayList<Entry<String, String>>();
 		exceptions = new HashSet<String>();
 	}
@@ -179,6 +181,14 @@ public class GeneratorMethod {
 
 	public List<CodeGenCrySLRule> getRules() {
 		return cryslRules;
+	}
+	
+	public void addPostCGVars(Entry<String, String> postCGVar) {
+		postCGVars.add(postCGVar);
+	}
+
+	public List<Entry<String, String>> getPostCGVars() {
+		return postCGVars;
 	}
 
 }

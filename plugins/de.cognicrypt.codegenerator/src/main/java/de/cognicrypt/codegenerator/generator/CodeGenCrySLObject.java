@@ -10,10 +10,14 @@
 
 package de.cognicrypt.codegenerator.generator;
 
-import crypto.rules.CryptSLObject;
+import crypto.rules.CrySLObject;
 
-public class CodeGenCrySLObject extends CryptSLObject {
+public class CodeGenCrySLObject extends CrySLObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7651301776757536370L;
 	private final String crySLVariable;
 	private String method = "";
 	private int pos = -1;
@@ -23,7 +27,7 @@ public class CodeGenCrySLObject extends CryptSLObject {
 		this.crySLVariable = crySLVariable;
 	}
 
-	public CodeGenCrySLObject(CryptSLObject obj, String crySLVariable) {
+	public CodeGenCrySLObject(CrySLObject obj, String crySLVariable) {
 		this(obj.getVarName(), obj.getJavaType(), crySLVariable);
 	}
 

@@ -108,7 +108,6 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	public Task getSelectedTask() {
-		// TODO return task depending on the currently selected use case (via button)
 		return this.selectedTask;
 	}
 
@@ -121,12 +120,12 @@ public class TaskSelectionPage extends WizardPage {
 	}
 
 	private Button createImageButton(final Composite container, final Image startImage, String taskName) {
-		final Button b = new Button(container, SWT.WRAP | SWT.TOGGLE);
+		final Button imageButton = new Button(container, SWT.WRAP | SWT.TOGGLE);
 		final Rectangle bounds = startImage.getBounds();
-		b.setSize(bounds.width, bounds.height);
-		b.setImage(startImage);
-		b.setToolTipText(taskName);
-		return b;
+		imageButton.setSize(bounds.width, bounds.height);
+		imageButton.setImage(startImage);
+		imageButton.setToolTipText(taskName);
+		return imageButton;
 	}
 
 	private Image loadImage(final String image) {
@@ -145,10 +144,7 @@ public class TaskSelectionPage extends WizardPage {
 				resolvedURI = FileLocator.resolve(entry).toURI();
 			}
 
-			final File file = new File(resolvedURI);
-			final InputStream is = new FileInputStream(file);
-
-			return new Image(PlatformUI.getWorkbench().getDisplay(), is);
+			return new Image(PlatformUI.getWorkbench().getDisplay(), new FileInputStream(new File(resolvedURI)));
 		} catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
@@ -179,15 +175,15 @@ public class TaskSelectionPage extends WizardPage {
 		public void handleEvent(final Event event) {
 			final Button eventButton = (Button) event.widget;
 			for (int i = 0; i < this.buttons.size(); i++) {
-				final Button b = this.buttons.get(i);
-				if (eventButton.equals(b)) {
+				final Button curIterationButton = this.buttons.get(i);
+				if (eventButton.equals(curIterationButton)) {
 					TaskSelectionPage.this.selectedTask = this.tasks.get(i);
-					b.setSelection(true);
+					curIterationButton.setSelection(true);
 					this.targetLabel.setText(TaskSelectionPage.this.selectedTask.getTaskDescription());
 					setPageComplete(true);
 				} else {
-					b.setSelection(false);
-					b.setImage(this.buttonImages.get(i));
+					curIterationButton.setSelection(false);
+					curIterationButton.setImage(this.buttonImages.get(i));
 				}
 			}
 		}

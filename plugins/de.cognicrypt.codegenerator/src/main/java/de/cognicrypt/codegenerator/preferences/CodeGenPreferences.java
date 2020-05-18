@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Group;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.properties.PreferenceListener;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.UIUtils;
 
 public class CodeGenPreferences extends PreferenceListener {
 
@@ -34,7 +34,7 @@ public class CodeGenPreferences extends PreferenceListener {
 
 	@Override
 	public void compileAdvancedPreferences(Composite parent) {
-		final Group codeGenGroup = Utils.addHeaderGroup(parent, "Code Generator");
+		final Group codeGenGroup = UIUtils.addHeaderGroup(parent, "Code Generator");
 
 		persistConfig = new Button(codeGenGroup, SWT.CHECK);
 		persistConfig.setText("Persist Code-generation Configuration");

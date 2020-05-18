@@ -43,7 +43,7 @@ public class ErrorMarkerGenerator {
 	 * @param sev Severities type
 	 * @return <code>true</code>/<code>false</code> if error marker was (not) added successfully
 	 */
-	public boolean addMarker(final String markerType, final int id, final IResource sourceFile, final int line, final String message, final Severities sev,
+	public boolean addMarker(final String markerType, final int id, final IResource sourceFile, final int line, final String message, final String crySLRuleName, final String jimpleCode, final Severities sev,
 			final HashMap<String, String> additionalErrorInfos, boolean isSuppressed) {
 
 		if (!sourceFile.exists() || !sourceFile.isAccessible()) {
@@ -57,6 +57,8 @@ public class ErrorMarkerGenerator {
 			marker.setAttribute("errorType", markerType);
 			marker.setAttribute(IMarker.LINE_NUMBER, line);
 			marker.setAttribute(IMarker.MESSAGE, message);
+			marker.setAttribute("crySLRuleName", crySLRuleName);
+			marker.setAttribute("errorJimpleCode", jimpleCode);
 			marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			if (isSuppressed) {
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);

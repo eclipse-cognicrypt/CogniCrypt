@@ -7,18 +7,12 @@ package de.cognicrypt.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -33,6 +27,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.CompilationUnit;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
@@ -41,35 +36,19 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.FileEditorInput;
 import org.ini4j.InvalidFileFormatException;
 import org.ini4j.Wini;
 import org.osgi.framework.Bundle;
-
 import com.google.common.base.CharMatcher;
-
-import crypto.analysis.CrySLRulesetSelector.RuleFormat;
-import crypto.cryptslhandler.CrySLModelReader;
-import crypto.rules.CryptSLRule;
-import crypto.rules.CryptSLRuleReader;
-import crypto.rules.StateNode;
-import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Activator;
 import de.cognicrypt.core.Constants;
 
 public class Utils {
 
-	private static IWorkbenchWindow window = null;
+	static IWorkbenchWindow window = null;
 
 	/**
 	 * This method checks if a project passed as parameter is a Java project or not.
@@ -79,9 +58,10 @@ public class Utils {
 	 */
 	public static boolean checkIfJavaProjectSelected(final IProject project) {
 		try {
-			return project.hasNature("org.eclipse.jdt.core.javanature");
+			return project.hasNature(Constants.JavaNatureID);
 		}
 		catch (final CoreException e) {
+			Activator.getDefault().logError(e, Constants.NOT_HAVE_NATURE);
 			return false;
 		}
 	}
@@ -105,13 +85,15 @@ public class Utils {
 			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
 				for (final ICompilationUnit cu : l.getCompilationUnits()) {
 					final IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
-					String name = cuResource.getParent().getElementName() + "." + cuResource.getElementName();
+					for (IJavaElement a : (ArrayList<IJavaElement>)((CompilationUnit) cuResource).getChildrenOfType(7)) {
+						String name = cuResource.getParent().getElementName() + "." + a.getElementName();
 
-					if (name.startsWith(".")) {
-						name = name.substring(1);
-					}
-					if (name.startsWith(className)) {
-						return cu.getCorrespondingResource();
+						if (name.startsWith(".")) {
+							name = name.substring(1);
+						}
+						if (name.equals(className)) {
+							return cu.getCorrespondingResource();
+						}
 					}
 				}
 			}
@@ -123,54 +105,12 @@ public class Utils {
 	}
 
 	/**
-	 * This method returns the currently open editor as an {@link IEditorPart}.
-	 *
-	 * @return Current editor.
-	 */
-	public static IEditorPart getCurrentlyOpenEditor() {
-		final Display defaultDisplay = Display.getDefault();
-		final Runnable getWindow = () -> setWindow(PlatformUI.getWorkbench().getActiveWorkbenchWindow());
-		defaultDisplay.syncExec(getWindow);
-		if (Utils.window == null) {
-			try {
-				Thread.sleep(500);
-			}
-			catch (final InterruptedException e) {
-				Activator.getDefault().logError(e);
-			}
-			defaultDisplay.asyncExec(getWindow);
-		}
-
-		if (Utils.window != null) {
-			return Utils.window.getActivePage().getActiveEditor();
-		}
-		return null;
-	}
-
-	/**
-	 * Overload for {@link Utils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
+	 * Overload for {@link UIUtils#getCurrentlyOpenFile(IEditorPart) getCurrentlyOpenFile(IEditor part)}
 	 *
 	 * @return Currently open file.
 	 */
 	public static IFile getCurrentlyOpenFile() {
-		return getCurrentlyOpenFile(getCurrentlyOpenEditor());
-	}
-
-	/**
-	 * This method gets the file that is currently opened in the editor as an {@link IFile}.
-	 *
-	 * @param part Editor part that contains the file.
-	 * @return Currently open file.
-	 */
-	public static IFile getCurrentlyOpenFile(final IEditorPart part) {
-		if (part != null) {
-			final IEditorInput editorInput = part.getEditorInput();
-			if (editorInput instanceof FileEditorInput) {
-				final FileEditorInput inputFile = (FileEditorInput) part.getEditorInput();
-				return inputFile.getFile();
-			}
-		}
-		return null;
+		return UIUtils.getCurrentlyOpenFile(UIUtils.getCurrentlyOpenEditor());
 	}
 
 	public static IProject getCurrentProject() {
@@ -186,31 +126,6 @@ public class Utils {
 			return selectedProject;
 		}
 		return null;
-	}
-
-	/**
-	 * This method returns the currently open page as an {@link IWorkbenchPage}.
-	 *
-	 * @return Current editor.
-	 */
-	public static IWorkbenchPage getCurrentlyOpenPage() {
-		final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		if (window != null) {
-			return window.getActivePage();
-		}
-		return null;
-	}
-
-	/**
-	 * This method closes the currently open editor.
-	 *
-	 * @param editor
-	 */
-	public static void closeEditor(final IEditorPart editor) {
-		final IWorkbenchPage workbenchPage = Utils.getCurrentlyOpenPage();
-		if (workbenchPage != null) {
-			workbenchPage.closeEditor(editor, true);
-		}
 	}
 
 	/**
@@ -230,7 +145,7 @@ public class Utils {
 			se.search(sp, searchParticipants, scope, requestor, null);
 		}
 		catch (final CoreException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, "Could not find main method in the project: "+project.getProject().getName());
 		}
 	}
 
@@ -241,16 +156,20 @@ public class Utils {
 	 * @param requestor Object that handles the search results
 	 * @throws CoreException
 	 */
-	public static IFile findFileInProject(IContainer container, String name) throws CoreException {
-		for (IResource res : container.members()) {
-			if (res instanceof IContainer) {
-				IFile file = findFileInProject((IContainer) res, name);
-				if (file != null) {
-					return file;
+	public static IFile findFileInProject(IContainer container, String name) {
+		try {
+			for (IResource res : container.members()) {
+				if (res instanceof IContainer) {
+					IFile file = findFileInProject((IContainer) res, name);
+					if (file != null) {
+						return file;
+					}
+				} else if (res instanceof IFile && (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
+					return (IFile) res;
 				}
-			} else if (res instanceof IFile && (res.getName().equals(name.substring(name.lastIndexOf(".") + 1) + ".java"))) {
-				return (IFile) res;
 			}
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
 		}
 
 		return null;
@@ -316,6 +235,9 @@ public class Utils {
 				return new File(inputPath);
 			} else {
 				final URL entry = bundle.getEntry(inputPath);
+				if (entry == null) {
+					return null;
+				}
 				final URL resolvedURL = FileLocator.toFileURL(entry);
 				URI resolvedURI = null;
 				if (!(resolvedURL == null)) {
@@ -326,7 +248,9 @@ public class Utils {
 				return new File(resolvedURI);
 			}
 		}
-		catch (final Exception ex) {
+		catch (final IOException ex) {
+			Activator.getDefault().logError(ex, Constants.ERROR_MESSAGE_NO_FILE);
+		} catch (URISyntaxException ex) {
 			Activator.getDefault().logError(ex);
 		}
 
@@ -349,40 +273,7 @@ public class Utils {
  		return ini;
  	}
 
- 	/***
- 	 * This method returns all sub-directories in a directory of the first level.
- 	 * @param ruleSet JavaCryptographicArchitecture, BouncyCastle, Tink
- 	 * @return array of version numbers
- 	 */
- 	public static String[] getRuleVersions(String ruleSet){
- 		List<String> versions = new ArrayList<String>();
- 		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
- 		File[] innerDirs = path.listFiles();
- 		for (File f: innerDirs) {
- 			if (f.isDirectory()) {
- 				String[] versionNumber = f.getPath().split(Matcher.quoteReplacement(System.getProperty("file.separator")));
- 				versions.add(versionNumber[versionNumber.length - 1]);
- 			}
- 		}
-
- 		versions.sort(new Comparator<String>() {
- 			@Override
- 			public int compare(String o1, String o2) {
- 				Double one = Double.valueOf(o1);
- 				Double two = Double.valueOf(o2);
- 				return one.compareTo(two);
- 			}
- 		});
-
- 		// https://shipilev.net/blog/2016/arrays-wisdom-ancients/
- 		return versions.toArray(new String[0]);
- 	}
-
-	protected static void setWindow(final IWorkbenchWindow activeWorkbenchWindow) {
-		Utils.window = activeWorkbenchWindow;
-	}
-
-	public static String filterQuotes(final String dirty) {
+ 	public static String filterQuotes(final String dirty) {
 		return CharMatcher.anyOf("\"").removeFrom(dirty);
 	}
 
@@ -395,86 +286,17 @@ public class Utils {
 		}
 	}
 
-	/**
-	 * Returns the cryptsl rule with the name that is defined by the method parameter cryptslRule.
-	 * 
-	 * @param cryptslRule Name of cryptsl rule that should by returend.
-	 * @return Returns the cryptsl rule with the name that is defined by the parameter cryptslRule.
-	 * @throws MalformedURLException
-	 */
-	public static CryptSLRule getCryptSLRule(String cryptslRule) throws MalformedURLException {
-		File ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
-		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
-			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + "/" + cryptslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
-		}
-		return (new CrySLModelReader()).readRule(ruleRes);
-	}
-
-	public static List<CryptSLRule> readCrySLRules() {
-		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath()),
-				readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getAbsolutePath())).flatMap(Collection::stream).collect(Collectors.toList());
-	}
-
-	protected static List<CryptSLRule> readCrySLRules(String rulesFolder) {
-		List<CryptSLRule> rules = new ArrayList<CryptSLRule>();
-
-		for (File rule : (new File(rulesFolder)).listFiles()) {
-			if (rule.isDirectory()) {
-				rules.addAll(readCrySLRules(rule.getAbsolutePath()));
-				continue;
-			}
-
-			CryptSLRule readFromSourceFile = CryptSLRuleReader.readFromSourceFile(rule);
-			if (readFromSourceFile != null) {
-				rules.add(readFromSourceFile);
-			}
-		}
-		return rules;
-	}
-
-	public static List<TransitionEdge> getOutgoingEdges(Collection<TransitionEdge> collection, final StateNode curNode, final StateNode notTo) {
-		final List<TransitionEdge> outgoingEdges = new ArrayList<>();
-		for (final TransitionEdge comp : collection) {
-			if (comp.getLeft().equals(curNode) && !(comp.getRight().equals(curNode) || comp.getRight().equals(notTo))) {
-				outgoingEdges.add(comp);
-			}
-		}
-		return outgoingEdges;
-	}
-
 	public static boolean isSubType(String typeOne, String typeTwo) {
 		boolean subTypes = typeOne.equals(typeTwo);
-		subTypes |= (typeOne + "[]").equals(typeTwo);
+		subTypes |= ("byte".equals(typeOne) && (typeOne + "[]").equals(typeTwo));
 		if (!subTypes) {
 			try {
 				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));
 			}
-			catch (ClassNotFoundException e) {}
+			catch (ClassNotFoundException e) {
+				Activator.getDefault().logError(e);
+			}
 		}
 		return subTypes;
-	}
-
-	public static Group addHeaderGroup(Composite parent, String text) {
-		final Group headerGroup = new Group(parent, SWT.SHADOW_IN);
-		headerGroup.setText(text);
-		headerGroup.setLayout(new GridLayout(1, true));
-		return headerGroup;
-	}
-
-	public static boolean isIncompatibleJavaVersion() {
-		return isIncompatibleJavaVersion(System.getProperty("java.version", null));
-	}
-
-	public static boolean isIncompatibleJavaVersion(String javaVersion) {
-		return javaVersion == null || !javaVersion.startsWith("1.");
-	}
-	
-	/**
-	 * This method checks if a Collection is null or empty
-	 * @param c
-	 * @return 
-	 */
-	public static boolean isNullOrEmpty( final Collection< ? > c ) {
-	    return c == null || c.isEmpty();
 	}
 }

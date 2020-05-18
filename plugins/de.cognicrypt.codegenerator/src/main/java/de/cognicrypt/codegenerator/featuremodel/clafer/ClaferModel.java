@@ -23,6 +23,7 @@ import org.clafer.javascript.JavascriptFile;
 import org.clafer.scope.Scope;
 
 import de.cognicrypt.codegenerator.Activator;
+import de.cognicrypt.core.Constants;
 
 /**
  * This class handles the clafer model on the file-system level.
@@ -84,7 +85,7 @@ public class ClaferModel {
 			setEnumList(astModel);
 
 		} catch (final IOException e) {
-			Activator.getDefault().logError(e);
+			Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 		}
 	}
 

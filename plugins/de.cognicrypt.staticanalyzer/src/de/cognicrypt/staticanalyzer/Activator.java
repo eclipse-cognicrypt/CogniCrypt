@@ -9,7 +9,6 @@ package de.cognicrypt.staticanalyzer;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -17,11 +16,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
 import de.cognicrypt.core.properties.CogniCryptPreferencePage;
 import de.cognicrypt.staticanalyzer.handlers.ShutDownHandler;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.staticanalyzer.utilities.ArtifactUtils;
+import de.cognicrypt.staticanalyzer.utilities.DefaultRulePreferences;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -50,8 +49,10 @@ public class Activator extends AbstractUIPlugin {
 
 		CogniCryptPreferencePage.registerPreferenceListener(new StaticAnalyzerPreferences());
 		
-		if(ArtifactUtils.downloadRulesets())
+		if(ArtifactUtils.downloadRulesets()) {
  			getDefault().logInfo("Rulesets updated.");
+ 			DefaultRulePreferences.addDefaults();
+		}
 	}
 
 	@Override

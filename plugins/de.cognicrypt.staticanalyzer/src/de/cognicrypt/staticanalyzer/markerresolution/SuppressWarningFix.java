@@ -51,9 +51,9 @@ public class SuppressWarningFix implements IMarkerResolution {
 		final String message = (String) m.getAttribute(IMarker.MESSAGE);
 
 		final Element warningEntry = this.xmlParser.createChildElement(this.xmlParser.getRoot(), Constants.SUPPRESSWARNING_ELEMENT);
-		this.xmlParser.createAttrForElement(warningEntry, Constants.ID_ATTR, id + "");
+		this.xmlParser.createAttrForElement(warningEntry, Constants.ID_ATTR, String.valueOf(id));
 		this.xmlParser.createChildElement(warningEntry, Constants.FILE_ELEMENT, ressource);
-		this.xmlParser.createChildElement(warningEntry, Constants.LINENUMBER_ELEMENT, lineNumber + "");
+		this.xmlParser.createChildElement(warningEntry, Constants.LINENUMBER_ELEMENT, String.valueOf(lineNumber));
 		this.xmlParser.createChildElement(warningEntry, Constants.MESSAGE_ELEMENT, message);
 	}
 
@@ -82,7 +82,7 @@ public class SuppressWarningFix implements IMarkerResolution {
 			marker.getResource().getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		}
 		catch (final IOException e) {
-			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 		}
 		catch (final CoreException e) {
 			Activator.getDefault().logError(e);

@@ -10,6 +10,8 @@ package de.cognicrypt.core;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
+import de.cognicrypt.utils.CrySLUtils;
+
 /**
  * This class comprises all constants that are used by the plugin.
  */
@@ -22,6 +24,11 @@ public class Constants {
 	public enum CodeGenerators {
 		XSL, CrySL
 	}
+	
+	public enum Rules {
+		JavaCryptographicArchitecture, BouncyCastle, Tink
+	}
+	
 	public enum Severities {
 		Error, Warning, Info, Ignored;
 
@@ -181,8 +188,14 @@ public class Constants {
 	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
 	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
-
+	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
+	
+	public static final String ERROR_CANNOT_FIND_NODE = "The requested node could not be found";
+	public static final String ERROR_CANNOT_FILE_TO_BYTEARRAY = "Error occured when passing a Java file into a byte array.";
+	public static final String ERROR_CANNOT_CREATE_TEST_CODE_GEN = "Error occured when generating code for testing purposes.";
+	public static final String ERROR_CANNOT_PRINT_SRC_CODE = "An error occured when printing source code.";
 	public static final String NOT_JAVA_PROJECT = "The nature of the project is not Java";
+	public static final String NOT_HAVE_NATURE = "The nature of the project does not exist or the project is not open";
 
 	public static final String JAVA = "java";
 	public static final String DEFAULT_PROVIDER = "JCA";
@@ -506,6 +519,8 @@ public class Constants {
 	// QuickFixs
 	public static final String SUPPRESSWARNING_FIX = "Suppress Warning: ";
 	public static final String UNSUPPRESSWARNING_FIX = "UnSuppress Warning: ";
+	public static final String ENSUREPREDICATE_FIX = "This object comes from a stream/database/other external source and is actually secure.";
+	public static final String FALSEPOSTIVEREPORTER_FIX = "Report false positive";
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
@@ -520,6 +535,7 @@ public class Constants {
 
 	public static final String RULE_SELECTION = "de.cognicrypt.staticanalyzer.ruleSelection";
 	public static final String AUTOMATED_ANALYSIS = "de.cognicrypt.staticanalyzer.automaticAnalysis";
+	public static final String PROVIDER_DETECTION_ANALYSIS = "de.cognicrypt.staticanalyzer.providerDetectionAnalysis";
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";
@@ -527,6 +543,7 @@ public class Constants {
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
+	public static final String STATVIEWID = "de.cognicrypt.staticanalyzer.view.StatisticsView";
 
 	// for creating xml file
 	public static final String Xml_Declaration = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -564,9 +581,14 @@ public class Constants {
 
 	// define a correct ID (get range of possible ones)
 	public static final int JDT_PROBLEM_ID = 10000000;
+	public final static String RELATIVE_RULES_DIR = "resources/CrySLRules";
 	public final static String ECLIPSE_RULES_DIR = System.getProperty("user.dir");
-	public static final String cryslFileEnding = ".cryptsl";
-	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CryptSL";
+	public final static String JCA_LATEST_ECLIPSE_RULES_DIR = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
+			CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+			Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString();
+			
+	public static final String cryslFileEnding = ".crysl";
+	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
 
@@ -580,9 +602,10 @@ public class Constants {
  	public static final String TABLE_HEADER_VERSION = "Version";
  	public static final String TABLE_HEADER_URL = "URL";
  	
- 	public static final Double MIN_JCA_RULE_VERSION = 1.1;
- 	public static final Double MIN_BC_RULE_VERSION = 0.6;
- 	public static final Double MIN_TINK_RULE_VERSION = 0.2;
+ 	public static final Double MIN_JCA_RULE_VERSION = 1.4;
+ 	public static final Double MIN_BC_RULE_VERSION = 0.7;
+ 	public static final Double MIN_TINK_RULE_VERSION = 0.3;
+ 	public static final Double MIN_BCJCA_RULE_VERSION = 0.2;
 
  	//Configuration.ini keys
  	public static final String INI_URL_HEADER = "URLS";
@@ -590,6 +613,7 @@ public class Constants {
  	public static final String INI_JCA_NEXUS = "JCA_NEXUS";
  	public static final String INI_BC_NEXUS = "BC_NEXUS";
  	public static final String INI_TINK_NEXUS = "TINK_NEXUS";
+ 	public static final String INI_BCJCA_NEXUS = "BCJCA_NEXUS";
  	
  	public final static String CONFIG_FILE_PATH = "configuration.ini";
 

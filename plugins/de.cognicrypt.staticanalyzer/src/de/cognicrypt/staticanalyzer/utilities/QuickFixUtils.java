@@ -1,11 +1,6 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v. 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0.
- * 
- * SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University This program and the accompanying materials are made available under the terms of the Eclipse Public License v. 2.0
+ * which is available at http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.utilities;
@@ -21,6 +16,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
@@ -36,7 +32,7 @@ public class QuickFixUtils {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if the import (not) exists
 	 * @throws CoreException
 	 */
-	public static boolean hasJarImport(final ICompilationUnit unit, final String packagePath) throws CoreException {
+	public static boolean hasJarImport(final ICompilationUnit unit, final String packagePath) {
 		return unit.getImport(packagePath).exists();
 	}
 
@@ -45,9 +41,10 @@ public class QuickFixUtils {
 	 * 
 	 * @param unit ICompilationUnit of the source file
 	 * @param packagePath path of the annotation
+	 * @throws JavaModelException 
 	 * @throws CoreException
 	 */
-	public static void insertJarImport(final ICompilationUnit unit, final String packagePath) throws CoreException {
+	public static void insertJarImport(final ICompilationUnit unit, final String packagePath) throws JavaModelException {
 		unit.createImport(packagePath, null, null);
 		unit.save(null, true);
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor().doSave(null);
@@ -128,6 +125,11 @@ public class QuickFixUtils {
 			}
 		}
 		return true;
+	}
+
+	public static String getErrorTypeFromMarkerType(String markerType) {
+		String[] parts = markerType.substring(0, markerType.length() - 6).split("\\.");
+		return parts[parts.length - 1];
 	}
 
 }

@@ -9,7 +9,6 @@ package de.cognicrypt.crysl.handler;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -18,8 +17,10 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IStartup;
-
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.crysl.Activator;
+import de.cognicrypt.crysl.builder.CrySLBuilderUtils;
+import de.cognicrypt.crysl.builder.CrySLNature;
 
 /**
  * At startup, this handler registers a listener that will be informed after a build, whenever resources were changed.
@@ -61,7 +62,9 @@ public class StartupHandler implements IStartup {
 					return true;
 				});
 			}
-			catch (final CoreException e) {}
+			catch (final CoreException e) {
+				Activator.getDefault().logError(e);
+			}
 
 			if (!changedCrySLElements.isEmpty()) {
 				try {
@@ -93,13 +96,15 @@ public class StartupHandler implements IStartup {
 			IResource deltaResource = affectedChildren[0].getResource();
 			if (event.getType() == IResourceChangeEvent.POST_CHANGE && deltaResource instanceof IProject
 					&& (delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.CHANGED)) {
+				IProject project = (IProject) deltaResource;
 				try {
-					IProject project = (IProject) deltaResource;
 					if (!CrySLBuilderUtils.hasCrySLBuilder(project) && CrySLBuilderUtils.hasCrySLFiles(project)) {
 						CrySLBuilderUtils.addCrySLBuilderToProject(project);
 					}
 				}
-				catch (CoreException e) {}
+				catch (CoreException e) {
+					Activator.getDefault().logError(e);
+				}
 			}
 		}
 	}

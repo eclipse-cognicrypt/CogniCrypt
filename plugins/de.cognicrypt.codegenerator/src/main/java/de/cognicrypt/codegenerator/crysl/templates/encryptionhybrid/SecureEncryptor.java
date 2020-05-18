@@ -41,7 +41,7 @@ public class SecureEncryptor {
 	}
 
 	public byte[] encryptData(byte[] plaintext, javax.crypto.SecretKey key) {
-		byte[] ivBytes = new byte[32];
+		byte[] ivBytes = new byte[16];
 		byte[] cipherText = null;
 		int mode = Cipher.ENCRYPT_MODE;
 
@@ -57,11 +57,11 @@ public class SecureEncryptor {
 
 	public byte[] decryptData(byte[] ciphertext, javax.crypto.SecretKey key) {
 
-		byte[] ivBytes = new byte[32];
+		byte[] ivBytes = new byte[16];
 		byte[] data = new byte[ciphertext.length - ivBytes.length];
-		System.arraycopy(data, 0, ivBytes, 0, ivBytes.length);
-		System.arraycopy(data, ivBytes.length, data, 0, data.length);
-
+		System.arraycopy(ciphertext, 0, ivBytes, 0, ivBytes.length);
+		System.arraycopy(ciphertext, ivBytes.length, data, 0, data.length);
+		
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")

@@ -9,7 +9,7 @@
    <feature url="features/de.cognicrypt.cryslhandler.feature_1.0.0.qualifier.jar" id="de.cognicrypt.cryslhandler.feature" version="1.0.0.qualifier">
       <category name="de.cognicrypt.catergory"/>
    </feature>
-   <feature url="features/de.darmstadt.tu.crossing.CryptSL.feature_1.0.0.qualifier.jar" id="de.darmstadt.tu.crossing.CryptSL.feature" version="1.0.0.qualifier">
+   <feature url="features/de.darmstadt.tu.crossing.CrySL.feature_2.0.0.jar" id="de.darmstadt.tu.crossing.CrySL.feature" version="2.0.0">
       <category name="de.darmstadt.tu.crysl"/>
    </feature>
    <feature url="features/de.cognicrypt.core.feature_1.0.0.qualifier.jar" id="de.cognicrypt.core.feature" version="1.0.0.qualifier">
@@ -19,5 +19,5 @@
    <category-def name="de.darmstadt.tu.crysl" label="CrySL"/>
    <repository-reference location="http://download.eclipse.org/cognicrypt" enabled="true" />
    <repository-reference location="http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/" enabled="true" />
-   <repository-reference location="http://it.crossing.tu-darmstadt.de/cognicrypt/" enabled="true" />
+   <repository-reference location="http://it.crossing.tu-darmstadt.de/cognicrypt/stable/" enabled="true" />
 </site>

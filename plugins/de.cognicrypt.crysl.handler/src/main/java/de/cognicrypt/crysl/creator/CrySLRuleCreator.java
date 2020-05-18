@@ -8,8 +8,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import com.google.common.base.Strings;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.crysl.handler.Activator;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.crysl.Activator;
+import de.cognicrypt.utils.CrySLUtils;
 
 /**
  * This class creates programmatically a CrySL rule 
@@ -35,16 +35,16 @@ public class CrySLRuleCreator {
 	public boolean createRule(String filePath, String spec, List<String> objects, List<String> events, String order,
 			List<String> constraints, List<String> requires, List<String> ensures) {
 
-		if (Strings.isNullOrEmpty(spec) || Utils.isNullOrEmpty(objects) || Utils.isNullOrEmpty(events)
-				|| Strings.isNullOrEmpty(order) || Utils.isNullOrEmpty(ensures)) {
-			Activator.getDefault().logError(null, "One or more mandatory sections are null or empty");
+		if (Strings.isNullOrEmpty(spec) || CrySLUtils.isNullOrEmpty(objects) || CrySLUtils.isNullOrEmpty(events)
+				|| Strings.isNullOrEmpty(order) || CrySLUtils.isNullOrEmpty(ensures)) {
+			Activator.getDefault().logError("One or more mandatory sections are null or empty");
 			return false;
 		}
 
 		final String SPEC = "SPEC " + spec;
 		final String OBJECTS = buildCrySLSectionString("OBJECTS", objects);
 		final String EVENTS = buildCrySLSectionString("EVENTS", events);
-		final String ORDER = "ORDER" + "\n" + "\t" + order;
+		final String ORDER = "ORDER" + Constants.lineSeparator + "\t" + order;
 		final String CONSTRAINTS = buildCrySLSectionString("CONSTRAINTS", constraints);
 		final String REQUIRES = buildCrySLSectionString("REQUIRES", requires);
 		final String ENSURES = buildCrySLSectionString("ENSURES", ensures);
@@ -53,7 +53,7 @@ public class CrySLRuleCreator {
 		try {
 			createCrySLFile(filePath, cryslRuleContent);
 		} catch (IOException e) {
-			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		} 
 
 		return true;
@@ -67,34 +67,34 @@ public class CrySLRuleCreator {
 	 * @return <CODE>true</CODE>/<CODE>false</CODE> if file and section could be find and no error occurs during compiling process
 	 */
 	public boolean extendRule(String filePath, String section, String content) {
-		File f = new File(filePath);
+		File ruleFile = new File(filePath);
 		boolean successful = false;
 
-		if (f.exists()) {
+		if (ruleFile.exists()) {
 			try {
 				List<String> rule = Files.readAllLines(Paths.get(filePath));
 				for (int i = 0; i < rule.size(); i++) {
 					if (rule.get(i).trim().toUpperCase().equals(section.trim())) {
-						boolean doublicate = false;
+						boolean duplicate = false;
 						for(int j = i; j < rule.size(); j++) {
 							if(rule.get(j).trim().equals(content.trim())) {
-								doublicate = true;
+								duplicate = true;
 								break;
 							}
 						}
-						if(!doublicate) {
+						if(!duplicate) {
 							rule.add(i + 1, "\t" + content);
 							successful = true;
 							break;
 						}
 					}
 				}
-				createCrySLFile(f.getAbsolutePath(), rule);
+				createCrySLFile(ruleFile.getAbsolutePath(), rule);
 			} catch (IOException e) {
-				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+				Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 			}		
 		} else {
-			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 		return successful;
 	}
@@ -122,10 +122,10 @@ public class CrySLRuleCreator {
 				}
 				createCrySLFile(f.getAbsolutePath(), rule);
 			} catch (IOException e) {
-				Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+				Activator.getDefault().logError(e, Constants.ERROR_MESSAGE_NO_FILE);
 			}
 		} else {
-			Activator.getDefault().logError(null, Constants.ERROR_MESSAGE_NO_FILE);
+			Activator.getDefault().logError(Constants.ERROR_MESSAGE_NO_FILE);
 		}
 		return successful;
 	}
@@ -147,17 +147,17 @@ public class CrySLRuleCreator {
 		StringBuilder builder = new StringBuilder();
 
 		builder.append(spec);
-		builder.append("\n");
+		builder.append(Constants.lineSeparator);
 		builder.append(objects);
-		builder.append("\n");
+		builder.append(Constants.lineSeparator);
 		builder.append(events);
-		builder.append("\n");
+		builder.append(Constants.lineSeparator);
 		builder.append(order);
-		builder.append("\n");
+		builder.append(Constants.lineSeparator);
 		builder.append(constraints);
-		builder.append("\n");
+		builder.append(Constants.lineSeparator);
 		builder.append(requires);
-		builder.append("\n");
+		builder.append(Constants.lineSeparator);
 		builder.append(ensures);
 
 		return builder.toString();
@@ -172,19 +172,19 @@ public class CrySLRuleCreator {
 	 */
 	private String buildCrySLSectionString(String section, List<String> values) {
 
-		if (Utils.isNullOrEmpty(values)) {
+		if (CrySLUtils.isNullOrEmpty(values)) {
 			return "";
 		}
 
 		StringBuilder builder = new StringBuilder();
 		builder.append(section);
-		builder.append("\n");
+		builder.append(Constants.lineSeparator);
 
 		for (String value : values) {
 			String temp = !value.endsWith(";") ? value + ";" : value;
 			builder.append("\t");
 			builder.append(temp);
-			builder.append("\n");
+			builder.append(Constants.lineSeparator);
 		}
 		return builder.toString();
 	}
@@ -213,7 +213,7 @@ public class CrySLRuleCreator {
 		StringBuilder builder = new StringBuilder();
 		for (String s : content) {
 			builder.append(s);
-			builder.append("\n");
+			builder.append(Constants.lineSeparator );
 		}
 		createCrySLFile(filePath, builder.toString());
 	}

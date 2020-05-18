@@ -38,7 +38,7 @@ import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
 import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.utils.FileHelper;
+import de.cognicrypt.utils.FileUtils;
 
 /**
  * This class is responsible for generating code templates by performing an XSL transformation. Currently, Saxon is used as an XSLT- processor.
@@ -97,7 +97,7 @@ public class XSLBasedGenerator extends CodeGenerator {
 			}
 
 			// Trim Output.java
-			FileHelper.trimFile(temporaryOutputFile);
+			FileUtils.trimFile(temporaryOutputFile);
 
 			// Add additional resources like jar files
 			if (!addAdditionalFiles(pathToAdditionalResources)) {
@@ -112,7 +112,7 @@ public class XSLBasedGenerator extends CodeGenerator {
 			if (targetFile != null && this.project.equals(targetFile.getProject())) {
 				Activator.getDefault().logInfo(Constants.OpenFile + targetFile.getName());
 
-				if (FileHelper.checkFileForString(targetFile.getRawLocation().toOSString(), Constants.AuthorTag)) {
+				if (FileUtils.checkFileForString(targetFile.getRawLocation().toOSString(), Constants.AuthorTag)) {
 					Activator.getDefault().logInfo(Constants.ContainsAuthorTag + targetFile.getName());
 					insertCallCodeIntoFile(temporaryOutputFile, true, true, tempFlag);
 					removeCryptoPackageIfEmpty();

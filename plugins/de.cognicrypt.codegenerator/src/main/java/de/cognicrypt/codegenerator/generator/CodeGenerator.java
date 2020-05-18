@@ -51,7 +51,7 @@ import de.cognicrypt.codegenerator.wizard.Configuration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.ComparableEntry;
 import de.cognicrypt.utils.DeveloperProject;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.utils.UIUtils;
 
 public abstract class CodeGenerator {
 
@@ -61,7 +61,6 @@ public abstract class CodeGenerator {
 	private int endPosForImports = -1;
 	private int startingPositionForRunMethod = -1;
 	private int startPosForImports = -1;
-	private String temporaryOutputFile;
 
 	protected CodeGenerator(final IResource target) {
 		this.project = new DeveloperProject(target.getProject());
@@ -109,20 +108,23 @@ public abstract class CodeGenerator {
 	 */
 	protected boolean insertCallCodeIntoFile(final String temporaryOutputFile, final boolean openFileFlag, final boolean authorFlag, final boolean tempFlag) throws BadLocationException, CoreException, IOException {
 		if (this.targetFile != null) {
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), targetFile);
+			if (this.targetFile.getRawLocation().toOSString().equals(Paths.get(temporaryOutputFile).toString())) {
+				return true;
+			} else {
+				IDE.openEditor(UIUtils.getCurrentlyOpenPage(), targetFile);
+			}
 		}
 
 		if ((openFileFlag && authorFlag) || !openFileFlag) {
 			final StringBuilder sb = new StringBuilder(temporaryOutputFile);
 			sb.delete(temporaryOutputFile.length() - 9, temporaryOutputFile.length() - 5);
 			final IFile output = tempFlag == true ? this.project.getIFile(sb.toString()) : this.project.getIFile(temporaryOutputFile);
-			IDE.openEditor(Utils.getCurrentlyOpenPage(), output);
+			IDE.openEditor(UIUtils.getCurrentlyOpenPage(), output);
 		}
 
-		final IEditorPart currentlyOpenPart = Utils.getCurrentlyOpenEditor();
+		final IEditorPart currentlyOpenPart = UIUtils.getCurrentlyOpenEditor();
 		if (currentlyOpenPart == null || !(currentlyOpenPart instanceof AbstractTextEditor)) {
-			Activator.getDefault().logError(null,
-				"Could not open access the editor of the file. Therefore, an outputfile containing calls to the generated classes in the Crypto package was generated.");
+			Activator.getDefault().logError("Could not open access the editor of the file. Therefore, an outputfile containing calls to the generated classes in the Crypto package was generated.");
 			return false;
 		}
 
@@ -132,7 +134,7 @@ public abstract class CodeGenerator {
 		final TreeSet<SimpleEntry<Integer, Integer>> methLims = new TreeSet<>();
 		final SimpleEntry<Integer, SimpleEntry<Integer, Integer>> classlims = new SimpleEntry<>(0, null);
 
-		final ASTParser astp = ASTParser.newParser(AST.JLS10);
+		final ASTParser astp = ASTParser.newParser(AST.JLS11);
 		astp.setSource(docContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -170,7 +172,7 @@ public abstract class CodeGenerator {
 			}
 		}
 
-		final int imports = docContent.startsWith("package") ? docContent.indexOf(Constants.lineSeparator) : 0;
+		final int imports = docContent.startsWith("package") ? docContent.indexOf("\n") : 0;
 		final String[] callsForGenClasses = getCallsForGenClasses(temporaryOutputFile);
 		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
 		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);
@@ -192,13 +194,13 @@ public abstract class CodeGenerator {
 		// Checks whether file exists
 		final File f = new File(filePath);
 		if (!(f.exists() && Files.isWritable(f.toPath()))) {
-			Activator.getDefault().logError(null, Constants.NoTemporaryOutputFile);
+			Activator.getDefault().logError(Constants.NoTemporaryOutputFile);
 			return null;
 		}
 		// Retrieve complete content from file
 		final String fileContent = String.join(Constants.lineSeparator, Files.readAllLines(Paths.get(filePath)));
 		// Determine start and end position for relevant extract
-		final ASTParser astp = ASTParser.newParser(AST.JLS10);
+		final ASTParser astp = ASTParser.newParser(AST.JLS11);
 		astp.setSource(fileContent.toCharArray());
 		astp.setKind(ASTParser.K_COMPILATION_UNIT);
 		final CompilationUnit cu = (CompilationUnit) astp.createAST(null);
@@ -327,11 +329,11 @@ public abstract class CodeGenerator {
 		final ICompilationUnit[] generatedCUnits = this.project.getPackagesOfProject(Constants.PackageNameAsName).getCompilationUnits();
 		boolean anyFileOpen = false;
 
-		if(editor == null && generatedCUnits[0].getResource().getType() == IResource.FILE) {
-			    IFile genClass = (IFile) generatedCUnits[0].getResource();
-				IDE.openEditor(Utils.getCurrentlyOpenPage(), genClass);
-				editor = Utils.getCurrentlyOpenPage().getActiveEditor();
-				anyFileOpen = true;
+		if (editor == null && generatedCUnits[0].getResource().getType() == IResource.FILE) {
+			IFile genClass = (IFile) generatedCUnits[0].getResource();
+			IDE.openEditor(UIUtils.getCurrentlyOpenPage(), genClass);
+			editor = UIUtils.getCurrentlyOpenPage().getActiveEditor();
+			anyFileOpen = true;
 		}
 
 		final OrganizeImportsAction organizeImportsActionForAllFilesTouchedDuringGeneration = new OrganizeImportsAction(editor.getSite());
@@ -340,10 +342,10 @@ public abstract class CodeGenerator {
 		organizeImportsActionForAllFilesTouchedDuringGeneration.runOnMultiple(generatedCUnits);
 
 		if (anyFileOpen) {
-			Utils.closeEditor(editor);
+			UIUtils.closeEditor(editor);
 		}
-		
-		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(Utils.getCurrentlyOpenFile(editor));
+
+		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(UIUtils.getCurrentlyOpenFile(editor));
 		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
 		faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);

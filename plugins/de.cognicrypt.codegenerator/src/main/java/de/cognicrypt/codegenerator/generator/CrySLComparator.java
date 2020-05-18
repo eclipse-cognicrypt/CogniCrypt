@@ -12,19 +12,19 @@ package de.cognicrypt.codegenerator.generator;
 
 import java.util.Comparator;
 
-import crypto.rules.CryptSLRule;
-import de.cognicrypt.utils.Utils;
+import crypto.rules.CrySLRule;
+import de.cognicrypt.utils.CrySLUtils;
 
-public class CrySLComparator implements Comparator<CryptSLRule> {
+public class CrySLComparator implements Comparator<CrySLRule> {
 
 	RuleDependencyTree rdt;
 
 	public CrySLComparator() {
-		rdt = new RuleDependencyTree(Utils.readCrySLRules());
+		rdt = new RuleDependencyTree(CrySLUtils.readCrySLRules());
 	}
 
 	@Override
-	public int compare(CryptSLRule left, CryptSLRule right) {
+	public int compare(CrySLRule left, CrySLRule right) {
 		if (rdt.hasPath(left, right)) {
 			return -1;
 		} else if (rdt.hasPath(right, left)) {

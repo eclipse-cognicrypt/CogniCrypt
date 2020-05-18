@@ -1,8 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
- * 
-
- * http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
+ * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University http://www.eclipse.org/legal/epl-2.0. SPDX-License-Identifier: EPL-2.0
  ********************************************************************************/
 
 package de.cognicrypt.staticanalyzer.handlers;
@@ -17,7 +14,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
@@ -100,11 +96,7 @@ public class AnalysisKickOff {
 	public void run() {
 		if (this.curProj == null)
 			return;
-		if (Utils.isIncompatibleJavaVersion()) {
-			Activator.getDefault()
-					.logInfo("Analysis cancelled as the IDEs' java version is " + System.getProperty("java.version", "<JavaVersionNotFound>") + ", which is greater than 1.8.");
-			return;
-		}
+
 		final Job analysis = new Job(Constants.ANALYSIS_LABEL) {
 
 			@SuppressWarnings("deprecation")
@@ -121,17 +113,17 @@ public class AnalysisKickOff {
 				while (sootThread.isAlive()) {
 					try {
 						Thread.sleep(1);
-					}	catch (final InterruptedException e) {}
-					
-					if(!monitorThread.isCgGen()) {
+					}
+					catch (final InterruptedException e) {}
+
+					if (!monitorThread.isCgGen()) {
 						cgGen.setWorkRemaining(1000).split(1);
 						cgGen.setTaskName("Constructing call Graphs...");
-						}
-					else {
-						if(monitorThread.getProcessedSeeds()- curSeed !=0) {
-						curSeed = monitorThread.getProcessedSeeds();
-						subMonitor.split(monitorThread.getWorkUnitsCompleted()/2);
-						subMonitor.setTaskName("Completed "+monitorThread.getProcessedSeeds()+" of "+monitorThread.getTotalSeeds()+" seeds.");
+					} else {
+						if (monitorThread.getProcessedSeeds() - curSeed != 0) {
+							curSeed = monitorThread.getProcessedSeeds();
+							subMonitor.split(monitorThread.getWorkUnitsCompleted() / 2);
+							subMonitor.setTaskName("Completed " + monitorThread.getProcessedSeeds() + " of " + monitorThread.getTotalSeeds() + " seeds.");
 						}
 					}
 					if (monitor.isCanceled()) {

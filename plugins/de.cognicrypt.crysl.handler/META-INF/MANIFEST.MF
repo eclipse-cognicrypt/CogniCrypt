@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CogniCrypt CrySL Handler
 Bundle-SymbolicName: de.cognicrypt.crysl.handler;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: de.cognicrypt.crysl.handler.Activator
+Bundle-Activator: de.cognicrypt.crysl.Activator
 Bundle-Vendor: TU Darmstadt, Paderborn University
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -13,9 +13,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.xtext,
  org.eclipse.xtext.common.types.ui,
- de.darmstadt.tu.crossing.CryptSL.ui;bundle-version="1.0.0",
- de.darmstadt.tu.crossing.CryptSL;bundle-version="1.0.0",
- de.darmstadt.tu.crossing.CryptSL.ide;bundle-version="1.0.0",
+ de.darmstadt.tu.crossing.CrySL.ui;bundle-version="2.0.0",
+ de.darmstadt.tu.crossing.CrySL;bundle-version="2.0.0",
+ de.darmstadt.tu.crossing.CrySL.ide;bundle-version="2.0.0",
  de.cognicrypt.core;bundle-version="1.0.0",
  org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -52,7 +52,7 @@ public class SecureEncryptor {
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
-			.addParameter(mode, "encmode").addParameter(data, "palinText").addParameter(key, "key").addReturnObject(res).generate();
+		.addParameter(mode, "encmode").addParameter(key, "key").addParameter(data, "plainText").addReturnObject(res).generate();
 
 		return res;
 	}

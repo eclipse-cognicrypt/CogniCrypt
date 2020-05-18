@@ -21,7 +21,7 @@ import org.dom4j.io.XMLWriter;
 
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.utils.FileHelper;
+import de.cognicrypt.utils.FileUtils;
 
 /**
  * This class is a storage for the configuration chosen by the user.
@@ -33,6 +33,7 @@ public abstract class Configuration {
 	final protected Map<Question, Answer> options;
 	final protected String pathOnDisk;
 
+	@SuppressWarnings("unchecked")
 	public Configuration(Map<?, ?> constraints, String pathOnDisk) {
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;
@@ -57,6 +58,6 @@ public abstract class Configuration {
 	 * Deletes config file from hard disk.
 	 */
 	public void deleteConfFromDisk() {
-		FileHelper.deleteFile(this.pathOnDisk);
+		FileUtils.deleteFile(this.pathOnDisk);
 	}
 }

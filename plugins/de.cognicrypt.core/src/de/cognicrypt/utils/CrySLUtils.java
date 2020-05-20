@@ -60,7 +60,7 @@ public class CrySLUtils {
 
 	public static List<CrySLRule> readCrySLRules() {
 		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
-				readCrySLRules(Constants.ECLIPSE_RULES_DIR + Constants.outerFileSeparator + "JavaCryptographicArchitecture")).flatMap(Collection::stream).collect(Collectors.toList());
+				readCrySLRules(Constants.JCA_LATEST_ECLIPSE_RULES_DIR)).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	/**

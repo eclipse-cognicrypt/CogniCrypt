@@ -132,7 +132,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		if (error instanceof ConstraintError) {
 			ConstraintError conError = (ConstraintError) error;
-			if (prefStore.getBoolean(Constants.SUPPRESS_CONSTRAINT_ERRORS) && conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
+			if (prefStore.getBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS) && conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
 				return;
 			}
 		}

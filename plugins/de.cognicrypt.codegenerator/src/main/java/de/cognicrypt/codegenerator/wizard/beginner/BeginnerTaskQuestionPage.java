@@ -727,7 +727,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		
 			String[] noteText1 = noteText.split("\\$\\$\\$");
 			noteText = noteText1[1];
-			if (!prefStore.getBoolean(Constants.SUPPRESS_CONSTRAINT_ERRORS)) {
+			if (!prefStore.getBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS)) {
 				noteText = noteText + noteText1[2];
 			}
 		}

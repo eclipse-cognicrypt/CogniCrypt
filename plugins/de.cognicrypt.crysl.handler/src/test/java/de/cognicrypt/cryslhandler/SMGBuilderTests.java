@@ -135,6 +135,13 @@ public class SMGBuilderTests {
 
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), four, four));
 		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp, afp}), four, three));
+		
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {acp}), three, two));
+		
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {adp}), two, three));
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), two, four));
+		
+		expectedUsagePattern.addEdge(new TransitionEdge(Arrays.asList(new CrySLMethod[] {aep}), three, four));
 
 		Assert.assertEquals(expectedUsagePattern.getAllTransitions(), readRuleFromFuleName("Testrule3").getUsagePattern().getAllTransitions());
 	}

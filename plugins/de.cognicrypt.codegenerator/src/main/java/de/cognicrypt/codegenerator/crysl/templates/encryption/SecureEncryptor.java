@@ -22,7 +22,7 @@ public class SecureEncryptor {
 		int keysize = 128;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
 			.addParameter(pwd, "password").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey")
-			.includeClass("javax.crypto.SecretKeySpec").addReturnObject(encryptionKey).generate();
+			.includeClass("javax.crypto.SecretKeySpec").addParameter(encryptionKey, "this").generate();
 
 		return encryptionKey;
 	}
@@ -34,7 +34,7 @@ public class SecureEncryptor {
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "next").includeClass("javax.crypto.spec.IvParameterSpec")
 			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(key, "key")
-			.addReturnObject(res).generate();
+			.addParameter(res, "cipherText").generate();
 
 		byte[] ret = new byte[ivBytes.length + res.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
@@ -52,7 +52,7 @@ public class SecureEncryptor {
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
-		.addParameter(mode, "encmode").addParameter(key, "key").addParameter(data, "plainText").addReturnObject(res).generate();
+		.addParameter(mode, "encmode").addParameter(key, "key").addParameter(data, "plainText").addParameter(res, "cipherText").generate();
 
 		return res;
 	}

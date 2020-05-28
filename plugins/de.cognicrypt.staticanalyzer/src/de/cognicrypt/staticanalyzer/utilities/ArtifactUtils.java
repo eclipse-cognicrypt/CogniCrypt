@@ -148,7 +148,7 @@ public class ArtifactUtils {
 			DefaultArtifactVersion min = new DefaultArtifactVersion(minVersion.toString());
 			DefaultArtifactVersion cur = new DefaultArtifactVersion(version);
 			if (cur.compareTo(min) >= 0) {
-				downloadRulesetArtifact(groupId[0], artifactId[0], version, new File(System.getProperty("user.dir")));
+				downloadRulesetArtifact(groupId[0], artifactId[0], version, new File(Constants.ECLIPSE_RULES_DIR));
 			}
 		}
 	}

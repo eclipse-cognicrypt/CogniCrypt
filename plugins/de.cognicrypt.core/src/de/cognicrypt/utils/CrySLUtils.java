@@ -21,6 +21,10 @@ import crypto.rules.TransitionEdge;
 import de.cognicrypt.core.Constants;
 
 public class CrySLUtils {
+	
+	static String JCA_LATEST_ECLIPSE_RULES_DIR = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString() + Constants.innerFileSeparator + 
+			CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString())[CrySLUtils.getRuleVersions(Constants.Rules.JavaCryptographicArchitecture.toString()).length - 1] + 
+			Constants.innerFileSeparator + Constants.Rules.JavaCryptographicArchitecture.toString();
 
 	public static List<TransitionEdge> getOutgoingEdges(Collection<TransitionEdge> collection, final StateNode curNode, final StateNode notTo) {
 		final List<TransitionEdge> outgoingEdges = new ArrayList<>();
@@ -60,7 +64,7 @@ public class CrySLUtils {
 
 	public static List<CrySLRule> readCrySLRules() {
 		return Stream.of(readCrySLRules(Utils.getResourceFromWithin(Constants.RELATIVE_RULES_DIR).getAbsolutePath()),
-				readCrySLRules(Constants.ECLIPSE_RULES_DIR + Constants.outerFileSeparator + "JavaCryptographicArchitecture")).flatMap(Collection::stream).collect(Collectors.toList());
+				readCrySLRules(JCA_LATEST_ECLIPSE_RULES_DIR)).flatMap(Collection::stream).collect(Collectors.toList());
 	}
 
 	/**
@@ -72,7 +76,7 @@ public class CrySLUtils {
 	 */
 	
 	public static CrySLRule getCrySLRule(String cryslRule) throws MalformedURLException {
-		File ruleRes = new File(Constants.JCA_LATEST_ECLIPSE_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString());
+		File ruleRes = new File(JCA_LATEST_ECLIPSE_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString());
 		if (ruleRes == null || !ruleRes.exists() || !ruleRes.canRead()) {
 			ruleRes = Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR + Constants.innerFileSeparator + cryslRule + RuleFormat.SOURCE.toString(), de.cognicrypt.core.Activator.PLUGIN_ID);
 		}
@@ -86,7 +90,7 @@ public class CrySLUtils {
 	 */
 	public static String[] getRuleVersions(String ruleSet){
 		List<String> versions = new ArrayList<String>();
-		File path = new File(System.getProperty("user.dir") + File.separator + ruleSet);
+		File path = new File(Constants.ECLIPSE_RULES_DIR + File.separator + ruleSet);
 		File[] innerDirs = path.listFiles();
 		if (innerDirs == null) {
 			return null;

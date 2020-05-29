@@ -340,7 +340,7 @@ public class CrySLParser {
 	private CrySLPredicate extractReqPred(final ReqPred pred) {
 		final List<ICrySLPredicateParameter> variables = new ArrayList<>();
 		PredLit innerPred = (PredLit) pred;
-		final Constraint conditional = innerPred.getCons();
+		final Constraint conditional = (Constraint) innerPred.getCons();
 		if (innerPred.getPred().getParList() != null) {
 			for (final SuPar var : innerPred.getPred().getParList().getParameters()) {
 				if (var.getVal() != null) {

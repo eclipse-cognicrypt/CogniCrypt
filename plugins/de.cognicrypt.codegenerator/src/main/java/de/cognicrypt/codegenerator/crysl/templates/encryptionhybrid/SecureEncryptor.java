@@ -21,13 +21,13 @@ public class SecureEncryptor {
 
 	public javax.crypto.SecretKey generateSessionKey() throws NoSuchAlgorithmException {
 		javax.crypto.SecretKey sessionKey = null;
-		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.KeyGenerator").addReturnObject(sessionKey).generate();
+		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.KeyGenerator").addParameter(sessionKey, "key").generate();
 		return sessionKey;
 	}
 
 	public java.security.KeyPair generateKeyPair() throws NoSuchAlgorithmException {
 		java.security.KeyPair keyPair = null;
-		CrySLCodeGenerator.getInstance().includeClass("java.security.KeyPairGenerator").addReturnObject(keyPair);
+		CrySLCodeGenerator.getInstance().includeClass("java.security.KeyPairGenerator").addParameter(keyPair, "kp");
 		return keyPair;
 	}
 
@@ -36,7 +36,7 @@ public class SecureEncryptor {
 		int mode = Cipher.WRAP_MODE;
 		java.security.PublicKey publicKey = keyPair.getPublic();
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(publicKey, "key").addParameter(sessionKey, "wrappedKey")
-			.addReturnObject(wrappedKeyBytes).generate();
+			.addParameter(wrappedKeyBytes, "wrappedKeyBytes").generate();
 		return wrappedKeyBytes;
 	}
 
@@ -47,7 +47,7 @@ public class SecureEncryptor {
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "next").includeClass("javax.crypto.spec.IvParameterSpec")
 			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(key, "key")
-			.addReturnObject(cipherText).generate();
+			.addParameter(cipherText, "cipherText").generate();
 
 		byte[] ret = new byte[ivBytes.length + cipherText.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
@@ -65,7 +65,7 @@ public class SecureEncryptor {
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
-			.addParameter(mode, "encmode").addParameter(data, "plainText").addParameter(key, "key").addReturnObject(res).generate();
+			.addParameter(mode, "encmode").addParameter(data, "plainText").addParameter(key, "key").addParameter(res, "cipherText").generate();
 
 		return res;
 	}

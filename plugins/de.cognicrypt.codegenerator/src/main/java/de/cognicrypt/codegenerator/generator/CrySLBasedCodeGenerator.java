@@ -1280,28 +1280,19 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			public boolean visit(MethodInvocation node) {
 				MethodInvocation mi = node;
 				String calledMethodName = mi.getName().getFullyQualifiedName();
-
+				
 				List arguments = mi.arguments();
-				if ("addReturnObject".equals(calledMethodName)) {
-					for (SimpleName var : preCGVars.keySet()) {
-						String varfqn = var.getFullyQualifiedName();
-
-						for (SimpleName name : (List<SimpleName>) arguments) {
-							String efqn = name.getFullyQualifiedName();
-							if (efqn.equals(varfqn)) {
-								CrySLObject crySLObject = preCGVars.get(var);
-								retObj = crySLObject;
-								break;
-							}
-						}
-					}
-				} else if ("addParameter".equals(calledMethodName)) {
+				if ("addParameter".equals(calledMethodName)) {
 					for (SimpleName var : preCGVars.keySet()) {
 						String varfqn = var.getFullyQualifiedName();
 						SimpleName name = (SimpleName) arguments.get(0);
 						String efqn = name.getFullyQualifiedName();
 						if (efqn.equals(varfqn)) {
-							pars.add(new CodeGenCrySLObject(preCGVars.get(var), (String) ((StringLiteral) arguments.get(1)).resolveConstantExpressionValue()));
+							CrySLObject crySLObject = preCGVars.get(var);
+							if(pars.isEmpty()) {
+								retObj = crySLObject;
+							}
+							pars.add(new CodeGenCrySLObject(crySLObject, (String) ((StringLiteral) arguments.get(1)).resolveConstantExpressionValue()));
 							break;
 						}
 					}

@@ -24,7 +24,7 @@ public class PasswordHasher {
 		int keysize = 160;
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
-			.addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(pwdHashBytes).generate();
+			.addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addParameter(pwdHashBytes, "keyMaterial").generate();
 
 		java.lang.String pwdHash = toBase64(salt) + ":" + toBase64(pwdHashBytes);
 		return pwdHash;
@@ -37,7 +37,7 @@ public class PasswordHasher {
 		int keysize = 160;
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.PBEKeySpec").addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength")
-			.includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addReturnObject(res).generate();
+			.includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addParameter(res, "keyMaterial").generate();
 
 		Boolean areEqual = slowEquals(res, fromBase64(parts[1]));
 		return areEqual;

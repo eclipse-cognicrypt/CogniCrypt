@@ -20,7 +20,7 @@ public class SecureEncryptor {
 
 	public java.security.KeyPair generateKeyPair() throws NoSuchAlgorithmException {
 		java.security.KeyPair keyPair = null;
-		CrySLCodeGenerator.getInstance().includeClass("java.security.KeyPairGenerator").addReturnObject(keyPair);
+		CrySLCodeGenerator.getInstance().includeClass("java.security.KeyPairGenerator").addParameter(keyPair, "kp");
 		return keyPair;
 	}
 
@@ -30,7 +30,7 @@ public class SecureEncryptor {
 		// Note: You need to use the public key of your communication partner here, not your public key. 
 		java.security.PublicKey pubKey = keyPair.getPublic();
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(pubKey, "key")
-			.addReturnObject(cipherText).generate();
+			.addParameter(cipherText, "cipherText").generate();
 		return cipherText;
 	}
 
@@ -40,7 +40,7 @@ public class SecureEncryptor {
 		java.security.PrivateKey privateKey = keyPair.getPrivate();
 
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(ciphertext, "plainText").addParameter(privateKey, "key")
-			.addReturnObject(res).generate();
+			.addParameter(res, "cipherText").generate();
 		return res;
 	}
 

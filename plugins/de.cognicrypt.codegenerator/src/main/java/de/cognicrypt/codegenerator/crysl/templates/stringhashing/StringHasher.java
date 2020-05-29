@@ -21,14 +21,14 @@ public class StringHasher {
 	public static java.lang.String createHash(java.lang.String msg) throws GeneralSecurityException {
 		byte[] plainBytes = msg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;
-		CrySLCodeGenerator.getInstance().includeClass("java.security.MessageDigest").addReturnObject(out).generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.MessageDigest").addParameter(out, "out").generate();
 		return Base64.getEncoder().encodeToString(out);
 	}
 
 	public static boolean verifyHash(java.lang.String compareeHash, java.lang.String newMsg) {
 		byte[] plainBytes = newMsg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;
-		CrySLCodeGenerator.getInstance().includeClass("java.security.MessageDigest").addReturnObject(out).generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.MessageDigest").addParameter(out , "out").generate();
 		return Base64.getEncoder().encodeToString(out).equals(compareeHash);
 	}
 

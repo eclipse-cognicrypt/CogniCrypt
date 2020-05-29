@@ -39,6 +39,11 @@
       <name>soot release</name>
       <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
     </repository>
+    <repository>
+      	<id>kotlin</id>
+      	<layout>p2</layout>
+      	<url>https://dl.bintray.com/jetbrains/kotlin/eclipse-plugin/last/</url>
+      </repository>
   </repositories>
 
   <pluginRepositories>
@@ -93,6 +98,7 @@
     <module>plugins/de.cognicrypt.codegenerator/</module>
     <module>plugins/de.cognicrypt.codegenerator.tests/</module>
     <module>plugins/de.cognicrypt.staticanalyzer/</module>
+    <module>plugins/de.cognicrypt.staticanalyzer.kotlin/</module>
 	<module>plugins/de.cognicrypt.integrator.task/</module>
 	<module>plugins/de.cognicrypt.integrator.primitive/</module>
 	<module>features/de.cognicrypt.core.feature/</module>

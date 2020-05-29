@@ -6,16 +6,20 @@ package de.cognicrypt.staticanalyzer.handlers;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.staticanalyzer.Activator;
+import de.cognicrypt.staticanalyzer.IListener;
 import de.cognicrypt.staticanalyzer.results.ErrorMarkerGenerator;
 import de.cognicrypt.staticanalyzer.results.ResultsCCUIListener;
 import de.cognicrypt.utils.Utils;
@@ -30,6 +34,7 @@ public class AnalysisKickOff {
 	private static ResultsCCUIListener resultsReporter;
 	private IJavaProject curProj;
 	private boolean depOnly = false;
+	private IProject ip;
 
 	public void analyzeDependenciesOnly(final Boolean depOnly) {
 		this.depOnly = depOnly;
@@ -47,7 +52,6 @@ public class AnalysisKickOff {
 	 */
 	public boolean setUp(final IJavaElement iJavaElement) {
 
-		IProject ip = null;
 		if (iJavaElement == null) {
 			ip = Utils.getCurrentProject();
 		} else {
@@ -86,9 +90,45 @@ public class AnalysisKickOff {
 			Activator.getDefault().logInfo("JavaCore could not create IJavaProject for project " + ip.getName() + ".");
 			return false;
 		}
-		this.curProj = javaProject;
-		return true;
-	}
+		
+		IConfigurationElement[] config = Platform.getExtensionRegistry().getConfigurationElementsFor("de.cognicrypt.staticanalyzer.listeners");
+		try {
+            for (IConfigurationElement e : config) {
+                final Object o =
+                        e.createExecutableExtension("class");
+                if (o instanceof IListener) {
+//                    executeExtension(o);
+                	((IListener) o).listen1(ip);
+                }
+            }
+        } catch (CoreException ex) {
+        	Activator.getDefault().logError(ex);
+        }
+		
+ 		this.curProj = javaProject;
+ 		return true;
+ 	}
+	
+	/*
+	 * The code below uses the ISafeRunnable interface. This interface protects 
+	 * the plug-in which defines the extension point from malfunction extensions. 
+	 * If an extension throws an Exception, it will be caught by ISafeRunnable and 
+	 * the remaining extensions will still get executed.
+	 */
+//	private void executeExtension(final Object o) {
+//        ISafeRunnable runnable = new ISafeRunnable() {
+//            @Override
+//            public void handleException(Throwable e) {
+//            	Activator.getDefault().logError("Exception in kotlin plugin");
+//            }
+//
+//            @Override
+//            public void run() throws Exception {
+//                ((IListener) o).listen1(ip);
+//            }
+//        };
+//        SafeRunner.run(runnable);
+//    }
 
 	/**
 	 * This method executes the actual analysis.

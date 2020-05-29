@@ -21,7 +21,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -78,30 +77,6 @@ public class Utils {
 		}
 
 		return javaProjects;
-	}
-
-	public static IResource findClassByName(final String className, final IProject currentProject) throws ClassNotFoundException {
-		try {
-			for (final IPackageFragment l : JavaCore.create(currentProject).getPackageFragments()) {
-				for (final ICompilationUnit cu : l.getCompilationUnits()) {
-					final IJavaElement cuResource = JavaCore.create(cu.getCorrespondingResource());
-					for (IJavaElement a : (ArrayList<IJavaElement>)((CompilationUnit) cuResource).getChildrenOfType(7)) {
-						String name = cuResource.getParent().getElementName() + "." + a.getElementName();
-
-						if (name.startsWith(".")) {
-							name = name.substring(1);
-						}
-						if (name.equals(className)) {
-							return cu.getCorrespondingResource();
-						}
-					}
-				}
-			}
-		}
-		catch (final JavaModelException e) {
-			throw new ClassNotFoundException("Class " + className + " not found.", e);
-		}
-		throw new ClassNotFoundException("Class " + className + " not found.");
 	}
 
 	/**

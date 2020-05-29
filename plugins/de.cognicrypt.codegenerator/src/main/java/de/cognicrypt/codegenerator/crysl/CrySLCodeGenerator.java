@@ -34,12 +34,6 @@ public class CrySLCodeGenerator implements RuleContext, BeforeRuleContext {
 		return this;
 	}
 
-	public CrySLCodeGenerator addReturnObject(Object par) {
-		last.setReturnObject(par);
-		resolveLast();
-		return this;
-	}
-
 	public boolean generate() {
 		resolveLast();
 		return true;

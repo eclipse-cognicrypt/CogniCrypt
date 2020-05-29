@@ -20,7 +20,7 @@ public class SecureEncryptor {
 
 	public javax.crypto.SecretKey generateSessionKey() throws NoSuchAlgorithmException {
 		javax.crypto.SecretKey encryptionKey = null;
-		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.KeyGenerator").addReturnObject(encryptionKey).generate();
+		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.KeyGenerator").addParameter(encryptionKey, "key").generate();
 		return encryptionKey;
 	}
 
@@ -31,7 +31,7 @@ public class SecureEncryptor {
 
 		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(ivBytes, "next").includeClass("javax.crypto.spec.IvParameterSpec")
 			.addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher").addParameter(mode, "encmode").addParameter(plaintext, "plainText").addParameter(key, "key")
-			.addReturnObject(res).generate();
+			.addParameter(res, "cipherText").generate();
 
 		byte[] ret = new byte[ivBytes.length + res.length];
 		System.arraycopy(ivBytes, 0, ret, 0, ivBytes.length);
@@ -49,7 +49,7 @@ public class SecureEncryptor {
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
-			.addParameter(mode, "encmode").addParameter(data, "plainText").addParameter(key, "key").addReturnObject(res).generate();
+			.addParameter(mode, "encmode").addParameter(data, "plainText").addParameter(key, "key").addParameter(res, "cipherText").generate();
 
 		return res;
 	}

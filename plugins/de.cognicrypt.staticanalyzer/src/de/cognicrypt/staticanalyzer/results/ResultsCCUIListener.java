@@ -262,7 +262,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 					}
 			}
 		} catch (ParseException | IOException e2) {
-			e2.printStackTrace();
+			 Activator.getDefault().logError(e2);
 		}
 		return false;
 	}

@@ -655,7 +655,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		String returnVarName = retObject.getKey();
 
 		if (Utils.isSubType(predVarType, returnType) && returnVarName
-			.equals(predVarName) || (predVarName.equals("this") && meth.getMethodName().endsWith(predVarType.substring(predVarType.lastIndexOf('.') + 1)))) {
+			.equals(predVarName) || (predVarName.equals("this") && meth.getMethodName().endsWith(predVarType.substring(predVarType.lastIndexOf('.') + 1))) 
+			|| (predVarName.equals("this") && meth.getMethodName().endsWith("getInstance"))) {
 			return meth;
 		}
 		for (Entry<String, String> par : meth.getParameters()) {

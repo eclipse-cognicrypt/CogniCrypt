@@ -726,7 +726,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 						primitiveType = int.class;
 				}
 				methodParameter[i] = primitiveType;
-
+				i++;
 			} else {
 				try {
 					methodParameter[i] = Class.forName(parameter.getValue());

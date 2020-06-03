@@ -299,4 +299,9 @@ public class Utils {
 		}
 		return subTypes;
 	}
+	
+	public static String retrieveOnlyClassName(String className) {
+		String[] values = className.split("\\.");
+		return values[values.length-1];
+	}
 }

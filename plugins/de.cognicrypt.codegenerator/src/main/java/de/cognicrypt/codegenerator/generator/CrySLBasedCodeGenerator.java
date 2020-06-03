@@ -11,6 +11,7 @@
 package de.cognicrypt.codegenerator.generator;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
@@ -1204,6 +1205,17 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			if (meth.getName().equals(methodName) && methodParameters.length == meth.getParameterCount()) {
 				if (matchMethodParameters(methodParameters, meth.getParameterTypes())) {
 					exceptionClasses.addAll(Arrays.asList(meth.getExceptionTypes()));
+				}
+			}
+		}
+		
+		Constructor[] constructors = java.lang.Class.forName(className).getConstructors();
+		for (Constructor cons: constructors) {
+			String fullyQualifiedName = cons.getName();
+			String consName = Utils.retrieveOnlyClassName(fullyQualifiedName);
+			if (consName.equals(methodName) && methodParameters.length == cons.getParameterCount()) {
+				if (matchMethodParameters(methodParameters, cons.getParameterTypes())) {
+					exceptionClasses.addAll((Collection<? extends Class<?>>) Arrays.asList(cons.getExceptionTypes()));
 				}
 			}
 		}

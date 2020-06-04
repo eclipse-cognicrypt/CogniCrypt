@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.cognicrypt.utils.Utils;
+
 public class GeneratorMethod {
 
 	private String modifier;
@@ -95,12 +97,14 @@ public class GeneratorMethod {
 			String name = var.getKey();
 			try {
 				Class.forName(type);
-				addStatementToBody(type + " " + name + " = null;");
+				String simpleType = Utils.retrieveOnlyClassName(type);
+				addStatementToBody(simpleType + " " + name + " = null;");
 			} catch (ClassNotFoundException e) {
-				if(type.matches("\\w+\\[\\]"))
+				if(type.matches("\\w+\\[\\]")) {
 					addStatementToBody(type + " " + name + " = null;");
-				else
+				} else {
 					addStatementToBody(type + " " + name + " = 0;");
+				}
 			}
 		}
 	}

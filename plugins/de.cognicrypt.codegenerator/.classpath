@@ -38,5 +38,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/claferchocoig.jar"/>
+	<classpathentry kind="lib" path="lib/json-simple.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -21,6 +21,7 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- resources/
+ resources/json-simple.jar
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
-Import-Package: org.eclipse.ui.texteditor
+Import-Package: org.eclipse.ui.texteditor,
+ org.json.simple

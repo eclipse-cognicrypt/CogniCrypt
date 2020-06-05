@@ -263,7 +263,7 @@ public class AltConfigWizard extends Wizard {
 					codeGenerator.getDeveloperProject().refresh();
 
 					resetAnswers();
-					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
+					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile), selectedTask.getName());
 					break;
 				case XSL:
 					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
@@ -274,7 +274,7 @@ public class AltConfigWizard extends Wizard {
 					// Initialize Code Generation
 					codeGenerator = new XSLBasedGenerator(targetFile, selectedTask.getCodeTemplate());
 					chosenConfig = new XSLConfiguration(instanceGenerator.getInstances().values().iterator()
-						.next(), this.constraints, codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+						.next(), this.constraints, codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile, selectedTask.getName());
 					break;
 				default:
 					return false;

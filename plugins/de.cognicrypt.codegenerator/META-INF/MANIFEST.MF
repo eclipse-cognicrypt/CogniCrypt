@@ -30,6 +30,7 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  src/main/java/,
  lib/dom4j-2.0.0.jar,
  lib/saxon9he.jar
+ lib/json-simple.jar
 Automatic-Module-Name: de.cognicrypt.codegenerator
 Bundle-Vendor: TU Darmstadt, Paderborn University
 Export-Package: de.cognicrypt.codegenerator,

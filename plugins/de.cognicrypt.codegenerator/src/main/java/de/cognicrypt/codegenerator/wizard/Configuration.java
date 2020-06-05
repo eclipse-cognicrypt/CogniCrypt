@@ -13,6 +13,7 @@
 package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,12 @@ import org.dom4j.io.XMLWriter;
 
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.Utils;
 import de.cognicrypt.utils.FileUtils;
+
+
+import org.json.simple.JSONObject;
 
 /**
  * This class is a storage for the configuration chosen by the user.
@@ -32,11 +38,27 @@ public abstract class Configuration {
 
 	final protected Map<Question, Answer> options;
 	final protected String pathOnDisk;
+	protected Answer answr;
+	final protected String taskName;
 
 	@SuppressWarnings("unchecked")
-	public Configuration(Map<?, ?> constraints, String pathOnDisk) {
+	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName) throws IOException {
+		this.answr = new Answer();
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;
+		this.taskName = taskName;
+
+		JSONObject obj = new JSONObject();
+		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
+		String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
+
+		File file = new File(jsonPath);  
+        file.createNewFile();  
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(obj.toJSONString());  
+        fileWriter.flush();  
+        fileWriter.close();
+        
 	}
 
 	/**

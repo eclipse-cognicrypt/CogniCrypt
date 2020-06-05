@@ -90,24 +90,6 @@ public class GeneratorMethod {
 		}
 		body.append("\n");
 	}
-	
-	public void addVariablesToBody(List<Entry<String, String>> variables) {
-		for (Entry<String, String> var : variables) {
-			String type = var.getValue();
-			String name = var.getKey();
-			try {
-				Class.forName(type);
-				String simpleType = Utils.retrieveOnlyClassName(type);
-				addStatementToBody(simpleType + " " + name + " = null;");
-			} catch (ClassNotFoundException e) {
-				if(type.matches("\\w+\\[\\]")) {
-					addStatementToBody(type + " " + name + " = null;");
-				} else {
-					addStatementToBody(type + " " + name + " = 0;");
-				}
-			}
-		}
-	}
 
 	public String getModifier() {
 		return modifier;

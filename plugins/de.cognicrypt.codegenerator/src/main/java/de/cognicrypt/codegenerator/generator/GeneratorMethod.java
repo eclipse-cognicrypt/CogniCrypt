@@ -27,7 +27,7 @@ public class GeneratorMethod {
 	private String name;
 	private List<Entry<String, String>> parameters;
 	private Set<String> exceptions;
-	private StringBuilder body;
+	protected StringBuilder body;
 	private List<Entry<String, String>> variableDeclarations;
 	private List<Entry<String, String>> postCGVars;
 	private StringBuilder killStatements;

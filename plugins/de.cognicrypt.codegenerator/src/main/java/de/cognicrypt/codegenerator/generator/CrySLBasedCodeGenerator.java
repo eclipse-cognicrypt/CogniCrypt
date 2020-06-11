@@ -1178,6 +1178,15 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		for (TransitionEdge transition : transitions) {
 			String completeMethodName = transition.getLabel().get(0).getMethodName();
 			imports.add(completeMethodName.substring(0, completeMethodName.lastIndexOf(".")));
+			String retObjectType = transition.getLabel().get(0).getRetObject().getValue();
+			if(retObjectType.contains("["))
+				retObjectType = retObjectType.substring(0, retObjectType.indexOf('['));
+			try {
+				java.lang.Class.forName(retObjectType);
+				imports.add(retObjectType);
+			} catch(ClassNotFoundException e) {
+				continue;
+			}	
 		}
 		return imports;
 	}

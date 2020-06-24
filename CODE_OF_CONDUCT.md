@@ -51,7 +51,7 @@ If a community member engages in unacceptable behaviour, the community organizer
 
 ## 6. Reporting Guidelines
 
-If you are subject to or witness unacceptable behavior, or have any other concerns, please notify [Stefan Krueger](mailto:stefan.krueger@crossing.tu-darmstadt.de).
+If you are subject to or witness unacceptable behavior, or have any other concerns, please notify [Michael Schlichtig](mailto:michael.schlichtig@upb.de).
 
 Additionally, community organizers are available to help community members engage with local law enforcement or to otherwise help those experiencing unacceptable behaviour feel safe. 
 
@@ -67,7 +67,7 @@ This code of conduct and its related procedures also apply to unacceptable behav
 
 ## 9. Contact info
 
-Stefan Krueger [<stefan.krueger@crossing.tu-darmstadt.de>](mailto:stefan.krueger@crossing.tu-darmstadt.de).
+Michael Schlichtig [<michael.schlichtig@upb.de>](mailto:michael.schlichtig@upb.de).
 
 ## 10. License and attribution
 
@@ -75,3 +75,4 @@ This Code of Conduct is derived from the [Citizen Code of Conduct](http://stumpt
 
 Revision 0.8 Adoption of Citizen COC with revisions to adjust for CogniCrypt context.
 Revision 0.9 Removed non-applicable aspects. Made the COC stricter in a few places.
+Revision 0.9.1 Update contact info.

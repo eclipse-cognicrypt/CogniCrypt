@@ -620,5 +620,3 @@ public class Constants {
 	//name of tasks
 	public final static String SECURE_COMMUNICATION = "SecureCommunication";
 }
-
-

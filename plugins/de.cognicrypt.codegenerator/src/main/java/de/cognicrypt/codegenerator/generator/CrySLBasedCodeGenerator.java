@@ -730,7 +730,14 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				i++;
 			} else {
 				try {
-					methodParameter[i] = Class.forName(parameter.getValue());
+					if(parameter.getValue().contains("[")) {
+						String typeName = parameter.getValue().replaceAll("[\\[\\]]","");
+						Class<?> className = Class.forName(typeName);
+						methodParameter[i] = java.lang.reflect.Array.newInstance(className, 0).getClass();
+					}
+					else {
+						methodParameter[i] = Class.forName(parameter.getValue());
+					}
 					i++;
 				} catch (ClassNotFoundException e) {
 					Activator.getDefault().logError(e, "No class found for type: " + parameter.getValue().toString());

@@ -946,6 +946,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			if (!name.isEmpty()) {
 				if ("java.lang.String".equals(parameter.getValue())) {
 					name = "\"" + name + "\"";
+				} else if ("java.lang.String[]".equals(parameter.getValue())) {
+					name = "new String[]{\"" + name + "\"}";
 				} else {
 					ruleParameterCache.putIfAbsent(parameter.getKey(), name);
 				}

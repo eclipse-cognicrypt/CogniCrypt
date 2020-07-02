@@ -192,4 +192,8 @@ public class GeneratorMethod {
 	public List<Entry<String, String>> getPostCGVars() {
 		return postCGVars;
 	}
+	
+	public StringBuilder getKillStatements() {
+		return killStatements;
+	}
 }

@@ -23,6 +23,7 @@ import de.cognicrypt.codegenerator.question.Answer;
 public class GroupAnswer extends Group {
 
 	public Text txtAnswer;
+	public Text txtOption;
 	private Answer answer;
 	public ArrayList<Answer> answers;
 
@@ -37,6 +38,7 @@ public class GroupAnswer extends Group {
 		setAnswer(answerParam);
 
 		this.txtAnswer = new Text(this, SWT.BORDER);
+		this.txtOption = new Text(this, SWT.BORDER);
 		if (this.answer.getValue() != null) {
 			this.txtAnswer.setText(this.answer.getValue());
 		}
@@ -48,13 +50,26 @@ public class GroupAnswer extends Group {
 			}
 		});
 		this.txtAnswer.setEditable(showRemoveButton);
+		
+		if (this.answer.getOption() != null) {
+			this.txtOption.setText(this.answer.getOption());
+		}
+		this.txtOption.addFocusListener(new FocusAdapter() {
+
+			@Override
+			public void focusLost(final FocusEvent e) {
+				GroupAnswer.this.answer.setOption(GroupAnswer.this.txtOption.getText());
+			}
+		});
+		this.txtOption.setEditable(showRemoveButton);
 
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
 		/**
 		 * executes when GroupAnswer is called by Question Dialog class
 		 */
 		if (showRemoveButton) {
-			this.txtAnswer.setBounds(3, 3, 606, 29);
+			this.txtAnswer.setBounds(3, 3, 586, 29);
+			this.txtOption.setBounds(590, 3, 20, 29);
 			btnDefaultAnswer.setBounds(613, 3, 128, 31);
 
 		}
@@ -62,7 +77,8 @@ public class GroupAnswer extends Group {
 		 * executes when GroupAnswer is called by CompositeGranularUIForHighLevelQuestions class
 		 */
 		else {
-			this.txtAnswer.setBounds(3, 3, 225, 29);
+			this.txtAnswer.setBounds(3, 3, 195, 29);
+			this.txtOption.setBounds(200, 3, 20, 29);
 			btnDefaultAnswer.setBounds(232, 3, 128, 31);
 		}
 		final ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();

@@ -26,11 +26,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.models.ClaferModel;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldSmallerUIElements;
 
 public class QuestionDialog extends Dialog {
@@ -54,14 +54,15 @@ public class QuestionDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public QuestionDialog(final Shell parentShell) {
-		this(parentShell, null, null, null);
+		this(parentShell, null, null);
 	}
 
-	public QuestionDialog(final Shell parentShell, final Question question, final ClaferModel claferModel, final ArrayList<Question> listOfAllQuestions) {
+	public QuestionDialog(final Shell parentShell, final Question question, final ArrayList<Question> listOfAllQuestions) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE | SWT.RESIZE | SWT.TITLE);
 		this.question = question;
 	}
+	
 
 	/**
 	 * Create contents of the dialog.
@@ -129,9 +130,9 @@ public class QuestionDialog extends Dialog {
 		// Visibility depends on question type
 		btnAddAnswer.setVisible(false);
 		final boolean showRemoveButton = true;
-		this.compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton, null);
+		this.compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
 		final GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-		gd_compositeToHoldAnswers.heightHint = 100;
+		gd_compositeToHoldAnswers.heightHint = 300;
 		gd_compositeToHoldAnswers.widthHint = 890;
 		this.compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
 		this.compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));

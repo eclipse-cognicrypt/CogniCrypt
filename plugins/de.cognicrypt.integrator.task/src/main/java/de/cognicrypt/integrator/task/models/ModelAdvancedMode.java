@@ -11,6 +11,8 @@
 package de.cognicrypt.integrator.task.models;
 
 import java.io.File;
+import java.util.HashMap;
+
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 
@@ -20,6 +22,8 @@ public class ModelAdvancedMode {
 	private File locationOfCustomLibrary;
 	private File locationOfClaferFile;
 	private File locationOfXSLFile;
+	private File locationOfCryslTemplate;
+	private File locationOfIconFile;
 	private File locationOfJSONFile;
 	private File locationOfHelpXMLFile;
 	private boolean isCustomLibraryRequired;
@@ -28,6 +32,7 @@ public class ModelAdvancedMode {
 	private final Task task;
 	private String description;
 	private String taskDescription;
+	private HashMap<String, File> crylTemplatesWithOption;
 
 	public ModelAdvancedMode() {
 		super();
@@ -68,6 +73,14 @@ public class ModelAdvancedMode {
 		setDescription(nameOfTheTask); // This is the human readable name entered by the user.
 	}
 
+	public File getLocationOfIconFile() {
+		return locationOfIconFile;
+	}
+
+	public void setLocationOfIconFile(File locationOfIconFile) {
+		this.locationOfIconFile = locationOfIconFile;
+	}
+
 	/**
 	 * @return the locationOfCustomLibrary
 	 */
@@ -96,6 +109,7 @@ public class ModelAdvancedMode {
 		this.locationOfClaferFile = locationOfClaferFile;
 	}
 
+	
 	/**
 	 * @return the locationOfXSLFile
 	 */
@@ -222,5 +236,21 @@ public class ModelAdvancedMode {
 	 */
 	public void setLocationOfHelpXMLFile(final File locationOfHelpXMLFile) {
 		this.locationOfHelpXMLFile = locationOfHelpXMLFile;
+	}
+
+	public File getLocationOfCryslTemplate() {
+		return locationOfCryslTemplate;
+	}
+
+	public void setLocationOfCryslTemplate(File locationOfCryslTemplate) {
+		this.locationOfCryslTemplate = locationOfCryslTemplate;
+	}
+
+	public HashMap<String, File> getCrylTemplatesWithOption() {
+		return crylTemplatesWithOption;
+	}
+
+	public void setCrylTemplatesWithOption(HashMap<String, File> crylTemplatesWithOption) {
+		this.crylTemplatesWithOption = crylTemplatesWithOption;
 	}
 }

@@ -95,7 +95,7 @@ public class SootRunner {
 		};
 	}
 
-	private static List<CrySLRule> getRules(IProject project) {
+	public static List<CrySLRule> getRules(IProject project) {
 
 		List<CrySLRule> rules = Lists.newArrayList();
 		Set<String> readRules = Sets.newHashSet();

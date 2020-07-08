@@ -22,7 +22,6 @@ import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
-import de.cognicrypt.integrator.task.models.ClaferFeature;
 import de.cognicrypt.integrator.task.widgets.CompositeBrowseForFile;
 import de.cognicrypt.integrator.task.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
@@ -33,7 +32,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	protected CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
 
 	int counter = 0;// TODO for testing only.
-	protected ArrayList<ClaferFeature> cfrFeatures;
 
 	TreeViewer treeViewer;
 
@@ -73,15 +71,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		}
 	}
 
-	/**
-	 * Get the location of the compiled Javascript file.
-	 *
-	 * @return the location of the JS file in the form of a string.
-	 */
-	public String getJSFilePath() {
-		return ((ClaferPage) getWizard().getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompiledClaferModelPath();
-	}
-
+	
 	/**
 	 * Overwriting the getNextPage method to extract the list of all questions from highLevelQuestion page and forward the data to pageForLinkAnswers at runtime
 	 */
@@ -98,10 +88,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		if (getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
 			return null;
 		}
-
-		if (getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
-
-		}
 		/*
 		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the
 		 * finish button.
@@ -109,16 +95,6 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		final IWizardPage nextPage = super.getNextPage();
 		if (nextPage != null) {
 			((WizardPage) nextPage).setPageComplete(true);
-
-			// refresh the TreeViewer when coming to the XSL page
-			if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)) {
-				if (((PageForTaskIntegratorWizard) nextPage).treeViewer != null) {
-					((PageForTaskIntegratorWizard) nextPage).treeViewer.refresh();
-					((XslPage) nextPage).setTreeViewerInput();
-				}
-			} else if (nextPage.getName().equals(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)) {
-				((ClaferPage) nextPage).initializeClaferModel();
-			}
 		}
 
 		return nextPage;
@@ -148,7 +124,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						}
 						for (final Question question : listOfAllQuestions) {
 							comp.getListOfAllQuestions().add(question);
-							comp.addQuestionUIElements(question, null, true);
+							comp.addQuestionUIElements(question, true);
 							// to rebuild the UI
 							comp.updateLayout();
 						}

@@ -909,7 +909,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				continue;
 			}
 
-			String name = analyseConstraints(parameter, rule, methodNamdResultAssignment.substring(methodNamdResultAssignment.lastIndexOf(".") + 1));
+			String name = analyseConstraints(parameter, rule, methodNamdResultAssignment.substring(methodNamdResultAssignment.lastIndexOf(".") + 1), imports);
 			if (!name.isEmpty()) {
 				methodParameter = methodParameter.replace(parameter.getKey(), name);
 				continue;
@@ -937,7 +937,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	 *        List of constraints that are used for the analysis.
 	 * @return
 	 */
-	public String analyseConstraints(Entry<String, String> parameter, CodeGenCrySLRule rule, String methodName) {
+	public String analyseConstraints(Entry<String, String> parameter, CodeGenCrySLRule rule, String methodName, List<String> imports) {
 		List<ISLConstraint> constraints = rule.getConstraints().stream().filter(e -> e.getInvolvedVarNames().contains(parameter.getKey())).collect(Collectors.toList());
 
 		for (ISLConstraint constraint : constraints) {
@@ -948,6 +948,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					name = "\"" + name + "\"";
 				} else if ("java.lang.String[]".equals(parameter.getValue())) {
 					name = "new String[]{\"" + name + "\"}";
+				} else if ("java.math.BigInteger".equals(parameter.getValue())) {
+					name = "BigInteger.valueOf(" + name + ")";
+					imports.add("java.math.BigInteger");
 				} else {
 					ruleParameterCache.putIfAbsent(parameter.getKey(), name);
 				}

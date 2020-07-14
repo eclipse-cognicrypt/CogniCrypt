@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.dom4j.io.XMLWriter;
 
+import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
@@ -42,7 +43,7 @@ public abstract class Configuration {
 	final protected String taskName;
 
 	@SuppressWarnings("unchecked")
-	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName) throws IOException {
+	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName) {
 		this.answr = new Answer();
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;
@@ -53,12 +54,16 @@ public abstract class Configuration {
 		String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
 
 		File file = new File(jsonPath);  
-        file.createNewFile();  
-        FileWriter fileWriter = new FileWriter(file);
-        fileWriter.write(obj.toJSONString());  
-        fileWriter.flush();  
-        fileWriter.close();
-        
+        try {
+			file.createNewFile();
+	        FileWriter fileWriter = new FileWriter(file);
+	        fileWriter.write(obj.toJSONString());  
+	        fileWriter.flush();  
+	        fileWriter.close();
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
+		}  
+
 	}
 
 	/**

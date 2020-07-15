@@ -619,4 +619,9 @@ public class Constants {
 					+ Constants.innerFileSeparator + "codegenerator" + Constants.innerFileSeparator + "crysl" + Constants.innerFileSeparator + "templates" + Constants.innerFileSeparator;
 	//name of tasks
 	public final static String SECURE_COMMUNICATION = "SecureCommunication";
+	
+	//suppressLegacyClient
+	public final static String clientQuestion = "Which clients should the server at least support?";
+	public final static String clientAnswer = "Legacy Clients (since 2001)";
+	public final static String desiredProtocol = "VC:protocol - TLSv1.2,";
 }

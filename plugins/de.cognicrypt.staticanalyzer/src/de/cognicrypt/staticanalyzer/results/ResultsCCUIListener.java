@@ -132,7 +132,7 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 		if (error instanceof ConstraintError) {
 			ConstraintError conError = (ConstraintError) error;
-			if (prefStore.getBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS) && conError.getBrokenConstraint().toString().equals("VC:protocol - TLSv1.2,") && isLegacyClient()) {
+			if (prefStore.getBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS) && conError.getBrokenConstraint().toString().equals(Constants.desiredProtocol) && isLegacyClient()) {
 				return;
 			}
 		}
@@ -255,9 +255,8 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 
 					Object obj = parser.parse(new InputStreamReader(new FileInputStream(path)));
 					JSONObject jsonObject = (JSONObject) obj;
-					String clientsQuestion = "Which clients should the server at least support?";
 
-					if (jsonObject.containsKey(clientsQuestion) && jsonObject.get(clientsQuestion).equals("Legacy Clients (since 2001)")) {
+					if (jsonObject.containsKey(Constants.clientQuestion) && jsonObject.get(Constants.clientQuestion).equals(Constants.clientAnswer)) {
 						return true;
 					}
 			}

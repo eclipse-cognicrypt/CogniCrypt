@@ -44,6 +44,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -1305,7 +1306,11 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				curMethod.setName(node.getName().getFullyQualifiedName());
 				curMethod.setReturnType(node.getReturnType2().toString());
 				curMethod.setModifier("public");
-
+				
+				final Javadoc javadoc = node.getJavadoc();
+				if (javadoc != null) {
+					curMethod.addJavaDoc(javadoc);
+				}
 				for (Statement s : (List<Statement>) node.getBody().statements()) {
 					curMethod.addStatementToBody(s.toString());
 				}

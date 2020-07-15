@@ -91,7 +91,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	private static HashMap<String, String> parameterCache = new HashMap<String, String>();
 
 	public static void clearParameterCache() {
-		parameterCache.clear();
+		getParameterCache().clear();
 	}
 
 	private static HashMap<String, String> ruleParameterCache = new HashMap<String, String>();
@@ -144,6 +144,10 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 	public void setToBeEnsuredPred(Entry<CrySLPredicate, Entry<CrySLRule, CrySLRule>> toBeEnsuredPred) {
 		this.toBeEnsuredPred = toBeEnsuredPred;
+	}
+	
+	public static HashMap<String, String> getParameterCache() {
+		return parameterCache;
 	}
 	
 	@Override
@@ -904,8 +908,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				continue;
 			}
 
-			if (parameterCache.containsKey(parameter.getKey())) {
-				methodParameter = methodParameter.replace(parameter.getKey(), parameterCache.get(parameter.getKey()));
+			if (getParameterCache().containsKey(parameter.getKey())) {
+				methodParameter = methodParameter.replace(parameter.getKey(), getParameterCache().get(parameter.getKey()));
 				continue;
 			}
 
@@ -1031,7 +1035,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					default:
 						break;
 				}
-				parameterCache.putIfAbsent(varName, secureInt);
+				getParameterCache().putIfAbsent(varName, secureInt);
 				return secureInt;
 			}
 		} else if (constraint instanceof CrySLPredicate && "instanceOf".equals(((CrySLPredicate) constraint).getPredName())) {

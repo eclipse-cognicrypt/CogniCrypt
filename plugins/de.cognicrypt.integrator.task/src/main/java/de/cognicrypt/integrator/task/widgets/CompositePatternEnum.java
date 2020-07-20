@@ -18,8 +18,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import de.cognicrypt.integrator.task.UIConstants;
-import de.cognicrypt.integrator.task.controllers.ClaferPatternEnumGenerator;
-import de.cognicrypt.integrator.task.models.ClaferModel;
 
 public class CompositePatternEnum extends CompositePattern {
 
@@ -144,23 +142,7 @@ public class CompositePatternEnum extends CompositePattern {
 		}
 	}
 
-	/**
-	 * Get the result model depending on whether items in this enumeration are ordered or not. This will return a reference Clafer as a parent and the enumeration items as its
-	 * children when the sortable field of the object set to <code>true</code>.
-	 */
-	@Override
-	public ClaferModel getResultModel() {
-		final ArrayList<String> userInput = new ArrayList<>();
-		for (final CompositeSortableTextItem comp : this.sortableTextItems) {
-			userInput.add(comp.getText());
-		}
-
-		final ClaferPatternEnumGenerator generator = new ClaferPatternEnumGenerator(this.patternName, this.sortable);
-		final ClaferModel resultModel = generator.getClaferModel(userInput);
-
-		return resultModel;
-	}
-
+	
 	@Override
 	public boolean validate() {
 		boolean itemsValid = true;

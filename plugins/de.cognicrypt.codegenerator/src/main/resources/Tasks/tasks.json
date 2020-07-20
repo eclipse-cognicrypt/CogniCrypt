@@ -1,37 +1,54 @@
 [
-		{
-			"name": "Encryption",
-			"description": "Encrypting data",
-			"taskDescription": "When this use case is selected, CogniCrypt generates code for encrypting data. You can select which kind of plaintext (String, File, Byte[]), you wish to encrypt, as well as how to communicate the secret necessary for decryption.",			
-			"image" : "lock",
-			"codeGen": "CrySL"
-		},
-		{
-			"name": "SecurePassword",
-			"description": "Encode Password for Secure Storage",
-			"taskDescription": "To implement this use case, CogniCrypt generates code that transforms a password such that it can be securely stored e.g. in databases or files. The generated code also facilitates a retrieving this password from the storage in order to verify it with a new given one.",
-			"image" : "key",
-			"codeGen": "CrySL"
-		},
-		{
-			"name": "SecureCommunication",
-			"description": "Establish a Secure Network Connection",
-			"taskDescription": "When selecting this use case, CogniCrypt generates code to implement a secure communication channel. You can choose what protocol this channel should follow (e.g., TLS/SSL vs. HTTPS) and if the server or client side should be implemented.",
-			"image" : "wifi",
-			"codeGen": "XSL"
-		},
-		{
-			"name": "DigitalSignatures",
-			"description": "Digitally sign documents",
-			"taskDescription": "In this cryptographic use case, code is generated that digitally signs data and verifies existing signatures.",			
-			"image" : "signing",
-			"codeGen": "CrySL"
-		},
-		{
-			"name" : "SECMUPACOMP",
-			"description" : "Secure multi party computation",
-			"taskDescription" : "For this task, CogniCrypt generates code that may apply the same function to multiple inputs from different parties without revealing each party's input to anybody else involved. ",
-			"image" : "mpc",
-			"codeGen": "XSL"
-		}
+  {
+    "name": "Encryption",
+    "description": "Encrypting data",
+    "taskDescription": "When this use case is selected, CogniCrypt generates code for encrypting data. You can select which kind of plaintext (String, File, Byte[]), you wish to encrypt, as well as how to communicate the secret necessary for decryption.",
+    "image": "lock",
+    "codeGen": "CrySL",
+    "isSelected": false
+  },
+  {
+    "name": "SecurePassword",
+    "description": "Encode Password for Secure Storage",
+    "taskDescription": "To implement this use case, CogniCrypt generates code that transforms a password such that it can be securely stored e.g. in databases or files. The generated code also facilitates a retrieving this password from the storage in order to verify it with a new given one.",
+    "image": "key",
+    "codeGen": "CrySL",
+    "isSelected": false
+  },
+  {
+    "name": "SecureCommunication",
+    "description": "Establish a Secure Network Connection",
+    "taskDescription": "When selecting this use case, CogniCrypt generates code to implement a secure communication channel. You can choose what protocol this channel should follow (e.g., TLS/SSL vs. HTTPS) and if the server or client side should be implemented.",
+    "image": "wifi",
+    "codeGen": "XSL",
+    "isSelected": false
+  },
+  {
+    "name": "DigitalSignatures",
+    "description": "Digitally sign documents",
+    "taskDescription": "In this cryptographic use case, code is generated that digitally signs data and verifies existing signatures.",
+    "image": "signing",
+    "codeGen": "CrySL",
+    "isSelected": false
+  },
+  {
+    "name": "SECMUPACOMP",
+    "description": "Secure multi party computation",
+    "taskDescription": "For this task, CogniCrypt generates code that may apply the same function to multiple inputs from different parties without revealing each party\u0027s input to anybody else involved. ",
+    "image": "mpc",
+    "codeGen": "XSL",
+    "isSelected": false
+  },
+  {
+    "name": "TestCryslTask",
+    "description": "TestCryslTask",
+    "taskDescription": "description of task",
+    "image": "TestCryslTask",
+    "codeGen": "CrySL",
+    "additionalResources": "",
+    "questionsJSONFile": "src/main/resources/TaskDesc/TestCryslTask.json",
+    "modelFile": "",
+    "codeTemplate": "src/main/resources/XSLTemplates/TestCryslTask.xsl",
+    "isSelected": false
+  }
 ]

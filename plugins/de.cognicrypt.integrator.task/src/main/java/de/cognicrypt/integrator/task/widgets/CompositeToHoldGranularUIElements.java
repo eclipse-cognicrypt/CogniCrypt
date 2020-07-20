@@ -16,15 +16,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.models.ClaferFeature;
-import de.cognicrypt.integrator.task.models.ClaferModel;
 
 public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	private String targetPageName;
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
-	private ClaferModel claferModel;
-	private CompositeClaferFeedback compositeClaferFeedback;
 
 	private ArrayList<Question> listOfAllQuestions;
 	int counter;
@@ -37,7 +33,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	public CompositeToHoldGranularUIElements(final Composite parent, final String pageName) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 
-		this.claferModel = new ClaferModel();
 
 		this.listOfAllQuestions = new ArrayList<Question>();
 
@@ -56,16 +51,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setMinSize(contentComposite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
-	public void addGranularClaferUIElements(final ClaferFeature claferFeature) {
-		new CompositeClaferFeature((Composite) getContent(), claferFeature);
-		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
-	}
-
-	public void deleteClaferFeature(final ClaferFeature featureToBeDeleted) {
-		this.claferModel.remove(featureToBeDeleted);
-		updateClaferContainer();
-	}
-
+	
 	public void updateClaferContainer() {
 		final Composite compositeContentOfThisScrolledComposite = (Composite) getContent();
 
@@ -78,41 +64,15 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
 
-		// add all the clafer features excluding the deleted one.
-		for (final ClaferFeature featureUnderConsideration : this.claferModel) {
-			addGranularClaferUIElements(featureUnderConsideration);
-		}
+
 
 		((Composite) getContent()).layout();
 	}
 
-	public void setCompositeClaferFeedback(final CompositeClaferFeedback compositeClaferFeedback) {
-		this.compositeClaferFeedback = compositeClaferFeedback;
-	}
+	
 
-	/**
-	 * updates a given feature with a new version
-	 *
-	 * @param originalClaferFeature the feature to be updated
-	 * @param modifiedClaferFeature the updated version of the feature
-	 */
-	public void modifyClaferFeature(final ClaferFeature originalClaferFeature, final ClaferFeature modifiedClaferFeature) {
-		for (ClaferFeature featureUnderConsideration : this.claferModel) {
-			if (featureUnderConsideration.equals(originalClaferFeature)) {
-				featureUnderConsideration = modifiedClaferFeature;
-				break;
-			}
-		}
+	public void addQuestionUIElements(final Question question, final boolean linkAnswerPage) {
 
-		updateClaferContainer();
-
-		this.compositeClaferFeedback.setFeedback("modified Clafer feature");
-	}
-
-	public void addQuestionUIElements(final Question question, final ClaferModel claferModel, final boolean linkAnswerPage) {
-
-		// Update the array list of clafer features.
-		setClaferModel(claferModel);
 		new CompositeGranularUIForHighLevelQuestions((Composite) getContent(), // the content composite of ScrolledComposite.
 				SWT.NONE, question, linkAnswerPage);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -209,7 +169,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 		// add all the clafer features excluding the deleted one.
 		for (final Question questionUnderConsideration : this.listOfAllQuestions) {
-			addQuestionUIElements(questionUnderConsideration, this.claferModel, false);
+			addQuestionUIElements(questionUnderConsideration, false);
 		}
 		updateLayout();
 	}
@@ -279,13 +239,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	}
 
-	public ClaferModel getClaferModel() {
-		return this.claferModel;
-	}
 
-	public void setClaferModel(final ClaferModel claferModel) {
-		this.claferModel = claferModel;
-	}
 
 	/**
 	 * @return the listOfAllQuestions

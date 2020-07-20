@@ -1,0 +1,24 @@
+SPEC de.coffee.api.Sugar
+
+OBJECTS
+int calories;
+
+EVENTS
+m1: Sugar();
+m2: Sugar(calories);
+constructor:= m1 | m2;
+
+m3: method2();
+someMethod:= m3;
+
+ORDER
+constructor, someMethod?
+
+CONSTRAINTS
+calories < 1000;
+
+//REQUIRES
+//*
+
+ENSURES
+sugarCreated[this] after constructor;

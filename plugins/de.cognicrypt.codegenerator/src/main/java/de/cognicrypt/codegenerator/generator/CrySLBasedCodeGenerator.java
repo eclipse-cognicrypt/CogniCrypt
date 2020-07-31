@@ -1039,12 +1039,16 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				return secureInt;
 			}
 		} else if (constraint instanceof CrySLPredicate && "instanceOf".equals(((CrySLPredicate) constraint).getPredName())) {
+			List<ICrySLPredicateParameter> instanceOfPred = ((CrySLPredicate) constraint).getParameters();
+			if(list != null) {
 			for (CodeGenCrySLObject obj : list) {
-				List<ICrySLPredicateParameter> instanceOfPred = ((CrySLPredicate) constraint).getParameters();
 				if (((CrySLObject) instanceOfPred.get(1)).getVarName().equals(obj.getJavaType()) && obj.getMethod()
 					.equals(findMethodForParameter((CrySLObject) instanceOfPred.get(0)))) {
 					return ((CrySLObject) instanceOfPred.get(0)).getVarName();
 				}
+			}
+			} else {
+				return ((CrySLObject) instanceOfPred.get(0)).getVarName();
 			}
 		} else if (constraint instanceof CrySLConstraint) {
 

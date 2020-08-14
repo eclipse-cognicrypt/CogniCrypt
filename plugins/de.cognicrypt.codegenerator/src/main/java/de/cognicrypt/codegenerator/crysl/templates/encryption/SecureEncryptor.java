@@ -42,15 +42,22 @@ public class SecureEncryptor {
 		return ret;
 	}
 
+	/**
+	 * Decrypt.
+	 *
+	 * @param ciphertext the ciphertext
+	 * @param key the key
+	 * @return the byte[]
+	 */
 	public byte[] decrypt(byte[] ciphertext, javax.crypto.SecretKey key) {
 
 		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] data = new byte[ciphertext.length - ivBytes.length];
 		System.arraycopy(ciphertext, 0, ivBytes, 0, ivBytes.length);
 		System.arraycopy(ciphertext, ivBytes.length, data, 0, data.length);
-
-		int mode = Cipher.DECRYPT_MODE;
-		byte[] res = null;
+		//here 
+		int mode = Cipher.DECRYPT_MODE; //this
+		byte[] res = null; //fdkfdjnfk
 		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.IvParameterSpec").addParameter(ivBytes, "iv").includeClass("javax.crypto.Cipher")
 		.addParameter(mode, "encmode").addParameter(key, "key").addParameter(data, "plainText").addParameter(res, "cipherText").generate();
 

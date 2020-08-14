@@ -10,6 +10,8 @@
 
 package de.cognicrypt.codegenerator.generator;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -35,16 +37,20 @@ import java.util.stream.Stream;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BlockComment;
+import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
+import org.eclipse.jdt.core.dom.LineComment;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -86,6 +92,8 @@ import de.cognicrypt.utils.Utils;
  *
  */
 public class CrySLBasedCodeGenerator extends CodeGenerator {
+
+	public static Map<Integer, String> comments = new HashMap<Integer,String>();
 
 	private static HashMap<String, String> parameterCache = new HashMap<String, String>();
 
@@ -1196,18 +1204,84 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		}
 	}
+	// read file content into a string
+	public static String readFileToString(String filePath) throws IOException {
+		StringBuilder fileData = new StringBuilder(1000);
+		final FileReader in = new FileReader(filePath);
+		BufferedReader reader = new BufferedReader(in);
+ 
+		char[] buf = new char[10];
+		int numRead = 0;
+		while ((numRead = reader.read(buf)) != -1) {
+			String readData = String.valueOf(buf, 0, numRead);
+			fileData.append(readData);
+			buf = new char[1024];
+		}
+ 
+		reader.close();
+		return fileData.toString();
+	}
 
-	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) {
+	//comment visitor
+	class CommentVisitor extends ASTVisitor {
+		CompilationUnit cu;
+		String source;
+	 
+		public CommentVisitor(CompilationUnit cu, String source) {
+			super();
+			this.cu = cu;
+			this.source = source;
+		}
+	 
+		public boolean visit(LineComment node) {
+//			System.out.println("the line comment: "+ node);
+//			HashMap<Integer, String> comments = ;
+			int start = node.getStartPosition();
+			int end = start + node.getLength();
+			String comment = source.substring(start, end);
+			System.out.println("the line comment: " + comment);
+			
+			comments.put(start, comment);
+			return true;
+		}
+	 
+		public boolean visit(BlockComment node) {
+			int start = node.getStartPosition();
+			int end = start + node.getLength();
+			String comment = source.substring(start, end);
+			System.out.println("the BLOCK comment: " + comment);
+			return true;
+		}
+	 
+
+	}
+	
+
+	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) throws IOException {
 		ASTParser parser = ASTParser.newParser(AST.JLS11);
-		parser.setSource((ICompilationUnit) JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile)));
+		final IJavaElement create = JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile));
+		
+		String converted = readFileToString("C:\\Users\\shahrzad\\git\\git\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\java\\de\\cognicrypt\\codegenerator\\crysl\\templates\\encryption\\SecureEncryptor.java");
+		
+		System.out.println("file created: " + create.getJavaProject().getProject().toString());
+		parser.setSource((ICompilationUnit) create);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+		
+
+		for (Comment comment : (List<Comment>) cu.getCommentList()) {
+//			System.out.println("this is the COMMENT: " + comment);
+			comment.accept(new CommentVisitor(cu, converted));
+		}
+		
 		final Map<Integer, Integer> methLims = new HashMap<>();
 
 		GeneratorClass templateClass = new GeneratorClass();
-
+		
+		templateClass.addComments(comments);
+		
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 
 			GeneratorMethod curMethod = null;

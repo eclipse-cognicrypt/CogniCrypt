@@ -96,7 +96,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 	private static HashMap<String, String> ruleParameterCache = new HashMap<String, String>();
 
-	private static void clearRuleParameterCache() {
+	public static void clearRuleParameterCache() {
 		ruleParameterCache.clear();
 	}
 

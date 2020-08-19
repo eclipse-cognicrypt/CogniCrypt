@@ -22,13 +22,13 @@ import de.cognicrypt.utils.Utils;
 
 public class GeneratorMethod {
 
-	private String modifier;
-	private String returnType;
-	private String name;
+	protected String modifier;
+	protected String returnType;
+	protected String name;
 	private List<Entry<String, String>> parameters;
-	private Set<String> exceptions;
+	protected Set<String> exceptions;
 	protected StringBuilder body;
-	private List<Entry<String, String>> variableDeclarations;
+	protected List<Entry<String, String>> variableDeclarations;
 	private List<Entry<String, String>> postCGVars;
 	private StringBuilder killStatements;
 	private int templateVariables;

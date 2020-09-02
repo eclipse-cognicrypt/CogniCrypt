@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import crypto.rules.StateMachineGraph;
-import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.utils.CrySLUtils;
 
@@ -49,16 +48,13 @@ public class StateMachineGraphAnalyser {
 		List<TransitionEdge> edges = stateMachine.getEdges();
 		//Collection<StateNode> acceptingNodes = stateMachine.getAcceptingStates();
 
-		TransitionEdge initialTransition = stateMachine.getInitialTransition();
-		StateNode initialState = initialTransition.getLeft();
+		List<TransitionEdge> initialTransitions = stateMachine.getInitialTransitions();
+		for (TransitionEdge initialTransition : initialTransitions) {
 
-		if (!initialState.getInit()) {
-			throw new Exception("No initial state found for state machine!");
+			List<TransitionEdge> transitions = new ArrayList<TransitionEdge>();
+
+			visitNode(edges, initialTransition, transitions);
 		}
-
-		List<TransitionEdge> transitions = new ArrayList<TransitionEdge>();
-
-		visitNode(edges, initialTransition, transitions);
 
 		return allTransitions;
 	}

@@ -12,10 +12,8 @@ package de.cognicrypt.codegenerator.generator;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,7 +23,7 @@ public class GeneratorClass {
 	private Set<String> imports;
 	private String modifier;
 	private String className;
-	private Map<Integer, String> comments;
+//	private Map<Integer, String> comments;
 	private List<GeneratorMethod> methods;
 	private File associatedFile;
 
@@ -107,10 +105,6 @@ public class GeneratorClass {
 
 	public String toString() {
 		StringBuilder classContent = new StringBuilder("package ");
-		for (Map.Entry<Integer,String> entry : comments.entrySet()) {
-			System.out.println("the map has: "+ entry);
-			classContent.insert(entry.getKey(), entry.getValue());
-		}
 		classContent.append(packageName);
 		classContent.append(";\n");
 		for (String impo : imports) {
@@ -127,16 +121,22 @@ public class GeneratorClass {
 		}
 
 		classContent.append("}");
+		//adding comments with offsets
+//		if (comments != null) {
+//			for (Map.Entry<Integer,String> entry : comments.entrySet()) {
+//				System.out.println("the map has: "+ entry);
+//				classContent.insert(entry.getKey(), entry.getValue());
+//			}
+//		}
 		return classContent.toString();
 	}
 
-	public void addComments(Map<Integer,String> comment) {
-		// TODO Auto-generated method stub
-		HashMap<Integer, String> comments = new HashMap<Integer,String>();
-		for(Map.Entry<Integer,String> entry : comment.entrySet()) {
-			comments.put(entry.getKey(), entry.getValue());
-		} 
-		
-	}
+//	public void addComments(Map<Integer,String> comment) {
+//		this.comments = new HashMap<Integer,String>();
+//		for(Map.Entry<Integer,String> entry : comment.entrySet()) {
+//			this.comments.put(entry.getKey(), entry.getValue());
+//		} 
+//		
+//	}
 
 }

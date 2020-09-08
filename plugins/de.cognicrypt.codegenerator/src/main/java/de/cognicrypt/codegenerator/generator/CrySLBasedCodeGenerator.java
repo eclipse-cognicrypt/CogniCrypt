@@ -11,6 +11,7 @@
 package de.cognicrypt.codegenerator.generator;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -1255,31 +1256,30 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			int start = node.getStartPosition();
 			int end = start + node.getLength();
 			String comment = source.substring(start, end);
-			System.out.println("the line comment: " + comment);
+//			System.out.println("the line comment: " + comment);
 			
 			comments.put(start, comment);
 			return true;
 		}
 	 
-		public boolean visit(BlockComment node) {
-			int start = node.getStartPosition();
-			int end = start + node.getLength();
-			String comment = source.substring(start, end);
-			System.out.println("the BLOCK comment: " + comment);
-			return true;
-		}
+//		public boolean visit(BlockComment node) {
+//			int start = node.getStartPosition();
+//			int end = start + node.getLength();
+//			String comment = source.substring(start, end);
+//			System.out.println("the BLOCK comment: " + comment);
+//			return true;
+//		}
 	 
 
 	}
 	
-
+	// in case Comments need templateFile to retrieve comments
 	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) throws IOException {
 		ASTParser parser = ASTParser.newParser(AST.JLS11);
 		final IJavaElement create = JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile));
+
+//		String converted = readFileToString(templateFile.toString());
 		
-		String converted = readFileToString("C:\\Users\\shahrzad\\git\\git\\CogniCrypt\\plugins\\de.cognicrypt.codegenerator\\src\\main\\java\\de\\cognicrypt\\codegenerator\\crysl\\templates\\encryption\\SecureEncryptor.java");
-		
-		System.out.println("file created: " + create.getJavaProject().getProject().toString());
 		parser.setSource((ICompilationUnit) create);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
@@ -1287,16 +1287,13 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		
 
-		for (Comment comment : (List<Comment>) cu.getCommentList()) {
-//			System.out.println("this is the COMMENT: " + comment);
-			comment.accept(new CommentVisitor(cu, converted));
-		}
+//		for (Comment comment : (List<Comment>) cu.getCommentList()) {
+//			comment.accept(new CommentVisitor(cu, converted));
+//		}
 		
 		final Map<Integer, Integer> methLims = new HashMap<>();
 
 		GeneratorClass templateClass = new GeneratorClass();
-		
-		templateClass.addComments(comments);
 		
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 
@@ -1442,6 +1439,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		};
 		cu.accept(astVisitor);
+//		templateClass.addComments(comments);
 		return templateClass;
 	}
 

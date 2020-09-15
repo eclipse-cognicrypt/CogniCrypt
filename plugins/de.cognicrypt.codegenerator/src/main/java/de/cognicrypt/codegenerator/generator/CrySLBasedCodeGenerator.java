@@ -683,11 +683,11 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			} else {
 				try {
 					methodParameter[i] = Class.forName(parameter.getValue());
-					i++;
 				} catch (ClassNotFoundException e) {
 					Activator.getDefault().logError(e, "No class found for type: " + parameter.getValue().toString());
 				}
 			}
+			i++;
 		}
 		return methodParameter;
 	}
@@ -1232,6 +1232,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			Map<SimpleName, CrySLObject> postCGVars = new HashMap<SimpleName, CrySLObject>();
 
 			List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
+			List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project);
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
@@ -1256,11 +1257,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					}
 				} else if ("includeClass".equals(calledMethodName)) {
 					String rule = Utils.filterQuotes(arguments.get(0).toString());
-					List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project);
-					String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
 					CrySLRule crySLRule = null;//CrySLUtils.getCrySLRule(simpleRuleName);
 					for (CrySLRule crySLRuleFromSootRunner : rulesFromSootRunner) {
-						if(crySLRuleFromSootRunner.getClassName().contains(simpleRuleName)) {
+						if(crySLRuleFromSootRunner.getClassName().equals(rule)) {
 							crySLRule = crySLRuleFromSootRunner;
 						}
 					}

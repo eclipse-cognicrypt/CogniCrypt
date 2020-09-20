@@ -29,9 +29,9 @@ import de.cognicrypt.utils.CrySLUtils;
  */
 public class StateMachineGraphAnalyser {
 
-	private StateMachineGraph stateMachine;
-	private ArrayList<String> usedTransitions = new ArrayList<String>();
-	private ArrayList<List<TransitionEdge>> allTransitions;
+	protected StateMachineGraph stateMachine;
+	protected ArrayList<String> usedTransitions = new ArrayList<String>();
+	protected ArrayList<List<TransitionEdge>> allTransitions;
 
 	public StateMachineGraphAnalyser(StateMachineGraph stateMachine) {
 		this.stateMachine = stateMachine;
@@ -41,7 +41,7 @@ public class StateMachineGraphAnalyser {
 	// Current solution: Take every loop once.
 	// This solution does not distinguish between the two operates
 	// + and * of the crysl language
-	public ArrayList<List<TransitionEdge>> getTransitions() throws Exception {
+	public ArrayList<List<TransitionEdge>> getTransitions() {
 		allTransitions = new ArrayList<List<TransitionEdge>>();
 
 		//Collection<StateNode> nodes = stateMachine.getNodes();

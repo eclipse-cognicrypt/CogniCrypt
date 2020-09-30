@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,13 +48,11 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BlockComment;
 import org.eclipse.jdt.core.dom.Comment;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.Javadoc;
-import org.eclipse.jdt.core.dom.LineComment;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -96,7 +96,7 @@ import soot.SootResolver;
  */
 public class CrySLBasedCodeGenerator extends CodeGenerator {
 
-	public static Map<Integer, String> comments = new HashMap<Integer,String>();
+//	public static Map<Integer, String> comments = new HashMap<Integer,String>();
 
 	private static HashMap<String, String> parameterCache = new HashMap<String, String>();
 
@@ -1238,47 +1238,12 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		reader.close();
 		return fileData.toString();
 	}
-
-	//comment visitor
-	class CommentVisitor extends ASTVisitor {
-		CompilationUnit cu;
-		String source;
-	 
-		public CommentVisitor(CompilationUnit cu, String source) {
-			super();
-			this.cu = cu;
-			this.source = source;
-		}
-	 
-		public boolean visit(LineComment node) {
-//			System.out.println("the line comment: "+ node);
-//			HashMap<Integer, String> comments = ;
-			int start = node.getStartPosition();
-			int end = start + node.getLength();
-			String comment = source.substring(start, end);
-//			System.out.println("the line comment: " + comment);
-			
-			comments.put(start, comment);
-			return true;
-		}
-	 
-//		public boolean visit(BlockComment node) {
-//			int start = node.getStartPosition();
-//			int end = start + node.getLength();
-//			String comment = source.substring(start, end);
-//			System.out.println("the BLOCK comment: " + comment);
-//			return true;
-//		}
-	 
-
-	}
 	
-	// in case Comments need templateFile to retrieve comments
-	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) throws IOException {
+	public GeneratorClass setUpTemplateClass(String pathToTemplateFile, File templateFile) throws IOException {
 		ASTParser parser = ASTParser.newParser(AST.JLS11);
 		final IJavaElement create = JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile));
 
-//		String converted = readFileToString(templateFile.toString());
+		String converted = readFileToString(templateFile.toString());
 		
 		parser.setSource((ICompilationUnit) create);
 		parser.setResolveBindings(true);
@@ -1286,14 +1251,19 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		
-
-//		for (Comment comment : (List<Comment>) cu.getCommentList()) {
-//			comment.accept(new CommentVisitor(cu, converted));
-//		}
+		//retrieve header
+	    Pattern pattern = Pattern.compile("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/");
+	    Matcher matcher = pattern.matcher(converted);
+	    matcher.find();
+	    String header =  matcher.group();
+	    
+		Comment classJavaDoc = (Comment) cu.getCommentList().get(1);
 		
 		final Map<Integer, Integer> methLims = new HashMap<>();
 
 		GeneratorClass templateClass = new GeneratorClass();
+		templateClass.addHeader(header);
+		templateClass.addClassJavaDoc(classJavaDoc);
 		
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 
@@ -1439,7 +1409,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		};
 		cu.accept(astVisitor);
-//		templateClass.addComments(comments);
 		return templateClass;
 	}
 

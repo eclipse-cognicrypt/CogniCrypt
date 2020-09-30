@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import org.eclipse.jdt.core.dom.Comment;
+
 public class GeneratorClass {
 
 	private String packageName;
@@ -24,6 +26,8 @@ public class GeneratorClass {
 	private String modifier;
 	private String className;
 //	private Map<Integer, String> comments;
+	private String header;
+	private Comment classJavaDoc;
 	private List<GeneratorMethod> methods;
 	private File associatedFile;
 
@@ -104,7 +108,7 @@ public class GeneratorClass {
 	}
 
 	public String toString() {
-		StringBuilder classContent = new StringBuilder("package ");
+		StringBuilder classContent = new StringBuilder(header + "\n" + "package ");
 		classContent.append(packageName);
 		classContent.append(";\n");
 		for (String impo : imports) {
@@ -113,6 +117,7 @@ public class GeneratorClass {
 			classContent.append(";\n");
 		}
 		classContent.append("\n");
+		classContent.append(classJavaDoc);
 		classContent.append(modifier + " class " + className + " {\n");
 
 		for (GeneratorMethod genMeth : methods) {
@@ -129,6 +134,19 @@ public class GeneratorClass {
 //			}
 //		}
 		return classContent.toString();
+	}
+
+	public void addHeader(String header) {
+		if (header != null) {
+			this.header = header;
+		}
+		
+	}
+
+	public void addClassJavaDoc(Comment classJavaDoc) {
+		if ( classJavaDoc != null) {
+			this.classJavaDoc = classJavaDoc;
+		}
 	}
 
 //	public void addComments(Map<Integer,String> comment) {

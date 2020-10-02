@@ -238,6 +238,12 @@ public class AltConfigWizard extends Wizard {
 		IResource targetFile = (IResource) currentPage.getSelectedResource().getFirstElement();
 
 		String taskName = selectedTask.getName();
+		JOptionPane optionPane = new JOptionPane("CogniCrypt is now generating code that implements " + selectedTask.getDescription() + "\ninto file " + ((targetFile != null)
+			? targetFile.getName()
+			: "Output.java") + ". This should take no longer than a few seconds.", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION, null, new Object[] {}, null);
+		JDialog waitingDialog = optionPane.createDialog("Generating Code");
+		waitingDialog.setModal(false);
+		waitingDialog.setVisible(true);
 		Configuration chosenConfig = null;
 		try {
 			String codeTemplate = selectedTask.getCodeTemplate();
@@ -290,6 +296,7 @@ public class AltConfigWizard extends Wizard {
 			Activator.getDefault().logError(ex, Constants.CodeGenerationErrorMessage);
 		}
 
+		waitingDialog.setVisible(false);
 		return ret;
 	}
 

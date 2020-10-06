@@ -27,7 +27,7 @@ public class PasswordHasher {
 	 * Creates the PW hash.
 	 *
 	 * @param pwd the pwd.
-	 * @return the java.lang. string.
+	 * @returns the java.lang. string.
 	 * @throws GeneralSecurityException the general security exception.
 	 * @throws NoSuchAlgorithmException.
 	 */
@@ -48,7 +48,7 @@ public class PasswordHasher {
 	 *
 	 * @param pwd the pwd.
 	 * @param pwdhash the pwdhash.
-	 * @return true, if successful.
+	 * @returns true, if successful.
 	 * @throws GeneralSecurityException the general security exception.
 	 */
 	public static boolean verifyPWHash(char[] pwd, java.lang.String pwdhash) throws GeneralSecurityException {
@@ -69,7 +69,7 @@ public class PasswordHasher {
 	 *
 	 * @param a the first value.
 	 * @param b the second value.
-	 * @return true, if successful.
+	 * @returns true, if successful.
 	 */
 	private static boolean slowEquals(byte[] a, byte[] b) {
 		int diff = a.length ^ b.length;
@@ -83,7 +83,7 @@ public class PasswordHasher {
 	 * To base 64. converts an array of bytes into a string.
 	 *
 	 * @param array of bytes.
-	 * @return the java.lang. string.
+	 * @returns the java.lang. string.
 	 */
 	private static java.lang.String toBase64(byte[] array) {
 		return DatatypeConverter.printBase64Binary(array);
@@ -93,7 +93,7 @@ public class PasswordHasher {
 	 * From base 64. Converts a string into an array of bytes
 	 *
 	 * @param hash, a string containing lexical representation of xsd:base64Binary
-	 * @return the byte[]
+	 * @returns the byte[]
 	 */
 	private static byte[] fromBase64(java.lang.String hash) {
 		return DatatypeConverter.parseBase64Binary(hash);

@@ -25,7 +25,6 @@ public class GeneratorClass {
 	private Set<String> imports;
 	private String modifier;
 	private String className;
-//	private Map<Integer, String> comments;
 	private String header;
 	private Comment classJavaDoc;
 	private List<GeneratorMethod> methods;
@@ -126,13 +125,6 @@ public class GeneratorClass {
 		}
 
 		classContent.append("}");
-		//adding comments with offsets
-//		if (comments != null) {
-//			for (Map.Entry<Integer,String> entry : comments.entrySet()) {
-//				System.out.println("the map has: "+ entry);
-//				classContent.insert(entry.getKey(), entry.getValue());
-//			}
-//		}
 		return classContent.toString();
 	}
 
@@ -148,13 +140,5 @@ public class GeneratorClass {
 			this.classJavaDoc = classJavaDoc;
 		}
 	}
-
-//	public void addComments(Map<Integer,String> comment) {
-//		this.comments = new HashMap<Integer,String>();
-//		for(Map.Entry<Integer,String> entry : comment.entrySet()) {
-//			this.comments.put(entry.getKey(), entry.getValue());
-//		} 
-//		
-//	}
 
 }

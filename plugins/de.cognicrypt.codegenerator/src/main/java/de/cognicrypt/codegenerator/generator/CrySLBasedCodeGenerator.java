@@ -1257,7 +1257,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	    matcher.find();
 	    String header =  matcher.group();
 	    
-		Comment classJavaDoc = (Comment) cu.getCommentList().get(1);
+		String classJavaDoc = (String) cu.getCommentList().get(1).toString();
 		
 		final Map<Integer, Integer> methLims = new HashMap<>();
 

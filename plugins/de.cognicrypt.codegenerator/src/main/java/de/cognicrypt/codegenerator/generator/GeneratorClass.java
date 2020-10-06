@@ -25,8 +25,8 @@ public class GeneratorClass {
 	private Set<String> imports;
 	private String modifier;
 	private String className;
-	private String header;
-	private Comment classJavaDoc;
+	private String header = "";
+	private String classJavaDoc = "";
 	private List<GeneratorMethod> methods;
 	private File associatedFile;
 
@@ -135,7 +135,7 @@ public class GeneratorClass {
 		
 	}
 
-	public void addClassJavaDoc(Comment classJavaDoc) {
+	public void addClassJavaDoc(String classJavaDoc) {
 		if ( classJavaDoc != null) {
 			this.classJavaDoc = classJavaDoc;
 		}

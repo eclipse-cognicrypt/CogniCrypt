@@ -9,14 +9,17 @@ package de.cognicrypt.integrator.task.wizard;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.integrator.task.controllers.FileUtilities;
-import de.cognicrypt.integrator.task.models.ClaferModel;
 import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
 
 public class TaskIntegrationWizard extends Wizard {
@@ -29,13 +32,11 @@ public class TaskIntegrationWizard extends Wizard {
 	public void addPages() {
 		addPage(new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD));
 
-		addPage(new ClaferPage());
 
 		addPage(new QuestionsPage());
 
 		addPage(new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_LINK_ANSWERS, Constants.PAGE_TITLE_FOR_LINK_ANSWERS, Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
 
-		addPage(new XslPage());
 	}
 
 	/*
@@ -50,16 +51,19 @@ public class TaskIntegrationWizard extends Wizard {
 				getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 		objectForDataInNonGuidedMode.setTask();
 		final FileUtilities fileUtilities = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
+		Task task = objectForDataInNonGuidedMode.getTask();
+		HashMap<String, File> crylTemplatesWithOption = objectForDataInNonGuidedMode.getCrylTemplatesWithOption();
 		if (getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
 			if (objectForDataInNonGuidedMode.isGuidedModeChosen() == false // && this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 			) {
 
-				final String fileWriteAttemptResult = fileUtilities.writeFiles(objectForDataInNonGuidedMode.getLocationOfClaferFile(), objectForDataInNonGuidedMode.getLocationOfJSONFile(),
-						objectForDataInNonGuidedMode.getLocationOfXSLFile(), objectForDataInNonGuidedMode.getLocationOfCustomLibrary(),
-						objectForDataInNonGuidedMode.getLocationOfHelpXMLFile());
+				final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption, objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfIconFile());
 				// Check if the contents of the provided files are valid.
 				if (fileWriteAttemptResult.equals("")) {
-					fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+					// Adding the trimmed task name to ensure it matches with the name of the image stored (refer FileUtilities)
+					task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+					task.setCodeGen(CodeGenerators.CrySL);
+					fileUtilities.writeTaskToJSONFile(task);
 					fileUtilities.updateThePluginXMLFileWithHelpData(objectForDataInNonGuidedMode.getNameOfTheTask());
 					return true;
 				} else {
@@ -74,20 +78,37 @@ public class TaskIntegrationWizard extends Wizard {
 		} else {
 
 			// collect input to task-related files from individual pages
-			final ClaferModel claferModel = ((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION)).getCompositeToHoldGranularUIElements().getClaferModel();
+			
+			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(objectForDataInNonGuidedMode.getCrylTemplatesWithOption(),  objectForDataInNonGuidedMode.getLocationOfIconFile());
 			final ArrayList<Question> questions =
 					((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
-			final String xslFileContents = ((XslPage) getPage(Constants.PAGE_NAME_FOR_XSL_FILE_CREATION)).getCompositeForXsl().getXslTxtBox().getText();
+			fileUtilities.writeJSONFile(questions);
+			// Check if the contents of the provided files are valid.
+			if (fileWriteAttemptResult.equals("")) {
+				// Adding the trimmed task name to ensure it matches with the name of the image stored (refer FileUtilities)
+				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+				task.setCodeGen(CodeGenerators.CrySL);
+				task.setModelFile("");
+				task.setAdditionalResources("");
+				fileUtilities.writeTaskToJSONFile(task);
+				fileUtilities.updateThePluginXMLFileWithHelpData(objectForDataInNonGuidedMode.getNameOfTheTask());
+			} else {
+				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
+				errorBox.setText("Problems with the provided files.");
+				errorBox.setMessage(fileWriteAttemptResult);
+				errorBox.open();
+			}
+			
+			
+			
 
-			final File customLibLocation = null;
+			/*final File customLibLocation = null;
 
 			final ModelAdvancedMode objectForDataInGuidedMode =
 					getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
 			objectForDataInGuidedMode.setTask();
-
-			final String fileWriteAttemptResult = fileUtilities.writeFiles(claferModel, questions, xslFileContents, customLibLocation, null);
 			if (fileWriteAttemptResult.equals("")) {
-				fileUtilities.writeTaskToJSONFile(objectForDataInNonGuidedMode.getTask());
+				fileUtilities.writeTaskToJSONFile(task);
 				return true;
 			} else {
 				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
@@ -95,9 +116,9 @@ public class TaskIntegrationWizard extends Wizard {
 				errorBox.setMessage(fileWriteAttemptResult);
 				errorBox.open();
 				return false;
-			}
+			}*/
 		}
-		return false;
+		return true;
 	}
 
 	/**

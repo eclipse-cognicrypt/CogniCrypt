@@ -155,23 +155,25 @@ public class AltConfigWizard extends Wizard {
 		}
 		return currentPage;
 	}
-	
+
 	public String constructTemplateName() {
 		String selectedTemplate = selectedTask.getCodeTemplate();
 		for (Answer resp : this.constraints.values()) {
-			selectedTemplate += resp.getOption();
+			if (resp.getOption() != null) {
+				selectedTemplate += resp.getOption();
+			}
 		}
 		return selectedTemplate;
 	}
-	
+
 	public void addConstraints(HashMap<Question, Answer> constraint) {
-			this.constraints.putAll(constraint);
+		this.constraints.putAll(constraint);
 	}
-	
+
 	public void setSelectedTask(Task selectedTask) {
 		this.selectedTask = selectedTask;
 	}
-	
+
 	private IWizardPage addLocatorPage() {
 		final LocatorPage locatorPage = new LocatorPage("Locator");
 		addPage(locatorPage);
@@ -213,7 +215,9 @@ public class AltConfigWizard extends Wizard {
 	public void resetAnswers() {
 		int substringLength = 0;
 		for (Answer response : this.constraints.values()) {
-			substringLength += response.getOption().length();
+			if (response.getOption() != null) {
+				substringLength += response.getOption().length();
+			}
 		}
 		String oldCodeTemplate = selectedTask.getCodeTemplate();
 		selectedTask.setCodeTemplate(oldCodeTemplate.substring(0, oldCodeTemplate.length() - substringLength));
@@ -242,10 +246,11 @@ public class AltConfigWizard extends Wizard {
 		waitingDialog.setVisible(true);
 		Configuration chosenConfig = null;
 		try {
+			String codeTemplate = selectedTask.getCodeTemplate();
 			switch (genKind) {
 				case CrySL:
 					CrySLBasedCodeGenerator.clearParameterCache();
-					File templateFile = CodeGenUtils.getResourceFromWithin(selectedTask.getCodeTemplate()).listFiles()[0];
+					File templateFile = CodeGenUtils.getResourceFromWithin(codeTemplate).listFiles()[0];
 					codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject()
 						.getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
@@ -272,7 +277,7 @@ public class AltConfigWizard extends Wizard {
 					instanceGenerator.generateInstances(this.constraints);
 
 					// Initialize Code Generation
-					codeGenerator = new XSLBasedGenerator(targetFile, selectedTask.getCodeTemplate());
+					codeGenerator = new XSLBasedGenerator(targetFile, codeTemplate);
 					chosenConfig = new XSLConfiguration(instanceGenerator.getInstances().values().iterator()
 						.next(), this.constraints, codeGenerator.getDeveloperProject().getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
 					break;

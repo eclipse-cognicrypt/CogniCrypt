@@ -8,6 +8,8 @@
 package de.cognicrypt.integrator.task.widgets;
 
 import java.io.File;
+import java.util.HashMap;
+
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -24,6 +26,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.hamcrest.core.IsInstanceOf;
+
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.UIConstants;
 import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
@@ -32,20 +36,41 @@ import de.cognicrypt.integrator.task.wizard.PageForTaskIntegratorWizard;
 public class CompositeBrowseForFile extends Composite {
 
 	private ModelAdvancedMode objectForDataInNonGuidedMode;
-	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been completed yet or not.
+	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been
+																// completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
 
 	private Listener onFileChangedListener;
 
 	private final Text textBox;
+	
+	private final Text txtBoxOption;
 
-	public CompositeBrowseForFile(final Composite parent, final int style, final String labelText, final String[] fileTypes, final String stringOnFileDialog, final PageForTaskIntegratorWizard theContainerpageForValidation, final Listener listener) {
+	public String getTxtBoxOption() {
+		return txtBoxOption.getText();
+	}
+
+	public CompositeBrowseForFile(final Composite parent, final int style, final String labelText,
+			final String[] fileTypes, final String stringOnFileDialog,
+			final PageForTaskIntegratorWizard theContainerpageForValidation, final Listener listener) {
 		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
 		this.onFileChangedListener = listener;
 	}
 
+	public CompositeChoiceForModeOfWizard findAncestor(Composite comp) {
+		Composite result = comp;
+		while (!(result instanceof CompositeChoiceForModeOfWizard) && result!= null) {
+			result = result.getParent();
+		}
+		if (result instanceof CompositeChoiceForModeOfWizard)
+			return (CompositeChoiceForModeOfWizard) result;
+		else
+			return null;
+	}
+
 	/**
-	 * Pass the file types that need to be selected, and the string that needs to be displayed. Pass null in the fileTypes if you wish to select a directory.
+	 * Pass the file types that need to be selected, and the string that needs to be
+	 * displayed. Pass null in the fileTypes if you wish to select a directory.
 	 *
 	 * @param parent
 	 * @param style
@@ -54,10 +79,13 @@ public class CompositeBrowseForFile extends Composite {
 	 * @param stringOnDialog
 	 * @param theContainerpageForValidation
 	 */
-	public CompositeBrowseForFile(final Composite parent, final int style, final String labelText, final String[] fileTypes, final String stringOnDialog, final PageForTaskIntegratorWizard theContainerpageForValidation) {
+	public CompositeBrowseForFile(final Composite parent, final int style, final String labelText,
+			final String[] fileTypes, final String stringOnDialog,
+			final PageForTaskIntegratorWizard theContainerpageForValidation) {
 		super(parent, style);
-		// this object is required in the text box listener. Should not be called too often.
-		setObjectForDataInNonGuidedMode(((CompositeChoiceForModeOfWizard) getParent().getParent().getParent()).getObjectForDataInNonGuidedMode());
+		// this object is required in the text box listener. Should not be called too
+		// often.
+		setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
 
 		setTheLocalContainerPage(theContainerpageForValidation);
 		final GridLayout gridLayout = new GridLayout(3, false);
@@ -78,9 +106,19 @@ public class CompositeBrowseForFile extends Composite {
 
 		this.textBox = new Text(this, SWT.BORDER);
 		final GridData gdTextBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		
 		// do not claim space for all the text if not available
-		gdTextBox.widthHint = 0;
+		gdTextBox.widthHint = 500;
 		this.textBox.setLayoutData(gdTextBox);
+		this.txtBoxOption = new Text(this, SWT.BORDER);
+		final GridData gdTextBoxOption = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		
+		// do not claim space for all the text if not available
+		gdTextBoxOption.widthHint = 100;
+		this.txtBoxOption.setLayoutData(gdTextBoxOption);
+		if(!labelText.equals(Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE)) {
+			this.txtBoxOption.setVisible(false);
+		}
 		final Button browseButton = new Button(this, SWT.NONE);
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
 
@@ -89,7 +127,8 @@ public class CompositeBrowseForFile extends Composite {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				String selectedPath = "";
-				// If null is passed in the file types, the directory selection dialog will be displayed.
+				// If null is passed in the file types, the directory selection dialog will be
+				// displayed.
 				if (fileTypes == null) {
 					selectedPath = openDirectoryDialog(stringOnDialog);
 					if (selectedPath != null) {
@@ -110,42 +149,46 @@ public class CompositeBrowseForFile extends Composite {
 
 		this.textBox.addModifyListener(e -> {
 
-			final File tempFileVariable = new File(CompositeBrowseForFile.this.textBox.getText());
+			File locationOfCryslTemplate = new File(CompositeBrowseForFile.this.textBox.getText());
+			final File tempFileVariable = locationOfCryslTemplate;
 			// Validate the file IO. The directory check is removed.
-			if ((!tempFileVariable.exists() || !tempFileVariable.canRead()) && CompositeBrowseForFile.this.textBox.getParent().isVisible()) {//
+			if ((!tempFileVariable.exists() || !tempFileVariable.canRead())
+					&& CompositeBrowseForFile.this.textBox.getParent().isVisible()) {//
 				getDecFilePath().setImage(UIConstants.DEC_ERROR);
 				getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 				getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 				// Check if the page can be set to completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 			} else {
-				// If there are no problems with the file, revert the error decoration and store the locations.
+				// If there are no problems with the file, revert the error decoration and store
+				// the locations.
 				getDecFilePath().setImage(null);
 				getDecFilePath().setDescriptionText("");
 				getDecFilePath().showHoverText("");
 				switch (labelText) {
-					case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK:
-						getObjectForDataInNonGuidedMode().setLocationOfCustomLibrary(tempFileVariable);
-						break;
-					case Constants.WIDGET_DATA_LOCATION_OF_CLAFER_FILE:
-						getObjectForDataInNonGuidedMode().setLocationOfClaferFile(new File(CompositeBrowseForFile.this.textBox.getText()));
-						break;
-					case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE:
-						getObjectForDataInNonGuidedMode().setLocationOfXSLFile(tempFileVariable);
-						break;
-					case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
-						getObjectForDataInNonGuidedMode().setLocationOfJSONFile(tempFileVariable);
-						break;
-					case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE:
-						getObjectForDataInNonGuidedMode().setLocationOfHelpXMLFile(tempFileVariable);
-						break;
+				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK:
+					getObjectForDataInNonGuidedMode().setLocationOfCustomLibrary(tempFileVariable);
+					break;
+				case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE:
+					getObjectForDataInNonGuidedMode().setLocationOfXSLFile(tempFileVariable);
+					break;
+				case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
+					getObjectForDataInNonGuidedMode().setLocationOfJSONFile(tempFileVariable);
+					break;
+				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
+					getObjectForDataInNonGuidedMode().setLocationOfIconFile(tempFileVariable);
+					break;
+				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE:
+					getObjectForDataInNonGuidedMode().setLocationOfHelpXMLFile(tempFileVariable);
+					break;
 				}
 
 				// Check if the page can be set to completed.
 				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
 			}
 		});
-
+		
+		
 		this.textBox.addFocusListener(new FocusAdapter() {
 
 			@Override
@@ -217,7 +260,8 @@ public class CompositeBrowseForFile extends Composite {
 	}
 
 	/**
-	 * This object is required to set the completion of the page for the mode selection page behavior.
+	 * This object is required to set the completion of the page for the mode
+	 * selection page behavior.
 	 *
 	 * @param theLocalContainerPage the theLocalContainerPage to set
 	 */

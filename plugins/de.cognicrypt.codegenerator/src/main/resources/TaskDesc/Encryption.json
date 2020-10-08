@@ -3,7 +3,7 @@
   "content": [{
       "id": "0",
       "element": "radio",
-      "questionText": "Which method of communication would you prefer to use for key exchange?",
+      "questionText": "Which method of communication would you prefer to use for key exchange 2?",
       "answers": [ {
           "value": "Encrypted digital channel",
           "option": "",
@@ -29,7 +29,7 @@
      {
       "id": "1",
       "element": "radio",
-      "questionText": "What data type do you wish to encrypt?",
+      "questionText": "What data type do you wish to encrypt 2?",
       "answers": [{
           "value": "File",
            "option": "files"

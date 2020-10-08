@@ -1,0 +1,30 @@
+[
+  {
+    "id": 0,
+    "content": [
+      {
+        "id": 0,
+        "element": "radio",
+        "questionText": "What is the type of data you want for your coffee generator",
+        "answers": [
+          {
+            "value": "Is it int? ",
+            "defaultAnswer": true,
+            "option": "Int",
+            "nextID": -2
+          },
+          {
+            "value": "Is it String?",
+            "option": "String",
+            "nextID": -2
+          }
+        ],
+        "note": "",
+        "tooltip": "",
+        "message": ""
+      }
+    ],
+    "nextID": -1,
+    "helpID": ""
+  }
+]

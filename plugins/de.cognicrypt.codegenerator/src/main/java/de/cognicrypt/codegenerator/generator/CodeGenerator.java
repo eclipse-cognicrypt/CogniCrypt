@@ -345,9 +345,9 @@ public abstract class CodeGenerator {
 			UIUtils.closeEditor(editor);
 		}
 
-		final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(UIUtils.getCurrentlyOpenFile(editor));
-		organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
-		faa.runOnMultiple(new ICompilationUnit[] { openClass });
+		//final ICompilationUnit openClass = JavaCore.createCompilationUnitFrom(UIUtils.getCurrentlyOpenFile(editor));
+		//organizeImportsActionForAllFilesTouchedDuringGeneration.run(openClass);
+		//faa.runOnMultiple(new ICompilationUnit[] { openClass });
 		editor.doSave(null);
 	}
 

@@ -2,7 +2,7 @@
 <feature
       id="de.cognicrypt.core.feature"
       label="CogniCrypt Core"
-      version="1.0.0"
+      version="1.0.1"
       provider-name="Technical University Darmstadt; Paderborn University">
 
    <description url="https://cognicrypt.de">
@@ -118,7 +118,7 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
          id="de.cognicrypt.core"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.1"
          unpack="false"/>
 
 </feature>

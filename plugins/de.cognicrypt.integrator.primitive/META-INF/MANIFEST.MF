@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Primitive Integrator
 Bundle-SymbolicName: de.cognicrypt.integrator.primitive
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: de.cognicrypt.integrator.primitive.Activator
 Bundle-Vendor: TU Darmstadt, Paderborn University
 Require-Bundle: org.eclipse.ui,
@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.ui,
  de.cognicrypt.core,
  com.google.gson,
  org.junit,
- de.cognicrypt.codegenerator;bundle-version="1.0.0"
+ de.cognicrypt.codegenerator;bundle-version="1.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: de.cognicrypt.integrator.primitive
 Bundle-ActivationPolicy: lazy

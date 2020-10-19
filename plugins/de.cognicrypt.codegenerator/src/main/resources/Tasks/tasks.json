@@ -33,5 +33,12 @@
 			"taskDescription" : "For this task, CogniCrypt generates code that may apply the same function to multiple inputs from different parties without revealing each party's input to anybody else involved. ",
 			"image" : "mpc",
 			"codeGen": "XSL"
+		},
+		{
+			"name": "TestCryslTask",
+			"description": "Coffee API",
+			"taskDescription": "Coffee api test generator",			
+			"image" : "testcrysltask",
+			"codeGen": "CrySL"
 		}
 ]

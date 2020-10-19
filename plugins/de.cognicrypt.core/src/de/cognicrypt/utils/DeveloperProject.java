@@ -33,7 +33,7 @@ public class DeveloperProject {
 	/**
 	 * Application project
 	 */
-	private final IProject project;
+	public final IProject project;
 
 	public DeveloperProject(final IProject developerProject) {
 		this.project = developerProject;

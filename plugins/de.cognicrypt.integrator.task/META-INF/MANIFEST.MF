@@ -18,4 +18,11 @@ Automatic-Module-Name: de.cognicrypt.integrator.task
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/claferchocoig.jar,
  lib/dom4j-2.0.0.jar,
- .
+ .,
+ src/main/
+Export-Package: de.cognicrypt.integrator.task,
+ de.cognicrypt.integrator.task.actions,
+ de.cognicrypt.integrator.task.controllers,
+ de.cognicrypt.integrator.task.models,
+ de.cognicrypt.integrator.task.widgets,
+ de.cognicrypt.integrator.task.wizard

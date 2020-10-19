@@ -112,9 +112,9 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.xtext.common.types.ui"/>
-      <import plugin="de.darmstadt.tu.crossing.CrySL.ui" version="2.0.0" match="perfect"/>
-      <import plugin="de.darmstadt.tu.crossing.CrySL" version="2.0.0" match="perfect"/>
-      <import plugin="de.darmstadt.tu.crossing.CrySL.ide" version="2.0.0" match="perfect"/>
+      <import plugin="de.darmstadt.tu.crossing.CrySL.ui" version="2.0.1" match="perfect"/>
+      <import plugin="de.darmstadt.tu.crossing.CrySL" version="2.0.1" match="perfect"/>
+      <import plugin="de.darmstadt.tu.crossing.CrySL.ide" version="2.0.1" match="perfect"/>
       <import plugin="de.cognicrypt.core" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
    </requires>

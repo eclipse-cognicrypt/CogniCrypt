@@ -1,0 +1,70 @@
+[
+		{
+			"name": "SymmetricEncryption",
+			"description": "Encrypt Data Using a Secret Key",
+			"taskDescription": "This cryptographic task generates code that uses symmetric encryption to encrypt the data. The data is encrypted relatively quickly and securely. You can also protect enormous data with the help of this task.",
+			"modelFile" : "src/main/resources/ClaferModel/SymmetricEncryption.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SymmetricEncryption.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/SymmetricEncryption.xsl"
+			
+		},
+		{
+			"name": "SecurePassword",
+			"description": "Encode Password for Secure Storage",
+			"taskDescription": "This cryptographic task makes password cracking much more difficult and helps in protecting the passwords. Security level for protection is selected according to your performance requirements.",
+			"modelFile" : "src/main/resources/ClaferModel/SecurePassword.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SecurePassword.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/SecurePassword.xsl"
+			
+		},
+		{
+			"name": "SecureCommunication",
+			"description": "Establish a Secure Network Connection",
+			"taskDescription": "This cryptographic task helps to communicate over a secure channel with the help of Transport Layer Security (TLS) protocol that may be used to secure web connections(HTTPS).",
+			"modelFile" : "src/main/resources/ClaferModel/SecureCommunication.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SecureCommunication.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/SecureCommunication.xsl"
+		},
+		{
+			"name": "LongTermArchiving",
+			"description": "Securely Archive Files",
+			"taskDescription": "This cryptographic task helps to maintain complete privacy of your documents. A large number of documents can be secured by this task. ",
+			"modelFile" : "src/main/resources/ClaferModel/LongTermArchiving.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/LongTermArchiving.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/LongTermArchiving",
+			"xslFile" : "src/main/resources/XSLTemplates/LongTermArchiving.xsl"
+		},
+		{
+			"name": "SECMUPACOMP",
+			"description": "Secure Multi-Party Computation",
+			"taskDescription": "This cryptographic task helps multiple parties to jointly compute a function over their respective inputs while keeping those inputs private.",
+			"modelFile" : "src/main/resources/ClaferModel/SECMUPACOMP.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/SECMUPACOMP.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/SECMUPACOMP",
+			"xslFile" : "src/main/resources/XSLTemplates/SECMUPACOMP.xsl"
+		}
+		,
+		{
+			"name": "CertainTrust",
+			"description": "Judging Trustworthiness of third parties",
+			"taskDescription":"This cryptographic task helps evaluating the trustworthiness of third partiy entities and, by extension, who to best interact with.",
+			"modelFile" : "src/main/resources/ClaferModel/CertainTrust.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/CertainTrust.json",
+			"additionalResources" : "src/main/resources/AdditionalResources/CertainTrust",
+			"xslFile" : "src/main/resources/XSLTemplates/CertainTrust.xsl"
+		}
+		,
+		{
+			"name": "HybridEncryption",
+			"description": "HybridEncryption",
+			"taskDescription": "This cryptographic task generates code that combine the advantages of symmetric and asymmetric encryption. At first the symmetric encryption encrypt the data. Afterwards, the symmetric key(session key) becomes encrypted with the public key of the communication partner. The partner decrypt the symmetric key with his own private key. After that, he owns the symmetric key and has the possibility to encrypt the data of the sender.",			
+			"modelFile" : "src/main/resources/ClaferModel/HybridEncryption.js",
+			"questionsJSONFile" : "src/main/resources/TaskDesc/HybridEncryption.json",
+			"additionalResources" : "",
+			"xslFile" : "src/main/resources/XSLTemplates/HybridEncryption.xsl"
+		}
+]
+

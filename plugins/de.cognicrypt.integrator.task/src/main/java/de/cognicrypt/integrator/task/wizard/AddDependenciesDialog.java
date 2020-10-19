@@ -26,17 +26,20 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.integrator.task.models.ClaferModel;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldSmallerUIElements;
 
 public class AddDependenciesDialog extends Dialog {
 
 	private Question question;
+	private ClaferModel claferModel;
 	private Text variableTxtBoxForCodeTab;
 
-	public AddDependenciesDialog(final Shell parentShell, final Question question) {
+	public AddDependenciesDialog(final Shell parentShell, final Question question, final ClaferModel claferModel) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE | SWT.RESIZE | SWT.TITLE);
 		setQuestion(question);
+		setClaferModel(claferModel);
 	}
 
 	/**
@@ -100,7 +103,7 @@ public class AddDependenciesDialog extends Dialog {
 				lblForOperator.setText("Set Value");
 
 				// widgets for answer and clafer depenedencies are added in ansScrollCompositeForClaferTab
-				final CompositeToHoldSmallerUIElements ansScrollCompositeForClaferTab = new CompositeToHoldSmallerUIElements(compositeForClaferTab, SWT.NONE, null, false);
+				final CompositeToHoldSmallerUIElements ansScrollCompositeForClaferTab = new CompositeToHoldSmallerUIElements(compositeForClaferTab, SWT.NONE, null, false, null);
 				final GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				gd_LinkCode.heightHint = 200;
 				gd_LinkCode.widthHint = 890;
@@ -110,6 +113,8 @@ public class AddDependenciesDialog extends Dialog {
 				for (final Answer answer : this.question.getAnswers()) {
 					ansScrollCompositeForClaferTab.getListOfAllAnswer().add(answer);
 				}
+				// To add the widgets and data inside ansScrollCompositeForClaferTab
+				ansScrollCompositeForClaferTab.callAddElementsInClaferTabQuestionDialog(this.claferModel);
 
 			}
 		}
@@ -216,7 +221,7 @@ public class AddDependenciesDialog extends Dialog {
 				lblText.setText("Set Value");
 
 				// To create a scrollable Composite to display all the answers with the required input fields
-				final CompositeToHoldSmallerUIElements answerCompositeForLinkCodeTab = new CompositeToHoldSmallerUIElements(compositeForLinkCodeTab, SWT.NONE, null, false);
+				final CompositeToHoldSmallerUIElements answerCompositeForLinkCodeTab = new CompositeToHoldSmallerUIElements(compositeForLinkCodeTab, SWT.NONE, null, false, null);
 				final GridData gd_LinkCode = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 				gd_LinkCode.heightHint = 200;
 				gd_LinkCode.widthHint = 700;
@@ -291,7 +296,19 @@ public class AddDependenciesDialog extends Dialog {
 		this.question = question;
 	}
 
-	
+	/**
+	 * @return the clafer model
+	 */
+	public ClaferModel getClaferModel() {
+		return this.claferModel;
+	}
+
+	/**
+	 * @param claferModel sets the clafer model
+	 */
+	public void setClaferModel(final ClaferModel claferModel) {
+		this.claferModel = claferModel;
+	}
 
 	@Override
 	protected void okPressed() {

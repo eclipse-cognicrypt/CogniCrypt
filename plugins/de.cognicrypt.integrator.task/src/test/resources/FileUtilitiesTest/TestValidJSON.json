@@ -1,0 +1,119 @@
+[{
+  "id": "0",
+  "helpID": "SymmetricEncryption_Page0",
+  "content": [{
+      "id": "0",
+      "element":"scale",
+      "note": "",      
+      "questionText": "What is the preferred security level for your data?",
+      "answers": [ {
+          "value": "Secure",
+          "claferDependencies": [{
+            "algorithm": "cipher",
+            "operand": "keySize",
+            "value": "128",
+            "operator": ">="
+          }],
+          "defaultAnswer": true
+        },
+        {
+          "value": "Very Secure",
+          "claferDependencies": [{
+            "algorithm": "cipher",
+            "operand": "keySize",
+            "value": "128",
+            "operator": ">"
+          }]
+        }
+       ]
+    },
+    {
+      "id": "1",      
+      "element": "radio",
+      "questionText": "Do you wish to derive the key for encryption from a user-specified password?",
+      "note": "If you decide against a user-specified password, you will have to take care of key handling yourself.",
+      "answers": [{
+          "value": "Yes",
+          "claferDependencies": [{
+              "algorithm": "kda",
+              "value": "KeyDerivationAlgorithm",
+              "operator": "->"
+            },
+            {
+              "algorithm": "security",
+              "value": "min(cipher.algorithmSecurity, kda.algorithmSecurity)",
+              "operator": "="
+            }
+          ],
+          "defaultAnswer": true
+        },
+        {
+          "value": "No",
+          "claferDependencies": [{
+            "algorithm": "security",
+            "value": "cipher.algorithmSecurity",
+            "operator": "="
+          }]
+        }
+      ]
+    }
+  ],
+  "nextID": "1"
+},{
+  "id": "1",
+  "helpID": "SymmetricEncryption_Page0",
+  "content": [{
+      "id": "0",
+      "note": "",      
+      "element": "radio",
+      "questionText": "Will your application encrypt several gigabytes of data regularly?",
+      "answers": [{
+          "value": "Yes",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "true"
+          }]
+        },
+        {
+          "value": "No",
+          "codeDependencies": [{
+            "option": "textsize",
+            "value": "false"
+          }],
+          "defaultAnswer": true
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "element": "combo",
+      "note":"",      
+      "questionText": "What type of data do you wish to encrypt?",
+      "answers": [{
+          "value": "Byte[]",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "byte[]"
+          }],
+             "defaultAnswer": true     
+        },
+        {
+          "value": "File",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "File"
+          }]
+        },
+        {
+          "value": "String",
+          "codeDependencies": [{
+            "option": "dataType",
+            "value": "String"
+          }]
+        }
+      ]
+    }
+    ],
+  "nextID": "-1"
+  }
+]

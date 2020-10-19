@@ -47,6 +47,8 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 			Activator.getDefault().logError("PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard");
 		}
 
+		final PageForTaskIntegratorWizard claferPage = tiWizard.getTIPageByName(Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION);
+		final CompositeToHoldGranularUIElements claferPageComposite = claferPage.getCompositeToHoldGranularUIElements();
 
 		final QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
 		final Button qstnDialog = new Button(container, SWT.NONE);
@@ -67,6 +69,7 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 
 					// Update the array list.
 					QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
+					QuestionsPage.this.compositeToHoldGranularUIElements.addQuestionUIElements(questionDetails, claferPageComposite.getClaferModel(), false);
 					// rebuild the UI
 					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer();
 				}

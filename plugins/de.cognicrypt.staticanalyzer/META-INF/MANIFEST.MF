@@ -24,4 +24,3 @@ Bundle-ClassPath: .,
  resources/
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
 Import-Package: org.eclipse.ui.texteditor
-Export-Package: de.cognicrypt.staticanalyzer.sootbridge

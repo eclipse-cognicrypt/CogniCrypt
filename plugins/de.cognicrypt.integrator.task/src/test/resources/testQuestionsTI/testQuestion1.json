@@ -1,0 +1,35 @@
+  [{
+    "id": 0,
+    "element": "combo",
+    "questionText": "Q0?",
+    "answers": [{
+        "value": "ans1",
+        "claferDependencies": [{
+          "algorithm": "algo1",
+          "operand": "prop1",
+          "value": "128",
+          "operator": ">"
+        }],
+        "codeDependencies": [{
+            "option": "variable1",
+            "value": "value1"
+          }],
+        "nextID": "-1"
+      },
+      {
+        "value": "ans2",
+        "claferDependencies": [{
+          "algorithm": "algo2",
+          "operand": "prop2",
+          "value": "256",
+          "operator": ">="
+        }],
+        "codeDependencies": [{
+            "option": "variable2",
+            "value": "value2"
+          }],
+        "defaultAnswer": true,
+        "nextID": "-1"
+      }
+    ]
+  }]

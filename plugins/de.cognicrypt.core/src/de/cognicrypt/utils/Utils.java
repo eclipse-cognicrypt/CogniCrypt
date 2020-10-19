@@ -221,7 +221,6 @@ public class Utils {
 	public static File getResourceFromWithin(final String inputPath) {
 		return getResourceFromWithin(inputPath, Activator.PLUGIN_ID);
 	}
-	
 
 	/***
 	 * This method returns absolute path of a project-relative path.

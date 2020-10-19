@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Task Integrator
 Bundle-SymbolicName: de.cognicrypt.integrator.task
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Bundle-Activator: de.cognicrypt.integrator.task.Activator
 Bundle-Vendor: TU Darmstadt, Paderborn University
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- de.cognicrypt.codegenerator;bundle-version="1.0.0",
+ de.cognicrypt.codegenerator;bundle-version="1.0.1",
  de.cognicrypt.core,
  org.eclipse.ui.workbench,
  com.google.gson,

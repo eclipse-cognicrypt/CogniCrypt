@@ -296,7 +296,6 @@ public class AltConfigWizard extends Wizard {
 			Activator.getDefault().logError(ex, Constants.CodeGenerationErrorMessage);
 		} finally {
 			waitingDialog.setVisible(false);
-			waitingDialog.dispose();
 		}
 
 		return ret;

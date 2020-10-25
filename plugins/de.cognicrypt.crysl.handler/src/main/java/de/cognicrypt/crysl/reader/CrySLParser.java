@@ -101,6 +101,7 @@ import de.darmstadt.tu.crossing.crySL.UnaryPreExpression;
 import de.darmstadt.tu.crossing.crySL.UseBlock;
 import de.darmstadt.tu.crossing.crySL.impl.DomainmodelImpl;
 import de.darmstadt.tu.crossing.crySL.impl.ObjectImpl;
+import com.google.common.base.CharMatcher;
 
 public class CrySLParser {
 
@@ -340,7 +341,13 @@ public class CrySLParser {
 	private CrySLPredicate extractReqPred(final ReqPred pred) {
 		final List<ICrySLPredicateParameter> variables = new ArrayList<>();
 		PredLit innerPred = (PredLit) pred;
-		final Constraint conditional = (Constraint) innerPred.getCons();
+		EObject cons = innerPred.getCons();
+		ISLConstraint conditional = null;
+		if (cons instanceof Constraint) {
+			conditional = getConstraint((Constraint) cons);
+		} else if (cons instanceof Pred) {
+			conditional = getPredicate((Pred) cons);
+		}
 		if (innerPred.getPred().getParList() != null) {
 			for (final SuPar var : innerPred.getPred().getParList().getParameters()) {
 				if (var.getVal() != null) {
@@ -361,7 +368,45 @@ public class CrySLParser {
 				}
 			}
 		}
-		return new CrySLPredicate(null, innerPred.getPred().getPredName(), variables, (innerPred.getNot() != null ? true : false), getConstraint(conditional));
+		return new CrySLPredicate(null, innerPred.getPred().getPredName(), variables, (innerPred.getNot() != null ? true : false), conditional);
+	}
+
+	private ISLConstraint getPredicate(Pred pred) {
+		final List<ICrySLPredicateParameter> variables = new ArrayList<>();
+		if (pred.getParList() != null) {
+			for (final SuPar var : pred.getParList().getParameters()) {
+				if (var.getVal() != null) {
+					final LiteralExpression lit = var.getVal();
+					final ObjectImpl object = (ObjectImpl) ((LiteralExpression) lit.getLit().getName()).getValue();
+					final String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
+					final String variable = object.getName();
+					final String part = var.getVal().getPart();
+					if (part != null) {
+						variables.add(new CrySLObject(variable, type, new CrySLSplitter(Integer.parseInt(lit.getInd()), filterQuotes(lit.getSplit()))));
+					} else {
+						final String consPred = var.getVal().getConsPred();
+						int ind;
+						if (consPred != null) {
+							if (consPred.equals("alg(")) {
+								ind = 0;
+								variables.add(new CrySLObject(variable, type, new CrySLSplitter(ind, filterQuotes("/"))));
+							} else if (consPred.equals("mode(")) {
+								ind = 1;
+								variables.add(new CrySLObject(variable, type, new CrySLSplitter(ind, filterQuotes("/"))));
+							} else if (consPred.equals("pad(")) {
+								ind = 2;
+								variables.add(new CrySLObject(variable, type, new CrySLSplitter(ind, filterQuotes("/"))));
+							}
+						} else {
+							variables.add(new CrySLObject(variable, type));
+						}
+					}
+				} else {
+					variables.add(new CrySLObject(UNDERSCORE, NULL));
+				}
+			}
+		}
+		return new CrySLPredicate(null, pred.getPredName(), variables, (((PredLit)pred.eContainer()).getNot() != null ? true : false), null);
 	}
 
 	private CrySLArithmeticConstraint convertLiteralToArithmetic(final Constraint expression) {
@@ -751,5 +796,9 @@ public class CrySLParser {
 			value = ((Literal) name).getVal();
 		}
 		return Utils.filterQuotes(value);
+	}
+
+	private static String filterQuotes(final String dirty) {
+		return CharMatcher.anyOf("\"").removeFrom(dirty);
 	}
 }

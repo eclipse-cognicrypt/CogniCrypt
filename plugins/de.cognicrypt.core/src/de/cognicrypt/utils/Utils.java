@@ -295,7 +295,7 @@ public class Utils {
 				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));
 			}
 			catch (ClassNotFoundException e) {
-				Activator.getDefault().logError(e);
+				// It's fine if above throws a ClassNotFoundException
 			}
 		}
 		return subTypes;

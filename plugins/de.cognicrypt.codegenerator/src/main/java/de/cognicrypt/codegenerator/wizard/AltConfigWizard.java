@@ -268,7 +268,7 @@ public class AltConfigWizard extends Wizard {
 					codeGenerator.getDeveloperProject().refresh();
 
 					resetAnswers();
-					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile));
+					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
 					break;
 				case XSL:
 					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
@@ -296,9 +296,9 @@ public class AltConfigWizard extends Wizard {
 			Activator.getDefault().logError(ex, Constants.CodeGenerationErrorMessage);
 		} finally {
 			waitingDialog.setVisible(false);
-			waitingDialog.dispose();
 		}
 
+		waitingDialog.setVisible(false);
 		return ret;
 	}
 

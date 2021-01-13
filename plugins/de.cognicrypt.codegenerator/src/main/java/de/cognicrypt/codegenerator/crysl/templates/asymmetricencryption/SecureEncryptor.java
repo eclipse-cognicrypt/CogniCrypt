@@ -16,14 +16,30 @@ import javax.crypto.Cipher;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
+/**
+ * The Class SecureEncryptor asymmetric.
+ */
 public class SecureEncryptor {
 
+	/**
+	 * Generate key pair.
+	 *
+	 * @return the java.security. key pair
+	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 */
 	public java.security.KeyPair generateKeyPair() throws NoSuchAlgorithmException {
 		java.security.KeyPair keyPair = null;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.KeyPairGenerator").addParameter(keyPair, "kp");
 		return keyPair;
 	}
 
+	/**
+	 * Encrypt data.
+	 *
+	 * @param plaintext the plaintext
+	 * @param keyPair the key pair
+	 * @return the byte[]
+	 */
 	public byte[] encryptData(byte[] plaintext, java.security.KeyPair keyPair) {
 		byte[] cipherText = null;
 		int mode = Cipher.ENCRYPT_MODE;
@@ -34,6 +50,13 @@ public class SecureEncryptor {
 		return cipherText;
 	}
 
+	/**
+	 * Decrypt.
+	 *
+	 * @param ciphertext the ciphertext
+	 * @param keyPair the key pair
+	 * @return the byte[]
+	 */
 	public byte[] decrypt(byte[] ciphertext, java.security.KeyPair keyPair) {
 		int mode = Cipher.DECRYPT_MODE;
 		byte[] res = null;

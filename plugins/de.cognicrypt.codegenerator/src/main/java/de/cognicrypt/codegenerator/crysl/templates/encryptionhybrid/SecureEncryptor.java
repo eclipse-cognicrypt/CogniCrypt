@@ -17,6 +17,9 @@ import javax.crypto.Cipher;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
+/**
+ * The Class SecureEncryptor hybrid.
+ */
 public class SecureEncryptor {
 
 	public javax.crypto.SecretKey generateSessionKey() throws NoSuchAlgorithmException {

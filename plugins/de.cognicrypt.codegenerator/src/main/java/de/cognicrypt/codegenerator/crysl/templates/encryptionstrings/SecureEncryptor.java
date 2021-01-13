@@ -18,6 +18,9 @@ import javax.crypto.Cipher;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
+/**
+ * The Class SecureEncryptor encryption string.
+ */
 public class SecureEncryptor {
 
 	public javax.crypto.SecretKey getKey(char[] pwd) {

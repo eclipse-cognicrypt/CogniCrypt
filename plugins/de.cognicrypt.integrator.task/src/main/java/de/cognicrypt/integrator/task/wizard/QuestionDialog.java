@@ -37,16 +37,17 @@ public class QuestionDialog extends Dialog {
 
 	public Text textQuestion;
 	private String questionText;
-	private String questionType;
-	private Combo combo;
+	//private String questionType;
+	//private Combo combo;
 	private Text txtBoxHelptext;
-	private Text textBoxTooltip;
+	//private Text textBoxTooltip;
 	private Combo comboBoxAnswerType;
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private final Question question;
 	private Question questionDetails;
 	int counter = 0;
 	private String currentQuestionType = null;
+	private ArrayList<String> listCryslTemplatesIdentifier;
 
 	/**
 	 * Create the dialog.
@@ -85,14 +86,14 @@ public class QuestionDialog extends Dialog {
 		this.textQuestion = new Text(composite, SWT.BORDER);
 		this.textQuestion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-		final Label lblType = new Label(composite, SWT.NONE);
+		/*final Label lblType = new Label(composite, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblType.setText("Answer type");
 
 		this.combo = new Combo(composite, SWT.READ_ONLY);
 		this.combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		this.combo.select(-1);
-		this.combo.setItems(Constants.dropDown, Constants.textBox, Constants.radioButton);
+		this.combo.setItems(Constants.dropDown, Constants.textBox, Constants.radioButton);*/
 
 		final Label lblHelpText = new Label(composite, SWT.NONE);
 		lblHelpText.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -102,16 +103,16 @@ public class QuestionDialog extends Dialog {
 		this.txtBoxHelptext.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		this.txtBoxHelptext.setToolTipText("In order to help the user to understand the question give extra details about the question in the text box");
 
-		final Label lblToolTip = new Label(composite, SWT.None);
+		/*final Label lblToolTip = new Label(composite, SWT.None);
 		lblToolTip.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblToolTip.setText("Give tooltip");
 		// visible only if the question type is text
-		lblToolTip.setVisible(false);
+		lblToolTip.setVisible(false);*/
 
-		this.textBoxTooltip = new Text(composite, SWT.BORDER);
+		/*this.textBoxTooltip = new Text(composite, SWT.BORDER);
 		this.textBoxTooltip.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		this.textBoxTooltip.setVisible(false);
-		this.textBoxTooltip.setToolTipText("Give help text to be displayed when user hover over the text box");
+		this.textBoxTooltip.setToolTipText("Give help text to be displayed when user hover over the text box");*/
 
 		final Label lblAnswerType = new Label(composite, SWT.None);
 		lblAnswerType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -128,7 +129,6 @@ public class QuestionDialog extends Dialog {
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		btnAddAnswer.setText("Add Answer");
 		// Visibility depends on question type
-		btnAddAnswer.setVisible(false);
 		final boolean showRemoveButton = true;
 		this.compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
 		final GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
@@ -143,12 +143,12 @@ public class QuestionDialog extends Dialog {
 			public void widgetSelected(final SelectionEvent e) {
 				final Answer tempAnswer = new Answer();
 				QuestionDialog.this.compositeToHoldAnswers.getListOfAllAnswer().add(tempAnswer);
-				QuestionDialog.this.compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton);
+				QuestionDialog.this.compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton, listCryslTemplatesIdentifier);
 				QuestionDialog.this.compositeToHoldAnswers.setVisible(true);
 			}
 
 		});
-		this.currentQuestionType = this.combo.getText();
+		/*this.currentQuestionType = this.combo.getText();
 		this.combo.addModifyListener(e -> {
 
 			switch (QuestionDialog.this.combo.getText()) {
@@ -202,12 +202,12 @@ public class QuestionDialog extends Dialog {
 				default:
 					break;
 			}
-		});
+		});*/
 
 		// executes when user wants to modify the question details
 		if (this.question != null) {
 			this.textQuestion.setText(this.question.getQuestionText());
-			if (this.question.getElement().equals(Constants.GUIElements.combo)) {
+			/*if (this.question.getElement().equals(Constants.GUIElements.combo)) {
 				this.combo.setText(Constants.dropDown);
 			} else if (this.question.getElement().equals(Constants.GUIElements.radio)) {
 				this.combo.setText(Constants.radioButton);
@@ -216,18 +216,19 @@ public class QuestionDialog extends Dialog {
 				this.textBoxTooltip.setText(this.question.getTooltip());
 				this.comboBoxAnswerType.setText(this.question.getTextType());
 				this.compositeToHoldAnswers.setVisible(false);
-			}
+			}*/
 			if (!this.question.getHelpText().isEmpty()) {
 				this.txtBoxHelptext.setText(this.question.getHelpText());
 			}
-			if (!this.question.getTooltip().isEmpty()) {
+			/*if (!this.question.getTooltip().isEmpty()) {
 				this.textBoxTooltip.setText(this.question.getTooltip());
-			}
+			}*/
 
+			// TODO: change later since only combo box possible
 			if (!this.question.getElement().equals(Constants.GUIElements.text)) {
 				for (final Answer answer : this.question.getAnswers()) {
 					this.compositeToHoldAnswers.getListOfAllAnswer().add(answer);
-					this.compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
+					this.compositeToHoldAnswers.addAnswer(answer, showRemoveButton, listCryslTemplatesIdentifier);
 					this.compositeToHoldAnswers.setVisible(true);
 				}
 			}
@@ -253,34 +254,28 @@ public class QuestionDialog extends Dialog {
 		this.textQuestion.setText(this.question.getQuestionText());
 	}
 
-	public String getquestionType() {
+	/*public String getquestionType() {
 		return this.questionType;
-	}
-
-	public void setQuestionType(final String type) {
-		this.combo.setText(type);
-
-	}
+	}*/
 
 	// Saving question details
 	public void setQuestionDetails() {
 		final Question questionDetails = new Question();
 		questionDetails.setQuestionText(this.textQuestion.getText());
-		setQuestionElement(questionDetails, this.combo.getText());
+		setQuestionElement(questionDetails);
 		if (!this.txtBoxHelptext.getText().isEmpty()) {
 			questionDetails.setHelpText(this.txtBoxHelptext.getText());
 		}
 		/**
-		 * Executes only if the question type is not text this loop executes to delete empty text boxes in the question dialog
+		 * Executes only if the question type is not text this loop executes to delete
+		 * empty text boxes in the question dialog
 		 */
-		if (!questionDetails.getElement().equals(Constants.GUIElements.text)) {
-			for (int i = 0; i < this.compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
-				if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null)
-						|| Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), "")) {
-					this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswer().get(i));
-					this.compositeToHoldAnswers.updateAnswerContainer();
-					i--;
-				}
+		for (int i = 0; i < this.compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
+			if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null)
+					|| Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), "")) {
+				this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswer().get(i), listCryslTemplatesIdentifier);
+				this.compositeToHoldAnswers.updateAnswerContainer(listCryslTemplatesIdentifier);
+				i--;
 			}
 		}
 
@@ -293,7 +288,7 @@ public class QuestionDialog extends Dialog {
 		}
 		questionDetails.setAnswers(this.compositeToHoldAnswers.getListOfAllAnswer());
 
-		if (this.combo.getText().equalsIgnoreCase(Constants.textBox)) {
+		/*if (this.combo.getText().equalsIgnoreCase(Constants.textBox)) {
 			// sets the tooltip
 			if (!this.textBoxTooltip.getText().equalsIgnoreCase("")) {
 				questionDetails.setTooltip(this.textBoxTooltip.getText());
@@ -311,7 +306,7 @@ public class QuestionDialog extends Dialog {
 			cd.setValue("");
 			codeDependenciesForTextType.add(cd);
 			questionDetails.getAnswers().get(0).setCodeDependencies(codeDependenciesForTextType);
-		}
+		}*/
 		checkQuestionHasDefaultAnswer(questionDetails);
 		this.questionDetails = questionDetails;
 	}
@@ -322,27 +317,18 @@ public class QuestionDialog extends Dialog {
 	 * @param question
 	 * @param element the value selected for the question type
 	 */
-	private void setQuestionElement(final Question question, final String element) {
+	private void setQuestionElement(final Question question) {
 		/**
 		 * case 1: if the the question type is selected as drop down then sets the element to combo
 		 */
-		if (element.equals(Constants.dropDown)) {
 			question.setElement(Constants.GUIElements.combo);
-		}
-		/**
-		 * case 2: sets the question element to text if the question type is text box
-		 */
-		else if (element.equals(Constants.textBox)) {
-			question.setElement(Constants.GUIElements.text);
-		}
-		/**
-		 * case 3: sets the question element to text if the question type is radio button
-		 */
-		else if (element.equals(Constants.radioButton)) {
-			question.setElement(Constants.GUIElements.radio);
-		}
+		
 	}
 
+	public void setlistCryslTemplatesIdentifier(ArrayList<String> ident){
+		listCryslTemplatesIdentifier = ident;
+	}
+	
 	/**
 	 * checks if for the question default answer is selected or not if no answer is selected as default answer then the function sets the first answer as the default answer of the
 	 * particular question

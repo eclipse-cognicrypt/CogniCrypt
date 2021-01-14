@@ -7,6 +7,8 @@
 
 package de.cognicrypt.integrator.task.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -18,14 +20,18 @@ import org.eclipse.swt.widgets.Composite;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
+import de.cognicrypt.integrator.task.widgets.CompositeBrowseForFile;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
 
 public class QuestionsPage extends PageForTaskIntegratorWizard {
 
+	private ArrayList<String> listCryslTemplatesIdentifier = new ArrayList<String>();
+	
 	public QuestionsPage() {
 		super(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS);
 	}
 
+	
 	@Override
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
@@ -38,6 +44,8 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName()));
 		// fill the available space on the with the big composite
 		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		//getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
 
 		TaskIntegrationWizard tiWizard = null;
 
@@ -57,6 +65,7 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
+				questionDialog.setlistCryslTemplatesIdentifier(listCryslTemplatesIdentifier);
 				final int response = questionDialog.open();
 				final int qID = QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().size();
 				if (response == Window.OK) {
@@ -68,10 +77,14 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 					// Update the array list.
 					QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
 					// rebuild the UI
-					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer();
+					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer(listCryslTemplatesIdentifier);
 				}
 			}
 		});
 	}
 
+	public void setlistCryslTemplatesIdentifier(ArrayList<String> ident){
+		listCryslTemplatesIdentifier = ident;
+	}
+	
 }

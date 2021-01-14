@@ -85,7 +85,7 @@ public class CompositeBrowseForFile extends Composite {
 		super(parent, style);
 		// this object is required in the text box listener. Should not be called too
 		// often.
-		setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
+		//setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
 
 		setTheLocalContainerPage(theContainerpageForValidation);
 		final GridLayout gridLayout = new GridLayout(3, false);

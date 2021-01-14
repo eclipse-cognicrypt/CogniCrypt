@@ -67,7 +67,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		
 		this.XSLAttributes = new ArrayList<XSLAttribute>();
 
-
 	}
 
 	
@@ -97,11 +96,12 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 *
 	 * @param answer
 	 * @param showRemoveButton
+	 * @param templateIdentifier
 	 */
-	public void addAnswer(final Answer answer, final boolean showRemoveButton) {
-		final GroupAnswer groupForAnswer = new GroupAnswer((Composite) getContent(), SWT.NONE, answer, showRemoveButton);
-		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 890, 39);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+	public void addAnswer(final Answer answer, final boolean showRemoveButton, ArrayList<String> ident) {
+		GroupAnswer groupForAnswer = new GroupAnswer((Composite) getContent(), SWT.NONE, answer, showRemoveButton, ident);
+		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 850, 50);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
 
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
@@ -111,13 +111,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 *
 	 * @param answerToBeDeleted
 	 */
-	public void deleteAnswer(final Answer answerToBeDeleted) {
+	public void deleteAnswer(final Answer answerToBeDeleted, ArrayList<String> ident) {
 		this.arrayAnswer.remove(answerToBeDeleted);
 		this.btnList.clear();
-		updateAnswerContainer();
+		updateAnswerContainer(ident);
 	}
 
-	public void updateAnswerContainer() {
+	public void updateAnswerContainer(ArrayList<String> ident) {
 		final Composite contentOfThisScrolledComposite = (Composite) getContent();
 
 		for (final Control answerToDelete : contentOfThisScrolledComposite.getChildren()) {
@@ -128,7 +128,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		for (final Answer answer : this.arrayAnswer) {
-			addAnswer(answer, true);
+			addAnswer(answer, true, ident); //change late
 		}
 	}
 
@@ -146,8 +146,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	public void addELementsInCodeTabQuestionDialog(final Answer answer) {
 		final CompositeForCodeTab group = new CompositeForCodeTab((Composite) getContent(), SWT.NONE, answer);
-		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 50);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 
@@ -167,8 +167,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	public void addElementsOfLinkAnswer(final Answer answer, final Question currentQuestion, final ArrayList<Question> listOfAllQuestions) {
 		final GroupForLinkAnswer group = new GroupForLinkAnswer((Composite) getContent(), SWT.NONE, answer, currentQuestion, listOfAllQuestions);
-		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 39);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 39);
+		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 50);
+		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 

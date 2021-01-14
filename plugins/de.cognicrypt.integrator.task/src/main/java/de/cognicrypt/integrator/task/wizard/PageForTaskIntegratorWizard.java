@@ -30,6 +30,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
 	protected CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
+	private ArrayList<String> listCryslTemplatesIdentifier = new ArrayList<String>();
 
 	int counter = 0;// TODO for testing only.
 
@@ -85,7 +86,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			}
 		}
 
-		if (getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
+		/*if (getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
 			return null;
 		}
 		/*
@@ -110,6 +111,23 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	protected boolean nextPressed(final IWizardPage page) {
 		final boolean ValidateNextPress = true;
 		try {
+			if (page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
+				final IWizardPage nextPage = super.getNextPage();
+				if (nextPage instanceof QuestionsPage) {
+					final QuestionsPage pftiw = (QuestionsPage) nextPage;
+					/*listCryslTemplatesIdentifier.clear();
+					for(CompositeBrowseForFile b : getCompositeChoiceForModeOfWizard().getLstCryslTemplates()) {
+						listCryslTemplatesIdentifier.add(b.getTxtBoxOption());
+					}*/
+					listCryslTemplatesIdentifier = getCompositeChoiceForModeOfWizard().getIdentifiers();
+					((QuestionsPage) nextPage).setlistCryslTemplatesIdentifier(listCryslTemplatesIdentifier);
+					pftiw.getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
+				}
+			}
+		}catch (final Exception ex) {
+			Activator.getDefault().logError(ex);
+		}
+		try {
 			if (page.getName().equals(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)) {
 				final PageForTaskIntegratorWizard highLevelQuestionPage = (PageForTaskIntegratorWizard) page;
 				final CompositeToHoldGranularUIElements highLevelQuestionPageComposite = highLevelQuestionPage.getCompositeToHoldGranularUIElements();
@@ -122,15 +140,19 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 						if (comp.getListOfAllQuestions().size() > 0) {
 							comp.deleteAllQuestion();
 						}
+						for(CompositeBrowseForFile b : getCompositeChoiceForModeOfWizard().getLstCryslTemplates()) {
+							listCryslTemplatesIdentifier.add(b.getText());
+						}
 						for (final Question question : listOfAllQuestions) {
 							comp.getListOfAllQuestions().add(question);
-							comp.addQuestionUIElements(question, true);
+							comp.addQuestionUIElements(question, true, listCryslTemplatesIdentifier);
 							// to rebuild the UI
 							comp.updateLayout();
 						}
-
 					}
 				}
+				
+				
 			}
 
 		}
@@ -141,6 +163,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		return ValidateNextPress;
 	}
 
+	
+	
+	
 	@Override
 	public boolean canFlipToNextPage() {
 

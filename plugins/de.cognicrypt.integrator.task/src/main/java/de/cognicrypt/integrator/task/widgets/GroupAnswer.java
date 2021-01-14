@@ -13,7 +13,9 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
@@ -23,7 +25,8 @@ import de.cognicrypt.codegenerator.question.Answer;
 public class GroupAnswer extends Group {
 
 	public Text txtAnswer;
-	public Text txtOption;
+	//public Text txtOption;
+	public Combo possibleIdentifiers;
 	private Answer answer;
 	public ArrayList<Answer> answers;
 
@@ -33,12 +36,15 @@ public class GroupAnswer extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public GroupAnswer(final Composite parent, final int style, final Answer answerParam, final boolean showRemoveButton) {
+	public GroupAnswer(final Composite parent, final int style, final Answer answerParam, final boolean showRemoveButton,
+			ArrayList<String> identCrysl) {
 		super(parent, style);
 		setAnswer(answerParam);
 
 		this.txtAnswer = new Text(this, SWT.BORDER);
-		this.txtOption = new Text(this, SWT.BORDER);
+		//this.txtOption = new Text(this, SWT.BORDER);
+		this.possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
+		this.possibleIdentifiers.setItems(identCrysl.toArray(new String[0])); 
 		if (this.answer.getValue() != null) {
 			this.txtAnswer.setText(this.answer.getValue());
 		}
@@ -49,28 +55,47 @@ public class GroupAnswer extends Group {
 				GroupAnswer.this.answer.setValue(GroupAnswer.this.txtAnswer.getText());
 			}
 		});
-		this.txtAnswer.setEditable(showRemoveButton);
+		//this.txtAnswer.setEditable(showRemoveButton);
 		
 		if (this.answer.getOption() != null) {
-			this.txtOption.setText(this.answer.getOption());
+			//this.txtOption.setText(this.answer.getOption());
+			String selected = this.answer.getOption();
+			this.possibleIdentifiers.select(identCrysl.indexOf(selected));
 		}
-		this.txtOption.addFocusListener(new FocusAdapter() {
+		/*this.txtOption.addFocusListener(new FocusAdapter() {
 
 			@Override
 			public void focusLost(final FocusEvent e) {
 				GroupAnswer.this.answer.setOption(GroupAnswer.this.txtOption.getText());
 			}
+		});*/
+		//this.txtOption.setEditable(showRemoveButton);
+		
+		this.possibleIdentifiers.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				GroupAnswer.this.answer.setOption(possibleIdentifiers.getText());
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				GroupAnswer.this.answer.setOption(possibleIdentifiers.getText());
+			}
 		});
-		this.txtOption.setEditable(showRemoveButton);
 
+		//this.possibleIdentifiers.setEnabled(showRemoveButton);
+		
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
 		/**
 		 * executes when GroupAnswer is called by Question Dialog class
 		 */
 		if (showRemoveButton) {
-			this.txtAnswer.setBounds(3, 3, 586, 29);
-			this.txtOption.setBounds(590, 3, 20, 29);
-			btnDefaultAnswer.setBounds(613, 3, 128, 31);
+			this.txtAnswer.setBounds(13, 9, 486, 29);
+			//this.txtOption.setBounds(590, 3, 20, 29);
+			this.possibleIdentifiers.setBounds(511, 6, 100, 29);
+			btnDefaultAnswer.setBounds(623, 14, 128, 27);
 
 		}
 		/**
@@ -78,8 +103,9 @@ public class GroupAnswer extends Group {
 		 */
 		else {
 			this.txtAnswer.setBounds(3, 3, 195, 29);
-			this.txtOption.setBounds(200, 3, 20, 29);
-			btnDefaultAnswer.setBounds(232, 3, 128, 31);
+			//this.txtOption.setBounds(200, 3, 20, 29);
+			this.possibleIdentifiers.setBounds(210, 3, 100, 25);
+			btnDefaultAnswer.setBounds(322, 7, 128, 29);
 		}
 		final ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
 		btnList.add(btnDefaultAnswer);
@@ -119,7 +145,7 @@ public class GroupAnswer extends Group {
 		btnDefaultAnswer.setEnabled(showRemoveButton);
 		if (showRemoveButton) {
 			final Button btnRemove = new Button(this, SWT.NONE);
-			btnRemove.setBounds(746, 3, 80, 31);
+			btnRemove.setBounds(763, 6, 80, 31);
 			btnRemove.setText("Remove");
 			btnRemove.addSelectionListener(new SelectionAdapter() {
 
@@ -130,7 +156,7 @@ public class GroupAnswer extends Group {
 					confirmationMessageBox.setText("Deleting answer");
 					final int response = confirmationMessageBox.open();
 					if (response == SWT.YES) {
-						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(GroupAnswer.this.answer);
+						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(GroupAnswer.this.answer, identCrysl);
 						btnList.remove(btnDefaultAnswer);
 					}
 

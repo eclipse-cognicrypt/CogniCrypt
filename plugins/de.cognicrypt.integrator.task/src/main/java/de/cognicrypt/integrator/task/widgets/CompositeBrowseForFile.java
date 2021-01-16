@@ -85,7 +85,13 @@ public class CompositeBrowseForFile extends Composite {
 		super(parent, style);
 		// this object is required in the text box listener. Should not be called too
 		// often.
-		//setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
+		
+		// does not work when called by BrowseFilePopUp because it is no composite
+		try {
+			setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		setTheLocalContainerPage(theContainerpageForValidation);
 		final GridLayout gridLayout = new GridLayout(3, false);
@@ -289,4 +295,11 @@ public class CompositeBrowseForFile extends Composite {
 		this.decFilePath = decFilePath;
 	}
 
+	/** 
+	 * Change Identifier Option.
+	 * @param text String to set ID
+	 */
+	public void setTxtBoxOption(String text) {
+		txtBoxOption.setText(text);
+	}
 }

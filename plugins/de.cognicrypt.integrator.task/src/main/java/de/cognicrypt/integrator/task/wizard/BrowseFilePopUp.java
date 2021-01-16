@@ -102,7 +102,7 @@ public class BrowseFilePopUp extends Dialog {
 
 		compCryslTemplateAtInit = new CompositeBrowseForFile(composite_2, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE, new String[] { "*.java" },
-				"Select crysl template file that contains the code details", pageForTaskIntegratorWizard);
+				"Select crysl template file that contains the code details", pageForTaskIntegratorWizard, compositeChoiceForModeOfWizard);
 		compCryslTemplateAtInit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		compCryslTemplateAtInit.setTxtBoxOption("File " + counterAddedIdentifiert);
 		counterAddedIdentifiert++;
@@ -117,7 +117,7 @@ public class BrowseFilePopUp extends Dialog {
 			public void widgetSelected(final SelectionEvent e) {
 				compCryslTemplate = new CompositeBrowseForFile(composite_2, SWT.NONE,
 						Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE, new String[] { "*.java" },
-						"Select crysl template file that contains the code details", pageForTaskIntegratorWizard);
+						"Select crysl template file that contains the code details", pageForTaskIntegratorWizard, compositeChoiceForModeOfWizard);
 				compCryslTemplate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 				compCryslTemplate.setTxtBoxOption("File " + counterAddedIdentifiert);
 				counterAddedIdentifiert++;

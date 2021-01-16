@@ -81,7 +81,7 @@ public class TaskIntegrationWizard extends Wizard {
 			
 			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(objectForDataInNonGuidedMode.getCrylTemplatesWithOption(),  objectForDataInNonGuidedMode.getLocationOfIconFile());
 			final ArrayList<Question> questions =
-					((PageForTaskIntegratorWizard) getPage(Constants.PAGE_NAME_FOR_LINK_ANSWERS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
+					((QuestionsPage) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
 			fileUtilities.writeJSONFile(questions);
 			// Check if the contents of the provided files are valid.
 			if (fileWriteAttemptResult.equals("")) {

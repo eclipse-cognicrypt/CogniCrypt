@@ -42,9 +42,9 @@ public class CompositeBrowseForFile extends Composite {
 
 	private Listener onFileChangedListener;
 
-	private final Text textBox;
+	private Text textBox;
 	
-	private final Text txtBoxOption;
+	private Text txtBoxOption;
 
 	public String getTxtBoxOption() {
 		return txtBoxOption.getText();
@@ -79,20 +79,38 @@ public class CompositeBrowseForFile extends Composite {
 	 * @param stringOnDialog
 	 * @param theContainerpageForValidation
 	 */
-	public CompositeBrowseForFile(final Composite parent, final int style, final String labelText,
-			final String[] fileTypes, final String stringOnDialog,
-			final PageForTaskIntegratorWizard theContainerpageForValidation) {
+	public CompositeBrowseForFile(Composite parent, int style, String labelText,
+			String[] fileTypes, String stringOnDialog,
+			PageForTaskIntegratorWizard theContainerpageForValidation) {
 		super(parent, style);
 		// this object is required in the text box listener. Should not be called too
 		// often.
 		
 		// does not work when called by BrowseFilePopUp because it is no composite
-		try {
-			setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
+		
 
+		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
+	}
+	
+	public CompositeBrowseForFile(Composite parent, int style, String labelText,
+			String[] fileTypes, String stringOnDialog,
+			PageForTaskIntegratorWizard theContainerpageForValidation, CompositeChoiceForModeOfWizard comp) {
+		super(parent, style);
+		// this object is required in the text box listener. Should not be called too
+		// often.
+		
+		// does not work when called by BrowseFilePopUp because it is no composite
+
+		setObjectForDataInNonGuidedMode(comp.getObjectForDataInNonGuidedMode());
+		
+		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
+	}
+	
+	
+	private void init(final Composite parent, final int style, final String labelText,
+			final String[] fileTypes, final String stringOnDialog,
+			final PageForTaskIntegratorWizard theContainerpageForValidation) {
 		setTheLocalContainerPage(theContainerpageForValidation);
 		final GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.horizontalSpacing = 8;
@@ -206,6 +224,7 @@ public class CompositeBrowseForFile extends Composite {
 			}
 		});
 	}
+	
 
 	/**
 	 * Open the file dialog and return the file path as a string.

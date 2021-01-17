@@ -27,15 +27,15 @@ public class CodeGenCrySLRule extends CrySLRule {
 	private static final long serialVersionUID = -7488186084564628280L;
 	private List<CrySLMethod> requiredMethods;
 	private List<CodeGenCrySLObject> requiredPars;
-	private CrySLObject requiredRetObj;
+	private CodeGenCrySLObject requiredRetObj;
 
-	public CodeGenCrySLRule(String _className, List<Entry<String, String>> defObjects, List<CrySLForbiddenMethod> _forbiddenMethods, StateMachineGraph _usagePattern, List<ISLConstraint> _constraints, List<CrySLPredicate> _predicates, List<CodeGenCrySLObject> pars, CrySLObject reqRet) {
+	public CodeGenCrySLRule(String _className, List<Entry<String, String>> defObjects, List<CrySLForbiddenMethod> _forbiddenMethods, StateMachineGraph _usagePattern, List<ISLConstraint> _constraints, List<CrySLPredicate> _predicates, List<CodeGenCrySLObject> pars, CodeGenCrySLObject reqRet) {
 		super(_className, defObjects, _forbiddenMethods, _usagePattern, _constraints, _predicates);
 		requiredPars = pars;
 		requiredRetObj = reqRet;
 	}
 
-	public CodeGenCrySLRule(CrySLRule rule, List<CodeGenCrySLObject> pars, CrySLObject reqRet) {
+	public CodeGenCrySLRule(CrySLRule rule, List<CodeGenCrySLObject> pars, CodeGenCrySLObject reqRet) {
 		this(rule.getClassName(), rule.getObjects(), rule.getForbiddenMethods(), rule.getUsagePattern(), rule.getConstraints(), rule.getPredicates(), pars, reqRet);
 	}
 
@@ -58,7 +58,7 @@ public class CodeGenCrySLRule extends CrySLRule {
 		return requiredPars;
 	}
 
-	public CrySLObject getRequiredRetObj() {
+	public CodeGenCrySLObject getRequiredRetObj() {
 		return requiredRetObj;
 	}
 

@@ -23,8 +23,8 @@ public class PasswordHasher {
 		byte[] pwdHashBytes = null;
 		int keysize = 160;
 
-		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("java.security.PBEKeySpec")
-			.addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addParameter(pwdHashBytes, "keyMaterial").generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.SecureRandom").addParameter(salt, "next").includeClass("javax.crypto.spec.PBEKeySpec")
+			.addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength").includeClass("javax.crypto.SecretKeyFactory").includeClass("javax.crypto.SecretKey").addParameter(pwdHashBytes, "keyMaterial").generate();
 
 		java.lang.String pwdHash = toBase64(salt) + ":" + toBase64(pwdHashBytes);
 		return pwdHash;
@@ -36,8 +36,8 @@ public class PasswordHasher {
 		byte[] res = null;
 		int keysize = 160;
 
-		CrySLCodeGenerator.getInstance().includeClass("java.security.PBEKeySpec").addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength")
-			.includeClass("javax.crypto.SecretKeyFactory").includeClass("java.security.SecretKey").addParameter(res, "keyMaterial").generate();
+		CrySLCodeGenerator.getInstance().includeClass("javax.crypto.spec.PBEKeySpec").addParameter(pwd, "password").addParameter(salt, "salt").addParameter(keysize, "keylength")
+			.includeClass("javax.crypto.SecretKeyFactory").includeClass("javax.crypto.SecretKey").addParameter(res, "keyMaterial").generate();
 
 		Boolean areEqual = slowEquals(res, fromBase64(parts[1]));
 		return areEqual;

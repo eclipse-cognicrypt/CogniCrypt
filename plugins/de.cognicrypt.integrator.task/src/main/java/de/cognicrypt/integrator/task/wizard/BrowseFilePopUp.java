@@ -22,6 +22,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.integrator.task.UIConstants;
+import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.widgets.*;
 
 
@@ -129,6 +131,12 @@ public class BrowseFilePopUp extends Dialog {
 			}
 		});
 		
+		
+		// test
+
+		
+		
+		// end test
 		return container;
 	}
 	
@@ -145,52 +153,65 @@ public class BrowseFilePopUp extends Dialog {
     
     LinkedList<String> listOfIdentifier = new LinkedList<String>();
     
+    private boolean checkNeededFields() {
+    	// check if all path fields are filled
+    	for(int i = 0; i < listOfCompCryslTemplate.size(); i++) {
+    		if(listOfCompCryslTemplate.get(i).getText().equals("") || listOfCompCryslTemplate.get(i).getTxtBoxOption().equals("")) {
+    			MessageDialog.openError(getShell(), "Warning", "Fill all fields!");
+    			return false;
+    		}
+    	}
+    	return true;
+    }
+    
     @Override 
     protected void okPressed() {
-		// check if id was used already and is in the template list 
-    	boolean warningIdAlreadyUsed = false;
-    	try {
-	    	ArrayList<String> listOfIdentifierTemplateList = compositeChoiceForModeOfWizard.getIdentifiers();
-	    	for(int i = 0; i < listOfCompCryslTemplate.size(); i++) {
-	    		for(int k = 0; k < listOfIdentifierTemplateList.size(); k++) {
-		    		if(listOfCompCryslTemplate.get(i).getTxtBoxOption().equals(listOfIdentifierTemplateList.get(k))) {
-		    			listOfCompCryslTemplate.remove(i); //check that it actually isn't added
-		    			warningIdAlreadyUsed = true;
+    	if(checkNeededFields()) {
+	    	// check if id was used already and is in the template list 
+	    	boolean warningIdAlreadyUsed = false;
+	    	try {
+		    	ArrayList<String> listOfIdentifierTemplateList = compositeChoiceForModeOfWizard.getIdentifiers();
+		    	for(int i = 0; i < listOfCompCryslTemplate.size(); i++) {
+		    		for(int k = 0; k < listOfIdentifierTemplateList.size(); k++) {
+			    		if(listOfCompCryslTemplate.get(i).getTxtBoxOption().equals(listOfIdentifierTemplateList.get(k))) {
+			    			listOfCompCryslTemplate.remove(i); //check that it actually isn't added
+			    			warningIdAlreadyUsed = true;
+			    		}
 		    		}
-	    		}
-	    	}
-    	}catch (Exception e) {}
-
-		// check if identifier is unique in terms of the add window
-    	boolean warning = false;
-		for(int i = 0; i < listOfCompCryslTemplate.size(); i++) {
-			int identifierUnique = 0;
-			for(int k = 0; k < listOfIdentifier.size(); k++) {
-				if (listOfIdentifier.get(k).equals(listOfCompCryslTemplate.get(i).getTxtBoxOption())) {
-					identifierUnique++;
-					compositeChoiceForModeOfWizard.addTemplate(listOfCompCryslTemplate.get(i).getTxtBoxOption() + ":Copy(" + identifierUnique + ")", new File(listOfCompCryslTemplate.get(i).getText()));
+		    	}
+	    	}catch (Exception e) {}
+	
+			// check if identifier is unique in terms of the add window
+	    	boolean warning = false;
+			for(int i = 0; i < listOfCompCryslTemplate.size(); i++) {
+				int identifierUnique = 0;
+				for(int k = 0; k < listOfIdentifier.size(); k++) {
+					if (listOfIdentifier.get(k).equals(listOfCompCryslTemplate.get(i).getTxtBoxOption())) {
+						identifierUnique++;
+						compositeChoiceForModeOfWizard.addTemplate(listOfCompCryslTemplate.get(i).getTxtBoxOption() + ":Copy(" + identifierUnique + ")", new File(listOfCompCryslTemplate.get(i).getText()));
+					}
 				}
+				
+				if(identifierUnique != 0)
+					warning = true;
+				else 
+					compositeChoiceForModeOfWizard.addTemplate(listOfCompCryslTemplate.get(i).getTxtBoxOption(), new File(listOfCompCryslTemplate.get(i).getText()));
+				
+				identifierUnique = 0;
+				listOfIdentifier.add(listOfCompCryslTemplate.get(i).getTxtBoxOption());
 			}
 			
-			if(identifierUnique != 0)
-				warning = true;
-			else 
-				compositeChoiceForModeOfWizard.addTemplate(listOfCompCryslTemplate.get(i).getTxtBoxOption(), new File(listOfCompCryslTemplate.get(i).getText()));
+			// add warnings
+			if(warningIdAlreadyUsed) {
+	    		MessageDialog.openError(getShell(), "Warning", "Because one or more identifier you chose are already in use the chosen file or files could not be added!");
+	    		warningIdAlreadyUsed = false;
+	    	}
 			
-			identifierUnique = 0;
-			listOfIdentifier.add(listOfCompCryslTemplate.get(i).getTxtBoxOption());
-		}
-		
-		// add warnings
-		if(warningIdAlreadyUsed) {
-    		MessageDialog.openError(getShell(), "Warning", "Because one or more identifier you chose are already in use the chosen file or files could not be added!");
-    		warningIdAlreadyUsed = false;
+			if(warning)
+				MessageDialog.openError(getShell(), "Warning", "You used the same identifier more than once therefore the identifier was changed!");
+			
+			compositeChoiceForModeOfWizard.setIdCounter(counterAddedIdentifiert);
+			super.okPressed();
     	}
-		
-		if(warning)
-			MessageDialog.openError(getShell(), "Warning", "You used the same identifier more than once therefore the identifier was changed!");
-		
-		compositeChoiceForModeOfWizard.setIdCounter(counterAddedIdentifiert);
-		super.okPressed();
     }
 }

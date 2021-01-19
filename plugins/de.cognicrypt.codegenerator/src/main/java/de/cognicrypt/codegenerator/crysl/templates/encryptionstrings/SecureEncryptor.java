@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -23,6 +23,15 @@ import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
  */
 public class SecureEncryptor {
 
+	/**
+	 * This method generates a secret key to encrypt data.
+	 *
+	 * @param pwd The password.
+	 * @returns The key.
+	 * @throws GeneralSecurityException the general security exception.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
+	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
+	 */
 	public javax.crypto.SecretKey getKey(char[] pwd) {
 		byte[] salt = new byte[32];
 		javax.crypto.SecretKey encryptionKey = null;
@@ -33,7 +42,26 @@ public class SecureEncryptor {
 
 		return encryptionKey;
 	}
-
+	
+	/**
+	 * This method encrypts a string with a secret key using AES algorithm.
+	 *
+	 * @param plaintext The input string to be encrypted.
+	 * @param key The secret key.
+	 * @param plain_off The input offset.
+	 * @param len The input length.
+	 * @return the encrypted string.
+	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
+	 * @throws GeneralSecurityException the general security exception
+	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
+	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
+	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
+	 * @throws IOException This exception This exception is thrown when the charset name is wrong.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no provider supports a CipherSpi or SecureRandomSpi implementation for the specified algorithms.
+	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
+	 * @throws BadPaddingException This exception is thrown when padding is wrong or not compatible with cipher block size and data size.
+	 * @throws InvalidKeyException This exception is thrown in case of invalid Keys (invalid encoding, wrong length, uninitialized, etc).
+	 */
 	public java.lang.String encrypt(java.lang.String plaintext, javax.crypto.SecretKey key) throws IOException {
 		byte[] ivBytes = new byte[key.getEncoded().length];
 		byte[] res = null;
@@ -51,6 +79,25 @@ public class SecureEncryptor {
 		return Base64.getEncoder().encodeToString(ret);
 	}
 
+	/**
+	 * This method decrypts a string using AES algorithm.
+	 *
+	 * @param ciphertext The encrypted string to be decrypted.
+	 * @param key the secret key.
+	 * @param plain_off The input offset.
+	 * @param len The input length.
+	 * @returns the decrypted string.
+	 * @throws InvalidAlgorithmParameterException the invalid algorithm parameter exception
+	 * @throws GeneralSecurityException the general security exception
+	 * @throws NoSuchPaddingException the no such padding exception
+	 * @throws IllegalBlockSizeException the illegal block size exception
+	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
+	 * @throws IOException 
+	 * @throws NoSuchAlgorithmException This exception is thrown if no provider supports a CipherSpi or SecureRandomSpi implementation for the specified algorithms.
+	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
+	 * @throws BadPaddingExceptionxception This exception is thrown when padding is wrong or not compatible with cipher block size and data size.
+	 * @throws InvalidKeyException This exception is thrown in case of invalid Keys (invalid encoding, wrong length, uninitialized, etc).
+	 */
 	public java.lang.String decrypt(java.lang.String ciphertext, javax.crypto.SecretKey key) throws IOException {
 		byte[] ciphertextString = Base64.getDecoder().decode(ciphertext);
 		byte[] ivBytes = new byte[key.getEncoded().length];

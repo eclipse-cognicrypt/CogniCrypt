@@ -51,7 +51,7 @@ public class SecureEncryptor {
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
 	 * @throws GeneralSecurityException the general security exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
-	 * @throws IllegalBlockSizeException This exception is thrown when the input data size is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided (form cipher javadoc).
+	 * @throws IllegalBlockSizeException This exception is thrown when the input data size is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no provider supports a CipherSpi or SecureRandomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
@@ -84,7 +84,7 @@ public class SecureEncryptor {
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
 	 * @throws GeneralSecurityException the general security exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
-	 * @throws IllegalBlockSizeException This exception is thrown when the input data size is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided (form cipher javadoc).
+	 * @throws IllegalBlockSizeException This exception is thrown when the input data size is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
 	 * @throws NoSuchAlgorithmException  This exception is thrown if no provider supports a CipherSpi implementation for the specified algorithm.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.

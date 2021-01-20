@@ -52,7 +52,7 @@ public class TaskJSONReader {
 						t.setCodeTemplate(Constants.rsrcPath + "XSLTemplates" + Constants.innerFileSeparator + t.getName() + ".xsl");
 						t.setModelFile(Constants.rsrcPath + "ClaferModel" + Constants.innerFileSeparator + t.getName() + ".js");
 					} else if (t.getCodeGen() == CodeGenerators.CrySL) {
-						t.setCodeTemplate(Constants.codeTemplateFolder + t.getName().toLowerCase());
+						t.setCodeTemplate(Constants.codeTemplateFolder + t.getName());
 					}
 				}
 

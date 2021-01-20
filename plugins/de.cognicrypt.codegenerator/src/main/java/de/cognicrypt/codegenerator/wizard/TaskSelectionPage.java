@@ -73,7 +73,7 @@ public class TaskSelectionPage extends WizardPage {
 		gl.verticalSpacing = -6;
 		this.container.setLayout(gl);
 
-		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		//new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		new Label(this.container, SWT.NONE);
 		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
 		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, tasks.size() + 1);

@@ -85,7 +85,7 @@ public class BrowseFilePopUp extends Dialog {
 				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
-		scrolledComposite.setMinWidth((int) (/*windowSize.getWidth()*0.27)*/ 800));
+		scrolledComposite.setMinWidth((int) (/*windowSize.getWidth()*0.27)*/ 950));
 		scrolledComposite.setMinHeight((int) (/*windowSize.getHeight()*0.1)*/150));
 
 		final Composite composite = new Composite(scrolledComposite, SWT.NONE);
@@ -140,7 +140,7 @@ public class BrowseFilePopUp extends Dialog {
 
     @Override
     protected Point getInitialSize() {
-        return new Point((int) (850/*windowSize.getWidth()*0.3*/), (int) (300/*windowSize.getHeight()*0.2*/)); // 1000, 350
+        return new Point((int) (950/*windowSize.getWidth()*0.3*/), (int) (300/*windowSize.getHeight()*0.2*/)); // 1000, 350
     }
     
     LinkedList<String> listOfIdentifier = new LinkedList<String>();

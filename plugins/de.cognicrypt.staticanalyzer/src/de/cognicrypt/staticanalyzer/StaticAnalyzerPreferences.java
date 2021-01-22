@@ -49,12 +49,13 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
 	private Preferences rulePreferences = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 
+	private CheckboxTableViewer table;
 	private Button automatedAnalysisCheckBox;
 	private Button providerDetectionCheckBox;
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
-	private Button addNewRulesetButton, selectCustomRulesCheckBox;
-	private CheckboxTableViewer table;
+	private Button addNewRulesetButton;
+	private Button selectCustomRulesCheckBox;
 	private Button customRulesButton;
 
 	private Combo CGSelection;
@@ -297,12 +298,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		
 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		selectCustomRulesCheckBox.setText("Select Custom Rules");
-		selectCustomRulesCheckBox.addListener(SWT.Selection, new Listener() {
-			@Override
-			public void handleEvent(Event e) {
-				preferences.setValue(Constants.SELECT_CUSTOM_RULES,selectCustomRulesCheckBox.getSelection());
-			}
-		});
 
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable Automated Analysis when Saving");
@@ -315,8 +310,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 		analyseDependenciesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		analyseDependenciesCheckBox.setText("Include Dependencies into Project Analysis");
-		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
-
 	}
 
 	protected void addNewRuleset() {
@@ -378,7 +371,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setDefault(Constants.NEVER_TYPEOF_MARKER_TYPE, 0);
 		preferences.setDefault(Constants.REQUIRED_PREDICATE_MARKER_TYPE, 0);
 		preferences.setDefault(Constants.CONSTRAINT_ERROR_MARKER_TYPE, 0);
-
 		preferences.setDefault(Constants.PREDICATE_CONTRADICTION_MARKER_TYPE, 0);
 		preferences.setDefault(Constants.IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE, 1);
 	}
@@ -469,7 +461,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		}
 
 		CGSelection.select(preferences.getDefaultInt(Constants.CALL_GRAPH_SELECTION));
-
 		forbidden.select(preferences.getDefaultInt(Constants.FORBIDDEN_METHOD_MARKER_TYPE));
 		constraint.select(preferences.getDefaultInt(Constants.CONSTRAINT_ERROR_MARKER_TYPE));
 		incompleteOp.select(preferences.getDefaultInt(Constants.INCOMPLETE_OPERATION_MARKER_TYPE));
@@ -480,6 +471,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	@Override
 	protected void storeValues() {
+		preferences.setValue(Constants.SELECT_CUSTOM_RULES, selectCustomRulesCheckBox.getSelection());
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
 		preferences.setValue(Constants.PROVIDER_DETECTION_ANALYSIS, providerDetectionCheckBox.getSelection());
 		preferences.setValue(Constants.SHOW_SECURE_OBJECTS, secureObjectsCheckBox.getSelection());

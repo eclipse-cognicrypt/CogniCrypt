@@ -104,12 +104,20 @@ public class SootRunner {
 			CrySLParser r = new CrySLParser(project);
 			for (String path : projectClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				rules.addAll(readRuleFromBinaryFiles);
+				for(CrySLRule rule : readRuleFromBinaryFiles) {
+					if(!rules.contains(rule)) {
+						rules.add(rule);
+					}
+				}
 			}
 
 			for (String path : applicationClassPath(JavaCore.create(project))) {
 				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				rules.addAll(readRuleFromBinaryFiles);
+				for(CrySLRule rule : readRuleFromBinaryFiles) {
+					if(!rules.contains(rule)) {
+						rules.add(rule);
+					}
+				}
 			}
 
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {

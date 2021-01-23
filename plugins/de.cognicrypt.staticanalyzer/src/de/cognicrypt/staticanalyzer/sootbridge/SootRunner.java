@@ -102,24 +102,28 @@ public class SootRunner {
 
 		try {
 			CrySLParser r = new CrySLParser(project);
-			for (String path : projectClassPath(JavaCore.create(project))) {
-				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				for(CrySLRule rule : readRuleFromBinaryFiles) {
-					if(!rules.contains(rule)) {
-						rules.add(rule);
+			
+			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.ANALYZED_PROJECT_DIR_RULES)) {
+				Activator.getDefault().logInfo("Loading rules from the analyzed project's directory.");
+				for (String path : projectClassPath(JavaCore.create(project))) {
+					List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
+					for(CrySLRule rule : readRuleFromBinaryFiles) {
+						if(!rules.contains(rule)) {
+							rules.add(rule);
+						}
+					}
+				}
+
+				for (String path : applicationClassPath(JavaCore.create(project))) {
+					List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
+					for(CrySLRule rule : readRuleFromBinaryFiles) {
+						if(!rules.contains(rule)) {
+							rules.add(rule);
+						}
 					}
 				}
 			}
-
-			for (String path : applicationClassPath(JavaCore.create(project))) {
-				List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-				for(CrySLRule rule : readRuleFromBinaryFiles) {
-					if(!rules.contains(rule)) {
-						rules.add(rule);
-					}
-				}
-			}
-
+			
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {
 				Activator.getDefault().logInfo("Loading custom rules.");
 				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,
@@ -153,11 +157,13 @@ public class SootRunner {
 		catch (IOException | CoreException e) {
 			Activator.getDefault().logError(e, "Could not load CrySL Rules");
 		}
+		
 		if (rules.isEmpty()) {
 			Activator.getDefault().logInfo("No CrySL rules loaded");
 		}
 
 		return rules;
+		
 	}
 
 	private static List<String> projectClassPath(final IJavaProject javaProject) {

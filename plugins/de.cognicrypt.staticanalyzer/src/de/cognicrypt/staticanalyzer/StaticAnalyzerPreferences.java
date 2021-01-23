@@ -56,6 +56,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button analyseDependenciesCheckBox;
 	private Button addNewRulesetButton;
 	private Button selectCustomRulesCheckBox;
+	private Button analyzedProjectRootDirRules;
 	private Button customRulesButton;
 
 	private Combo CGSelection;
@@ -88,6 +89,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getBoolean(Constants.ANALYSE_DEPENDENCIES));
 		selectCustomRulesCheckBox.setSelection(preferences.getBoolean(Constants.SELECT_CUSTOM_RULES));
+		analyzedProjectRootDirRules.setSelection(preferences.getBoolean(Constants.ANALYZED_PROJECT_DIR_RULES));
 	}
 
 	private void performBasicDefaults() {
@@ -298,6 +300,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		
 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		selectCustomRulesCheckBox.setText("Select Custom Rules");
+		
+		analyzedProjectRootDirRules = new Button(staticAnalysisGroup, SWT.CHECK);
+		analyzedProjectRootDirRules.setText("Load Rules from Analyzed Project's Directory");
 
 		automatedAnalysisCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		automatedAnalysisCheckBox.setText("Enable Automated Analysis when Saving");
@@ -444,6 +449,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	@Override
 	public void setDefaultValues() {
 		selectCustomRulesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SELECT_CUSTOM_RULES));
+		analyzedProjectRootDirRules.setSelection(preferences.getDefaultBoolean(Constants.ANALYZED_PROJECT_DIR_RULES));
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
 		providerDetectionCheckBox.setSelection(preferences.getDefaultBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
@@ -472,6 +478,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	@Override
 	protected void storeValues() {
 		preferences.setValue(Constants.SELECT_CUSTOM_RULES, selectCustomRulesCheckBox.getSelection());
+		preferences.setValue(Constants.ANALYZED_PROJECT_DIR_RULES, analyzedProjectRootDirRules.getSelection());
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
 		preferences.setValue(Constants.PROVIDER_DETECTION_ANALYSIS, providerDetectionCheckBox.getSelection());
 		preferences.setValue(Constants.SHOW_SECURE_OBJECTS, secureObjectsCheckBox.getSelection());

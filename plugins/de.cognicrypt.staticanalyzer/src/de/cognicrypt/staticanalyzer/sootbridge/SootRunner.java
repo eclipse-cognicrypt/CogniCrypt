@@ -119,6 +119,18 @@ public class SootRunner {
 					}
 				}
 			}
+			
+			if(Files.exists(Paths.get(Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY)))) {
+				Activator.getDefault().logInfo("Loading rules from the selected local directory.");
+				String rulesPath = Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY);
+				List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);
+				for(File file : files) {
+					CrySLRule rule = r.readRule(file);
+					if(!rules.contains(rule)) {
+						rules.add(rule);
+					}
+				}
+			}
 
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 			try {
@@ -141,7 +153,7 @@ public class SootRunner {
 			}
 			
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {
-				Activator.getDefault().logInfo("Loading custom rules.");
+				Activator.getDefault().logInfo("Loading custom rules from the resources folder in core plugin.");
 				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,
 						(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString())).map(path -> {
 							readRules.add(path.getFileName().toString());

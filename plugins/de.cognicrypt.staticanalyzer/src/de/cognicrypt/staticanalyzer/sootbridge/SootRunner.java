@@ -16,10 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -104,19 +107,12 @@ public class SootRunner {
 			CrySLParser r = new CrySLParser(project);
 			
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.ANALYZED_PROJECT_DIR_RULES)) {
-				Activator.getDefault().logInfo("Loading rules from the analyzed project's directory.");
-				for (String path : projectClassPath(JavaCore.create(project))) {
-					List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-					for(CrySLRule rule : readRuleFromBinaryFiles) {
-						if(!rules.contains(rule)) {
-							rules.add(rule);
-						}
-					}
-				}
-
-				for (String path : applicationClassPath(JavaCore.create(project))) {
-					List<CrySLRule> readRuleFromBinaryFiles = r.readRulesOutside(path);
-					for(CrySLRule rule : readRuleFromBinaryFiles) {
+				Activator.getDefault().logInfo("Loading rules from the analyzed project's directory.");				
+				IPath location = project.getLocation();
+				List<File> files = (List<File>) FileUtils.listFiles(location.toFile(), new String[] { "crysl" }, true);
+				for(File filePath : files ) {
+					if(!filePath.getAbsolutePath().startsWith(location.toOSString()+File.separator+"bin")) {
+						CrySLRule rule = r.readRule(filePath);
 						if(!rules.contains(rule)) {
 							rules.add(rule);
 						}

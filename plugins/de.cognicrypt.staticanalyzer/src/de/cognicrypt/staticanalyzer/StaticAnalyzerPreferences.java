@@ -98,6 +98,8 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setDefault(Constants.PROVIDER_DETECTION_ANALYSIS, false);
 		preferences.setDefault(Constants.SHOW_SECURE_OBJECTS, false);
 		preferences.setDefault(Constants.ANALYSE_DEPENDENCIES, true);
+		preferences.setDefault(Constants.SELECT_CUSTOM_RULES, true);
+		preferences.setDefault(Constants.ANALYZED_PROJECT_DIR_RULES, false);
 		preferences.setDefault(Constants.CALL_GRAPH_SELECTION, 0);
 	}
 

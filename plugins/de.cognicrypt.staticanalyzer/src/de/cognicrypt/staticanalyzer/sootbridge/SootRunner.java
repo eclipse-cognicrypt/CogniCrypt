@@ -119,15 +119,6 @@ public class SootRunner {
 					}
 				}
 			}
-			
-			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {
-				Activator.getDefault().logInfo("Loading custom rules.");
-				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,
-						(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString())).map(path -> {
-							readRules.add(path.getFileName().toString());
-							return r.readRule(path.toFile());
-						}).collect(Collectors.toList()));
-			}
 
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 			try {
@@ -147,6 +138,15 @@ public class SootRunner {
 			}
 			catch (BackingStoreException e) {
 				Activator.getDefault().logError(e);
+			}
+			
+			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {
+				Activator.getDefault().logInfo("Loading custom rules.");
+				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,
+						(file, attr) -> file.toString().endsWith(RuleFormat.SOURCE.toString())).map(path -> {
+							readRules.add(path.getFileName().toString());
+							return r.readRule(path.toFile());
+						}).collect(Collectors.toList()));
 			}
 
 		}

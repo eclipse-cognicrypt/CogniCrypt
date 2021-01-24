@@ -162,19 +162,6 @@ public class SootRunner {
 		
 	}
 
-	private static List<String> projectClassPath(final IJavaProject javaProject) {
-		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		try {
-			final List<String> urls = new ArrayList<>();
-			urls.add(new File(workspace.getRoot().getFile(javaProject.getOutputLocation()).getLocationURI()).getAbsolutePath());
-			return urls;
-		}
-		catch (final Exception e) {
-			Activator.getDefault().logError(e, "Error building project classpath");
-			return Lists.newArrayList();
-		}
-	}
-
 	public static boolean runSoot(final IJavaProject project, final ResultsCCUIListener resultsReporter, final Boolean dependencyAnalyser) {
 
 		G.reset();

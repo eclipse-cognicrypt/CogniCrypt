@@ -96,7 +96,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	}
 
 	private void performBasicDefaults() {
-		preferences.setDefault(Constants.LOCAL_RULES_DIRECTORY, "");
+		preferences.setDefault(Constants.LOCAL_RULES_DIRECTORY, "Enter a path or browse it by using the button below...");
 		preferences.setDefault(Constants.RULE_SELECTION, 0);
 		preferences.setDefault(Constants.AUTOMATED_ANALYSIS, true);
 		preferences.setDefault(Constants.PROVIDER_DETECTION_ANALYSIS, false);

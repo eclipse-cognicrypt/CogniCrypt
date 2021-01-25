@@ -120,7 +120,8 @@ public class SootRunner {
 				}
 			}
 			
-			if(Files.exists(Paths.get(Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY)))) {
+			if( !Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY).isEmpty() && 
+					Files.exists(Paths.get(Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY))) ) {
 				Activator.getDefault().logInfo("Loading rules from the selected local directory.");
 				String rulesPath = Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY);
 				List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);

@@ -4,17 +4,17 @@
     "content": [
       {
         "id": 0,
-        "element": "radio",
-        "questionText": "What is the type of data you want for your coffee generator",
+        "element": "combo",
+        "questionText": "Type",
         "answers": [
           {
-            "value": "Is it int? ",
+            "value": "Int",
             "defaultAnswer": true,
             "option": "Int",
             "nextID": -2
           },
           {
-            "value": "Is it String?",
+            "value": "String",
             "option": "String",
             "nextID": -2
           }

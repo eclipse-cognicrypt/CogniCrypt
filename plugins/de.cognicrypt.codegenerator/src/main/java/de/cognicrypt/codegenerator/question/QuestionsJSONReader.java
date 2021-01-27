@@ -67,6 +67,7 @@ public class QuestionsJSONReader {
 	public List<Page> getPages(final String filePath) {
 		List<Page> pages = new ArrayList<>();
 		try {
+			Activator.getDefault().logError("JSON File " + filePath);
 			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 

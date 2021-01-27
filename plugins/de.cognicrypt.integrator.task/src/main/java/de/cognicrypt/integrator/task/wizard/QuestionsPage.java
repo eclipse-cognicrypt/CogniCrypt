@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
-import de.cognicrypt.integrator.task.widgets.CompositeBrowseForFile;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
 
 public class QuestionsPage extends PageForTaskIntegratorWizard {
@@ -47,32 +46,27 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 		
 		//getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
 
-		TaskIntegrationWizard tiWizard = null;
-
-		if (TaskIntegrationWizard.class.isInstance(getWizard())) {
-			tiWizard = (TaskIntegrationWizard) getWizard();
-		} else {
-			Activator.getDefault().logError("PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard");
+		if (!TaskIntegrationWizard.class.isInstance(getWizard())) {
+			Activator.getDefault().logError(Constants.INSTANTIATED_BY_WRONG_WIZARD_ERROR);
 		}
 
-
 		final QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
-		final Button qstnDialog = new Button(container, SWT.NONE);
-		qstnDialog.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-		qstnDialog.setText("Add Question");
+		final Button addQuestionBtn = new Button(container, SWT.NONE);
+		addQuestionBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+		addQuestionBtn.setText(Constants.ADD_QUESTION);
 
-		qstnDialog.addSelectionListener(new SelectionAdapter() {
+		addQuestionBtn.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				questionDialog.setlistCryslTemplatesIdentifier(listCryslTemplatesIdentifier);
 				final int response = questionDialog.open();
-				final int qID = QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().size();
+				final int questionID = QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().size();
 				if (response == Window.OK) {
 					QuestionsPage.this.counter++;
 					// Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
 					final Question questionDetails = questionDialog.getQuestionDetails();
-					questionDetails.setId(qID);
+					questionDetails.setId(questionID);
 
 					// Update the array list.
 					QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
@@ -83,8 +77,8 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 		});
 	}
 
-	public void setlistCryslTemplatesIdentifier(ArrayList<String> ident){
-		listCryslTemplatesIdentifier = ident;
+	public void setlistCryslTemplatesIdentifier(ArrayList<String> listCryslTemplatesIdentifier){
+		this.listCryslTemplatesIdentifier = listCryslTemplatesIdentifier;
 	}
 	
 }

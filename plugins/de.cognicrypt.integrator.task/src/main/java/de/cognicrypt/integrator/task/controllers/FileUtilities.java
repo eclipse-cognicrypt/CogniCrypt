@@ -18,6 +18,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -39,6 +42,14 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.xml.sax.SAXException;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -48,6 +59,7 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
+import de.cognicrypt.integrator.task.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.utils.Utils;
 
 public class FileUtilities {
@@ -95,14 +107,16 @@ public class FileUtilities {
 	
 
 	public String writeCryslTemplate(final File cryslTemplateFile, final File jsonFileLocation, final File iconFile) {
-		copyFileFromPath(cryslTemplateFile);
 		copyFileFromPath(jsonFileLocation);
 		copyFileFromPath(iconFile);
+		copyFileFromPath(cryslTemplateFile);
 		return getErrors().toString();
 	}
 
 	public String writeCryslTemplate(final HashMap<String, File> cryslTemplateFile, final File jsonFileLocation,
 			final File iconFile) {
+		copyFileFromPath(jsonFileLocation);
+		copyFileFromPath(iconFile);
 		for (String key : cryslTemplateFile.keySet()) {
 			try {
 				copyFileFromPath(cryslTemplateFile.get(key), key);
@@ -111,18 +125,17 @@ public class FileUtilities {
 				e.printStackTrace();
 			}
 		}
-		copyFileFromPath(jsonFileLocation);
-		copyFileFromPath(iconFile);
 		return getErrors().toString();
 	}
 
 	public String writeCryslTemplate(final File cryslTemplateFile, final File iconFile) {
-		copyFileFromPath(cryslTemplateFile);
 		copyFileFromPath(iconFile);
+		copyFileFromPath(cryslTemplateFile);
 		return getErrors().toString();
 	}
 
 	public String writeCryslTemplate(final HashMap<String, File> cryslTemplateFile, final File iconFile) {
+		copyFileFromPath(iconFile);
 		for (String key : cryslTemplateFile.keySet()) {
 			try {
 				copyFileFromPath(cryslTemplateFile.get(key), key);
@@ -131,7 +144,6 @@ public class FileUtilities {
 				e.printStackTrace();
 			}
 		}
-		copyFileFromPath(iconFile);
 		return getErrors().toString();
 	}
 
@@ -231,23 +243,73 @@ public class FileUtilities {
 		}
 	}
 
-	
-
+	/* Only works in debug mode
 	public void copyFileFromPath(final File existingFileLocation, String option) throws IOException {
 		File parentFolder = Utils.getResourceFromWithin(Constants.codeTemplateFolder, "de.cognicrypt.codegenerator");
 		File templateFolder = new File(parentFolder, getTrimmedTaskName() + option);
+			
 		if (!templateFolder.isDirectory()) {
 			templateFolder.mkdir();
 		}
+		
 		File resourceFromWithin = Utils.getResourceFromWithin(Constants.codeTemplateFolder + getTrimmedTaskName()
 				+ option + Constants.innerFileSeparator, "de.cognicrypt.codegenerator");
+		
 		File targetDirectory = new File(resourceFromWithin, getTrimmedTaskName() + Constants.JAVA_EXTENSION);
-		if (targetDirectory != null) {
-			Path path = existingFileLocation.toPath();
-			Path path2 = targetDirectory.toPath();
-			Files.copy(path, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+		
+		Path path = existingFileLocation.toPath();
+		Path path2 = targetDirectory.toPath();
+		Files.copy(path, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);		
+	}*/
+	
+	
+	
+	public void copyFileFromPath(final File existingFileLocation, String option) throws IOException {    
+	    
+	    // Create File Structure
+	    // One Template: Generator expects templates/<Task>/<Task>.java
+	    // Multiple Templates: Generator expects templates/<Task><Id>/<Task>.java (current)
+	    
+	    File parentFolder = Utils.getResourceFromWithin(Constants.codeTemplateFolder, "de.cognicrypt.codegenerator");
+		File templateFolder = new File(parentFolder, getTrimmedTaskName() + option);
+		
+		if (!templateFolder.isDirectory()) {
+			templateFolder.mkdir();
+		}
+
+		File targetDirectory = new File(templateFolder, getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+		
+		Path path = existingFileLocation.toPath();
+		Path path2 = targetDirectory.toPath();
+		
+		Activator.getDefault().logError("Copy " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
+			
+		Files.copy(path, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+	    
+		
+		// Get JAR Path
+		Bundle bundle = Platform.getBundle("de.cognicrypt.codegenerator");
+		URL destinationURL = FileLocator.find(bundle, new org.eclipse.core.runtime.Path(Constants.codeTemplateFolder));
+		try {
+			destinationURL = FileLocator.resolve(destinationURL);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+			    
+		String jarPath = destinationURL.getFile().substring(5).split("!")[0];
+		String temporaryRoot = Utils.getResourceFromWithin("/", "de.cognicrypt.codegenerator").getAbsolutePath();
+
+	    // Update JAR
+	    String cmd = "jar uf " + jarPath + " -C " + temporaryRoot + " src/main";
+	    Activator.getDefault().logError("Cmd " + cmd);
+		try {
+			Process process = Runtime.getRuntime().exec(cmd);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
+	
+	
 
 	/**
 	 * Copy the given file to the appropriate location.
@@ -291,10 +353,8 @@ public class FileUtilities {
 					throw new Exception("Unknown file type.");
 				}
 
-				if (targetDirectory != null) {
-					Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(),
-							StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-				}
+				Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
+				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 
 			} catch (final Exception e) {
 				Activator.getDefault().logError(e);
@@ -312,8 +372,8 @@ public class FileUtilities {
 				final File tmpFile = new File(
 						tempDirectory.toString() + Constants.innerFileSeparator + customLibFile.getName());
 				try {
-					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING,
-							StandardCopyOption.COPY_ATTRIBUTES);
+					Activator.getDefault().logError("CopyCustom " + customLibFile.getAbsolutePath() + " to " + tmpFile.getAbsolutePath());
+					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 				} catch (final IOException e) {
 					Activator.getDefault().logError(e);
 					getErrors().append("There was a problem copying file ");

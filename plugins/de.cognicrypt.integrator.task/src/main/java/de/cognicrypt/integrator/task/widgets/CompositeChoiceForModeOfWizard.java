@@ -17,6 +17,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.ICoreRunnable;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -37,6 +40,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.UIConstants;
 import de.cognicrypt.integrator.task.controllers.Validator;

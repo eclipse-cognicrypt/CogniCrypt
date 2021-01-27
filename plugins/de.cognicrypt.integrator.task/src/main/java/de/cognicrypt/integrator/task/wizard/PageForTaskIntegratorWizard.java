@@ -47,6 +47,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	/**
+	 * 
 	 * Create contents of the wizard.
 	 *
 	 * @param parent
@@ -114,19 +115,20 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			if (page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
 				final IWizardPage nextPage = super.getNextPage();
 				if (nextPage instanceof QuestionsPage) {
-					final QuestionsPage pftiw = (QuestionsPage) nextPage;
+					final QuestionsPage questionsPage = (QuestionsPage) nextPage;
 					/*listCryslTemplatesIdentifier.clear();
 					for(CompositeBrowseForFile b : getCompositeChoiceForModeOfWizard().getLstCryslTemplates()) {
 						listCryslTemplatesIdentifier.add(b.getTxtBoxOption());
 					}*/
 					listCryslTemplatesIdentifier = getCompositeChoiceForModeOfWizard().getIdentifiers();
 					((QuestionsPage) nextPage).setlistCryslTemplatesIdentifier(listCryslTemplatesIdentifier);
-					pftiw.getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
+					questionsPage.getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
 				}
 			}
 		}catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
+		/**
 		try {
 			if (page.getName().equals(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)) {
 				final PageForTaskIntegratorWizard highLevelQuestionPage = (PageForTaskIntegratorWizard) page;
@@ -154,12 +156,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				
 				
 			}
-
 		}
 		catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 
 		}
+		**/
 		return ValidateNextPress;
 	}
 

@@ -19,7 +19,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -28,7 +27,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.CodeDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldSmallerUIElements;
@@ -39,14 +37,14 @@ public class QuestionDialog extends Dialog {
 	private String questionText;
 	//private String questionType;
 	//private Combo combo;
-	private Text txtBoxHelptext;
+	private Text txtBoxHelpText;
 	//private Text textBoxTooltip;
-	private Combo comboBoxAnswerType;
+	//private Combo comboBoxAnswerType;
 	private CompositeToHoldSmallerUIElements compositeToHoldAnswers;
 	private final Question question;
 	private Question questionDetails;
 	int counter = 0;
-	private String currentQuestionType = null;
+	//private String currentQuestionType = null;
 	private ArrayList<String> listCryslTemplatesIdentifier;
 
 	/**
@@ -81,7 +79,7 @@ public class QuestionDialog extends Dialog {
 
 		final Label lblQuestion = new Label(composite, SWT.NONE);
 		lblQuestion.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		lblQuestion.setText("Question");
+		lblQuestion.setText(Constants.QUESTION);
 
 		this.textQuestion = new Text(composite, SWT.BORDER);
 		this.textQuestion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -95,13 +93,13 @@ public class QuestionDialog extends Dialog {
 		this.combo.select(-1);
 		this.combo.setItems(Constants.dropDown, Constants.textBox, Constants.radioButton);*/
 
+		
 		final Label lblHelpText = new Label(composite, SWT.NONE);
 		lblHelpText.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		lblHelpText.setText("Describe the question");
+		lblHelpText.setText(Constants.DESCRIBE_QUESTION);
 
-		this.txtBoxHelptext = new Text(composite, SWT.BORDER);
-		this.txtBoxHelptext.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		this.txtBoxHelptext.setToolTipText("In order to help the user to understand the question give extra details about the question in the text box");
+		this.txtBoxHelpText = new Text(composite, SWT.BORDER);
+		this.txtBoxHelpText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		/*final Label lblToolTip = new Label(composite, SWT.None);
 		lblToolTip.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
@@ -114,6 +112,7 @@ public class QuestionDialog extends Dialog {
 		this.textBoxTooltip.setVisible(false);
 		this.textBoxTooltip.setToolTipText("Give help text to be displayed when user hover over the text box");*/
 
+		/*
 		final Label lblAnswerType = new Label(composite, SWT.None);
 		lblAnswerType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		lblAnswerType.setText("Expected answer is of type");
@@ -124,17 +123,18 @@ public class QuestionDialog extends Dialog {
 		this.comboBoxAnswerType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		this.comboBoxAnswerType.setItems(Constants.PORT_NUMBER, Constants.PASSWORD, Constants.IP_ADDRESS, "Other");
 		this.comboBoxAnswerType.setVisible(false);
+		*/
 
 		final Button btnAddAnswer = new Button(composite, SWT.None);
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		btnAddAnswer.setText("Add Answer");
+		btnAddAnswer.setText(Constants.ADD_ANSWER);
 		// Visibility depends on question type
 		final boolean showRemoveButton = true;
 		this.compositeToHoldAnswers = new CompositeToHoldSmallerUIElements(composite, SWT.NONE, null, showRemoveButton);
-		final GridData gd_compositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
-		gd_compositeToHoldAnswers.heightHint = 300;
-		gd_compositeToHoldAnswers.widthHint = 890;
-		this.compositeToHoldAnswers.setLayoutData(gd_compositeToHoldAnswers);
+		final GridData gdCompositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
+		gdCompositeToHoldAnswers.heightHint = 300;
+		gdCompositeToHoldAnswers.widthHint = 890;
+		this.compositeToHoldAnswers.setLayoutData(gdCompositeToHoldAnswers);
 		this.compositeToHoldAnswers.setLayout(new FillLayout(SWT.HORIZONTAL));
 		this.compositeToHoldAnswers.setVisible(false);
 		btnAddAnswer.addSelectionListener(new SelectionAdapter() {
@@ -218,7 +218,7 @@ public class QuestionDialog extends Dialog {
 				this.compositeToHoldAnswers.setVisible(false);
 			}*/
 			if (!this.question.getHelpText().isEmpty()) {
-				this.txtBoxHelptext.setText(this.question.getHelpText());
+				this.txtBoxHelpText.setText(this.question.getHelpText());
 			}
 			/*if (!this.question.getTooltip().isEmpty()) {
 				this.textBoxTooltip.setText(this.question.getTooltip());
@@ -263,8 +263,8 @@ public class QuestionDialog extends Dialog {
 		final Question questionDetails = new Question();
 		questionDetails.setQuestionText(this.textQuestion.getText());
 		setQuestionElement(questionDetails);
-		if (!this.txtBoxHelptext.getText().isEmpty()) {
-			questionDetails.setHelpText(this.txtBoxHelptext.getText());
+		if (!this.txtBoxHelpText.getText().isEmpty()) {
+			questionDetails.setHelpText(this.txtBoxHelpText.getText());
 		}
 		/**
 		 * Executes only if the question type is not text this loop executes to delete
@@ -282,7 +282,7 @@ public class QuestionDialog extends Dialog {
 		// opens a message box, alerting user to add answers to the question
 		if (this.compositeToHoldAnswers.getListOfAllAnswer().size() == 0) {
 			final MessageBox msgNoAnsAdded = new MessageBox(this.compositeToHoldAnswers.getShell());
-			msgNoAnsAdded.setMessage("Please add answers to the question by clicking \"Add answer\" button");
+			msgNoAnsAdded.setMessage(Constants.NO_ANSWERS_WARNING);
 			msgNoAnsAdded.open();
 
 		}
@@ -325,8 +325,8 @@ public class QuestionDialog extends Dialog {
 		
 	}
 
-	public void setlistCryslTemplatesIdentifier(ArrayList<String> ident){
-		listCryslTemplatesIdentifier = ident;
+	public void setlistCryslTemplatesIdentifier(ArrayList<String> listCryslTemplatesIdentifier){
+		this.listCryslTemplatesIdentifier = listCryslTemplatesIdentifier;
 	}
 	
 	/**
@@ -335,11 +335,13 @@ public class QuestionDialog extends Dialog {
 	 */
 	public void checkQuestionHasDefaultAnswer(final Question question) {
 		boolean hasDefaultAnswer = false;
+		
 		for (final Answer answer : question.getAnswers()) {
 			if (answer.isDefaultAnswer()) {
 				hasDefaultAnswer = true;
 			}
 		}
+		
 		if (!hasDefaultAnswer) {
 			if (question.getAnswers().size() > 0) {
 				question.getAnswers().get(0).setDefaultAnswer(true);
@@ -390,6 +392,7 @@ public class QuestionDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
+		// TODO make initial size responsive
 		return new Point(559, 351);
 	}
 

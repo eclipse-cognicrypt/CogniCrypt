@@ -11,10 +11,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
@@ -25,13 +28,15 @@ import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
 public class TaskIntegrationWizard extends Wizard {
 
 	public TaskIntegrationWizard() {
+		setWindowTitle("CogniCrypt Task Integrator");
 
+		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
+		setDefaultPageImageDescriptor(image);
 	}
 
 	@Override
 	public void addPages() {
 		addPage(new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD));
-
 
 		addPage(new QuestionsPage());
 

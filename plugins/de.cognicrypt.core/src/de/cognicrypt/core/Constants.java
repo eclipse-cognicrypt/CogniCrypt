@@ -7,6 +7,7 @@
 
 package de.cognicrypt.core;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -274,10 +275,10 @@ public class Constants {
 
 	// Constants for the Task Integrator Wizard.
 	// Page constants
-
+	
 	public static final String PAGE_NAME_FOR_MODE_OF_WIZARD = "pageForChoiceOfModeOfWizard";
-	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "Please select the mode for the wizard";
-	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Here you can update the basic details of the task, and the mode in which the wizard will run.";
+	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "New task";
+	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Provide the basic details about the task and add templates.";
 
 	public static final String PAGE_NAME_FOR_CLAFER_FILE_CREATION = "pageForClaferFileCreation";
 	public static final String PAGE_TITLE_FOR_CLAFER_FILE_CREATION = "Add the variablity modelling here";
@@ -288,18 +289,30 @@ public class Constants {
 	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
 
 	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
-	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level questions and their dependencies here";
+	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Questions catalog";
 	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS =
-			"Here you can add the questions that will be asked to the end user, and the dependencies to the " + "variability modelling and the code generation.";
+			"Add questions and possible answers with their associated templates for the code generation wizard";
 
 	public static final String PAGE_NAME_FOR_LINK_ANSWERS = "pageForLinkAnswers";
 	public static final String PAGE_TITLE_FOR_LINK_ANSWERS = "Select the question that needs to be linked to another question";
 	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS =
 			"Here you can configure which question should be displayed next upon selection of a particular answer of the current question" + "by clicking the Link Answer button.";
 
-	// Widget constants
-	// Labels
+	// Widget constants	
+	// Buttons
+	public static final String ADD_QUESTION = "Add Question";
+	public static final String ADD_ANSWER = "Add Answer";
+		
+	// Warnings
+	public static final String NO_ANSWERS_WARNING = "Please add answers to the question by clicking \"" + ADD_ANSWER + "\" button";
+		
+	// Errors
+	public static final String INSTANTIATED_BY_WRONG_WIZARD_ERROR = "PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard";
+	
+	// Labels	
 	public static final String LABEL_BROWSE_BUTTON = "Browse";
+	public static final String QUESTION = "Question";	
+	public static final String DESCRIBE_QUESTION = "Describe the question";
 	// Dimensions
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites

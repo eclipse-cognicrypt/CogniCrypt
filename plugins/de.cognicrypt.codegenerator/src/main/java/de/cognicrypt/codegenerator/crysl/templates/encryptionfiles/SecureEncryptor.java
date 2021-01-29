@@ -24,11 +24,12 @@ import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 public class SecureEncryptor {
 
 	/**
-	 * This method generates a secret key to encrypt data.
+	 * Gets a password to generate a key together with a random salt and
+	 * hashes the key to create a secure secret key for later encryption or decryption.
 	 *
-	 * @param pwd the password.
-	 * @returns the key.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @param pwd the users chosen password for a password-based encryption (PBE).
+	 * @returns encryptionKey the secret key to be used for later encryption.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 */
@@ -44,15 +45,17 @@ public class SecureEncryptor {
 	}
 	
 	/**
-	 * This method encrypts a file using with a secret key AES algorithm.
+	 * First reads all bytes of the plaintext file and then encrypts it with cipher using the input secret key and algorithm specifications provided by
+	 * initialized vector parameter (IvParameterSpec) from random bytes. Copies the ivBytes and the result of the encryption
+	 * in a new byte array and write it to a file where plaintext was located and returns the file.
 	 *
-	 * @param plaintext The input file to be encrypted.
-	 * @param key The secret key.
-	 * @param plain_off The input offset.
-	 * @param len The input length.
-	 * @returns the encrypted file.
+	 * @param plaintext the input file to be encrypted.
+	 * @param key the secret key for encryption, it also will be used for decryption.
+	 * @param plain_off the offset in input text where the input starts. 0, if all bytes in plaintext need to be encrypted.
+	 * @param len the length of the plaintext.
+	 * @returns a file that contains the byte with ivBytes and the outcome of encryption.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
@@ -80,15 +83,17 @@ public class SecureEncryptor {
 	}
 	
 	/**
-	 * This method decrypts a file using AES algorithm.
+	 * Reads all bytes in the ciphertext, then divides it into two parts, ivBytes and data. Then decrypts
+	 * the data with the input secret key that was used to encrypt the data. Writes the result into a file where
+	 * the ciphertext was located and returns the file.
 	 *
-	 * @param ciphertext The encrypted file to be decrypted.
-	 * @param key The secret key.
-	 * @param plain_off The input offset.
-	 * @param len The input length.
+	 * @param ciphertext The encrypted file to be decrypted. Includes ivBytes as first part and the encrypted data as the second part.
+	 * @param key The secret key that was used for encryption. .
+	 * @param plain_off the offset in input ciphertext where the input starts. 0, if all bytes in ciphertext need to be decrypted.
+	 * @param len The length of the ciphertext.
 	 * @returns the decrypted file.
 	 * @throws InvalidAlgorithmParameterException his exception is thrown when the given algorithm parameters are inappropriate for the cipher.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.

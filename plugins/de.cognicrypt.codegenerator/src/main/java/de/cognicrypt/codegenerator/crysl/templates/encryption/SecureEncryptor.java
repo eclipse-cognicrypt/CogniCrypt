@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -20,12 +20,13 @@ import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 public class SecureEncryptor {
 	
 	/**
-	 * Gets the key.
+	 * Gets a password to generate a key together with a random salt and
+	 * hashes the key to create a secure secret key for later encryption or decryption.
 	 *
-	 * @param pwd The password.
-	 * @returns encryptionKey the Secret key.
-	 * @throws GeneralSecurityException the general security exception.
-	 * @throws NoSuchAlgorithmException This exception is thrown when the algorithms that are being used are wrong.
+	 * @param pwd the users chosen password for a password-based encryption (PBE).
+	 * @returns encryptionKey the secret key to be used for later encryption.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 */
 	public javax.crypto.SecretKey getKey(char[] pwd) {
@@ -41,15 +42,17 @@ public class SecureEncryptor {
 	
 
 	/**
-	 * Encrypt.
-	 *
+	 * Encrypts a plaintext with cipher using the input secret key and algorithm specifications provided by
+	 * initialized vector parameter (IvParameterSpec) from random bytes. Returns a byte array that contains
+	 * the ivBytes in the first part and the encrypted plaintext on the second part.
+	 * 
 	 * @param plaintext text to be encrypted.
-	 * @param key the SecretKey.
-	 * @param plain_off the input offset.
-	 * @param len the input length.
-	 * @returns the byte[] encrypted text.
+	 * @param key the secret key for encryption, it also will be used for decryption.
+	 * @param plain_off the offset in input plaintext where the input starts. 0, if all bytes in plaintext need to be encrypted.
+	 * @param len the length of the plaintext.
+	 * @returns the result that contains the ivBytes and the outcome of encryption.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the input data size is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
@@ -74,15 +77,18 @@ public class SecureEncryptor {
 	}
 
 	/**
-	 * Decrypt.
+	 * Divides the cipher text into two parts, ivBytes and data, and decrypts
+	 * the data with the input secret key that was used to encrypt the data
+	 * and the ivParameter specifications from the ivBytes. The ivBytes are the random
+	 * bytes that the data was encrypted with it.  
 	 *
-	 * @param ciphertext the encrypted text.
-	 * @param key        the key.
-	 * @param plain_off the input offset.
-	 * @param len the input length.
-	 * @returns the byte[].
+	 * @param ciphertext The encrypted byte array to be decrypted. Includes ivBytes as first part and the encrypted data as the second part.
+	 * @param key the secret key that was used for encryption. 
+	 * @param plain_off the offset in input ciphertext where the input starts. 0, if all bytes in ciphertext need to be decrypted.
+	 * @param len the ciphertext length.
+	 * @returns the decrypted data.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the input data size is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.

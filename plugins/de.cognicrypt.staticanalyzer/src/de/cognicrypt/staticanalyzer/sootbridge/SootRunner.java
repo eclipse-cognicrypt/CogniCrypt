@@ -98,26 +98,6 @@ public class SootRunner {
 			CrySLParser r = new CrySLParser(project);
 			List<String> bannedRulesets = Lists.newArrayList();
 			
-			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
-				Activator.getDefault().logInfo("Loading rules from the detected provider.");				
-				ProviderDetection providerDetection = new ProviderDetection();
-				String detectedProvider = providerDetection.doAnalysis(icfg, Constants.ECLIPSE_RULES_DIR);
-				if (detectedProvider != null) {
-					String providerRulesPath = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator
-							+ CrySLUtils.getRuleVersions(detectedProvider)[CrySLUtils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider;
-					
-					List<File> providerRules = (List<File>) FileUtils.listFiles(new File(providerRulesPath), new String[] { "crysl" }, true);
-					for(File providerRule : providerRules ) {
-						rules.add(r.readRule(providerRule));
-					}
-					
-					if (detectedProvider == "BouncyCastle-JCA") {
-						 bannedRulesets.add("JavaCryptographicArchitecture");
-					}
-				}
-				
-			}
-			
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.ANALYZED_PROJECT_DIR_RULES)) {
 				Activator.getDefault().logInfo("Loading rules from the analyzed project's directory.");				
 				IPath location = project.getLocation();
@@ -141,6 +121,25 @@ public class SootRunner {
 					CrySLRule rule = r.readRule(file);
 					if(!rules.contains(rule)) {
 						rules.add(rule);
+					}
+				}
+			}
+			
+			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
+				Activator.getDefault().logInfo("Loading rules from the detected provider.");				
+				ProviderDetection providerDetection = new ProviderDetection();
+				String detectedProvider = providerDetection.doAnalysis(icfg, Constants.ECLIPSE_RULES_DIR);
+				if (detectedProvider != null) {
+					String providerRulesPath = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator
+							+ CrySLUtils.getRuleVersions(detectedProvider)[CrySLUtils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider;
+					
+					List<File> providerRules = (List<File>) FileUtils.listFiles(new File(providerRulesPath), new String[] { "crysl" }, true);
+					for(File providerRule : providerRules ) {
+						rules.add(r.readRule(providerRule));
+					}
+					
+					if (detectedProvider == "BouncyCastle-JCA") {
+						 bannedRulesets.add("JavaCryptographicArchitecture");
 					}
 				}
 			}

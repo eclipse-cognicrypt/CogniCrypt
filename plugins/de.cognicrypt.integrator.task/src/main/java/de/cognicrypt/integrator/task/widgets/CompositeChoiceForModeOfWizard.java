@@ -140,6 +140,9 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		final Button btnAddTemplate = new Button(compositeTemplateBtns, SWT.NONE);
 		btnAddTemplate.setText("Add");
 		
+		final Button btnModifyTemplate = new Button(compositeTemplateBtns, SWT.NONE);
+		btnModifyTemplate.setText("Modify");
+		
 		final Button btnRemoveTemplate = new Button(compositeTemplateBtns, SWT.NONE);
 		btnRemoveTemplate.setText("Remove");
 		
@@ -155,6 +158,14 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				// Open new page for User Story 3 which calls addTemplate(String identifier, File path)
 				BrowseFilePopUp fileBrowse = new BrowseFilePopUp(parent.getShell(), getTheLocalContainerPage(), compositeChoiceForModeOfWizard);
 				fileBrowse.open();
+			}
+		});
+		
+		btnModifyTemplate.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				ModifyFilePopUp fileModify = new ModifyFilePopUp(parent.getShell(), getTheLocalContainerPage(), compositeChoiceForModeOfWizard, templateList.getSelection());
+				fileModify.open();
 			}
 		});
 		
@@ -455,6 +466,16 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		HashMap<String, File> templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
 		ident.addAll(templates.keySet());
 		return ident;
+	}
+	
+	public File getTemplate(String identifiers) {
+		ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
+		HashMap<String, File> templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
+		
+		if (templates == null)
+			return null;
+		
+		return templates.get(identifiers); 
 	}
 	
 	public void setIdCounter(int x) {

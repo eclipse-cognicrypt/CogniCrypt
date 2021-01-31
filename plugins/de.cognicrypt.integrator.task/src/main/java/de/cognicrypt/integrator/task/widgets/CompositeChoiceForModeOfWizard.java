@@ -48,6 +48,7 @@ import de.cognicrypt.integrator.task.UIConstants;
 import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
 import de.cognicrypt.integrator.task.wizard.BrowseFilePopUp;
+import de.cognicrypt.integrator.task.wizard.ModifyFilePopUp;
 import de.cognicrypt.integrator.task.wizard.PageForTaskIntegratorWizard;
 
 public class CompositeChoiceForModeOfWizard extends Composite {

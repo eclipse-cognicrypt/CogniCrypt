@@ -83,28 +83,40 @@ public class SootRunner {
 
 				};
 				scanner.getAnalysisListener().addReportListener(resultsReporter);
-				List<CrySLRule> rules = getRules(resultsReporter.getReporterProject());
-				if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
-					ProviderDetection providerDetection = new ProviderDetection();
-					String detectedProvider = providerDetection.doAnalysis(icfg, Constants.ECLIPSE_RULES_DIR);
-					if (detectedProvider != null) {
-						rules.clear();
-						rules.addAll(providerDetection.chooseRules(Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator
-								+ CrySLUtils.getRuleVersions(detectedProvider)[CrySLUtils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider));
-					}
-				}
+				List<CrySLRule> rules = getRules(resultsReporter.getReporterProject(), icfg);
 				scanner.scan(rules);
 			}
 		};
 	}
 
-	public static List<CrySLRule> getRules(IProject project) {
+	public static List<CrySLRule> getRules(IProject project, ObservableICFG<Unit, SootMethod> icfg) {
 
 		List<CrySLRule> rules = Lists.newArrayList();
 		Set<String> readRules = Sets.newHashSet();
 
 		try {
 			CrySLParser r = new CrySLParser(project);
+			List<String> bannedRulesets = Lists.newArrayList();
+			
+			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
+				Activator.getDefault().logInfo("Loading rules from the detected provider.");				
+				ProviderDetection providerDetection = new ProviderDetection();
+				String detectedProvider = providerDetection.doAnalysis(icfg, Constants.ECLIPSE_RULES_DIR);
+				if (detectedProvider != null) {
+					String providerRulesPath = Constants.ECLIPSE_RULES_DIR + Constants.innerFileSeparator + detectedProvider + Constants.innerFileSeparator
+							+ CrySLUtils.getRuleVersions(detectedProvider)[CrySLUtils.getRuleVersions(detectedProvider).length - 1] + Constants.innerFileSeparator + detectedProvider;
+					
+					List<File> providerRules = (List<File>) FileUtils.listFiles(new File(providerRulesPath), new String[] { "crysl" }, true);
+					for(File providerRule : providerRules ) {
+						rules.add(r.readRule(providerRule));
+					}
+					
+					if (detectedProvider == "BouncyCastle-JCA") {
+						 bannedRulesets.add("JavaCryptographicArchitecture");
+					}
+				}
+				
+			}
 			
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.ANALYZED_PROJECT_DIR_RULES)) {
 				Activator.getDefault().logInfo("Loading rules from the analyzed project's directory.");				
@@ -137,6 +149,9 @@ public class SootRunner {
 			try {
 				String[] listOfNodes = prefs.childrenNames();
 				for (String currentNode : listOfNodes) {
+					if(bannedRulesets.contains(currentNode)) {
+						continue;
+					}
 					Ruleset loadedRuleset = new Ruleset(prefs.node(currentNode));
 					if (loadedRuleset.isChecked()) {
 						rules.addAll(Files.find(
@@ -246,7 +261,8 @@ public class SootRunner {
 
 	private static List<String> getExcludeList(IJavaProject project) {
 		final List<String> excludeList = new LinkedList<String>();
-		for (final CrySLRule r : getRules(project.getProject())) {
+		ObservableDynamicICFG icfg = null;
+		for (final CrySLRule r : getRules(project.getProject(), icfg)) {
 			try {
 				String fullyQualifiedName = r.getClassName();
 				excludeList.add(fullyQualifiedName);

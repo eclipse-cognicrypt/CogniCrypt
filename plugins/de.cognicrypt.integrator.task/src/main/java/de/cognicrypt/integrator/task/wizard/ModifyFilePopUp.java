@@ -82,8 +82,7 @@ public class ModifyFilePopUp extends Dialog {
 				Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE, new String[] { "*.java" },
 				"Select crysl template file that contains the code details", pageForTaskIntegratorWizard, compositeChoiceForModeOfWizard);
 		compCryslTemplateAtInit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-		compCryslTemplateAtInit.setTxtBoxOption(identifier[0]);
-		compCryslTemplateAtInit.setTextBox(compositeChoiceForModeOfWizard.getTemplate(identifier[0]).toString());
+		compCryslTemplateAtInit.setTxtBoxOption(compositeChoiceForModeOfWizard.getTemplate(identifier[0]).toString());
 		
 		return container;
 	}

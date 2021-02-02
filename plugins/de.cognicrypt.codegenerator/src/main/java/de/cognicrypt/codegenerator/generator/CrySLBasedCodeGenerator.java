@@ -58,6 +58,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
+import boomerang.callgraph.ObservableDynamicICFG;
 import crypto.interfaces.ICrySLPredicateParameter;
 import crypto.interfaces.ISLConstraint;
 import crypto.rules.CrySLComparisonConstraint;
@@ -1233,7 +1234,8 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			Map<SimpleName, CrySLObject> postCGVars = new HashMap<SimpleName, CrySLObject>();
 
 			List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
-			List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project);
+			ObservableDynamicICFG icfg = null;
+			List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project, icfg);
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override

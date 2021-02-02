@@ -1264,14 +1264,6 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 							crySLRule = crySLRuleFromSootRunner;
 						}
 					}
-					if(crySLRule == null) {
-						try {
-							crySLRule = CrySLUtils.getCrySLRule(simpleRuleName);
-						} catch (MalformedURLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
 					for (CodeGenCrySLObject o : pars) {
 						for (TransitionEdge edge : crySLRule.getUsagePattern().getEdges()) {
 							for (CrySLMethod method : edge.getLabel()) {

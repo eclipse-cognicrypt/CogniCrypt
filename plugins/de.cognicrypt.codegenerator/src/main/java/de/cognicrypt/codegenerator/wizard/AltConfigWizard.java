@@ -298,6 +298,7 @@ public class AltConfigWizard extends Wizard {
 			waitingDialog.setVisible(false);
 		}
 
+		waitingDialog.setVisible(false);
 		return ret;
 	}
 

@@ -260,9 +260,10 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					}
 					if (toBeEnsuredPred == null) {
 						for (CrySLPredicate reqPred : rule.getPredicates()) {
-							CrySLObject a = ((CodeGenCrySLRule) rule).getRequiredRetObj();
+							CodeGenCrySLObject a = rule.getRequiredRetObj();
 							if (reqPred.getParameters().size() > 0) {
-								boolean baseMatch = Utils.isSubType(((CrySLObject) reqPred.getParameters().get(0)).getJavaType(), a.getJavaType());
+								boolean baseMatch = Utils.isSubType(((CrySLObject) reqPred.getParameters().get(0)).getJavaType(), a.getJavaType()) 
+									&& reqPred.getParameters().get(0).getName().equals(a.getCrySLVariable());
 								if (!baseMatch) {
 									continue;
 								}
@@ -683,11 +684,11 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			} else {
 				try {
 					methodParameter[i] = Class.forName(parameter.getValue());
-					i++;
 				} catch (ClassNotFoundException e) {
 					Activator.getDefault().logError(e, "No class found for type: " + parameter.getValue().toString());
 				}
 			}
+			i++;
 		}
 		return methodParameter;
 	}
@@ -743,7 +744,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					}
 					// Not the last invoked method and return type is not equal to "void".
 					else if (!methodName.equals(lastInvokedMethod) && !returnValueType.equals(voidString)) {
-						methodInvocation = returnValueType + " = " + instanceName + "." + currentInvokedMethod;
+						methodInvocation = retObjInTemplate.getName() + " = " + instanceName + "." + currentInvokedMethod;
 						generated = true;
 					}
 				}
@@ -1226,12 +1227,13 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 
 			GeneratorMethod curMethod = null;
-			CrySLObject retObj = null;
+			CodeGenCrySLObject retObj = null;
 			List<CodeGenCrySLObject> pars = new ArrayList<>();
 			Map<SimpleName, CrySLObject> preCGVars = new HashMap<SimpleName, CrySLObject>();
 			Map<SimpleName, CrySLObject> postCGVars = new HashMap<SimpleName, CrySLObject>();
 
 			List<CodeGenCrySLRule> rules = new ArrayList<CodeGenCrySLRule>();
+			List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project);
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
@@ -1248,7 +1250,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 						if (efqn.equals(varfqn)) {
 							CrySLObject crySLObject = preCGVars.get(var);
 							if(pars.isEmpty()) {
-								retObj = crySLObject;
+								retObj = new CodeGenCrySLObject(crySLObject, (String) ((StringLiteral) arguments.get(1)).resolveConstantExpressionValue());
 							}
 							pars.add(new CodeGenCrySLObject(crySLObject, (String) ((StringLiteral) arguments.get(1)).resolveConstantExpressionValue()));
 							break;
@@ -1256,11 +1258,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					}
 				} else if ("includeClass".equals(calledMethodName)) {
 					String rule = Utils.filterQuotes(arguments.get(0).toString());
-					List<CrySLRule> rulesFromSootRunner = SootRunner.getRules(getDeveloperProject().project);
-					String simpleRuleName = rule.substring(rule.lastIndexOf(".") + 1);
 					CrySLRule crySLRule = null;//CrySLUtils.getCrySLRule(simpleRuleName);
 					for (CrySLRule crySLRuleFromSootRunner : rulesFromSootRunner) {
-						if(crySLRuleFromSootRunner.getClassName().contains(simpleRuleName)) {
+						if(crySLRuleFromSootRunner.getClassName().equals(rule)) {
 							crySLRule = crySLRuleFromSootRunner;
 						}
 					}

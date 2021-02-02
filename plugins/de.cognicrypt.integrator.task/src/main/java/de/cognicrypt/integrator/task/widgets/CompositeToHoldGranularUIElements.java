@@ -9,6 +9,8 @@ package de.cognicrypt.integrator.task.widgets;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridLayout;
@@ -72,10 +74,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	
 
-	public void addQuestionUIElements(final Question question, final boolean linkAnswerPage, ArrayList<String> ident) {
+	public void addQuestionUIElements(final Question question, final boolean linkAnswerPage) {
 
 		new CompositeGranularUIForHighLevelQuestions((Composite) getContent(), // the content composite of ScrolledComposite.
-				SWT.NONE, question, linkAnswerPage, ident);
+				SWT.NONE, question, linkAnswerPage);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 	}
@@ -97,7 +99,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		}
 		Collections.swap(this.listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
 		updateQuestionsID();
-		updateQuestionContainer(new ArrayList<String>());
+		updateQuestionContainer();
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		}
 		Collections.swap(this.listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
 		updateQuestionsID();
-		updateQuestionContainer(new ArrayList<String>());
+		updateQuestionContainer();
 	}
 
 	/**
@@ -129,8 +131,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 		this.listOfAllQuestions.remove(questionToBeDeleted);
 		updateQuestionsID();
-		updateQuestionContainer(new ArrayList<String>());
-
+		updateQuestionContainer();
 	}
 
 	/**
@@ -150,13 +151,13 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public void deleteAllQuestion() {
 		this.listOfAllQuestions.clear();
-		updateQuestionContainer(new ArrayList<String>());
+		updateQuestionContainer();
 	}
 
 	/**
 	 * Updates the question container
 	 */
-	public void updateQuestionContainer(ArrayList<String> ident) {
+	public void updateQuestionContainer() {
 		final Composite compositeContentOfThisScrolledComposite = (Composite) getContent();
 
 		// first dispose all the granular UI elements (which includes the deleted one).
@@ -170,7 +171,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 		// add all the clafer features excluding the deleted one.
 		for (final Question questionUnderConsideration : this.listOfAllQuestions) {
-			addQuestionUIElements(questionUnderConsideration, false, ident);
+			addQuestionUIElements(questionUnderConsideration, false);
 		}
 		updateLayout();
 	}
@@ -189,7 +190,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 * @param modifiedQuestion the modified question
 	 */
 
-	public void modifyHighLevelQuestion(final Question originalQuestion, final Question modifiedQuestion, ArrayList<String> ident) {
+	public void modifyHighLevelQuestion(final Question originalQuestion, final Question modifiedQuestion) {
 		for (final Question questionUnderConsideration : this.listOfAllQuestions) {
 			if (questionUnderConsideration.equals(originalQuestion)) {
 				questionUnderConsideration.setQuestionText(modifiedQuestion.getQuestionText());
@@ -204,7 +205,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 				break;
 			}
 		}
-		updateQuestionContainer(ident);
+		updateQuestionContainer();
 	}
 
 	@Override

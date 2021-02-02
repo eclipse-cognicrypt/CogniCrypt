@@ -13,47 +13,32 @@ package de.cognicrypt.integrator.task.widgets;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
-import org.eclipse.core.runtime.ICoreRunnable;
-import org.eclipse.core.runtime.ILog;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.UIConstants;
 import de.cognicrypt.integrator.task.controllers.Validator;
-import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.BrowseFilePopUp;
 import de.cognicrypt.integrator.task.wizard.ModifyFilePopUp;
 import de.cognicrypt.integrator.task.wizard.PageForTaskIntegratorWizard;
 
 public class CompositeChoiceForModeOfWizard extends Composite {
 
-	private ModelAdvancedMode objectForDataInNonGuidedMode;
 	private final Text txtTaskName;
 	private Text txtTaskDescription;
 	private ControlDecoration decNameOfTheTask; // Decoration variable to be able to access it in the events.
@@ -74,8 +59,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		this.lstCryslTemplates = lstCryslTemplates;
 	}
 
-	private CompositeBrowseForFile compCfr;
-
 	/**
 	 * Create the composite.
 	 *
@@ -86,9 +69,10 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			final PageForTaskIntegratorWizard theContainerPageForValidation) {
 		super(parent, style);
 
+		IntegratorModel.resetInstance();
+		
 		setTheLocalContainerPage(theContainerPageForValidation);
 
-		setObjectForDataInNonGuidedMode(new ModelAdvancedMode());
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		setLayout(new GridLayout(1, false));
 
@@ -148,9 +132,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		btnRemoveTemplate.setText("Remove");
 		
 		
-		ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
-		HashMap<String, File> crylTemplatesWithOption = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
-		
 		CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = this;
 		
 		btnAddTemplate.addSelectionListener(new SelectionAdapter() {
@@ -177,65 +158,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			}
 		});
 		
-		
-		/** Legacy Template Code
-		
-		final ScrolledComposite scrolledComposite = new ScrolledComposite(compositeAllModes,
-				SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		scrolledComposite.setExpandHorizontal(true);
-		scrolledComposite.setExpandVertical(true);
-		scrolledComposite.setMinWidth(800);
-
-		final Composite composite = new Composite(scrolledComposite, SWT.NONE);
-		composite.setLayout(new GridLayout(1, false));
-		scrolledComposite.setContent(composite);
-		scrolledComposite.setSize(composite.computeSize(800, 100));
-
-		final Composite composite_2 = new Composite(composite, SWT.NONE);
-		composite_2.setLayout(new GridLayout(1, false));
-		composite_2.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-
-		final Composite composite_3 = new Composite(composite, SWT.NONE);
-		composite_3.setLayout(new GridLayout());
-		composite_3.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-
-		final Button btnAdd = new Button(composite_3, SWT.NONE);
-		btnAdd.setText("Add");
-
-		final Button btnDone = new Button(composite_3, SWT.NONE);
-		btnDone.setText("Done");
-		btnAdd.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				final CompositeBrowseForFile compCryslTemplate = new CompositeBrowseForFile(composite_2, SWT.NONE,
-						Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE, new String[] { "*.java" },
-						"Select crysl template file that contains the code details", getTheLocalContainerPage());
-				compCryslTemplate.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-				lstCryslTemplates.add(compCryslTemplate);
-
-				scrolledComposite.layout(true, true);
-				scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-			}
-		});
-
-		btnDone.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
-				HashMap<String, File> crylTemplatesWithOption = objectForDataInNonGuidedModeTmp
-						.getCrylTemplatesWithOption();
-				if (crylTemplatesWithOption == null) {
-					objectForDataInNonGuidedModeTmp.setCrylTemplatesWithOption(new HashMap<String, File>());
-					crylTemplatesWithOption = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
-				}
-				for (CompositeBrowseForFile cryslTemplateOpts : lstCryslTemplates) {
-					File locationOfCryslTemplate = new File(cryslTemplateOpts.getText());
-					crylTemplatesWithOption.put(cryslTemplateOpts.getTxtBoxOption(), locationOfCryslTemplate);
-					System.out.println(cryslTemplateOpts.getTxtBoxOption());
-				}
-			}
-		}); **/
-		
 		Label spacerBeforeFileImports = new Label(this, SWT.HORIZONTAL);
 		spacerBeforeFileImports.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, 30));
 		
@@ -258,7 +180,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		btnDoYouWishToUseTheGuidedMode.setText("Use guided mode");
 		// Guided mode set by default.
 		btnDoYouWishToUseTheGuidedMode.setSelection(true);
-		getObjectForDataInNonGuidedMode().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
+		IntegratorModel.getInstance().setGuidedModeChosen(btnDoYouWishToUseTheGuidedMode.getSelection());
 
 		final Composite compositeNonguidedMode = new Composite(compositeFileImports, SWT.NONE);
 		compositeNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -290,7 +212,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 				// files required for the task.
 				compositeNonguidedMode.setVisible(!tempSelectionStatus);
 				// Set the data value.
-				getObjectForDataInNonGuidedMode().setGuidedModeChosen(tempSelectionStatus);
+				IntegratorModel.getInstance().setGuidedModeChosen(tempSelectionStatus);
 
 				// If the guided mode is not selected, the rest of the pages are set to
 				// completed. This is to allow the finish button to be enabled on the first
@@ -320,7 +242,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 			final String tempName = CompositeChoiceForModeOfWizard.this.txtTaskName.getText().trim();
 			final boolean validString = Validator.checkIfTaskNameAlreadyExists(tempName);
 			if (validString) {
-				getObjectForDataInNonGuidedMode().setNameOfTheTask(tempName);
+				IntegratorModel.getInstance().setNameOfTheTask(tempName);
 			}
 
 			if (tempName.isEmpty()) {
@@ -340,7 +262,7 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		});
 
 		getTxtTaskDescription().addModifyListener(
-				e -> getObjectForDataInNonGuidedMode().setTaskDescription(getTxtTaskDescription().getText().trim()));
+				e -> IntegratorModel.getInstance().setTaskDescription(getTxtTaskDescription().getText().trim()));
 
 	}
 
@@ -349,23 +271,6 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-	/**
-	 * Return the basic data of the task.
-	 *
-	 * @return the objectForDataInNonGuidedMode
-	 */
-	public ModelAdvancedMode getObjectForDataInNonGuidedMode() {
-		return this.objectForDataInNonGuidedMode;
-	}
-
-	/**
-	 * This object contains the basic data of the task.
-	 *
-	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
-	 */
-	public void setObjectForDataInNonGuidedMode(final ModelAdvancedMode objectForDataInNonGuidedMode) {
-		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
-	}
 
 	/**
 	 * Get the local copy of the wizard page that is the parent container for this
@@ -423,8 +328,8 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	
 	
 	public void redrawTable() {
-		ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
-		HashMap<String, File> templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
+		
+		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
 		
 		templateList.removeAll();
 		
@@ -434,49 +339,14 @@ public class CompositeChoiceForModeOfWizard extends Composite {
 	}
 	
 	public void addTemplate(String identifier, File path) {
-		ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
-		HashMap<String, File> templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
-		
-		if (templates == null) {
-			objectForDataInNonGuidedModeTmp.setCrylTemplatesWithOption(new HashMap<String, File>());
-			templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
-		}
-		
-		templates.put(identifier, path);
-		
+		IntegratorModel.getInstance().addTemplate(identifier, path);
 		redrawTable();
 	}
 	
 	public void removeTemplates(String[] identifiers) {
-		ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
-		HashMap<String, File> templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
 		
-		if (templates == null)
-			return;
-		
-		for(String identifier : identifiers) {
-			templates.remove(identifier);
-		}
-		
+		IntegratorModel.getInstance().removeTemplates(identifiers);
 		redrawTable();
-	}
-	
-	public ArrayList<String> getIdentifiers(){
-		ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
-		ArrayList<String> ident = new ArrayList<String>();
-		HashMap<String, File> templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
-		ident.addAll(templates.keySet());
-		return ident;
-	}
-	
-	public File getTemplate(String identifiers) {
-		ModelAdvancedMode objectForDataInNonGuidedModeTmp = getObjectForDataInNonGuidedMode();
-		HashMap<String, File> templates = objectForDataInNonGuidedModeTmp.getCrylTemplatesWithOption();
-		
-		if (templates == null)
-			return null;
-		
-		return templates.get(identifiers); 
 	}
 	
 	public void setIdCounter(int x) {

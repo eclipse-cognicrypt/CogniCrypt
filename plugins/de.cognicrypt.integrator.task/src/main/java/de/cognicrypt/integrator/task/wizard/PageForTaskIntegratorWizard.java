@@ -11,6 +11,8 @@
 package de.cognicrypt.integrator.task.wizard;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -22,6 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.CompositeBrowseForFile;
 import de.cognicrypt.integrator.task.widgets.CompositeChoiceForModeOfWizard;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
@@ -30,7 +33,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 
 	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
 	protected CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
-	private ArrayList<String> listCryslTemplatesIdentifier = new ArrayList<String>();
+	private List<String> listCryslTemplatesIdentifier = new ArrayList<String>();
 
 	int counter = 0;// TODO for testing only.
 
@@ -116,13 +119,9 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 				final IWizardPage nextPage = super.getNextPage();
 				if (nextPage instanceof QuestionsPage) {
 					final QuestionsPage questionsPage = (QuestionsPage) nextPage;
-					/*listCryslTemplatesIdentifier.clear();
-					for(CompositeBrowseForFile b : getCompositeChoiceForModeOfWizard().getLstCryslTemplates()) {
-						listCryslTemplatesIdentifier.add(b.getTxtBoxOption());
-					}*/
-					listCryslTemplatesIdentifier = getCompositeChoiceForModeOfWizard().getIdentifiers();
-					((QuestionsPage) nextPage).setlistCryslTemplatesIdentifier(listCryslTemplatesIdentifier);
-					questionsPage.getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
+
+					listCryslTemplatesIdentifier = IntegratorModel.getInstance().getIdentifiers();
+					questionsPage.getCompositeToHoldGranularUIElements().updateQuestionContainer();
 				}
 			}
 		}catch (final Exception ex) {

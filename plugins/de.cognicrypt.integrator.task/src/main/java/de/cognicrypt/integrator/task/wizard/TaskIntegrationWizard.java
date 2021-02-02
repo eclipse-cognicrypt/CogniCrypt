@@ -23,7 +23,7 @@ import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.integrator.task.controllers.FileUtilities;
-import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class TaskIntegrationWizard extends Wizard {
 
@@ -52,24 +52,24 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 
-		final ModelAdvancedMode objectForDataInNonGuidedMode =
-				getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
-		objectForDataInNonGuidedMode.setTask();
-		final FileUtilities fileUtilities = new FileUtilities(objectForDataInNonGuidedMode.getNameOfTheTask());
-		Task task = objectForDataInNonGuidedMode.getTask();
-		HashMap<String, File> crylTemplatesWithOption = objectForDataInNonGuidedMode.getCrylTemplatesWithOption();
+		final IntegratorModel integratorModel = IntegratorModel.getInstance();
+		
+		integratorModel.setTask();
+		final FileUtilities fileUtilities = new FileUtilities(integratorModel.getNameOfTheTask());
+		Task task = integratorModel.getTask();
+		HashMap<String, File> crylTemplatesWithOption = integratorModel.getCryslTemplateFiles();
 		if (getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
-			if (objectForDataInNonGuidedMode.isGuidedModeChosen() == false // && this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
+			if (integratorModel.isGuidedModeChosen() == false // && this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 			) {
 
-				final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption, objectForDataInNonGuidedMode.getLocationOfJSONFile(), objectForDataInNonGuidedMode.getLocationOfIconFile());
+				final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption, integratorModel.getLocationOfJSONFile(), integratorModel.getLocationOfIconFile());
 				// Check if the contents of the provided files are valid.
 				if (fileWriteAttemptResult.equals("")) {
 					// Adding the trimmed task name to ensure it matches with the name of the image stored (refer FileUtilities)
 					task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
 					task.setCodeGen(CodeGenerators.CrySL);
 					fileUtilities.writeTaskToJSONFile(task);
-					fileUtilities.updateThePluginXMLFileWithHelpData(objectForDataInNonGuidedMode.getNameOfTheTask());
+					fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getNameOfTheTask());
 					return true;
 				} else {
 					final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
@@ -84,7 +84,7 @@ public class TaskIntegrationWizard extends Wizard {
 
 			// collect input to task-related files from individual pages
 			
-			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(objectForDataInNonGuidedMode.getCrylTemplatesWithOption(),  objectForDataInNonGuidedMode.getLocationOfIconFile());
+			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(integratorModel.getCryslTemplateFiles(),  integratorModel.getLocationOfIconFile());
 			final ArrayList<Question> questions =
 					((QuestionsPage) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
 			fileUtilities.writeJSONFile(questions);
@@ -96,7 +96,7 @@ public class TaskIntegrationWizard extends Wizard {
 				task.setModelFile("");
 				task.setAdditionalResources("");
 				fileUtilities.writeTaskToJSONFile(task);
-				fileUtilities.updateThePluginXMLFileWithHelpData(objectForDataInNonGuidedMode.getNameOfTheTask());
+				fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getNameOfTheTask());
 			} else {
 				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
 				errorBox.setText("Problems with the provided files.");

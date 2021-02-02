@@ -30,7 +30,7 @@ public class CompositeModifyDeleteButtons extends Composite {
 	int counter = 0;
 	// private ArrayList<ClaferFeature> claferFeatures;
 
-	public CompositeModifyDeleteButtons(final Composite parent, final Question questionParam, ArrayList<String> ident) {
+	public CompositeModifyDeleteButtons(final Composite parent, final Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
 		// setClaferFeatures(claferFeatures);
 		/*
@@ -68,11 +68,10 @@ public class CompositeModifyDeleteButtons extends Composite {
 			public void widgetSelected(final SelectionEvent e) {
 				final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
 				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, listOfAllQuestions); //change later
-				qstnDialog.setlistCryslTemplatesIdentifier(ident);
 				final int response = qstnDialog.open();
 				if (response == Window.OK) {
 					final Question modifiedQuestion = qstnDialog.getQuestionDetails();
-					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).modifyHighLevelQuestion(questionParam, modifiedQuestion, ident);
+					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).modifyHighLevelQuestion(questionParam, modifiedQuestion);
 				}
 			}
 		});

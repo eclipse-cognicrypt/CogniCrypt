@@ -7,22 +7,15 @@
 
 package de.cognicrypt.integrator.task.widgets;
 
-import java.util.ArrayList;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.wizard.AddDependenciesDialog;
-import de.cognicrypt.integrator.task.wizard.LinkAnswerDialog;
 
 /**
  * This class creates widgets to display the overview of the question details and creates button to add clafer/code dependency to the question
@@ -43,8 +36,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	public CompositeGranularUIForHighLevelQuestions(final Composite parent, final int style, final Question questionParam, final boolean linkAnswerPage, 
-			ArrayList<String> ident) {
+	public CompositeGranularUIForHighLevelQuestions(final Composite parent, final int style, final Question questionParam, final boolean linkAnswerPage) {
 		super(parent, SWT.BORDER);
 
 		setQuestion(questionParam);
@@ -55,7 +47,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 		setLayout(new GridLayout(2, false));
 
-		final CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, this.question, ident);
+		final CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, this.question);
 		grpModifyDeleteButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// Only visible for "pageForHighLevelQuestions" page
@@ -126,7 +118,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		gdCompositeForAnswers.widthHint = 500;
 		compositeForAnswers.setLayoutData(gdCompositeForAnswers);
 		for (final Answer answer : this.question.getAnswers()) {
-			compositeForAnswers.addAnswer(answer, false, ident);
+			compositeForAnswers.addAnswer(answer, false);
 		}
 
 	}

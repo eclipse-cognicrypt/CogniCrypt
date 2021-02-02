@@ -8,6 +8,7 @@
 package de.cognicrypt.integrator.task.wizard;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -23,8 +24,6 @@ import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
 
 public class QuestionsPage extends PageForTaskIntegratorWizard {
-
-	private ArrayList<String> listCryslTemplatesIdentifier = new ArrayList<String>();
 	
 	public QuestionsPage() {
 		super(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS);
@@ -59,7 +58,6 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				questionDialog.setlistCryslTemplatesIdentifier(listCryslTemplatesIdentifier);
 				final int response = questionDialog.open();
 				final int questionID = QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().size();
 				if (response == Window.OK) {
@@ -71,14 +69,9 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 					// Update the array list.
 					QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
 					// rebuild the UI
-					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer(listCryslTemplatesIdentifier);
+					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer();
 				}
 			}
 		});
 	}
-
-	public void setlistCryslTemplatesIdentifier(ArrayList<String> listCryslTemplatesIdentifier){
-		this.listCryslTemplatesIdentifier = listCryslTemplatesIdentifier;
-	}
-	
 }

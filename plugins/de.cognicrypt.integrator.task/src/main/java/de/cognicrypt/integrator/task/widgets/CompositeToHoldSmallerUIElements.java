@@ -24,6 +24,7 @@ import de.cognicrypt.codegenerator.question.ClaferDependency;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.XSLTags;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.models.XSLAttribute;
 
 public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
@@ -34,7 +35,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	private final ArrayList<XSLAttribute> XSLAttributes; // <attributeName, actualAttributeString>
 
 	private final ArrayList<Answer> arrayAnswer;
-	private SortedSet<String> possibleCfrFeatures;
 
 	private final ArrayList<Button> btnList;
 
@@ -98,8 +98,8 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param showRemoveButton
 	 * @param templateIdentifier
 	 */
-	public void addAnswer(final Answer answer, final boolean showRemoveButton, ArrayList<String> ident) {
-		GroupAnswer groupForAnswer = new GroupAnswer((Composite) getContent(), SWT.NONE, answer, showRemoveButton, ident);
+	public void addAnswer(final Answer answer, final boolean showRemoveButton) {
+		GroupAnswer groupForAnswer = new GroupAnswer((Composite) getContent(), SWT.NONE, answer, showRemoveButton);
 		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 850, 50);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
 
@@ -111,13 +111,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 *
 	 * @param answerToBeDeleted
 	 */
-	public void deleteAnswer(final Answer answerToBeDeleted, ArrayList<String> ident) {
+	public void deleteAnswer(final Answer answerToBeDeleted) {
 		this.arrayAnswer.remove(answerToBeDeleted);
 		this.btnList.clear();
-		updateAnswerContainer(ident);
+		updateAnswerContainer();
 	}
 
-	public void updateAnswerContainer(ArrayList<String> ident) {
+	public void updateAnswerContainer() {
 		final Composite contentOfThisScrolledComposite = (Composite) getContent();
 
 		for (final Control answerToDelete : contentOfThisScrolledComposite.getChildren()) {
@@ -128,7 +128,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		for (final Answer answer : this.arrayAnswer) {
-			addAnswer(answer, true, ident); //change late
+			addAnswer(answer, true); //change late
 		}
 	}
 

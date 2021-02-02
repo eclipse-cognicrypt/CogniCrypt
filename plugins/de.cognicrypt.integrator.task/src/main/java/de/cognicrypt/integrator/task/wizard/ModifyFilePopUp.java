@@ -3,18 +3,13 @@ package de.cognicrypt.integrator.task.wizard;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.jface.dialogs.Dialog;
@@ -23,9 +18,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.UIConstants;
-import de.cognicrypt.integrator.task.controllers.Validator;
-import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.*;
 
 
@@ -52,7 +45,7 @@ public class ModifyFilePopUp extends Dialog {
 		// v2
 		final Label reminder = new Label(container, SWT.NONE);
 		reminder.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		reminder.setText("Please make sure your identifier is unique!");
+		reminder.setText(Constants.IDENTIFIER_NOT_UNIQUE_WARNING);
 		
 		final Composite compositeAllModes = new Composite(container, SWT.NONE);
 		compositeAllModes.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -80,9 +73,10 @@ public class ModifyFilePopUp extends Dialog {
 
 		compCryslTemplateAtInit = new CompositeBrowseForFile(composite_2, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE, new String[] { "*.java" },
-				"Select crysl template file that contains the code details", pageForTaskIntegratorWizard, compositeChoiceForModeOfWizard);
+				Constants.PAGE_DESCRIPTION_FOR_MODIFY, pageForTaskIntegratorWizard, compositeChoiceForModeOfWizard);
 		compCryslTemplateAtInit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
-		compCryslTemplateAtInit.setTxtBoxOption(compositeChoiceForModeOfWizard.getTemplate(identifier[0]).toString());
+		compCryslTemplateAtInit.setOptionalText(identifier[0]);
+		compCryslTemplateAtInit.setPathText(IntegratorModel.getInstance().getTemplate(identifier[0]).toString());
 		
 		return container;
 	}
@@ -107,11 +101,11 @@ public class ModifyFilePopUp extends Dialog {
     	// check if id was used already and is in the template list 
     	boolean warningIdAlreadyUsed = false;
     	try {
-	    	ArrayList<String> listOfIdentifierTemplateList = compositeChoiceForModeOfWizard.getIdentifiers();
+	    	List<String> listOfIdentifierTemplateList = IntegratorModel.getInstance().getIdentifiers();
 	    		for(int k = 0; k < listOfIdentifierTemplateList.size(); k++) {
 	    			if(listOfIdentifierTemplateList.get(k).equals(identifier[0])) {
 	    				// do nothing as the identifier of same element can be used again
-	    			}else if(compCryslTemplateAtInit.getTxtBoxOption().equals(listOfIdentifierTemplateList.get(k))) { // if its identifier of modified id no warning is needed
+	    			}else if(compCryslTemplateAtInit.getOptionalText().equals(listOfIdentifierTemplateList.get(k))) { // if its identifier of modified id no warning is needed
 		    			MessageDialog.openError(getShell(), "Warning", "Because one or more identifier you chose are already in use the chosen file or files could not be added!");
 		    			warningIdAlreadyUsed = true;
 		    		}
@@ -120,7 +114,7 @@ public class ModifyFilePopUp extends Dialog {
     	
     	if(warningIdAlreadyUsed == false) {
     		compositeChoiceForModeOfWizard.removeTemplates(identifier);
-        	compositeChoiceForModeOfWizard.addTemplate(compCryslTemplateAtInit.getTxtBoxOption(), new File(compCryslTemplateAtInit.getText()));
+        	compositeChoiceForModeOfWizard.addTemplate(compCryslTemplateAtInit.getOptionalText(), new File(compCryslTemplateAtInit.getPathText()));
         	
     	}
     	

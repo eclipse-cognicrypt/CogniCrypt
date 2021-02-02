@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class GroupAnswer extends Group {
 
@@ -36,15 +37,14 @@ public class GroupAnswer extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public GroupAnswer(final Composite parent, final int style, final Answer answerParam, final boolean showRemoveButton,
-			ArrayList<String> identCrysl) {
+	public GroupAnswer(final Composite parent, final int style, final Answer answerParam, final boolean showRemoveButton) {
 		super(parent, style);
 		setAnswer(answerParam);
 
 		this.txtAnswer = new Text(this, SWT.BORDER);
 		//this.txtOption = new Text(this, SWT.BORDER);
 		this.possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
-		this.possibleIdentifiers.setItems(identCrysl.toArray(new String[0])); 
+		this.possibleIdentifiers.setItems(IntegratorModel.getInstance().getIdentifiers().toArray(new String[0])); 
 		if (this.answer.getValue() != null) {
 			this.txtAnswer.setText(this.answer.getValue());
 		}
@@ -60,7 +60,7 @@ public class GroupAnswer extends Group {
 		if (this.answer.getOption() != null) {
 			//this.txtOption.setText(this.answer.getOption());
 			String selected = this.answer.getOption();
-			this.possibleIdentifiers.select(identCrysl.indexOf(selected));
+			this.possibleIdentifiers.select(IntegratorModel.getInstance().getIdentifiers().indexOf(selected));
 		}
 		/*this.txtOption.addFocusListener(new FocusAdapter() {
 
@@ -156,7 +156,7 @@ public class GroupAnswer extends Group {
 					confirmationMessageBox.setText("Deleting answer");
 					final int response = confirmationMessageBox.open();
 					if (response == SWT.YES) {
-						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(GroupAnswer.this.answer, identCrysl);
+						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(GroupAnswer.this.answer);
 						btnList.remove(btnDefaultAnswer);
 					}
 

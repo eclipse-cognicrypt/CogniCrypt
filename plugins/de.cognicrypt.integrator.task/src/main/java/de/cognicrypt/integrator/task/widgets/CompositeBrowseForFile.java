@@ -8,7 +8,6 @@
 package de.cognicrypt.integrator.task.widgets;
 
 import java.io.File;
-import java.util.HashMap;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
@@ -26,35 +25,32 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
-import org.hamcrest.core.IsInstanceOf;
 
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.UIConstants;
-import de.cognicrypt.integrator.task.models.ModelAdvancedMode;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.PageForTaskIntegratorWizard;
 
 public class CompositeBrowseForFile extends Composite {
 
-	private ModelAdvancedMode objectForDataInNonGuidedMode;
+	private IntegratorModel integratorModel;
+	
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been
 																// completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
 
 	private Listener onFileChangedListener;
 
-	private Text textBox;
+	private Text pathText;
 	
-	private Text txtBoxOption;
-
-	public String getTxtBoxOption() {
-		return txtBoxOption.getText();
-	}
+	private Text optionalText;
 
 	public CompositeBrowseForFile(final Composite parent, final int style, final String labelText,
 			final String[] fileTypes, final String stringOnFileDialog,
 			final PageForTaskIntegratorWizard theContainerpageForValidation, final Listener listener) {
 		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
 		this.onFileChangedListener = listener;
+		this.integratorModel = IntegratorModel.getInstance();
 	}
 
 	public CompositeChoiceForModeOfWizard findAncestor(Composite comp) {
@@ -83,12 +79,6 @@ public class CompositeBrowseForFile extends Composite {
 			String[] fileTypes, String stringOnDialog,
 			PageForTaskIntegratorWizard theContainerpageForValidation) {
 		super(parent, style);
-		// this object is required in the text box listener. Should not be called too
-		// often.
-		
-		// does not work when called by BrowseFilePopUp because it is no composite
-		setObjectForDataInNonGuidedMode(findAncestor(getParent()).getObjectForDataInNonGuidedMode());
-		
 
 		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
 	}
@@ -97,12 +87,6 @@ public class CompositeBrowseForFile extends Composite {
 			String[] fileTypes, String stringOnDialog,
 			PageForTaskIntegratorWizard theContainerpageForValidation, CompositeChoiceForModeOfWizard comp) {
 		super(parent, style);
-		// this object is required in the text box listener. Should not be called too
-		// often.
-		
-		// does not work when called by BrowseFilePopUp because it is no composite
-
-		setObjectForDataInNonGuidedMode(comp.getObjectForDataInNonGuidedMode());
 		
 		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
 	}
@@ -128,20 +112,20 @@ public class CompositeBrowseForFile extends Composite {
 		getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_FILE_NAME);
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 
-		this.textBox = new Text(this, SWT.BORDER);
+		this.pathText = new Text(this, SWT.BORDER);
 		final GridData gdTextBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		
 		// do not claim space for all the text if not available
 		gdTextBox.widthHint = 500;
-		this.textBox.setLayoutData(gdTextBox);
-		this.txtBoxOption = new Text(this, SWT.BORDER);
+		this.pathText.setLayoutData(gdTextBox);
+		this.optionalText = new Text(this, SWT.BORDER);
 		final GridData gdTextBoxOption = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		
 		// do not claim space for all the text if not available
 		gdTextBoxOption.widthHint = 100;
-		this.txtBoxOption.setLayoutData(gdTextBoxOption);
+		this.optionalText.setLayoutData(gdTextBoxOption);
 		if(!labelText.equals(Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE)) {
-			this.txtBoxOption.setVisible(false);
+			this.optionalText.setVisible(false);
 		}
 		final Button browseButton = new Button(this, SWT.NONE);
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
@@ -156,7 +140,7 @@ public class CompositeBrowseForFile extends Composite {
 				if (fileTypes == null) {
 					selectedPath = openDirectoryDialog(stringOnDialog);
 					if (selectedPath != null) {
-						CompositeBrowseForFile.this.textBox.setText(selectedPath);
+						CompositeBrowseForFile.this.pathText.setText(selectedPath);
 						if (CompositeBrowseForFile.this.onFileChangedListener != null) {
 							CompositeBrowseForFile.this.onFileChangedListener.handleEvent(new Event());
 						}
@@ -164,20 +148,20 @@ public class CompositeBrowseForFile extends Composite {
 				} else {
 					selectedPath = openFileDialog(fileTypes, stringOnDialog);
 					if (selectedPath != null) {
-						CompositeBrowseForFile.this.textBox.setText(selectedPath);
+						CompositeBrowseForFile.this.pathText.setText(selectedPath);
 					}
 				}
 
 			}
 		});
 
-		this.textBox.addModifyListener(e -> {
+		this.pathText.addModifyListener(e -> {
 
-			File locationOfCryslTemplate = new File(CompositeBrowseForFile.this.textBox.getText());
+			File locationOfCryslTemplate = new File(CompositeBrowseForFile.this.pathText.getText());
 			final File tempFileVariable = locationOfCryslTemplate;
 			// Validate the file IO. The directory check is removed.
 			if ((!tempFileVariable.exists() || !tempFileVariable.canRead())
-					&& CompositeBrowseForFile.this.textBox.getParent().isVisible()) {//
+					&& CompositeBrowseForFile.this.pathText.getParent().isVisible()) {//
 				getDecFilePath().setImage(UIConstants.DEC_ERROR);
 				getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 				getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
@@ -191,19 +175,19 @@ public class CompositeBrowseForFile extends Composite {
 				getDecFilePath().showHoverText("");
 				switch (labelText) {
 				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK:
-					getObjectForDataInNonGuidedMode().setLocationOfCustomLibrary(tempFileVariable);
+					integratorModel.setLocationOfCustomLibrary(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE:
-					getObjectForDataInNonGuidedMode().setLocationOfXSLFile(tempFileVariable);
+					integratorModel.setLocationOfXSLFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
-					getObjectForDataInNonGuidedMode().setLocationOfJSONFile(tempFileVariable);
+					integratorModel.setLocationOfJSONFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
-					getObjectForDataInNonGuidedMode().setLocationOfIconFile(tempFileVariable);
+					integratorModel.setLocationOfIconFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE:
-					getObjectForDataInNonGuidedMode().setLocationOfHelpXMLFile(tempFileVariable);
+					integratorModel.setLocationOfHelpXMLFile(tempFileVariable);
 					break;
 				}
 
@@ -213,7 +197,7 @@ public class CompositeBrowseForFile extends Composite {
 		});
 		
 		
-		this.textBox.addFocusListener(new FocusAdapter() {
+		this.pathText.addFocusListener(new FocusAdapter() {
 
 			@Override
 			public void focusLost(final FocusEvent e) {
@@ -257,23 +241,6 @@ public class CompositeBrowseForFile extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-	/**
-	 * Return the object with the basic data of the task.
-	 *
-	 * @return the objectForDataInNonGuidedMode
-	 */
-	private ModelAdvancedMode getObjectForDataInNonGuidedMode() {
-		return this.objectForDataInNonGuidedMode;
-	}
-
-	/**
-	 * This object stores the basic data of the task that is being handled.
-	 *
-	 * @param objectForDataInNonGuidedMode the objectForDataInNonGuidedMode to set
-	 */
-	private void setObjectForDataInNonGuidedMode(final ModelAdvancedMode objectForDataInNonGuidedMode) {
-		this.objectForDataInNonGuidedMode = objectForDataInNonGuidedMode;
-	}
 
 	/**
 	 * Return the container wizard page object.
@@ -294,8 +261,12 @@ public class CompositeBrowseForFile extends Composite {
 		this.theLocalContainerPage = theLocalContainerPage;
 	}
 
-	public String getText() {
-		return this.textBox.getText();
+	public String getPathText() {
+		return this.pathText.getText();
+	}
+	
+	public String getOptionalText() {
+		return optionalText.getText();
 	}
 
 	/**
@@ -314,11 +285,20 @@ public class CompositeBrowseForFile extends Composite {
 		this.decFilePath = decFilePath;
 	}
 
+	
+	/** 
+	 * Change Path Option.
+	 * @param text String to set ID
+	 */
+	public void setPathText(String text) {
+		pathText.setText(text);
+	}
+	
 	/** 
 	 * Change Identifier Option.
 	 * @param text String to set ID
 	 */
-	public void setTxtBoxOption(String text) {
-		txtBoxOption.setText(text);
+	public void setOptionalText(String text) {
+		optionalText.setText(text);
 	}
 }

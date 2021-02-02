@@ -45,7 +45,6 @@ public class QuestionDialog extends Dialog {
 	private Question questionDetails;
 	int counter = 0;
 	//private String currentQuestionType = null;
-	private ArrayList<String> listCryslTemplatesIdentifier;
 
 	/**
 	 * Create the dialog.
@@ -143,7 +142,7 @@ public class QuestionDialog extends Dialog {
 			public void widgetSelected(final SelectionEvent e) {
 				final Answer tempAnswer = new Answer();
 				QuestionDialog.this.compositeToHoldAnswers.getListOfAllAnswer().add(tempAnswer);
-				QuestionDialog.this.compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton, listCryslTemplatesIdentifier);
+				QuestionDialog.this.compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton);
 				QuestionDialog.this.compositeToHoldAnswers.setVisible(true);
 			}
 
@@ -228,7 +227,7 @@ public class QuestionDialog extends Dialog {
 			if (!this.question.getElement().equals(Constants.GUIElements.text)) {
 				for (final Answer answer : this.question.getAnswers()) {
 					this.compositeToHoldAnswers.getListOfAllAnswer().add(answer);
-					this.compositeToHoldAnswers.addAnswer(answer, showRemoveButton, listCryslTemplatesIdentifier);
+					this.compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
 					this.compositeToHoldAnswers.setVisible(true);
 				}
 			}
@@ -273,8 +272,8 @@ public class QuestionDialog extends Dialog {
 		for (int i = 0; i < this.compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
 			if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null)
 					|| Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), "")) {
-				this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswer().get(i), listCryslTemplatesIdentifier);
-				this.compositeToHoldAnswers.updateAnswerContainer(listCryslTemplatesIdentifier);
+				this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswer().get(i));
+				this.compositeToHoldAnswers.updateAnswerContainer();
 				i--;
 			}
 		}
@@ -325,9 +324,6 @@ public class QuestionDialog extends Dialog {
 		
 	}
 
-	public void setlistCryslTemplatesIdentifier(ArrayList<String> listCryslTemplatesIdentifier){
-		this.listCryslTemplatesIdentifier = listCryslTemplatesIdentifier;
-	}
 	
 	/**
 	 * checks if for the question default answer is selected or not if no answer is selected as default answer then the function sets the first answer as the default answer of the

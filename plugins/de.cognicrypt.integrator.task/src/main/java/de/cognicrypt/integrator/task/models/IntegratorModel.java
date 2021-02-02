@@ -11,12 +11,14 @@
 package de.cognicrypt.integrator.task.models;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 
-public class ModelAdvancedMode {
+public class IntegratorModel {
 
 	private String nameOfTheTask;
 	private File locationOfCustomLibrary;
@@ -28,15 +30,26 @@ public class ModelAdvancedMode {
 	private File locationOfHelpXMLFile;
 	private boolean isCustomLibraryRequired;
 	private boolean isGuidedModeChosen;
-	// private boolean isGuidedModeForced;
 	private final Task task;
 	private String description;
 	private String taskDescription;
-	private HashMap<String, File> crylTemplatesWithOption;
-
-	public ModelAdvancedMode() {
+	private HashMap<String, File> cryslTemplateFiles;
+	
+	// Singleton
+	private static IntegratorModel instance = new IntegratorModel();
+	
+	public static IntegratorModel getInstance() {
+		return instance;
+	}
+	
+	public static void resetInstance() {
+		instance = new IntegratorModel();
+	}
+	
+	private IntegratorModel() {
 		super();
 		this.task = new Task();
+		cryslTemplateFiles = new HashMap<String, File>();
 	}
 
 	/**
@@ -245,12 +258,38 @@ public class ModelAdvancedMode {
 	public void setLocationOfCryslTemplate(File locationOfCryslTemplate) {
 		this.locationOfCryslTemplate = locationOfCryslTemplate;
 	}
+	
 
-	public HashMap<String, File> getCrylTemplatesWithOption() {
-		return crylTemplatesWithOption;
+	
+	
+	public HashMap<String, File> getCryslTemplateFiles() {
+		return cryslTemplateFiles;
 	}
+	
+	public void addTemplate(String identifier, File path) {	
+		cryslTemplateFiles.put(identifier, path);
+	}
+	
+	public boolean contains(String identifier) {
+		return cryslTemplateFiles.containsKey(identifier);
+	}
+	
+	public void removeTemplates(String[] identifiers) {
 
-	public void setCrylTemplatesWithOption(HashMap<String, File> crylTemplatesWithOption) {
-		this.crylTemplatesWithOption = crylTemplatesWithOption;
+		for(String identifier : identifiers) {
+			cryslTemplateFiles.remove(identifier);
+		}
+
+	}
+	
+	public List<String> getIdentifiers(){
+		
+		ArrayList<String> identifiers = new ArrayList<String>();
+		identifiers.addAll(cryslTemplateFiles.keySet());
+		return identifiers;
+	}
+	
+	public File getTemplate(String identifier){
+		return cryslTemplateFiles.get(identifier);
 	}
 }

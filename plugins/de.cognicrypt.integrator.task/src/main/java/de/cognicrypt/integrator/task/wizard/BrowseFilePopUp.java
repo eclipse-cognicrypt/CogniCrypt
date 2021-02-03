@@ -28,14 +28,14 @@ import de.cognicrypt.integrator.task.widgets.*;
 
 public class BrowseFilePopUp extends Dialog {
 	PageForTaskIntegratorWizard pageForTaskIntegratorWizard;
-	CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard;
+	CompositeTaskInformation compositeChoiceForModeOfWizard;
 	CompositeBrowseForFile compCryslTemplate;
 	CompositeBrowseForFile compCryslTemplateAtInit;
 	LinkedList<CompositeBrowseForFile> listOfCompCryslTemplate = new LinkedList<CompositeBrowseForFile>();
 	Dimension windowSize;
 	private int counterAddedIdentifiert = 0;
 	
-	public BrowseFilePopUp(final Shell parentShell, PageForTaskIntegratorWizard pageForTaskIntegratorWizard, CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard) {
+	public BrowseFilePopUp(final Shell parentShell, PageForTaskIntegratorWizard pageForTaskIntegratorWizard, CompositeTaskInformation compositeChoiceForModeOfWizard) {
 		super(parentShell);
 		this.pageForTaskIntegratorWizard = pageForTaskIntegratorWizard;
 		this.compositeChoiceForModeOfWizard = compositeChoiceForModeOfWizard;
@@ -170,7 +170,7 @@ public class BrowseFilePopUp extends Dialog {
 	    	
 
 	    	if(!duplicateIdentifier.contentEquals("")) {
-	    		MessageDialog.openError(getShell(), "Warning", "Identifier " + duplicateIdentifier + " was used before.");
+	    		MessageDialog.openError(getShell(), "Warning", "Identifier " + duplicateIdentifier + " has been used before.");
 	    		return;
 	    	}
 	    	

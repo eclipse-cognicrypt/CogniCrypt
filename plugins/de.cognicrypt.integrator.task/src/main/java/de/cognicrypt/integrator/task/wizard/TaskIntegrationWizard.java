@@ -36,7 +36,7 @@ public class TaskIntegrationWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		addPage(new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD));
+		addPage(new PageForTaskIntegratorWizard(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD));
 
 		addPage(new QuestionsPage());
 
@@ -58,7 +58,7 @@ public class TaskIntegrationWizard extends Wizard {
 		final FileUtilities fileUtilities = new FileUtilities(integratorModel.getNameOfTheTask());
 		Task task = integratorModel.getTask();
 		HashMap<String, File> crylTemplatesWithOption = integratorModel.getCryslTemplateFiles();
-		if (getContainer().getCurrentPage().getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
+		if (getContainer().getCurrentPage().getName().equals(Constants.PAGE_TASK_INFORMATION)) {
 			if (integratorModel.isGuidedModeChosen() == false // && this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
 			) {
 

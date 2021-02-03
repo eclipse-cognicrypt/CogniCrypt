@@ -59,17 +59,16 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final int response = questionDialog.open();
-				final int questionID = QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().size();
+				final int questionID = QuestionsPage.this.getCompositeToHoldGranularUIElements().getListOfAllQuestions().size();
 				if (response == Window.OK) {
-					QuestionsPage.this.counter++;
 					// Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
 					final Question questionDetails = questionDialog.getQuestionDetails();
 					questionDetails.setId(questionID);
 
 					// Update the array list.
-					QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
+					QuestionsPage.this.getCompositeToHoldGranularUIElements().getListOfAllQuestions().add(questionDetails);
 					// rebuild the UI
-					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer();
+					QuestionsPage.this.getCompositeToHoldGranularUIElements().updateQuestionContainer();
 				}
 			}
 		});

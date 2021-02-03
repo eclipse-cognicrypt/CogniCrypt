@@ -20,7 +20,9 @@ import de.cognicrypt.core.Constants;
 
 public class IntegratorModel {
 
-	private String nameOfTheTask;
+	private String taskName;
+	private String description;
+	private String taskDescription;
 	private File locationOfCustomLibrary;
 	private File locationOfClaferFile;
 	private File locationOfXSLFile;
@@ -31,8 +33,6 @@ public class IntegratorModel {
 	private boolean isCustomLibraryRequired;
 	private boolean isGuidedModeChosen;
 	private final Task task;
-	private String description;
-	private String taskDescription;
 	private HashMap<String, File> cryslTemplateFiles;
 	
 	// Singleton
@@ -75,14 +75,14 @@ public class IntegratorModel {
 	 * @return the nameOfTheTask
 	 */
 	public String getNameOfTheTask() {
-		return this.nameOfTheTask;
+		return this.taskName;
 	}
 
 	/**
 	 * @param nameOfTheTask the nameOfTheTask to set
 	 */
-	public void setNameOfTheTask(final String nameOfTheTask) {
-		this.nameOfTheTask = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
+	public void setTaskName(final String nameOfTheTask) {
+		this.taskName = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
 		setDescription(nameOfTheTask); // This is the human readable name entered by the user.
 	}
 
@@ -209,19 +209,6 @@ public class IntegratorModel {
 		this.task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask());
 	}
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
 
 	/**
 	 * @return the taskDescryption
@@ -235,6 +222,15 @@ public class IntegratorModel {
 	 */
 	public void setTaskDescription(final String taskDescription) {
 		this.taskDescription = taskDescription;
+	}
+	
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	/**

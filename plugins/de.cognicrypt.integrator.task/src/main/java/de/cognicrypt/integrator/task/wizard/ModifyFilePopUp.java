@@ -24,12 +24,12 @@ import de.cognicrypt.integrator.task.widgets.*;
 
 public class ModifyFilePopUp extends Dialog {
 	PageForTaskIntegratorWizard pageForTaskIntegratorWizard;
-	CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard;
+	CompositeTaskInformation compositeChoiceForModeOfWizard;
 	Dimension windowSize;
 	String[] identifier;
 	CompositeBrowseForFile compCryslTemplateAtInit;
 	
-	public ModifyFilePopUp(final Shell parentShell, PageForTaskIntegratorWizard pageForTaskIntegratorWizard, CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard, 
+	public ModifyFilePopUp(final Shell parentShell, PageForTaskIntegratorWizard pageForTaskIntegratorWizard, CompositeTaskInformation compositeChoiceForModeOfWizard, 
 			String[] identifier) {
 		super(parentShell);
 		this.pageForTaskIntegratorWizard = pageForTaskIntegratorWizard;

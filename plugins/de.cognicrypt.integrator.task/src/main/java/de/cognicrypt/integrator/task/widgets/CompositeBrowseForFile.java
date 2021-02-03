@@ -33,8 +33,6 @@ import de.cognicrypt.integrator.task.wizard.PageForTaskIntegratorWizard;
 
 public class CompositeBrowseForFile extends Composite {
 
-	private IntegratorModel integratorModel;
-	
 	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been
 																// completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
@@ -50,16 +48,15 @@ public class CompositeBrowseForFile extends Composite {
 			final PageForTaskIntegratorWizard theContainerpageForValidation, final Listener listener) {
 		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
 		this.onFileChangedListener = listener;
-		this.integratorModel = IntegratorModel.getInstance();
 	}
 
-	public CompositeChoiceForModeOfWizard findAncestor(Composite comp) {
+	public CompositeTaskInformation findAncestor(Composite comp) {
 		Composite result = comp;
-		while (!(result instanceof CompositeChoiceForModeOfWizard) && result!= null) {
+		while (!(result instanceof CompositeTaskInformation) && result!= null) {
 			result = result.getParent();
 		}
-		if (result instanceof CompositeChoiceForModeOfWizard)
-			return (CompositeChoiceForModeOfWizard) result;
+		if (result instanceof CompositeTaskInformation)
+			return (CompositeTaskInformation) result;
 		else
 			return null;
 	}
@@ -85,7 +82,7 @@ public class CompositeBrowseForFile extends Composite {
 	
 	public CompositeBrowseForFile(Composite parent, int style, String labelText,
 			String[] fileTypes, String stringOnDialog,
-			PageForTaskIntegratorWizard theContainerpageForValidation, CompositeChoiceForModeOfWizard comp) {
+			PageForTaskIntegratorWizard theContainerpageForValidation, CompositeTaskInformation comp) {
 		super(parent, style);
 		
 		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
@@ -155,18 +152,18 @@ public class CompositeBrowseForFile extends Composite {
 			}
 		});
 
-		this.pathText.addModifyListener(e -> {
+		pathText.addModifyListener(e -> {
 
-			File locationOfCryslTemplate = new File(CompositeBrowseForFile.this.pathText.getText());
+			File locationOfCryslTemplate = new File(pathText.getText());
 			final File tempFileVariable = locationOfCryslTemplate;
 			// Validate the file IO. The directory check is removed.
 			if ((!tempFileVariable.exists() || !tempFileVariable.canRead())
-					&& CompositeBrowseForFile.this.pathText.getParent().isVisible()) {//
+					&& pathText.getParent().isVisible()) {//
 				getDecFilePath().setImage(UIConstants.DEC_ERROR);
 				getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 				getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 				// Check if the page can be set to completed.
-				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
+				getTheLocalContainerPage().checkIfTaskInformationPageIsComplete();
 			} else {
 				// If there are no problems with the file, revert the error decoration and store
 				// the locations.
@@ -175,36 +172,24 @@ public class CompositeBrowseForFile extends Composite {
 				getDecFilePath().showHoverText("");
 				switch (labelText) {
 				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK:
-					integratorModel.setLocationOfCustomLibrary(tempFileVariable);
+					IntegratorModel.getInstance().setLocationOfCustomLibrary(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE:
-					integratorModel.setLocationOfXSLFile(tempFileVariable);
+					IntegratorModel.getInstance().setLocationOfXSLFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
-					integratorModel.setLocationOfJSONFile(tempFileVariable);
+					IntegratorModel.getInstance().setLocationOfJSONFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
-					integratorModel.setLocationOfIconFile(tempFileVariable);
+					IntegratorModel.getInstance().setLocationOfIconFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE:
-					integratorModel.setLocationOfHelpXMLFile(tempFileVariable);
+					IntegratorModel.getInstance().setLocationOfHelpXMLFile(tempFileVariable);
 					break;
 				}
 
 				// Check if the page can be set to completed.
-				getTheLocalContainerPage().checkIfModeSelectionPageIsComplete();
-			}
-		});
-		
-		
-		this.pathText.addFocusListener(new FocusAdapter() {
-
-			@Override
-			public void focusLost(final FocusEvent e) {
-				if (CompositeBrowseForFile.this.onFileChangedListener != null) {
-					CompositeBrowseForFile.this.onFileChangedListener.handleEvent(new Event());
-				}
-				super.focusLost(e);
+				getTheLocalContainerPage().checkIfTaskInformationPageIsComplete();
 			}
 		});
 	}

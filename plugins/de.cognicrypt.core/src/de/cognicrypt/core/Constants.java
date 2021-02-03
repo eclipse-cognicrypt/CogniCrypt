@@ -275,8 +275,7 @@ public class Constants {
 
 	// Constants for the Task Integrator Wizard.
 	// Page constants
-	
-	public static final String PAGE_NAME_FOR_MODE_OF_WIZARD = "pageForChoiceOfModeOfWizard";
+	public static final String PAGE_TASK_INFORMATION = "pageForTaskInformation";
 	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "New task";
 	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Provide the basic details about the task and add templates.";
 

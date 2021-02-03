@@ -10,34 +10,22 @@
  */
 package de.cognicrypt.integrator.task.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.widgets.CompositeBrowseForFile;
-import de.cognicrypt.integrator.task.widgets.CompositeChoiceForModeOfWizard;
+import de.cognicrypt.integrator.task.widgets.CompositeTaskInformation;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
 
 public class PageForTaskIntegratorWizard extends WizardPage {
 
-	private CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard = null;
-	protected CompositeToHoldGranularUIElements compositeToHoldGranularUIElements = null;
-	private List<String> listCryslTemplatesIdentifier = new ArrayList<String>();
-
-	int counter = 0;// TODO for testing only.
-
-	TreeViewer treeViewer;
+	private CompositeTaskInformation compositeTaskInformation;
+	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements;
 
 	/**
 	 * Create the wizard.
@@ -65,8 +53,8 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 		container.setLayout(new GridLayout(2, false));
 
 		switch (getName()) {
-			case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD:
-				setCompositeChoiceForModeOfWizard(new CompositeChoiceForModeOfWizard(container, SWT.NONE, this));
+			case Constants.PAGE_TASK_INFORMATION:
+				compositeTaskInformation = new CompositeTaskInformation(container, SWT.NONE, this);
 				break;
 			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
 				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName()));
@@ -115,12 +103,10 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	protected boolean nextPressed(final IWizardPage page) {
 		final boolean ValidateNextPress = true;
 		try {
-			if (page.getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD)) {
+			if (page.getName().equals(Constants.PAGE_TASK_INFORMATION)) {
 				final IWizardPage nextPage = super.getNextPage();
 				if (nextPage instanceof QuestionsPage) {
 					final QuestionsPage questionsPage = (QuestionsPage) nextPage;
-
-					listCryslTemplatesIdentifier = IntegratorModel.getInstance().getIdentifiers();
 					questionsPage.getCompositeToHoldGranularUIElements().updateQuestionContainer();
 				}
 			}
@@ -184,56 +170,21 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	/**
 	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
 	 */
-	public void checkIfModeSelectionPageIsComplete() {
-		boolean errorOnFileWidgets = false;
-		// The first child of the composite is a group. Get the children of this group to iterated over.
-		for (final Control control : ((Composite) getCompositeChoiceForModeOfWizard().getChildren()[0]).getChildren()) {
-			// Check if the child is an instance of group and is visible.
-			if (control instanceof Composite && control.isVisible()) {
+	public void checkIfTaskInformationPageIsComplete() {
 
-				// Get the children of this group and iterate over them. These are the widgets that get the file data. This loop generalizes for all these widgets.
-				for (final Control subGroup : ((Composite) control).getChildren()) {
-					if (subGroup instanceof CompositeBrowseForFile) {
-						final CompositeBrowseForFile tempVaraiable = (CompositeBrowseForFile) subGroup;
-						if ((tempVaraiable).getDecFilePath().getDescriptionText().contains(Constants.ERROR)) {
-							errorOnFileWidgets = true;
-						}
-					}
 
-				}
-
-			}
-		}
-
-		// Check if validation failed on the task name.
-		final boolean errorOnTaskName = getCompositeChoiceForModeOfWizard().getDecNameOfTheTask().getDescriptionText().contains(Constants.ERROR);
-
-		// Set the page to incomplete if the validation failed on any of the text boxes.
-		if (errorOnTaskName || errorOnFileWidgets) {
-			setPageComplete(false);
-
-		} else {
-			setPageComplete(true);
-		}
+		// Mandatory Fields
+		final boolean errorOnTaskName = compositeTaskInformation.getDecTaskName().getDescriptionText().contains(Constants.ERROR);
+		final boolean errorOnIconFile = compositeTaskInformation.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
+		
+		// Validity of template files should be checked during add routine
+		
+		final boolean templatesExist = IntegratorModel.getInstance().getIdentifiers().size() != 0;
+		
+		// Set the page to incomplete if the validation failed on any of the text boxes
+		setPageComplete(!errorOnTaskName && !errorOnIconFile && templatesExist);
 	}
 
-	/**
-	 * Return the composite for the first page, i.e. to choose the mode of the wizard.
-	 *
-	 * @return the compositeChoiceForModeOfWizard
-	 */
-	public CompositeChoiceForModeOfWizard getCompositeChoiceForModeOfWizard() {
-		return this.compositeChoiceForModeOfWizard;
-	}
-
-	/**
-	 * The composite is maintained as a global variable to have access to it as part of the page object.
-	 *
-	 * @param compositeChoiceForModeOfWizard the compositeChoiceForModeOfWizard to set
-	 */
-	private void setCompositeChoiceForModeOfWizard(final CompositeChoiceForModeOfWizard compositeChoiceForModeOfWizard) {
-		this.compositeChoiceForModeOfWizard = compositeChoiceForModeOfWizard;
-	}
 
 	/**
 	 * @return the compositeToHoldGranularUIElements
@@ -250,9 +201,4 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public void setCompositeToHoldGranularUIElements(final CompositeToHoldGranularUIElements compositeToHoldGranularUIElements) {
 		this.compositeToHoldGranularUIElements = compositeToHoldGranularUIElements;
 	}
-
-	public int getCounter() {
-		return this.counter;
-	}
-
 }

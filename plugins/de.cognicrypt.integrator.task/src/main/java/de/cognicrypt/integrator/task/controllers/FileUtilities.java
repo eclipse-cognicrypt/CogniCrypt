@@ -300,7 +300,7 @@ public class FileUtilities {
 		String temporaryRoot = Utils.getResourceFromWithin("/", "de.cognicrypt.codegenerator").getAbsolutePath();
 
 	    // Update JAR
-	    String cmd = "jar uf " + jarPath + " -C " + temporaryRoot + " src/main";
+	    String cmd = "jar uf " + jarPath + " -C " + temporaryRoot + " src" + Constants.outerFileSeparator + "main";
 	    Activator.getDefault().logError("Cmd " + cmd);
 		try {
 			Process process = Runtime.getRuntime().exec(cmd);

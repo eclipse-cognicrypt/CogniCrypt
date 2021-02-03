@@ -45,7 +45,7 @@ public class ModifyFilePopUp extends Dialog {
 		// v2
 		final Label reminder = new Label(container, SWT.NONE);
 		reminder.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
-		reminder.setText(Constants.IDENTIFIER_NOT_UNIQUE_WARNING);
+		reminder.setText("Please make sure your identifier is unique!");
 		
 		final Composite compositeAllModes = new Composite(container, SWT.NONE);
 		compositeAllModes.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -73,7 +73,7 @@ public class ModifyFilePopUp extends Dialog {
 
 		compCryslTemplateAtInit = new CompositeBrowseForFile(composite_2, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE, new String[] { "*.java" },
-				Constants.PAGE_DESCRIPTION_FOR_MODIFY, pageForTaskIntegratorWizard, compositeChoiceForModeOfWizard);
+				"Select crysl template file that contains the code details", pageForTaskIntegratorWizard, compositeChoiceForModeOfWizard);
 		compCryslTemplateAtInit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		compCryslTemplateAtInit.setOptionalText(identifier[0]);
 		compCryslTemplateAtInit.setPathText(IntegratorModel.getInstance().getTemplate(identifier[0]).toString());
@@ -96,8 +96,7 @@ public class ModifyFilePopUp extends Dialog {
     
    
     @Override 
-    protected void okPressed() {
-    	
+    protected void okPressed() {	
     	// check if id was used already and is in the template list 
     	boolean warningIdAlreadyUsed = false;
     	try {

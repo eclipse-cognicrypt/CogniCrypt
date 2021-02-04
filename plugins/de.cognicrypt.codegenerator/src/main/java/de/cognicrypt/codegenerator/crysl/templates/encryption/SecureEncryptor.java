@@ -29,7 +29,7 @@ public class SecureEncryptor {
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 */
-	public javax.crypto.SecretKey getKey(char[] pwd) {
+	public javax.crypto.SecretKey generateKey(char[] pwd) {
 		byte[] salt = new byte[32];
 		javax.crypto.SecretKey encryptionKey = null;
 		int keysize = 128;
@@ -44,7 +44,8 @@ public class SecureEncryptor {
 	/**
 	 * Encrypts a plaintext with cipher using the input secret key and algorithm specifications provided by
 	 * initialized vector parameter (IvParameterSpec) from random bytes. Returns a byte array that contains
-	 * the ivBytes in the first part and the encrypted plaintext on the second part.
+	 * the ivBytes in the first part and the encrypted plaintext on the second part. AES algorithm with a 
+	 * block size of 128 bits has been used to encrypt the data.
 	 * 
 	 * @param plaintext text to be encrypted.
 	 * @param key the secret key for encryption, it also will be used for decryption.
@@ -80,9 +81,10 @@ public class SecureEncryptor {
 	 * Divides the cipher text into two parts, ivBytes and data, and decrypts
 	 * the data with the input secret key that was used to encrypt the data
 	 * and the ivParameter specifications from the ivBytes. The ivBytes are the random
-	 * bytes that the data was encrypted with it.  
+	 * bytes that the data was encrypted with it. The same algorithm from encryption has been used to decrypt
+	 * , the AES algorithm with 128 bits block size.
 	 *
-	 * @param ciphertext The encrypted byte array to be decrypted. Includes ivBytes as first part and the encrypted data as the second part.
+	 * @param ciphertext the encrypted byte array to be decrypted. Includes ivBytes as first part and the encrypted data as the second part.
 	 * @param key the secret key that was used for encryption. 
 	 * @param plain_off the offset in input ciphertext where the input starts. 0, if all bytes in ciphertext need to be decrypted.
 	 * @param len the ciphertext length.

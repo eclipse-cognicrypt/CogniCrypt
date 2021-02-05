@@ -23,14 +23,9 @@ public class IntegratorModel {
 	private String taskName;
 	private String description;
 	private String taskDescription;
-	private File locationOfCustomLibrary;
-	private File locationOfClaferFile;
-	private File locationOfXSLFile;
 	private File locationOfCryslTemplate;
 	private File locationOfIconFile;
 	private File locationOfJSONFile;
-	private File locationOfHelpXMLFile;
-	private boolean isCustomLibraryRequired;
 	private boolean isGuidedModeChosen;
 	private final Task task;
 	private HashMap<String, File> cryslTemplateFiles;
@@ -48,42 +43,24 @@ public class IntegratorModel {
 	
 	private IntegratorModel() {
 		super();
-		this.task = new Task();
+		task = new Task();
+		taskName = "";
 		cryslTemplateFiles = new HashMap<String, File>();
-	}
-
-	/**
-	 * Generate a name for the task based on the input given by the user and return it.
-	 *
-	 * @param stringTaskName
-	 * @return
-	 */
-	private String getMachineReadableName(final String stringTaskName) {
-		final String[] split = stringTaskName.split(" ");
-		final StringBuilder machineReadable = new StringBuilder();
-		if (stringTaskName.length() > 0) {
-			for (final String string : split) {
-				machineReadable.append(string.substring(0, 1).toUpperCase());
-				machineReadable.append(string.substring(1));
-			}
-		}
-
-		return machineReadable.toString();
 	}
 
 	/**
 	 * @return the nameOfTheTask
 	 */
-	public String getNameOfTheTask() {
-		return this.taskName;
+	public String getTaskName() {
+		return task.getName();
 	}
 
 	/**
 	 * @param nameOfTheTask the nameOfTheTask to set
 	 */
 	public void setTaskName(final String nameOfTheTask) {
-		this.taskName = getMachineReadableName(nameOfTheTask); // generate the task name that will be used as the machine readable identifier for the task.
-		setDescription(nameOfTheTask); // This is the human readable name entered by the user.
+		task.setName(nameOfTheTask);
+		task.setDescription(nameOfTheTask);
 	}
 
 	public File getLocationOfIconFile() {
@@ -94,48 +71,6 @@ public class IntegratorModel {
 		this.locationOfIconFile = locationOfIconFile;
 	}
 
-	/**
-	 * @return the locationOfCustomLibrary
-	 */
-	public File getLocationOfCustomLibrary() {
-		return this.locationOfCustomLibrary;
-	}
-
-	/**
-	 * @param locationOfCustomLibrary the locationOfCustomLibrary to set
-	 */
-	public void setLocationOfCustomLibrary(final File locationOfCustomLibrary) {
-		this.locationOfCustomLibrary = locationOfCustomLibrary;
-	}
-
-	/**
-	 * @return the locationOfClaferFile
-	 */
-	public File getLocationOfClaferFile() {
-		return this.locationOfClaferFile;
-	}
-
-	/**
-	 * @param locationOfClaferFile the locationOfClaferFile to set
-	 */
-	public void setLocationOfClaferFile(final File locationOfClaferFile) {
-		this.locationOfClaferFile = locationOfClaferFile;
-	}
-
-	
-	/**
-	 * @return the locationOfXSLFile
-	 */
-	public File getLocationOfXSLFile() {
-		return this.locationOfXSLFile;
-	}
-
-	/**
-	 * @param locationOfXSLFile the locationOfXSLFile to set
-	 */
-	public void setLocationOfXSLFile(final File locationOfXSLFile) {
-		this.locationOfXSLFile = locationOfXSLFile;
-	}
 
 	/**
 	 * @return the locationOfJSONFile
@@ -164,30 +99,6 @@ public class IntegratorModel {
 	public void setGuidedModeChosen(final boolean isGuidedModeChosen) {
 		this.isGuidedModeChosen = isGuidedModeChosen;
 	}
-	/*	*//**
-				 * @return the isGuidedModeForced
-				 */
-	/*
-	 * public boolean isGuidedModeForced() { return isGuidedModeForced; }
-	 *//**
-			 * @param isGuidedModeForced the isGuidedModeForced to set
-			 *//*
-					 * private void setGuidedModeForced(boolean isGuidedModeForced) { this.isGuidedModeForced = isGuidedModeForced; }
-					 */
-
-	/**
-	 * @return the isCustomLibraryRequired
-	 */
-	public boolean isCustomLibraryRequired() {
-		return this.isCustomLibraryRequired;
-	}
-
-	/**
-	 * @param isCustomLibraryRequired the isCustomLibraryRequired to set
-	 */
-	public void setCustomLibraryRequired(final boolean isCustomLibraryRequired) {
-		this.isCustomLibraryRequired = isCustomLibraryRequired;
-	}
 
 	/**
 	 * @return the task
@@ -200,13 +111,13 @@ public class IntegratorModel {
 	 * Generate the Task instance from the advanced mode model.
 	 */
 	public void setTask() {
-		this.task.setName(getNameOfTheTask());
+		this.task.setName(getTaskName());
 		this.task.setDescription(getDescription());
-		this.task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JS_EXTENSION);
-		this.task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.JSON_EXTENSION);
+		this.task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getTaskName() + Constants.JS_EXTENSION);
+		this.task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getTaskName() + Constants.JSON_EXTENSION);
 		this.task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
-		this.task.setCodeTemplate(Constants.XSL_FILE_DIRECTORY_PATH + getNameOfTheTask() + Constants.XSL_EXTENSION);
-		this.task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getNameOfTheTask());
+		this.task.setCodeTemplate(Constants.XSL_FILE_DIRECTORY_PATH + getTaskName() + Constants.XSL_EXTENSION);
+		this.task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getTaskName());
 	}
 
 
@@ -233,19 +144,6 @@ public class IntegratorModel {
 		this.description = description;
 	}
 
-	/**
-	 * @return the locationOfHelpXMLFile
-	 */
-	public File getLocationOfHelpXMLFile() {
-		return this.locationOfHelpXMLFile;
-	}
-
-	/**
-	 * @param locationOfHelpXMLFile the locationOfHelpXMLFile to set
-	 */
-	public void setLocationOfHelpXMLFile(final File locationOfHelpXMLFile) {
-		this.locationOfHelpXMLFile = locationOfHelpXMLFile;
-	}
 
 	public File getLocationOfCryslTemplate() {
 		return locationOfCryslTemplate;
@@ -260,6 +158,10 @@ public class IntegratorModel {
 	
 	public HashMap<String, File> getCryslTemplateFiles() {
 		return cryslTemplateFiles;
+	}
+	
+	public boolean isTemplatesEmpty() {
+		return cryslTemplateFiles.isEmpty();
 	}
 	
 	public void addTemplate(String identifier, File path) {	

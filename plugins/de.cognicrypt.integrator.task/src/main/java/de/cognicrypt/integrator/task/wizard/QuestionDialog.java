@@ -141,9 +141,9 @@ public class QuestionDialog extends Dialog {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final Answer tempAnswer = new Answer();
-				QuestionDialog.this.compositeToHoldAnswers.getListOfAllAnswer().add(tempAnswer);
-				QuestionDialog.this.compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton);
-				QuestionDialog.this.compositeToHoldAnswers.setVisible(true);
+				compositeToHoldAnswers.getListOfAllAnswers().add(tempAnswer);
+				compositeToHoldAnswers.addAnswer(tempAnswer, showRemoveButton);
+				compositeToHoldAnswers.setVisible(true);
 			}
 
 		});
@@ -226,7 +226,7 @@ public class QuestionDialog extends Dialog {
 			// TODO: change later since only combo box possible
 			if (!this.question.getElement().equals(Constants.GUIElements.text)) {
 				for (final Answer answer : this.question.getAnswers()) {
-					this.compositeToHoldAnswers.getListOfAllAnswer().add(answer);
+					this.compositeToHoldAnswers.getListOfAllAnswers().add(answer);
 					this.compositeToHoldAnswers.addAnswer(answer, showRemoveButton);
 					this.compositeToHoldAnswers.setVisible(true);
 				}
@@ -240,7 +240,7 @@ public class QuestionDialog extends Dialog {
 	protected void okPressed() {
 		setQuestionDetails();
 		// closes the dialog only if user has added answers to the question
-		if (this.compositeToHoldAnswers.getListOfAllAnswer().size() > 0) {
+		if (this.compositeToHoldAnswers.getListOfAllAnswers().size() > 0) {
 			super.okPressed();
 		}
 	}
@@ -269,23 +269,23 @@ public class QuestionDialog extends Dialog {
 		 * Executes only if the question type is not text this loop executes to delete
 		 * empty text boxes in the question dialog
 		 */
-		for (int i = 0; i < this.compositeToHoldAnswers.getListOfAllAnswer().size(); i++) {
-			if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), null)
-					|| Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswer().get(i).getValue(), "")) {
-				this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswer().get(i));
+		for (int i = 0; i < this.compositeToHoldAnswers.getListOfAllAnswers().size(); i++) {
+			if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswers().get(i).getValue(), null)
+					|| Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswers().get(i).getValue(), "")) {
+				this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswers().get(i));
 				this.compositeToHoldAnswers.updateAnswerContainer();
 				i--;
 			}
 		}
 
 		// opens a message box, alerting user to add answers to the question
-		if (this.compositeToHoldAnswers.getListOfAllAnswer().size() == 0) {
+		if (this.compositeToHoldAnswers.getListOfAllAnswers().size() == 0) {
 			final MessageBox msgNoAnsAdded = new MessageBox(this.compositeToHoldAnswers.getShell());
 			msgNoAnsAdded.setMessage(Constants.NO_ANSWERS_WARNING);
 			msgNoAnsAdded.open();
 
 		}
-		questionDetails.setAnswers(this.compositeToHoldAnswers.getListOfAllAnswer());
+		questionDetails.setAnswers(this.compositeToHoldAnswers.getListOfAllAnswers());
 
 		/*if (this.combo.getText().equalsIgnoreCase(Constants.textBox)) {
 			// sets the tooltip
@@ -345,25 +345,6 @@ public class QuestionDialog extends Dialog {
 		}
 	}
 
-	/**
-	 * Capitalize the first letter of each word of question text
-	 *
-	 * @param questionText the question text
-	 * @return the capitalize text
-	 */
-	private String getCapitaliseQuestionText(final String questionText) {
-		// TODO Auto-generated method stub
-		final String trimmedQuestionText = questionText.trim().replaceAll(" +", " ");
-		final String[] arr = trimmedQuestionText.split(" ");
-		final StringBuilder sb = new StringBuilder();
-
-		for (int i = 0; i < arr.length; i++) {
-			sb.append(Character.toUpperCase(arr[i].charAt(0))).append(arr[i].substring(1));
-		}
-
-		return sb.toString();
-
-	}
 
 	/**
 	 * @return the question

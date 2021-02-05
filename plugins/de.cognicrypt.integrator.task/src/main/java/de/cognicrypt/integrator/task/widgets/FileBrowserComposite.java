@@ -29,11 +29,11 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.UIConstants;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.wizard.PageForTaskIntegratorWizard;
+import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardPage;
 
-public class CompositeBrowseForFile extends Composite {
+public class FileBrowserComposite extends Composite {
 
-	private PageForTaskIntegratorWizard theLocalContainerPage; // this is needed to set whether the page has been
+	private TaskIntegratorWizardPage theLocalContainerPage; // this is needed to set whether the page has been
 																// completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
 
@@ -43,20 +43,20 @@ public class CompositeBrowseForFile extends Composite {
 	
 	private Text optionalText;
 
-	public CompositeBrowseForFile(final Composite parent, final int style, final String labelText,
+	public FileBrowserComposite(final Composite parent, final int style, final String labelText,
 			final String[] fileTypes, final String stringOnFileDialog,
-			final PageForTaskIntegratorWizard theContainerpageForValidation, final Listener listener) {
+			final TaskIntegratorWizardPage theContainerpageForValidation, final Listener listener) {
 		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
 		this.onFileChangedListener = listener;
 	}
 
-	public CompositeTaskInformation findAncestor(Composite comp) {
+	public TaskInformationComposite findAncestor(Composite comp) {
 		Composite result = comp;
-		while (!(result instanceof CompositeTaskInformation) && result!= null) {
+		while (!(result instanceof TaskInformationComposite) && result != null) {
 			result = result.getParent();
 		}
-		if (result instanceof CompositeTaskInformation)
-			return (CompositeTaskInformation) result;
+		if (result instanceof TaskInformationComposite)
+			return (TaskInformationComposite) result;
 		else
 			return null;
 	}
@@ -72,17 +72,17 @@ public class CompositeBrowseForFile extends Composite {
 	 * @param stringOnDialog
 	 * @param theContainerpageForValidation
 	 */
-	public CompositeBrowseForFile(Composite parent, int style, String labelText,
+	public FileBrowserComposite(Composite parent, int style, String labelText,
 			String[] fileTypes, String stringOnDialog,
-			PageForTaskIntegratorWizard theContainerpageForValidation) {
+			TaskIntegratorWizardPage theContainerpageForValidation) {
 		super(parent, style);
 
 		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
 	}
 	
-	public CompositeBrowseForFile(Composite parent, int style, String labelText,
+	public FileBrowserComposite(Composite parent, int style, String labelText,
 			String[] fileTypes, String stringOnDialog,
-			PageForTaskIntegratorWizard theContainerpageForValidation, CompositeTaskInformation comp) {
+			TaskIntegratorWizardPage theContainerpageForValidation, TaskInformationComposite comp) {
 		super(parent, style);
 		
 		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
@@ -91,7 +91,7 @@ public class CompositeBrowseForFile extends Composite {
 	
 	private void init(final Composite parent, final int style, final String labelText,
 			final String[] fileTypes, final String stringOnDialog,
-			final PageForTaskIntegratorWizard theContainerpageForValidation) {
+			final TaskIntegratorWizardPage theContainerpageForValidation) {
 		setTheLocalContainerPage(theContainerpageForValidation);
 		final GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.horizontalSpacing = 8;
@@ -137,15 +137,15 @@ public class CompositeBrowseForFile extends Composite {
 				if (fileTypes == null) {
 					selectedPath = openDirectoryDialog(stringOnDialog);
 					if (selectedPath != null) {
-						CompositeBrowseForFile.this.pathText.setText(selectedPath);
-						if (CompositeBrowseForFile.this.onFileChangedListener != null) {
-							CompositeBrowseForFile.this.onFileChangedListener.handleEvent(new Event());
+						FileBrowserComposite.this.pathText.setText(selectedPath);
+						if (FileBrowserComposite.this.onFileChangedListener != null) {
+							FileBrowserComposite.this.onFileChangedListener.handleEvent(new Event());
 						}
 					}
 				} else {
 					selectedPath = openFileDialog(fileTypes, stringOnDialog);
 					if (selectedPath != null) {
-						CompositeBrowseForFile.this.pathText.setText(selectedPath);
+						FileBrowserComposite.this.pathText.setText(selectedPath);
 					}
 				}
 
@@ -163,7 +163,7 @@ public class CompositeBrowseForFile extends Composite {
 				getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 				getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 				// Check if the page can be set to completed.
-				getTheLocalContainerPage().checkIfTaskInformationPageIsComplete();
+				getTheLocalContainerPage().checkPageComplete();
 			} else {
 				// If there are no problems with the file, revert the error decoration and store
 				// the locations.
@@ -171,25 +171,16 @@ public class CompositeBrowseForFile extends Composite {
 				getDecFilePath().setDescriptionText("");
 				getDecFilePath().showHoverText("");
 				switch (labelText) {
-				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK:
-					IntegratorModel.getInstance().setLocationOfCustomLibrary(tempFileVariable);
-					break;
-				case Constants.WIDGET_DATA_LOCATION_OF_XSL_FILE:
-					IntegratorModel.getInstance().setLocationOfXSLFile(tempFileVariable);
-					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
 					IntegratorModel.getInstance().setLocationOfJSONFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
 					IntegratorModel.getInstance().setLocationOfIconFile(tempFileVariable);
 					break;
-				case Constants.WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE:
-					IntegratorModel.getInstance().setLocationOfHelpXMLFile(tempFileVariable);
-					break;
 				}
 
 				// Check if the page can be set to completed.
-				getTheLocalContainerPage().checkIfTaskInformationPageIsComplete();
+				getTheLocalContainerPage().checkPageComplete();
 			}
 		});
 	}
@@ -232,7 +223,7 @@ public class CompositeBrowseForFile extends Composite {
 	 *
 	 * @return the theLocalContainerPage
 	 */
-	public PageForTaskIntegratorWizard getTheLocalContainerPage() {
+	public TaskIntegratorWizardPage getTheLocalContainerPage() {
 		return this.theLocalContainerPage;
 	}
 
@@ -242,7 +233,7 @@ public class CompositeBrowseForFile extends Composite {
 	 *
 	 * @param theLocalContainerPage the theLocalContainerPage to set
 	 */
-	public void setTheLocalContainerPage(final PageForTaskIntegratorWizard theLocalContainerPage) {
+	public void setTheLocalContainerPage(final TaskIntegratorWizardPage theLocalContainerPage) {
 		this.theLocalContainerPage = theLocalContainerPage;
 	}
 

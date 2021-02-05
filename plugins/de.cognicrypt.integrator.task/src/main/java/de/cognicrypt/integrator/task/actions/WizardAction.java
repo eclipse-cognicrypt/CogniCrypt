@@ -14,14 +14,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.wizard.TaskIntegrationWizard;
+import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizard;
 
 public class WizardAction implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void run(final IAction arg0) {
 		Constants.WizardActionFromContextMenuFlag = false;
-		final WizardDialog dialog = new WizardDialog(new Shell(), new TaskIntegrationWizard());
+		final WizardDialog dialog = new WizardDialog(new Shell(), new TaskIntegratorWizard());
 		// dialog.setPageSize(Constants.DEFAULT_SIZE_FOR_TI_WIZARD);
 		// dialog.setMinimumPageSize(Constants.DEFAULT_SIZE_FOR_COMPOSITES);
 		dialog.open();

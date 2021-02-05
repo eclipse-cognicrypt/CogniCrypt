@@ -18,12 +18,15 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.integrator.task.wizard.QuestionsPage;
 
 public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
+	QuestionsPage questionsPage;
+	
 	private String targetPageName;
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
-	private ArrayList<Question> listOfAllQuestions;
+	private final ArrayList<Question> listOfAllQuestions;
 	
 	int counter;
 
@@ -33,9 +36,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 *
 	 * @param parent
 	 */
-	public CompositeToHoldGranularUIElements(final Composite parent, final String pageName) {
+	public CompositeToHoldGranularUIElements(final Composite parent, final String pageName, QuestionsPage questionsPage) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 
+		this.questionsPage = questionsPage;
 
 		this.listOfAllQuestions = new ArrayList<Question>();
 
@@ -146,13 +150,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	}
 
-	/**
-	 * executes when next button of "highLevelQuestion" is pressed, deletes listOfAllQuestions of "pageForLinkAnswers" to refresh the question list of "pagForLinkAnswers"
-	 */
-	public void deleteAllQuestion() {
-		this.listOfAllQuestions.clear();
-		updateQuestionContainer();
-	}
 
 	/**
 	 * Updates the question container
@@ -174,6 +171,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 			addQuestionUIElements(questionUnderConsideration, false);
 		}
 		updateLayout();
+		
+		questionsPage.checkPageComplete();
 	}
 
 	/**
@@ -249,12 +248,4 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	public ArrayList<Question> getListOfAllQuestions() {
 		return this.listOfAllQuestions;
 	}
-
-	/**
-	 * @param listOfAllQuestions the listOfAllQuestions to set
-	 */
-	public void setListOfAllQuestions(final ArrayList<Question> listOfAllQuestions) {
-		this.listOfAllQuestions = listOfAllQuestions;
-	}
-
 }

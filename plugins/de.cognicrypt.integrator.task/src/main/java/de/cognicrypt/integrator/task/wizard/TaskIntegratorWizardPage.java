@@ -19,18 +19,18 @@ import org.eclipse.swt.widgets.Composite;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.widgets.CompositeTaskInformation;
+import de.cognicrypt.integrator.task.widgets.TaskInformationComposite;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
 
-public class PageForTaskIntegratorWizard extends WizardPage {
+public class TaskIntegratorWizardPage extends WizardPage {
 
-	private CompositeTaskInformation compositeTaskInformation;
+	private TaskInformationComposite compositeTaskInformation;
 	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements;
-
+	
 	/**
 	 * Create the wizard.
 	 */
-	public PageForTaskIntegratorWizard(final String name, final String title, final String description) {
+	public TaskIntegratorWizardPage(final String name, final String title, final String description) {
 		super(name);
 		setTitle(title);
 		setDescription(description);
@@ -47,21 +47,12 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
+		
+		compositeTaskInformation = new TaskInformationComposite(container, SWT.NONE, this);
 
 		// make the page layout two-column
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
-
-		switch (getName()) {
-			case Constants.PAGE_TASK_INFORMATION:
-				compositeTaskInformation = new CompositeTaskInformation(container, SWT.NONE, this);
-				break;
-			case Constants.PAGE_NAME_FOR_LINK_ANSWERS:
-				setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName()));
-				// fill the available space on the with the big composite
-				getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-				break;
-		}
 	}
 
 	
@@ -78,20 +69,7 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 			}
 		}
 
-		/*if (getName().equals(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD) && !getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode().isGuidedModeChosen()) {
-			return null;
-		}
-		/*
-		 * This is for debugging only. To be removed for the final version. TODO Please add checks on the pages after mode selection to mark those pages as completed, or restrict the
-		 * finish button.
-		 */
-		final IWizardPage nextPage = super.getNextPage();
-		if (nextPage != null) {
-			((WizardPage) nextPage).setPageComplete(true);
-		}
-
-		return nextPage;
-
+		return super.getNextPage();
 	}
 
 	/**
@@ -151,39 +129,45 @@ public class PageForTaskIntegratorWizard extends WizardPage {
 	}
 
 	
-	
-	
-	@Override
-	public boolean canFlipToNextPage() {
-
-		// each case needs to be handled separately. By default all cases will return false.
-		/*
-		 * switch(this.getName()){ case Constants.PAGE_NAME_FOR_MODE_OF_WIZARD: if(((boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_CHOSEN) == true
-		 * || (boolean)compositeChoiceForModeOfWizard.getData(Constants.WIDGET_DATA_IS_GUIDED_MODE_FORCED) == true) && !this.isPageComplete()){ return true; } case
-		 * Constants.PAGE_NAME_FOR_CLAFER_FILE_CREATION: return false; case Constants.PAGE_NAME_FOR_XSL_FILE_CREATION: return false; case Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS:
-		 * return false; default: return false; }
-		 */
-		return super.canFlipToNextPage();
-
-	}
-
 	/**
-	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
+	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR
+	 * Is used to determine whether wizard can flip to next page
 	 */
-	public void checkIfTaskInformationPageIsComplete() {
-
-
-		// Mandatory Fields
-		final boolean errorOnTaskName = compositeTaskInformation.getDecTaskName().getDescriptionText().contains(Constants.ERROR);
-		final boolean errorOnIconFile = compositeTaskInformation.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
+	public void checkPageComplete() {
+		if(compositeTaskInformation == null)
+			return;
+		
+		boolean mandatoryFields = checkMandatoryFields();
 		
 		// Validity of template files should be checked during add routine
 		
-		final boolean templatesExist = IntegratorModel.getInstance().getIdentifiers().size() != 0;
+		boolean guidedMode = IntegratorModel.getInstance().isGuidedModeChosen();
+		boolean multipleTemplatesExist = IntegratorModel.getInstance().getIdentifiers().size() > 1;
 		
 		// Set the page to incomplete if the validation failed on any of the text boxes
-		setPageComplete(!errorOnTaskName && !errorOnIconFile && templatesExist);
+		setPageComplete(mandatoryFields && guidedMode && multipleTemplatesExist);
 	}
+		
+	/**
+	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
+	 * Is used to determine wheter wizard can finish early
+	 */
+	public boolean checkNonGuidedFinish() {
+		
+		boolean mandatoryFields = checkMandatoryFields();
+		
+		boolean guidedMode = IntegratorModel.getInstance().isGuidedModeChosen();
+		boolean errorOnJSONFile = compositeTaskInformation.getCompJSON().getDecFilePath().getDescriptionText().contains(Constants.ERROR);		
+		
+		return mandatoryFields && !guidedMode && !errorOnJSONFile;
+	}
+	
+	public boolean checkMandatoryFields() {
+		boolean errorOnIconFile = compositeTaskInformation.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
+		boolean templatesEmpty = IntegratorModel.getInstance().isTemplatesEmpty(); 
+		
+		return !errorOnIconFile && !templatesEmpty;
+	}	
 
 
 	/**

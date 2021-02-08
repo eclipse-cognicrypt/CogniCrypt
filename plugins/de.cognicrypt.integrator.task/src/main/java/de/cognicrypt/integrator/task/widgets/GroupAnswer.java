@@ -131,7 +131,7 @@ public class GroupAnswer extends Group {
 				/**
 				 * sets the default answer to true for the current answer and for all other answer to false
 				 */
-				for (final Answer ans : ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getListOfAllAnswer()) {
+				for (final Answer ans : ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getListOfAllAnswers()) {
 					if (ans.equals(GroupAnswer.this.answer)) {
 						GroupAnswer.this.answer.setDefaultAnswer(true);
 					} else {

@@ -14,11 +14,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -31,25 +33,39 @@ import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.integrator.task.controllers.FileUtilities;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 
-public class TaskIntegrationWizard extends Wizard {
-
-	public TaskIntegrationWizard() {
+public class TaskIntegratorWizard extends Wizard {
+	
+	private TaskIntegratorWizardPage taskInformation;
+	
+	public TaskIntegratorWizard() {
 		setWindowTitle("CogniCrypt Task Integrator");
 
-		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png ");
+		final ImageDescriptor image = AbstractUIPlugin.imageDescriptorFromPlugin("de.cognicrypt.codegenerator", "platform:/plugin/de.cognicrypt.core/icons/cognicrypt-medium.png");
 		setDefaultPageImageDescriptor(image);
 	}
 
 	@Override
 	public void addPages() {
-		addPage(new PageForTaskIntegratorWizard(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD));
-
+		taskInformation = new TaskIntegratorWizardPage(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
+		addPage(taskInformation);
+		
 		addPage(new QuestionsPage());
-
-		addPage(new PageForTaskIntegratorWizard(Constants.PAGE_NAME_FOR_LINK_ANSWERS, Constants.PAGE_TITLE_FOR_LINK_ANSWERS, Constants.PAGE_DESCIPTION_FOR_LINK_ANSWERS));
-
 	}
 
+	
+	@Override
+	public boolean canFinish() {
+		
+		if(!IntegratorModel.getInstance().isGuidedModeChosen())
+			return taskInformation.checkNonGuidedFinish();
+	
+		if(IntegratorModel.getInstance().getIdentifiers().size() == 1)
+			return taskInformation.checkMandatoryFields();
+			
+		return super.canFinish();
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -70,12 +86,11 @@ public class TaskIntegrationWizard extends Wizard {
 		final IntegratorModel integratorModel = IntegratorModel.getInstance();
 		
 		integratorModel.setTask();
-		final FileUtilities fileUtilities = new FileUtilities(integratorModel.getNameOfTheTask());
+		final FileUtilities fileUtilities = new FileUtilities(integratorModel.getTaskName());
 		Task task = integratorModel.getTask();
 		HashMap<String, File> crylTemplatesWithOption = integratorModel.getCryslTemplateFiles();
 		if (getContainer().getCurrentPage().getName().equals(Constants.PAGE_TASK_INFORMATION)) {
-			if (integratorModel.isGuidedModeChosen() == false // && this.objectForDataInNonGuidedMode.isGuidedModeForced() == false
-			) {
+			if (integratorModel.isGuidedModeChosen() == false) {
 
 				final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption, integratorModel.getLocationOfJSONFile(), integratorModel.getLocationOfIconFile());
 				// Check if the contents of the provided files are valid.
@@ -84,7 +99,7 @@ public class TaskIntegrationWizard extends Wizard {
 					task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
 					task.setCodeGen(CodeGenerators.CrySL);
 					fileUtilities.writeTaskToJSONFile(task);
-					fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getNameOfTheTask());
+					fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getTaskName());
 					return true;
 				} else {
 					final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
@@ -102,7 +117,7 @@ public class TaskIntegrationWizard extends Wizard {
 			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(integratorModel.getCryslTemplateFiles(),  integratorModel.getLocationOfIconFile());
 			final ArrayList<Question> questions =
 					((QuestionsPage) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
-			fileUtilities.writeJSONFile(questions);
+			
 			// Check if the contents of the provided files are valid.
 			if (fileWriteAttemptResult.equals("")) {
 				// Adding the trimmed task name to ensure it matches with the name of the image stored (refer FileUtilities)
@@ -110,8 +125,9 @@ public class TaskIntegrationWizard extends Wizard {
 				task.setCodeGen(CodeGenerators.CrySL);
 				task.setModelFile("");
 				task.setAdditionalResources("");
+				fileUtilities.writeJSONFile(questions);
 				fileUtilities.writeTaskToJSONFile(task);
-				fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getNameOfTheTask());
+				fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getTaskName());
 			} else {
 				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
 				errorBox.setText("Problems with the provided files.");
@@ -177,15 +193,15 @@ public class TaskIntegrationWizard extends Wizard {
 	
 	
 	/**
-	 * Get the first page of this wizard that is of type {@link PageForTaskIntegratorWizard} and matches the given page name
+	 * Get the first page of this wizard that is of type {@link TaskIntegratorWizardPage} and matches the given page name
 	 *
 	 * @param needle name of the page to be found
-	 * @return if found, wizard page of type {@link PageForTaskIntegratorWizard}, else null
+	 * @return if found, wizard page of type {@link TaskIntegratorWizardPage}, else null
 	 */
-	public PageForTaskIntegratorWizard getTIPageByName(final String needle) {
+	public TaskIntegratorWizardPage getTIPageByName(final String needle) {
 		final IWizardPage page = getPage(needle);
-		if (PageForTaskIntegratorWizard.class.isInstance(page)) {
-			return (PageForTaskIntegratorWizard) page;
+		if (TaskIntegratorWizardPage.class.isInstance(page)) {
+			return (TaskIntegratorWizardPage) page;
 		}
 
 		return null;

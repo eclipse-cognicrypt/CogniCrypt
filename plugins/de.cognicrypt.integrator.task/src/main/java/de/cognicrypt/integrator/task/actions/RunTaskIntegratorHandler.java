@@ -16,7 +16,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.wizard.TaskIntegrationWizard;
+import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizard;
 import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardDialog;
 
 public class RunTaskIntegratorHandler extends AbstractHandler {
@@ -24,7 +24,7 @@ public class RunTaskIntegratorHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Constants.WizardActionFromContextMenuFlag = true;
-		final TaskIntegratorWizardDialog dialog = new TaskIntegratorWizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), new TaskIntegrationWizard());
+		final TaskIntegratorWizardDialog dialog = new TaskIntegratorWizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), new TaskIntegratorWizard());
 		dialog.setHelpAvailable(false);
 		return dialog.open();
 	}

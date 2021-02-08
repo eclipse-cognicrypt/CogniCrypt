@@ -59,7 +59,7 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
-import de.cognicrypt.integrator.task.widgets.CompositeTaskInformation;
+import de.cognicrypt.integrator.task.widgets.TaskInformationComposite;
 import de.cognicrypt.utils.Utils;
 
 public class FileUtilities {

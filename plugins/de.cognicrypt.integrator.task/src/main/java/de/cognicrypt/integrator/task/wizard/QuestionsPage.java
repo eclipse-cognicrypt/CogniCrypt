@@ -8,7 +8,9 @@
 package de.cognicrypt.integrator.task.wizard;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -18,17 +20,20 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+
+import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
 
-public class QuestionsPage extends PageForTaskIntegratorWizard {
+public class QuestionsPage extends TaskIntegratorWizardPage {
 	
 	public QuestionsPage() {
 		super(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS);
 	}
-
+	
 	
 	@Override
 	public void createControl(final Composite parent) {
@@ -39,13 +44,13 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
-		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName()));
+		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName(), this));
 		// fill the available space on the with the big composite
 		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		//getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
 
-		if (!TaskIntegrationWizard.class.isInstance(getWizard())) {
+		if (!TaskIntegratorWizard.class.isInstance(getWizard())) {
 			Activator.getDefault().logError(Constants.INSTANTIATED_BY_WRONG_WIZARD_ERROR);
 		}
 
@@ -66,11 +71,32 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 					questionDetails.setId(questionID);
 
 					// Update the array list.
-					QuestionsPage.this.getCompositeToHoldGranularUIElements().getListOfAllQuestions().add(questionDetails);
+					getCompositeToHoldGranularUIElements().getListOfAllQuestions().add(questionDetails);
 					// rebuild the UI
-					QuestionsPage.this.getCompositeToHoldGranularUIElements().updateQuestionContainer();
+					getCompositeToHoldGranularUIElements().updateQuestionContainer();
 				}
 			}
 		});
+	}
+
+	
+	/**
+	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR
+	 * Is used to determine whether wizard can flip to next page
+	 */
+	public void checkPageComplete() {
+		
+		ArrayList<Question> questions = getCompositeToHoldGranularUIElements().getListOfAllQuestions();
+		
+		HashSet<String> identifiers = new HashSet<>();
+		
+		for(Question q : questions) {
+			for(Answer a : q.getAnswers()) {
+				identifiers.add(a.getOption());
+			}
+		}
+		
+		// Set the page to incomplete if amount of answers is at least amount of templates
+		setPageComplete(identifiers.size() == IntegratorModel.getInstance().getIdentifiers().size());
 	}
 }

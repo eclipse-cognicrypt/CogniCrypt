@@ -43,7 +43,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * Create the composite. Warnings suppressed for casting array lists.
 	 *
 	 * @param parent
-	 * @param style TODO
+	 * @param style
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton
 	 */
@@ -128,7 +128,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		for (final Answer answer : this.arrayAnswer) {
-			addAnswer(answer, true); //change late
+			addAnswer(answer, true); //change later
 		}
 	}
 
@@ -150,14 +150,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
-
-	/**
-	 * Add the widgets and data inside the scrollable composite for clafer dependency tab
-	 *
-	 * @param answer
-	 * @param claferFeatures list of all clafer features created in the clafer page
-	 */
-	
 
 	/**
 	 * Add the widgets and data inside the scrollable composite for Link Answer
@@ -196,7 +188,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * @return the listOfAllAnswer
 	 */
-	public ArrayList<Answer> getListOfAllAnswer() {
+	public ArrayList<Answer> getListOfAllAnswers() {
 		return this.arrayAnswer;
 	}
 

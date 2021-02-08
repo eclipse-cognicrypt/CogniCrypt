@@ -108,7 +108,7 @@ public class AddDependenciesDialog extends Dialog {
 				ansScrollCompositeForClaferTab.setLayout(new GridLayout(3, false));
 
 				for (final Answer answer : this.question.getAnswers()) {
-					ansScrollCompositeForClaferTab.getListOfAllAnswer().add(answer);
+					ansScrollCompositeForClaferTab.getListOfAllAnswers().add(answer);
 				}
 
 			}

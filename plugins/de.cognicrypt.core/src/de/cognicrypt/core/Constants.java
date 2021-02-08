@@ -184,13 +184,6 @@ public class Constants {
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
 	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
-	public static final String ERROR = "ERROR: ";
-	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
-	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file. Please choose a valid one.";
-	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
-	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
-	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
-	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
 	
 	public static final String ERROR_CANNOT_FIND_NODE = "The requested node could not be found";
 	public static final String ERROR_CANNOT_FILE_TO_BYTEARRAY = "Error occured when passing a Java file into a byte array.";
@@ -275,12 +268,13 @@ public class Constants {
 	// Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 
-	// Constants for the Task Integrator Wizard.
-	// Page constants
+	// Task Integrator Wizard
 	public static final String PAGE_TASK_INFORMATION = "pageForTaskInformation";
 	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "New task";
 	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Provide the basic details about the task and add templates.";
 
+	public static final String DEFAULT_ICON_PATH = "icons/task-default-icon.png";
+	
 	public static final String PAGE_NAME_FOR_CLAFER_FILE_CREATION = "pageForClaferFileCreation";
 	public static final String PAGE_TITLE_FOR_CLAFER_FILE_CREATION = "Add the variablity modelling here";
 	public static final String PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION = "Here you can add features to the variability model here.";
@@ -299,7 +293,6 @@ public class Constants {
 	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS =
 			"Here you can configure which question should be displayed next upon selection of a particular answer of the current question" + "by clicking the Link Answer button.";
 
-	// Widget constants	
 	// Buttons
 	public static final String ADD_QUESTION = "Add Question";
 	public static final String ADD_ANSWER = "Add Answer";
@@ -309,6 +302,15 @@ public class Constants {
 		
 	// Errors
 	public static final String INSTANTIATED_BY_WRONG_WIZARD_ERROR = "PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard";
+	public static final String ERROR = "ERROR: ";
+	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
+	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file. Please choose a valid one.";
+	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
+	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
+	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
+	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
+	public static final String ERROR_BLANK_TEMPLATE_LIST = "The Template list cannot be empty. Please add a template.";
+	
 	
 	// Labels	
 	public static final String LABEL_BROWSE_BUTTON = "Browse";
@@ -318,31 +320,10 @@ public class Constants {
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
-	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library";
-	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE = "Location of the Help file";
-	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "Location of the Clafer file";
-	public static final String WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE = "Location of the Crysl Template file";
-	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "Location of the XSL file";
-	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Location of the JSON file";
-	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Location of the PNG file";
-	public static final String WIDGET_DATA_LOCATION_OF_HELP_FILE = "Location of the Help file";
-	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
+	public static final String WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE = "Select code template";
+	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Select questions file";
+	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Select icon file";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
-	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
-
-	// Constants for the drop down for the library type on the mode selection page
-	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "No custom Library";
-	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
-
-	// Constants for the drop down for the xsl tag on the xsl code page
-	public static final String XSL_VARIABLE_TAG = "xslVariable";
-	public static final String XSL_SELECT_TAG = "select";
-	public static final String XSL_IF_TAG = "if";
-	public static final String XSL_RESULT_DOCUMENT = "result-document";
-	public static final String XSL_APPLY_TEMPLATES = "apply-templates";
-	public static final String XSL_CHOOSE_TAG = "choose";
-	public static final String XSL_WHEN_TAG = "when";
-	public static final String XSL_OTHERWISE_TAG = "otherwise";
 
 	// Default bounds for the composites
 	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1050, 600);

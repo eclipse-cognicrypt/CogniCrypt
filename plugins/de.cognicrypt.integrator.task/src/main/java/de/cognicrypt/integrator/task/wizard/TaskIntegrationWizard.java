@@ -7,16 +7,22 @@
 
 package de.cognicrypt.integrator.task.wizard;
 
+import java.awt.image.RescaleOp;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.omg.CORBA.FREE_MEM;
 
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
@@ -52,6 +58,15 @@ public class TaskIntegrationWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 
+		
+		File ressourceFolder = new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR);
+		
+		if(!ressourceFolder.exists()) {
+			//make ressource directory for Code Generation Templates if it doesn't exist
+			ressourceFolder.mkdirs();
+			initlocalResourceDir(); //initialize needed subfolders 
+		}
+		
 		final IntegratorModel integratorModel = IntegratorModel.getInstance();
 		
 		integratorModel.setTask();
@@ -126,6 +141,41 @@ public class TaskIntegrationWizard extends Wizard {
 		return true;
 	}
 
+	
+	public void initlocalResourceDir() {
+		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 
+		File resourceCCres = new File(Constants.ECLIPSE_LOC_RES_DIR);
+		
+		resourceCCTemp.mkdir(); //make local directory for Code Generation Templates
+		resourceCCres.mkdir();  ////make local directory for Resources for Code Generation Templates
+		
+		File resourceCCaddres = new File(Constants.ECLIPSE_LOC_ADDRES_DIR);
+		File resourceCCcla = new File(Constants.ECLIPSE_LOC_CLA_DIR);
+		File resourceCCimg = new File(Constants.ECLIPSE_LOC_IMG_DIR);
+		File resourceCCtaskdesc = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR);
+		File resourceCCtasks = new File(Constants.ECLIPSE_LOC_TASKS_DIR);
+		File resourceCCXSL = new File(Constants.ECLIPSE_LOC_XSL_DIR);
+		File resourceCCtasksjson = new File(Constants.localjsonTaskFile);
+		
+		
+		resourceCCaddres.mkdir();
+		resourceCCcla.mkdir();
+		resourceCCimg.mkdir();
+		resourceCCtaskdesc.mkdir();
+		resourceCCtasks.mkdir();
+		resourceCCXSL.mkdir();
+		try {
+			resourceCCtasksjson.createNewFile();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(resourceCCtasksjson));
+			writer.write("[]");
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/**
 	 * Get the first page of this wizard that is of type {@link PageForTaskIntegratorWizard} and matches the given page name
 	 *

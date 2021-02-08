@@ -270,7 +270,8 @@ public class FileUtilities {
 	    // One Template: Generator expects templates/<Task>/<Task>.java
 	    // Multiple Templates: Generator expects templates/<Task><Id>/<Task>.java (current)
 	    
-	    File parentFolder = Utils.getResourceFromWithin(Constants.codeTemplateFolder, "de.cognicrypt.codegenerator");
+	    //File parentFolder = Utils.getResourceFromWithin(Constants.codeTemplateFolder, "de.cognicrypt.codegenerator");
+		File parentFolder = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
 		File templateFolder = new File(parentFolder, getTrimmedTaskName() + option);
 		
 		if (!templateFolder.isDirectory()) {
@@ -285,28 +286,6 @@ public class FileUtilities {
 		Activator.getDefault().logError("Copy " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
 			
 		Files.copy(path, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-	    
-		
-		// Get JAR Path
-		Bundle bundle = Platform.getBundle("de.cognicrypt.codegenerator");
-		URL destinationURL = FileLocator.find(bundle, new org.eclipse.core.runtime.Path(Constants.codeTemplateFolder));
-		try {
-			destinationURL = FileLocator.resolve(destinationURL);
-		} catch (IOException e) {
-		    e.printStackTrace();
-		}
-			    
-		String jarPath = destinationURL.getFile().substring(5).split("!")[0];
-		String temporaryRoot = Utils.getResourceFromWithin("/", "de.cognicrypt.codegenerator").getAbsolutePath();
-
-	    // Update JAR
-	    String cmd = "jar uf " + jarPath + " -C " + temporaryRoot + " src" + Constants.outerFileSeparator + "main";
-	    Activator.getDefault().logError("Cmd " + cmd);
-		try {
-			Process process = Runtime.getRuntime().exec(cmd);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	
@@ -322,26 +301,20 @@ public class FileUtilities {
 			try {
 
 				if (existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.CFR_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_CLA_DIR, getTrimmedTaskName() + Constants.CFR_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.JS_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.JS_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_CLA_DIR, getTrimmedTaskName() + Constants.JS_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.JSON_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.PNG_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.IMAGE_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.PNG_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, getTrimmedTaskName() + Constants.PNG_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.XSL_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_XSL_DIR, getTrimmedTaskName() + Constants.XSL_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.XML_EXTENSION)) {
 					targetDirectory = new File(Utils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH,
 							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.XML_EXTENSION);
 				} else if (existingFileLocation.getPath().endsWith(Constants.JAVA_EXTENSION)) {
-					File parentFolder = Utils.getResourceFromWithin(Constants.codeTemplateFolder,
-							"de.cognicrypt.codegenerator");
+					File parentFolder = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
 					File templateFolder = new File(parentFolder, getTrimmedTaskName());
 					if (!templateFolder.isDirectory()) {
 						templateFolder.mkdir();
@@ -396,7 +369,7 @@ public class FileUtilities {
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			reader = new BufferedReader(
-					new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile, "de.cognicrypt.codegenerator")));
+					new FileReader(new File(Constants.localjsonTaskFile)));
 			final List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {
 			}.getType());
 			// Add the new task to the list.
@@ -404,7 +377,7 @@ public class FileUtilities {
 			reader.close();
 
 			writer = new BufferedWriter(
-					new FileWriter(Utils.getResourceFromWithin(Constants.jsonTaskFile, "de.cognicrypt.codegenerator")));
+					new FileWriter(new File(Constants.localjsonTaskFile)));
 			gson.toJson(tasks, new TypeToken<List<Task>>() {
 			}.getType(), writer);
 			writer.close();
@@ -449,7 +422,7 @@ public class FileUtilities {
 		 */
 
 		final File jsonFile = new File(
-				Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH, "de.cognicrypt.codegenerator"),
+				Constants.ECLIPSE_LOC_TASKDESC_DIR,
 				getTrimmedTaskName() + Constants.JSON_EXTENSION);
 
 		try {
@@ -475,7 +448,7 @@ public class FileUtilities {
 	 * @param xslFileContents
 	 */
 	private void writeXSLFile(final String xslFileContents) {
-		final File xslFile = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH),
+		final File xslFile = new File(Constants.ECLIPSE_LOC_XSL_DIR,
 				getTrimmedTaskName() + Constants.XSL_EXTENSION);
 
 		try {
@@ -495,7 +468,7 @@ public class FileUtilities {
 	}
 
 	private void writeCryslTemplateFile(final String cryslTemplateFile) {
-		final File cryslDestFile = new File(Utils.getResourceFromWithin(Constants.codeTemplateFolder),
+		final File cryslDestFile = new File(Constants.ECLIPSE_LOC_TEMP_DIR,
 				getTrimmedTaskName() + ".java");
 		try {
 			final PrintWriter writer = new PrintWriter(cryslDestFile);

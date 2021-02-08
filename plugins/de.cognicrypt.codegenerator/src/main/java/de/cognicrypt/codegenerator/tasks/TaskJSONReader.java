@@ -13,6 +13,7 @@
 package de.cognicrypt.codegenerator.tasks;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,6 +45,11 @@ public class TaskJSONReader {
 				TaskJSONReader.tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 				reader.close();
 
+				final BufferedReader reader1 = new BufferedReader(new FileReader(new File(Constants.localjsonTaskFile)));
+				//final Gson gson1 = new Gson();
+				TaskJSONReader.tasks.addAll(gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType()));
+				reader.close();
+				
 				for (Task t : TaskJSONReader.tasks) {
 					t.setQuestionsJSONFile(Constants.rsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
 					t.setAdditionalResources(Constants.rsrcPath + "AdditionalResources" + Constants.innerFileSeparator + t.getName());

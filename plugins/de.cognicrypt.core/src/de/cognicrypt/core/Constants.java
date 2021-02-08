@@ -7,6 +7,8 @@
 
 package de.cognicrypt.core;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.graphics.Point;
@@ -604,6 +606,21 @@ public class Constants {
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
 
+	
+	//define local Code Generation Template/Resource Directory
+	public final static String RELATIVE_CogniCrypt_RESOURCE_DIR = "resources/CogniCrypt";
+	public final static String ECLIPSE_CogniCrypt_RESOURCE_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_CogniCrypt_RESOURCE_DIR;
+	public final static String RELATIVE_LOC_TEMP_DIR = RELATIVE_CogniCrypt_RESOURCE_DIR + "/templates";
+	public final static String ECLIPSE_LOC_TEMP_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_LOC_TEMP_DIR;
+	public final static String ECLIPSE_LOC_RES_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/res";
+	public final static String ECLIPSE_LOC_ADDRES_DIR = ECLIPSE_LOC_RES_DIR + "/AdditionalResources";
+	public final static String ECLIPSE_LOC_CLA_DIR = ECLIPSE_LOC_RES_DIR + "/ClaferModel";
+	public final static String ECLIPSE_LOC_IMG_DIR = ECLIPSE_LOC_RES_DIR + "/images";
+	public final static String ECLIPSE_LOC_TASKDESC_DIR = ECLIPSE_LOC_RES_DIR + "/TaskDesc";
+	public final static String ECLIPSE_LOC_TASKS_DIR = ECLIPSE_LOC_RES_DIR + "/Tasks";
+	public final static String ECLIPSE_LOC_XSL_DIR = ECLIPSE_LOC_TASKS_DIR + "/XSLTemplates";
+	public final static String localjsonTaskFile = ECLIPSE_LOC_TASKS_DIR + "/tasks.json";
+	
 	// define the max java version before which plugin works.
 	public static final String CC_JAVA_VERSION = "1.8";
 	

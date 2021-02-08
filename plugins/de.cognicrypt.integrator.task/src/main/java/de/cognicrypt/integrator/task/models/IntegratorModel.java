@@ -114,7 +114,7 @@ public class IntegratorModel {
 		this.task.setName(getTaskName());
 		this.task.setDescription(getDescription());
 		this.task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getTaskName() + Constants.JS_EXTENSION);
-		this.task.setQuestionsJSONFile(Constants.JSON_FILE_DIRECTORY_PATH + getTaskName() + Constants.JSON_EXTENSION);
+		this.task.setQuestionsJSONFile(Constants.LOCAL_JSON_FILE_DIRECTORY_PATH + getTaskName() + Constants.JSON_EXTENSION);
 		this.task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
 		this.task.setCodeTemplate(Constants.XSL_FILE_DIRECTORY_PATH + getTaskName() + Constants.XSL_EXTENSION);
 		this.task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getTaskName());

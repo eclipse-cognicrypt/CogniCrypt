@@ -14,10 +14,12 @@ package de.cognicrypt.codegenerator.wizard.beginner;
 
 import java.util.List;
 
+import de.cognicrypt.codegenerator.question.LocalQuestionsJSONReader;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
 import de.cognicrypt.codegenerator.tasks.Task;
+import de.cognicrypt.core.Constants;
 
 public class BeginnerModeQuestionnaire {
 
@@ -33,7 +35,11 @@ public class BeginnerModeQuestionnaire {
 	 */
 	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
 		this.task = task;
-		this.pageList = (new QuestionsJSONReader()).getPages(filePath);
+		if(filePath.startsWith(Constants.LOCAL_JSON_FILE_DIRECTORY_PATH)) {
+			this.pageList = (new LocalQuestionsJSONReader()).getPages(filePath);
+		}else {
+			this.pageList = (new QuestionsJSONReader()).getPages(filePath);
+		}
 		this.pageID = 0;
 
 		this.questionList = null;

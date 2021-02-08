@@ -61,6 +61,7 @@ public class Constants {
 	public static final String MavenNatureID = "org.eclipse.m2e.core.maven2Nature";
 
 	public static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
+	public static final String localrsrcPath = "res" + Constants.innerFileSeparator;
 	public static final String providerPath = Constants.rsrcPath + "AdditionalResources" + Constants.innerFileSeparator + "Provider";
 
 	// JSON task file
@@ -468,6 +469,7 @@ public class Constants {
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
 	public static final String CFR_BIN_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModelBin" + innerFileSeparator;
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
+	public static final String LOCAL_JSON_FILE_DIRECTORY_PATH = localrsrcPath + "TaskDesc" + innerFileSeparator;
 	public static final String IMAGE_FILE_DIRECTORY_PATH = rsrcPath + "images" + innerFileSeparator;
 	public static final String XML_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String pluginXmlFile = "plugin.xml";

@@ -141,7 +141,8 @@ public class TaskSelectionPage extends WizardPage {
 			if (resolvedURL != null) {
 				resolvedURI = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
 			} else {
-				resolvedURI = FileLocator.resolve(entry).toURI();
+				//resolvedURI = FileLocator.resolve(entry).toURI();	
+				return new Image(PlatformUI.getWorkbench().getDisplay(), new FileInputStream(new File(Constants.ECLIPSE_LOC_IMG_DIR + "/" + image + ".png")));
 			}
 
 			return new Image(PlatformUI.getWorkbench().getDisplay(), new FileInputStream(new File(resolvedURI)));

@@ -47,8 +47,6 @@ public class TaskJSONReader {
 
 				final BufferedReader reader1 = new BufferedReader(new FileReader(new File(Constants.localjsonTaskFile)));
 				//final Gson gson1 = new Gson();
-				TaskJSONReader.tasks.addAll(gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType()));
-				reader.close();
 				
 				for (Task t : TaskJSONReader.tasks) {
 					t.setQuestionsJSONFile(Constants.rsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
@@ -61,7 +59,23 @@ public class TaskJSONReader {
 						t.setCodeTemplate(Constants.codeTemplateFolder + t.getName());
 					}
 				}
+				
+				List<Task> localtasks = gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType());
+				TaskJSONReader.tasks.addAll(localtasks);
+				reader.close();
 
+				for (Task t : localtasks) {
+					t.setQuestionsJSONFile(Constants.localrsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
+					t.setAdditionalResources(Constants.localrsrcPath + "AdditionalResources" + Constants.innerFileSeparator + t.getName());
+
+					if (t.getCodeGen() == CodeGenerators.XSL) {
+						t.setCodeTemplate(Constants.localrsrcPath + "Tasks" + Constants.innerFileSeparator +  "XSLTemplates" + Constants.innerFileSeparator + t.getName() + ".xsl");
+						t.setModelFile(Constants.localrsrcPath + "ClaferModel" + Constants.innerFileSeparator + t.getName() + ".js");
+					} else if (t.getCodeGen() == CodeGenerators.CrySL) {
+						t.setCodeTemplate(Constants.RELATIVE_LOC_TEMP_DIR + Constants.innerFileSeparator + t.getName());
+					}
+				}
+				
 			} catch (final FileNotFoundException e) {
 				Activator.getDefault().logError(e);
 			} catch (final IOException e) {

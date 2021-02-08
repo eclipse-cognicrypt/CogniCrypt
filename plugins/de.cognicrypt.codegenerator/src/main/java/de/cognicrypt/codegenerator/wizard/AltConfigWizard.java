@@ -250,7 +250,12 @@ public class AltConfigWizard extends Wizard {
 			switch (genKind) {
 				case CrySL:
 					CrySLBasedCodeGenerator.clearParameterCache();
-					File templateFile = CodeGenUtils.getResourceFromWithin(codeTemplate).listFiles()[0];
+					File templateFile;
+					if(codeTemplate.startsWith(Constants.RELATIVE_LOC_TEMP_DIR)) {
+						templateFile = new File(codeTemplate).listFiles()[0];	
+					}else {
+						templateFile = CodeGenUtils.getResourceFromWithin(codeTemplate).listFiles()[0];
+					}
 					codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject()
 						.getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;

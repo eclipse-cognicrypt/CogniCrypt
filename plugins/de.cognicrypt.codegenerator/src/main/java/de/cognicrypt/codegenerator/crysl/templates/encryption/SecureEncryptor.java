@@ -21,7 +21,7 @@ public class SecureEncryptor {
 	
 	/**
 	 * Gets a password to generate a key together with a random salt and
-	 * hashes the key to create a secure secret key for later encryption or decryption.
+	 * hashes the key to create a secure secret key for later symmetric encryption or decryption.
 	 *
 	 * @param pwd the users chosen password for a password-based encryption (PBE).
 	 * @returns encryptionKey the secret key to be used for later encryption.
@@ -43,7 +43,7 @@ public class SecureEncryptor {
 
 	/**
 	 * Encrypts a plaintext with cipher using the input secret key and algorithm specifications provided by
-	 * initialized vector parameter (IvParameterSpec) from random bytes. Returns a byte array that contains
+	 * initialized vector parameter (IvParameterSpec) from random bytes of same size as key. Returns a byte array that contains
 	 * the ivBytes in the first part and the encrypted plaintext on the second part. AES algorithm with a 
 	 * block size of 128 bits has been used to encrypt the data.
 	 * 
@@ -85,7 +85,7 @@ public class SecureEncryptor {
 	 * , the AES algorithm with 128 bits block size.
 	 *
 	 * @param ciphertext the encrypted byte array to be decrypted. Includes ivBytes as first part and the encrypted data as the second part.
-	 * @param key the secret key that was used for encryption. 
+	 * @param key the secret key that was used for encryption.
 	 * @param plain_off the offset in input ciphertext where the input starts. 0, if all bytes in ciphertext need to be decrypted.
 	 * @param len the ciphertext length.
 	 * @returns the decrypted data.

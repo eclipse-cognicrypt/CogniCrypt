@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -18,15 +18,15 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor hybrid.
+ * The Class SecureEncryptor provides a hybrid encryption of bytes.
  */
 public class SecureEncryptor {
 	
 	/**
-	 * Generate session key.
+	 * Generates session key to encrypt and decrypt the data.
 	 *
-	 * @returns the session key.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @returns the session key the secret key for symmetric encryption.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a KeyGeneratorSpi implementation for the specified algorithm.
 	 */
 	public javax.crypto.SecretKey generateSessionKey() throws NoSuchAlgorithmException {
@@ -36,10 +36,12 @@ public class SecureEncryptor {
 	}
 	
 	/**
-	 * Generate key pair.
-	 *
+	 * Generates a key pair for a safe communication. The public part should be shared with the communication partner,
+	 * then they will encrypt their session key with this public key. Their session key will be decrypted with the private part of this key pair.
+	 * This way both partners have the same secret session key to encrypt and decrypt the communication partner's data.
+	 * 
 	 * @returns the key pair.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a KeyPairGeneratorSpi implementation for the specified algorithm.
 	 */
 	public java.security.KeyPair generateKeyPair() throws NoSuchAlgorithmException {
@@ -49,16 +51,17 @@ public class SecureEncryptor {
 	}
 	
 	/**
-	 * Encrypt session key.
+	 * Encrypts the session key with the public part of communication partner's key pair. It will be
+	 * encrypted with RSA algorithm.
 	 *
-	 * @param sessionKey the session key.
-	 * @param keyPair the key pair.
+	 * @param sessionKey the session key to encrypt and decrypt data through the communication.
+	 * @param keyPair the key pair from the communication partner.
 	 * @returns encrypted session key.
-	 * @throws GeneralSecurityException the general security exception.
-	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding for Cipher is not supported.
-	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size.
-	 * @throws NoSuchAlgorithmException This exception is thrown when Cipher uses wrong algorithm.
-	 * @throws InvalidKeyException This exception is thrown when the key length is invalid for the chosen algorithm, or a parameter is missing when encrypting.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
+	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
+	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no provider supports a CipherSpi implementation for the specified algorithm.
+	 * @throws InvalidKeyException This exception is thrown in case of invalid Keys (invalid encoding, wrong length, uninitialized, etc).
 	 */
 	public byte[] encryptSessionKey(javax.crypto.SecretKey sessionKey, java.security.KeyPair keyPair) throws GeneralSecurityException {
 		byte[] wrappedKeyBytes = null;
@@ -70,21 +73,24 @@ public class SecureEncryptor {
 	}
 	
 	/**
-	 * Encrypt data.
+	 * Encrypts a plaintext with cipher using the input secret key and algorithm specifications provided by
+	 * initialized vector parameter (IvParameterSpec) from random bytes of size 16. Returns a byte array that contains
+	 * the ivBytes in the first part and the encrypted plaintext on the second part. AES algorithm with a 
+	 * block size of 128 bits has been used to encrypt the data.
 	 *
-	 * @param plaintext the bytes to be encrypted.
-	 * @param key the key.
-	 * @param plain_off the input offset.
-	 * @param len the input length.
-	 * @returns the encrypted bytes.
+	 * @param plaintext text to be encrypted.
+	 * @param key the secret key for encryption, it also will be used for decryption.
+	 * @param plain_off the offset in input plaintext where the input starts. 0, if all bytes in plaintext need to be encrypted.
+	 * @param len the length of the plaintext.
+	 * @returns the result that contains the ivBytes and the outcome of encryption.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
-	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size.
+	 * @throws IllegalBlockSizeException This exception is thrown when the input data size is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
-	 * @throws NoSuchAlgorithmException This exception is thrown when cipher object is created using padding or modes that are not supported by chosen algorithm.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no provider supports a CipherSpi or SecureRandomSpi implementation for the specified algorithms.
 	 * @throws BadPaddingException This exception is thrown when padding is wrong or not compatible with cipher block size and data size.
-	 * @throws InvalidKeyException This exception is thrown when the key length is invalid for the chosen algorithm, or a parameter is missing when encrypting or iv missing.
+	 * @throws InvalidKeyException This exception is thrown in case of invalid Keys (invalid encoding, wrong length, uninitialized, etc).
 	 */
 	public byte[] encryptData(byte[] plaintext, javax.crypto.SecretKey key) {
 		byte[] ivBytes = new byte[16];
@@ -102,15 +108,19 @@ public class SecureEncryptor {
 	}
 
 	/**
-	 * Decrypt data.
+	 * Divides the cipher text into two parts, ivBytes and data, and decrypts
+	 * the data with the input secret key that was used to encrypt the data
+	 * and the ivParameter specifications from the ivBytes. The ivBytes are the random
+	 * bytes that the data was encrypted with it. The same algorithm from encryption has been used to decrypt
+	 * , the AES algorithm with 128 bits block size.
 	 *
-	 * @param ciphertext the encrypted bytes.
-	 * @param key the key.
-	 * @param plain_off the input offset.
+	 * @param ciphertext the encrypted byte array to be decrypted. Includes ivBytes as first part and the encrypted data as the second part.
+	 * @param key the secret key that was used for encryption. 
+	 * @param plain_off the offset in input ciphertext where the input starts. 0, if all bytes in ciphertext need to be decrypted.
 	 * @param len the input length.
-	 * @returns the decrypted bytes.
+	 * @returns the the ciphertext length.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.

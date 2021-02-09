@@ -46,8 +46,8 @@ public class SecureEncryptor {
 	
 	/**
 	 * First reads all bytes of the plaintext file and then encrypts it with cipher using the input secret key and algorithm specifications provided by
-	 * initialized vector parameter (IvParameterSpec) from random bytes. Copies the ivBytes and the result of the encryption
-	 * in a new byte array and write it to a file where plaintext was located and returns the file. AES algorithm with a 
+	 * initialized vector parameter (IvParameterSpec) from random bytes of same size as key. Copies the ivBytes and the result of the encryption
+	 * in a new byte array and writes it to a file where plaintext was located and returns the file. AES algorithm with a 
 	 * block size of 128 bits has been used to encrypt the data.
 	 *
 	 * @param plaintext the input file to be encrypted.

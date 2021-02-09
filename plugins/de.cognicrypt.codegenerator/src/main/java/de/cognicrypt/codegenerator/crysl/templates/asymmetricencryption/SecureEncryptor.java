@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -17,15 +17,17 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor asymmetric.
+ * The Class SecureEncryptor provides an asymmetric encryption.
  */
 public class SecureEncryptor {
 
 	/**
-	 * Generate key pair.
+	 * Generates a key pair for later encryption and decryption. The public part
+	 * will be used to encrypt the data and the private part to decrypt it.
 	 *
-	 * @return the java.security. key pair
-	 * @throws NoSuchAlgorithmException the no such algorithm exception
+	 * @return the key pair.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a KeyPairGeneratorSpi implementation for the specified algorithm.
 	 */
 	public java.security.KeyPair generateKeyPair() throws NoSuchAlgorithmException {
 		java.security.KeyPair keyPair = null;
@@ -34,11 +36,11 @@ public class SecureEncryptor {
 	}
 
 	/**
-	 * Encrypt data.
+	 * Gets the public key of the communication partner's key pair and encrypts the plaintext.
 	 *
-	 * @param plaintext the plaintext
-	 * @param keyPair the key pair
-	 * @return the byte[]
+	 * @param plaintext the text to be encrypted.
+	 * @param keyPair the key pair of the communication partner, not this user's key pair.
+	 * @returns the cipherText the encrypted data.
 	 */
 	public byte[] encryptData(byte[] plaintext, java.security.KeyPair keyPair) {
 		byte[] cipherText = null;
@@ -51,7 +53,7 @@ public class SecureEncryptor {
 	}
 
 	/**
-	 * Decrypt.
+	 * Gets the private key of this user's key pair and decrypts the cipherText.\\mention the algorithm
 	 *
 	 * @param ciphertext the ciphertext
 	 * @param keyPair the key pair

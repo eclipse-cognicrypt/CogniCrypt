@@ -19,7 +19,7 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor encryption string.
+ * The Class SecureEncryptor for encryption of a string.
  */
 public class SecureEncryptor {
 
@@ -46,8 +46,8 @@ public class SecureEncryptor {
 	
 	/**
 	 * First converts the plaintext to bytes and then encrypts it with cipher using the input secret key and algorithm 
-	 * specifications provided by initialized vector parameter (IvParameterSpec) from random bytes. Copies the ivBytes and 
-	 * the result of the encryption in a new byte array and encode it with Base64 to string.
+	 * specifications provided by initialized vector parameter (IvParameterSpec) from random bytes of same size as key.
+	 * Copies the ivBytes and the result of the encryption in a new byte array and encode it with Base64 to string.
 	 * AES algorithm with a block size of 128 bits has been used to encrypt the data.
 	 * 
 	 * @param plaintext the input string to be encrypted.
@@ -60,7 +60,7 @@ public class SecureEncryptor {
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
-	 * @throws IOException This exception This exception is thrown when the charset name is wrong.
+	 * @throws IOException This exception is thrown if the character encoding is not supported, while converting string to bytes and vice versa.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no provider supports a CipherSpi or SecureRandomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 * @throws BadPaddingException This exception is thrown when padding is wrong or not compatible with cipher block size and data size.
@@ -99,7 +99,7 @@ public class SecureEncryptor {
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
 	 * @throws ShortBufferException This exception is thrown when an output buffer provided by the user is too short to hold the operation result.
-	 * @throws IOException 
+	 * @throws IOException This exception is thrown if the character encoding is not supported, while converting string to bytes and vice versa.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no provider supports a CipherSpi or SecureRandomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 * @throws BadPaddingExceptionxception This exception is thrown when padding is wrong or not compatible with cipher block size and data size.

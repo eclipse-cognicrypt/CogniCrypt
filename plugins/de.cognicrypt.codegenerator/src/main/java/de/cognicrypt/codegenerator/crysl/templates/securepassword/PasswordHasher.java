@@ -19,16 +19,19 @@ import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 
 /**
- * The Class PasswordHasher securely transforms and retrieves a password.
+ * The Class PasswordHasher hashes a given password and verifies the password.
  */
 public class PasswordHasher {
 
 	/**
-	 * This method creates hashed password with SHA512 and random salt.
+	 * Creates hashed password with SHA512 and a random salt, then converts
+	 * the salt and hashed password to string and puts them both into one
+	 * string and returns it. 
+	 * 
 	 *
-	 * @param pwd The password to be hashed.
-	 * @returns the salt and hashed password in string with a colon in between.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @param pwd the password to be hashed.
+	 * @returns the salt and hashed password in a string with a colon in between.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 */
@@ -45,12 +48,11 @@ public class PasswordHasher {
 	}
 
 	/**
-	 * This method verifies if the input password generates the same hash using the hash algorithm and salt of the input hashed password.
-	 *
+	 * Breaks the input hashed password into two parts, salt and hash. Verifies if the input password generates the same hash using the same hash algorithm and the salt.
 	 * @param pwd the password.
 	 * @param pwdhash the hashed password with its salt.
 	 * @returns true, if the hashed input password is the equal to input hashed password.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 */
@@ -83,20 +85,20 @@ public class PasswordHasher {
 	}
 
 	/**
-	 * This method converts an array of bytes into a string.
+	 * Converts an array of bytes into a string.
 	 *
 	 * @param array of bytes.
-	 * @returns string.
+	 * @returns a string.
 	 */
 	private static java.lang.String toBase64(byte[] array) {
 		return DatatypeConverter.printBase64Binary(array);
 	}
 
 	/**
-	 * This method converts a string into an array of bytes.
+	 * Converts a string into an array of bytes.
 	 *
 	 * @param hash, a string containing lexical representation of xsd:base64Binary.
-	 * @returns the byte[] created by Base64.
+	 * @returns the byte array created by Base64.
 	 */
 	private static byte[] fromBase64(java.lang.String hash) {
 		return DatatypeConverter.parseBase64Binary(hash);

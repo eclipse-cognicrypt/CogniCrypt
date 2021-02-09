@@ -1335,7 +1335,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					curMethod.addParameter(new SimpleEntry<String, String>(svd.getName().getFullyQualifiedName(), svd.getType().toString()));
 				}
 				curMethod.setNumberOfVariablesInTemplate(curMethod.getDeclaredVariables().size());
-				templateClass.addMethod(curMethod);
+				//templateClass.addMethod(curMethod);
 				return super.visit(node);
 			}
 
@@ -1345,6 +1345,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				curMethod.setRules(new ArrayList<>(rules));
 				postCGVars.entrySet().forEach(e -> curMethod.addPostCGVars(new SimpleEntry<String, String>(e.getKey().getFullyQualifiedName(), e.getValue().getJavaType())));
 				rules.clear();
+				templateClass.addMethod(curMethod);
 				super.visit(node);
 			}
 

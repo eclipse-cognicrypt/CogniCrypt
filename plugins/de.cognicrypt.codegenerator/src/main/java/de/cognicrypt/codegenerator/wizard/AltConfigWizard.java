@@ -251,7 +251,7 @@ public class AltConfigWizard extends Wizard {
 				case CrySL:
 					CrySLBasedCodeGenerator.clearParameterCache();
 					File templateFile;
-					if(codeTemplate.startsWith(Constants.RELATIVE_LOC_TEMP_DIR)) {
+					if(codeTemplate.startsWith(Constants.ECLIPSE_LOC_TEMP_DIR)) {
 						templateFile = new File(codeTemplate).listFiles()[0];	
 					}else {
 						templateFile = CodeGenUtils.getResourceFromWithin(codeTemplate).listFiles()[0];

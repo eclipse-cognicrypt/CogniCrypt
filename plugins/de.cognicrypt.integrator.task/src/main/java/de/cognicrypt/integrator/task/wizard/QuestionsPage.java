@@ -44,7 +44,7 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
-		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName(), this));
+		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this));
 		// fill the available space on the with the big composite
 		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
@@ -92,11 +92,12 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 		
 		for(Question q : questions) {
 			for(Answer a : q.getAnswers()) {
-				identifiers.add(a.getOption());
+				if (a.getOption() != null || a.getOption().contentEquals(""))
+					identifiers.add(a.getOption());
 			}
 		}
 		
 		// Set the page to incomplete if amount of answers is at least amount of templates
-		setPageComplete(identifiers.size() == IntegratorModel.getInstance().getIdentifiers().size());
+		setPageComplete(identifiers.size() >= IntegratorModel.getInstance().getIdentifiers().size());
 	}
 }

@@ -24,26 +24,20 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	QuestionsPage questionsPage;
 	
-	private String targetPageName;
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	private final ArrayList<Question> listOfAllQuestions;
-	
-	int counter;
-
 	
 	/**
 	 * Create the composite.
 	 *
 	 * @param parent
 	 */
-	public CompositeToHoldGranularUIElements(final Composite parent, final String pageName, QuestionsPage questionsPage) {
+	public CompositeToHoldGranularUIElements(final Composite parent, QuestionsPage questionsPage) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 
 		this.questionsPage = questionsPage;
 
 		this.listOfAllQuestions = new ArrayList<Question>();
-
-		setTargetPageName(pageName);
 
 		setExpandHorizontal(true);
 		setExpandVertical(true);
@@ -70,8 +64,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		// update the size values.
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
-
-
 
 		((Composite) getContent()).layout();
 	}
@@ -210,20 +202,6 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
-	}
-
-	/**
-	 * @return the targetPageName
-	 */
-	public String getTargetPageName() {
-		return this.targetPageName;
-	}
-
-	/**
-	 * @param targetPageName the targetPageName to set
-	 */
-	private void setTargetPageName(final String targetPageName) {
-		this.targetPageName = targetPageName;
 	}
 
 	/**

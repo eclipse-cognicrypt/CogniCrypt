@@ -23,7 +23,6 @@ import de.cognicrypt.codegenerator.question.Question;
 
 public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
-	private final Text txtQuestionID;
 	public Text txtQuestion;
 	//private final Text txtAnswerType;
 
@@ -47,13 +46,13 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 
 		setLayout(new GridLayout(2, false));
 
-		final CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, this.question);
+		final CompositeModifyDeleteButtons grpModifyDeleteButtons = new CompositeModifyDeleteButtons(this, question);
 		grpModifyDeleteButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		// Only visible for "pageForHighLevelQuestions" page
 		grpModifyDeleteButtons.setVisible(!linkAnswerPage);
 
-		final CompositeUpDownButtons grpUpDownButtons = new CompositeUpDownButtons(this, this.question);
+		final CompositeUpDownButtons grpUpDownButtons = new CompositeUpDownButtons(this, question);
 		grpUpDownButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
 		grpUpDownButtons.setVisible(!linkAnswerPage);
@@ -61,21 +60,6 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		final Group grpQuestionDetails = new Group(this, SWT.NONE);
 		grpQuestionDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
 		grpQuestionDetails.setLayout(new GridLayout(2, false));
-
-
-
-		grpQuestionDetails.setText("Question details");
-
-		final Label lblQuestionId = new Label(grpQuestionDetails, SWT.NONE);
-		lblQuestionId.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-		lblQuestionId.setText("Question id:");
-
-		this.txtQuestionID = new Text(grpQuestionDetails, SWT.BORDER);
-		this.txtQuestionID.setEditable(false);
-		final GridData gdTxtQuestionID = new GridData(SWT.FILL, SWT.CENTER, false, false);
-		gdTxtQuestionID.widthHint = 0;
-		this.txtQuestionID.setLayoutData(gdTxtQuestionID);
-		this.txtQuestionID.setText(Integer.toString(this.question.getId()));
 
 		/*final Label lblType = new Label(grpQuestionDetails, SWT.NONE);
 		lblType.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
@@ -91,13 +75,13 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		lblQuestion.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		lblQuestion.setText("Question:");
 
-		this.txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
-		this.txtQuestion.setEditable(false);
+		txtQuestion = new Text(grpQuestionDetails, SWT.BORDER);
+		txtQuestion.setEditable(false);
 		final GridData gdTxtQuestion = new GridData(SWT.FILL, SWT.CENTER, false, false);
 		gdTxtQuestion.widthHint = 0;
-		this.txtQuestion.setLayoutData(gdTxtQuestion);
+		txtQuestion.setLayoutData(gdTxtQuestion);
 
-		setTextQuestion(this.question.getQuestionText());
+		setTextQuestion(question.getQuestionText());
 
 		/*if (this.question.getElement().equals(Constants.GUIElements.combo)) {
 			this.txtAnswerType.setText(Constants.dropDown);
@@ -117,7 +101,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		gdCompositeForAnswers.heightHint = 100;
 		gdCompositeForAnswers.widthHint = 500;
 		compositeForAnswers.setLayoutData(gdCompositeForAnswers);
-		for (final Answer answer : this.question.getAnswers()) {
+		for (final Answer answer : question.getAnswers()) {
 			compositeForAnswers.addAnswer(answer, false);
 		}
 
@@ -132,7 +116,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	 * @return the question
 	 */
 	public Question getQuestion() {
-		return this.question;
+		return question;
 	}
 
 	/**
@@ -147,7 +131,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 	}
 
 	public String getTextQuestion() {
-		return this.txtQuestion.getText();
+		return txtQuestion.getText();
 	}
 
 	/*public String getAnswerType() {

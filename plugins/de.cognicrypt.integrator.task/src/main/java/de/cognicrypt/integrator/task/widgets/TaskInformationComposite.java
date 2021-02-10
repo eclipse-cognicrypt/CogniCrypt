@@ -50,15 +50,12 @@ import de.cognicrypt.utils.Utils;
 
 public class TaskInformationComposite extends Composite {
 
-	private final TaskIntegratorWizardPage localContainerPage;
-
-	private final ControlDecoration decTemplates;
+	private final TaskIntegratorWizardPage wizardPage;
 
 	private final Label lblTaskName;
-	
-	private final FileBrowserComposite compJSON, compPNG;
-
+	private final ControlDecoration decTemplates;
 	private final List templateList;
+	private final FileBrowserComposite compJSON, compPNG;
 	
 	final Button btnModifyTemplate;
 	final Button btnRemoveTemplate;
@@ -70,10 +67,10 @@ public class TaskInformationComposite extends Composite {
 	 * @param style
 	 */
 	public TaskInformationComposite(final Composite parent, final int style,
-			final TaskIntegratorWizardPage localContainerPage) {
+			final TaskIntegratorWizardPage wizardPage) {
 		super(parent, style);
 
-		this.localContainerPage = localContainerPage;
+		this.wizardPage = wizardPage;
 		
 		IntegratorModel.resetInstance();
 		
@@ -96,7 +93,8 @@ public class TaskInformationComposite extends Composite {
 		gdTaskDescription.heightHint = 67;
 		txtTaskDescription.setLayoutData(gdTaskDescription);
 		txtTaskDescription.setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
-
+		txtTaskDescription.setFocus();
+		
 		txtTaskDescription.addModifyListener(
 				e -> IntegratorModel.getInstance().setTaskDescription(txtTaskDescription.getText().trim()));
 		
@@ -181,7 +179,7 @@ public class TaskInformationComposite extends Composite {
 		compPNG = new FileBrowserComposite(compositeFileImports, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE, new String[] { "*.png" },
 				"Select PNG file that contains the task icon",
-				localContainerPage);
+				wizardPage);
 		compPNG.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		String defaultIconPath = Utils.getResourceFromWithin(Constants.DEFAULT_ICON_PATH, "de.cognicrypt.core").getAbsolutePath();
 		compPNG.setPathText(defaultIconPath);
@@ -203,7 +201,7 @@ public class TaskInformationComposite extends Composite {
 		
 		compJSON = new FileBrowserComposite(compositeNonguidedMode, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" },
-				"Select JSON file that contains the high-level questions", localContainerPage);
+				"Select JSON file that contains the high-level questions", wizardPage);
 		compJSON.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
 		requestLayout();
@@ -222,14 +220,14 @@ public class TaskInformationComposite extends Composite {
 				// If the guided mode is not selected, the rest of the pages are set to
 				// completed. This is to allow the finish button to be enabled on the first
 				// page.
-				for (final IWizardPage page : localContainerPage.getWizard().getPages()) {
+				for (final IWizardPage page : wizardPage.getWizard().getPages()) {
 					if (!page.getName().equals(Constants.PAGE_TASK_INFORMATION)) {
 						((WizardPage) page).setPageComplete(!tempSelectionStatus);
 					}
 				}
 
 				// Check if the page can be set to completed.
-				localContainerPage.checkPageComplete();
+				wizardPage.checkPageComplete();
 			}
 		});
 	}
@@ -248,11 +246,14 @@ public class TaskInformationComposite extends Composite {
 	}
 
 	public TaskIntegratorWizardPage getLocalContainerPage() {
-		return localContainerPage;
+		return wizardPage;
 	}
 	
 
 	public void redrawTable() {
+		
+		btnModifyTemplate.setEnabled(false);
+		btnRemoveTemplate.setEnabled(false);
 		
 		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
 		
@@ -277,7 +278,7 @@ public class TaskInformationComposite extends Composite {
 		// Set the task name or verify that it's equal
 		String[] filePathParts = templateFilePath.split("(\\/|\\\\)");
 		String taskName = filePathParts[filePathParts.length - 1].replace(".java", "");
-
+		
 		if(Validator.checkIfTaskNameAlreadyExists(taskName)) {
 			MessageDialog.openError(getShell(), "Warning", "The chosen template's associated task has been added before.");
 			return;
@@ -327,16 +328,13 @@ public class TaskInformationComposite extends Composite {
 
 		// Extract identifier
 		String[] packageParts = packageLine.split("\\.");
-		String templateIdentifier = packageParts[packageParts.length - 1].replace(taskName, "").replace(";", "");
+		String templateIdentifier = packageParts[packageParts.length - 1].replace(";", "");
 
 		IntegratorModel.getInstance().addTemplate(templateIdentifier, new File(templateFilePath));
 
-		localContainerPage.checkPageComplete();
+		wizardPage.checkPageComplete();
 
 		redrawTable();
-
-		btnModifyTemplate.setEnabled(false);
-		btnRemoveTemplate.setEnabled(false);
 
 		decTemplates.setImage(UIConstants.DEC_REQUIRED);
 		decTemplates.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
@@ -346,12 +344,9 @@ public class TaskInformationComposite extends Composite {
 		
 		IntegratorModel.getInstance().removeTemplates(identifiers);
 		
-		localContainerPage.checkPageComplete();
+		wizardPage.checkPageComplete();
 		
 		redrawTable();
-		
-		btnModifyTemplate.setEnabled(false);
-		btnRemoveTemplate.setEnabled(false);
 		
 		if(IntegratorModel.getInstance().isTemplatesEmpty()) {
 			IntegratorModel.getInstance().setTaskName(null);

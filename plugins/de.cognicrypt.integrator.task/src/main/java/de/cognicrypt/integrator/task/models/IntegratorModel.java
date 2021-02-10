@@ -19,8 +19,7 @@ import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 
 public class IntegratorModel {
-
-	private String taskName;
+	
 	private String description;
 	private String taskDescription;
 	private File locationOfCryslTemplate;
@@ -44,7 +43,6 @@ public class IntegratorModel {
 	private IntegratorModel() {
 		super();
 		task = new Task();
-		taskName = "";
 		cryslTemplateFiles = new HashMap<String, File>();
 	}
 
@@ -111,13 +109,13 @@ public class IntegratorModel {
 	 * Generate the Task instance from the advanced mode model.
 	 */
 	public void setTask() {
-		this.task.setName(getTaskName());
-		this.task.setDescription(getDescription());
-		this.task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getTaskName() + Constants.JS_EXTENSION);
-		this.task.setQuestionsJSONFile(Constants.LOCAL_JSON_FILE_DIRECTORY_PATH + getTaskName() + Constants.JSON_EXTENSION);
-		this.task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
-		this.task.setCodeTemplate(Constants.XSL_FILE_DIRECTORY_PATH + getTaskName() + Constants.XSL_EXTENSION);
-		this.task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getTaskName());
+		task.setName(getTaskName());
+		task.setDescription(getDescription());
+		task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getTaskName() + Constants.JS_EXTENSION);
+		task.setQuestionsJSONFile(Constants.LOCAL_JSON_FILE_DIRECTORY_PATH + getTaskName() + Constants.JSON_EXTENSION);
+		task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
+		task.setCodeTemplate(Constants.XSL_FILE_DIRECTORY_PATH + getTaskName() + Constants.XSL_EXTENSION);
+		task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getTaskName());
 	}
 
 

@@ -59,8 +59,9 @@ public class TaskIntegratorWizard extends Wizard {
 		if(!IntegratorModel.getInstance().isGuidedModeChosen())
 			return taskInformation.checkNonGuidedFinish();
 	
-		if(IntegratorModel.getInstance().getIdentifiers().size() == 1)
-			return taskInformation.checkMandatoryFields();
+		if(IntegratorModel.getInstance().getIdentifiers().size() == 1) {
+			return taskInformation.checkSingleFinish();
+		}
 			
 		return super.canFinish();
 	}

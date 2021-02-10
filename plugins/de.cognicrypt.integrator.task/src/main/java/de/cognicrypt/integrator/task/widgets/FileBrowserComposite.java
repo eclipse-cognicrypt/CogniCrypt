@@ -33,32 +33,22 @@ import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardPage;
 
 public class FileBrowserComposite extends Composite {
 
-	private TaskIntegratorWizardPage theLocalContainerPage; // this is needed to set whether the page has been
-																// completed yet or not.
+	private TaskIntegratorWizardPage wizardPage; // this is needed to set whether the page has been
+													// completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
 
 	private Listener onFileChangedListener;
 
 	private Text pathText;
-	
+
 	private Text optionalText;
 
 	public FileBrowserComposite(final Composite parent, final int style, final String labelText,
-			final String[] fileTypes, final String stringOnFileDialog,
-			final TaskIntegratorWizardPage theContainerpageForValidation, final Listener listener) {
-		this(parent, style, labelText, fileTypes, stringOnFileDialog, theContainerpageForValidation);
-		this.onFileChangedListener = listener;
-	}
+			final String[] fileTypes, final String stringOnFileDialog, final TaskIntegratorWizardPage wizardPage,
+			final Listener listener) {
 
-	public TaskInformationComposite findAncestor(Composite comp) {
-		Composite result = comp;
-		while (!(result instanceof TaskInformationComposite) && result != null) {
-			result = result.getParent();
-		}
-		if (result instanceof TaskInformationComposite)
-			return (TaskInformationComposite) result;
-		else
-			return null;
+		this(parent, style, labelText, fileTypes, stringOnFileDialog, wizardPage);
+		this.onFileChangedListener = listener;
 	}
 
 	/**
@@ -70,28 +60,25 @@ public class FileBrowserComposite extends Composite {
 	 * @param labelText
 	 * @param fileTypes
 	 * @param stringOnDialog
-	 * @param theContainerpageForValidation
+	 * @param wizardPage
 	 */
-	public FileBrowserComposite(Composite parent, int style, String labelText,
-			String[] fileTypes, String stringOnDialog,
-			TaskIntegratorWizardPage theContainerpageForValidation) {
+	public FileBrowserComposite(Composite parent, int style, String labelText, String[] fileTypes,
+			String stringOnDialog, TaskIntegratorWizardPage wizardPage) {
+		super(parent, style);
+
+		init(parent, style, labelText, fileTypes, stringOnDialog, wizardPage);
+	}
+
+	public FileBrowserComposite(Composite parent, int style, String labelText, String[] fileTypes,
+			String stringOnDialog, TaskIntegratorWizardPage theContainerpageForValidation,
+			TaskInformationComposite comp) {
 		super(parent, style);
 
 		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
 	}
-	
-	public FileBrowserComposite(Composite parent, int style, String labelText,
-			String[] fileTypes, String stringOnDialog,
-			TaskIntegratorWizardPage theContainerpageForValidation, TaskInformationComposite comp) {
-		super(parent, style);
-		
-		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
-	}
-	
-	
-	private void init(final Composite parent, final int style, final String labelText,
-			final String[] fileTypes, final String stringOnDialog,
-			final TaskIntegratorWizardPage theContainerpageForValidation) {
+
+	private void init(final Composite parent, final int style, final String labelText, final String[] fileTypes,
+			final String stringOnDialog, final TaskIntegratorWizardPage theContainerpageForValidation) {
 		setTheLocalContainerPage(theContainerpageForValidation);
 		final GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.horizontalSpacing = 8;
@@ -111,17 +98,17 @@ public class FileBrowserComposite extends Composite {
 
 		this.pathText = new Text(this, SWT.BORDER);
 		final GridData gdTextBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		
+
 		// do not claim space for all the text if not available
 		gdTextBox.widthHint = 500;
 		this.pathText.setLayoutData(gdTextBox);
 		this.optionalText = new Text(this, SWT.BORDER);
 		final GridData gdTextBoxOption = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		
+
 		// do not claim space for all the text if not available
 		gdTextBoxOption.widthHint = 100;
 		this.optionalText.setLayoutData(gdTextBoxOption);
-		if(!labelText.equals(Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE)) {
+		if (!labelText.equals(Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE)) {
 			this.optionalText.setVisible(false);
 		}
 		final Button browseButton = new Button(this, SWT.NONE);
@@ -157,8 +144,7 @@ public class FileBrowserComposite extends Composite {
 			File locationOfCryslTemplate = new File(pathText.getText());
 			final File tempFileVariable = locationOfCryslTemplate;
 			// Validate the file IO. The directory check is removed.
-			if ((!tempFileVariable.exists() || !tempFileVariable.canRead())
-					&& pathText.getParent().isVisible()) {//
+			if ((!tempFileVariable.exists() || !tempFileVariable.canRead()) && pathText.getParent().isVisible()) {//
 				getDecFilePath().setImage(UIConstants.DEC_ERROR);
 				getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 				getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
@@ -184,7 +170,6 @@ public class FileBrowserComposite extends Composite {
 			}
 		});
 	}
-	
 
 	/**
 	 * Open the file dialog and return the file path as a string.
@@ -217,14 +202,13 @@ public class FileBrowserComposite extends Composite {
 		// Disable the check that prevents subclassing of SWT components
 	}
 
-
 	/**
 	 * Return the container wizard page object.
 	 *
 	 * @return the theLocalContainerPage
 	 */
 	public TaskIntegratorWizardPage getTheLocalContainerPage() {
-		return this.theLocalContainerPage;
+		return this.wizardPage;
 	}
 
 	/**
@@ -234,13 +218,13 @@ public class FileBrowserComposite extends Composite {
 	 * @param theLocalContainerPage the theLocalContainerPage to set
 	 */
 	public void setTheLocalContainerPage(final TaskIntegratorWizardPage theLocalContainerPage) {
-		this.theLocalContainerPage = theLocalContainerPage;
+		this.wizardPage = theLocalContainerPage;
 	}
 
 	public String getPathText() {
 		return this.pathText.getText();
 	}
-	
+
 	public String getOptionalText() {
 		return optionalText.getText();
 	}
@@ -261,17 +245,18 @@ public class FileBrowserComposite extends Composite {
 		this.decFilePath = decFilePath;
 	}
 
-	
-	/** 
+	/**
 	 * Change Path Option.
+	 * 
 	 * @param text String to set ID
 	 */
 	public void setPathText(String text) {
 		pathText.setText(text);
 	}
-	
-	/** 
+
+	/**
 	 * Change Identifier Option.
+	 * 
 	 * @param text String to set ID
 	 */
 	public void setOptionalText(String text) {

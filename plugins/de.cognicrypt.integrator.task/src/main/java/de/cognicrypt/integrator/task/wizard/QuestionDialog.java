@@ -260,26 +260,29 @@ public class QuestionDialog extends Dialog {
 	// Saving question details
 	public void setQuestionDetails() {
 		final Question questionDetails = new Question();
-		questionDetails.setQuestionText(this.textQuestion.getText());
+		questionDetails.setQuestionText(textQuestion.getText());
 		setQuestionElement(questionDetails);
-		if (!this.txtBoxHelpText.getText().isEmpty()) {
-			questionDetails.setHelpText(this.txtBoxHelpText.getText());
+		if (!txtBoxHelpText.getText().isEmpty()) {
+			questionDetails.setHelpText(txtBoxHelpText.getText());
 		}
 		/**
 		 * Executes only if the question type is not text this loop executes to delete
 		 * empty text boxes in the question dialog
 		 */
-		for (int i = 0; i < this.compositeToHoldAnswers.getListOfAllAnswers().size(); i++) {
-			if (Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswers().get(i).getValue(), null)
-					|| Objects.equals(this.compositeToHoldAnswers.getListOfAllAnswers().get(i).getValue(), "")) {
-				this.compositeToHoldAnswers.deleteAnswer(this.compositeToHoldAnswers.getListOfAllAnswers().get(i));
-				this.compositeToHoldAnswers.updateAnswerContainer();
+		for (int i = 0; i < compositeToHoldAnswers.getListOfAllAnswers().size(); i++) {
+			
+			Answer a = compositeToHoldAnswers.getListOfAllAnswers().get(i);
+			
+			if (Objects.equals(a.getValue(), null) || Objects.equals(a.getValue(), "")
+					|| Objects.equals(a.getOption(), null) || Objects.equals(a.getOption(), "")) {
+				compositeToHoldAnswers.deleteAnswer(a);
+				compositeToHoldAnswers.updateAnswerContainer();
 				i--;
 			}
 		}
 
 		// opens a message box, alerting user to add answers to the question
-		if (this.compositeToHoldAnswers.getListOfAllAnswers().size() == 0) {
+		if (compositeToHoldAnswers.getListOfAllAnswers().size() == 0) {
 			final MessageBox msgNoAnsAdded = new MessageBox(this.compositeToHoldAnswers.getShell());
 			msgNoAnsAdded.setMessage(Constants.NO_ANSWERS_WARNING);
 			msgNoAnsAdded.open();

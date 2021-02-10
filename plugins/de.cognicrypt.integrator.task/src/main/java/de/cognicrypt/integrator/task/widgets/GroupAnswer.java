@@ -37,11 +37,12 @@ public class GroupAnswer extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public GroupAnswer(final Composite parent, final int style, final Answer answerParam, final boolean showRemoveButton) {
+	public GroupAnswer(final Composite parent, final int style, final Answer answerParam, final boolean isEditable) {
 		super(parent, style);
 		setAnswer(answerParam);
 
 		this.txtAnswer = new Text(this, SWT.BORDER);
+
 		//this.txtOption = new Text(this, SWT.BORDER);
 		this.possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
 		this.possibleIdentifiers.setItems(IntegratorModel.getInstance().getIdentifiers().toArray(new String[0])); 
@@ -55,7 +56,7 @@ public class GroupAnswer extends Group {
 				GroupAnswer.this.answer.setValue(GroupAnswer.this.txtAnswer.getText());
 			}
 		});
-		//this.txtAnswer.setEditable(showRemoveButton);
+		this.txtAnswer.setEditable(isEditable);
 		
 		if (this.answer.getOption() != null) {
 			//this.txtOption.setText(this.answer.getOption());
@@ -85,13 +86,13 @@ public class GroupAnswer extends Group {
 			}
 		});
 
-		//this.possibleIdentifiers.setEnabled(showRemoveButton);
+		this.possibleIdentifiers.setEnabled(isEditable);
 		
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
 		/**
 		 * executes when GroupAnswer is called by Question Dialog class
 		 */
-		if (showRemoveButton) {
+		if (isEditable) {
 			this.txtAnswer.setBounds(13, 9, 486, 29);
 			//this.txtOption.setBounds(590, 3, 20, 29);
 			this.possibleIdentifiers.setBounds(511, 6, 100, 29);
@@ -113,7 +114,7 @@ public class GroupAnswer extends Group {
 		if (this.answer.isDefaultAnswer()) {
 			btnDefaultAnswer.setSelection(true);
 		}
-		btnDefaultAnswer.setToolTipText("the answer that will be automatically selected when question appears for the first time");
+		btnDefaultAnswer.setToolTipText("The answer that will be automatically selected when question appears for the first time");
 
 		btnDefaultAnswer.addSelectionListener(new SelectionAdapter() {
 
@@ -142,8 +143,8 @@ public class GroupAnswer extends Group {
 			}
 		});
 
-		btnDefaultAnswer.setEnabled(showRemoveButton);
-		if (showRemoveButton) {
+		btnDefaultAnswer.setEnabled(isEditable);
+		if (isEditable) {
 			final Button btnRemove = new Button(this, SWT.NONE);
 			btnRemove.setBounds(763, 6, 80, 31);
 			btnRemove.setText("Remove");

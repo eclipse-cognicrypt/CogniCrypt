@@ -162,6 +162,15 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		return mandatoryFields && !guidedMode && !errorOnJSONFile;
 	}
 	
+	public boolean checkSingleFinish() {
+		
+		boolean mandatoryFields = checkMandatoryFields();
+		
+		boolean identifierEqualsTaskName = IntegratorModel.getInstance().getIdentifiers().get(0).contentEquals(IntegratorModel.getInstance().getTaskName());	
+		
+		return mandatoryFields && identifierEqualsTaskName;
+	}
+	
 	public boolean checkMandatoryFields() {
 		boolean errorOnIconFile = compositeTaskInformation.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
 		boolean templatesEmpty = IntegratorModel.getInstance().isTemplatesEmpty(); 

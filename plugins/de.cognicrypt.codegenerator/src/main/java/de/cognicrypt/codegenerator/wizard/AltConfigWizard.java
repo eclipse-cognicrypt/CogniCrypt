@@ -277,8 +277,13 @@ public class AltConfigWizard extends Wizard {
 					break;
 				case XSL:
 					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
-					final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
-						.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
+					InstanceGenerator instanceGenerator;
+					if(codeTemplate.startsWith(Constants.ECLIPSE_LOC_TEMP_DIR)) {
+						instanceGenerator = new InstanceGenerator(selectedTask.getModelFile(), "c0_" + taskName, selectedTask.getDescription());
+					}else {
+						instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
+							.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
+					}
 					instanceGenerator.generateInstances(this.constraints);
 
 					// Initialize Code Generation

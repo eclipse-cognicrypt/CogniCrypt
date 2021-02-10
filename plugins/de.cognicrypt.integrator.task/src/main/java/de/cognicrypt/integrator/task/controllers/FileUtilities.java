@@ -113,6 +113,7 @@ public class FileUtilities {
 		return getErrors().toString();
 	}
 
+	
 	public String writeCryslTemplate(final HashMap<String, File> cryslTemplateFile, final File jsonFileLocation,
 			final File iconFile) {
 		copyFileFromPath(jsonFileLocation);
@@ -319,9 +320,8 @@ public class FileUtilities {
 					if (!templateFolder.isDirectory()) {
 						templateFolder.mkdir();
 					}
-					targetDirectory = new File(Utils.getResourceFromWithin(
-							Constants.codeTemplateFolder + getTrimmedTaskName() + Constants.innerFileSeparator,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_TEMP_DIR + Constants.innerFileSeparator + getTrimmedTaskName() + Constants.innerFileSeparator
+							+ getTrimmedTaskName() + Constants.JAVA_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}

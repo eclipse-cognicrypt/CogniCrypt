@@ -90,9 +90,13 @@ public class TaskIntegratorWizard extends Wizard {
 		Task task = integratorModel.getTask();
 		HashMap<String, File> crylTemplatesWithOption = integratorModel.getCryslTemplateFiles();
 		if (getContainer().getCurrentPage().getName().equals(Constants.PAGE_TASK_INFORMATION)) {
+			String fileWriteAttemptResult;
 			if (integratorModel.isGuidedModeChosen() == false) {
-
-				final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption, integratorModel.getLocationOfJSONFile(), integratorModel.getLocationOfIconFile());
+				 fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption, integratorModel.getLocationOfJSONFile(), integratorModel.getLocationOfIconFile());}
+			else {
+				fileWriteAttemptResult = fileUtilities.writeCryslTemplate( (File) crylTemplatesWithOption.values().toArray()[0], integratorModel.getLocationOfIconFile());
+				fileUtilities.writeJSONFile(new ArrayList<Question>());
+			}
 				// Check if the contents of the provided files are valid.
 				if (fileWriteAttemptResult.equals("")) {
 					// Adding the trimmed task name to ensure it matches with the name of the image stored (refer FileUtilities)
@@ -108,13 +112,11 @@ public class TaskIntegratorWizard extends Wizard {
 					errorBox.open();
 					return false;
 				}
-
-			}
 		} else {
 
 			// collect input to task-related files from individual pages
 			
-			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(integratorModel.getCryslTemplateFiles(),  integratorModel.getLocationOfIconFile());
+			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption,  integratorModel.getLocationOfIconFile());
 			final ArrayList<Question> questions =
 					((QuestionsPage) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
 			

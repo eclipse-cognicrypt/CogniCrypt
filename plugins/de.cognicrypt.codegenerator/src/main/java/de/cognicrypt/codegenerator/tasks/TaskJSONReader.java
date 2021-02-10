@@ -45,7 +45,7 @@ public class TaskJSONReader {
 				TaskJSONReader.tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 				reader.close();
 
-				final BufferedReader reader1 = new BufferedReader(new FileReader(new File(Constants.localjsonTaskFile)));
+				
 				//final Gson gson1 = new Gson();
 				
 				for (Task t : TaskJSONReader.tasks) {
@@ -60,19 +60,25 @@ public class TaskJSONReader {
 					}
 				}
 				
-				List<Task> localtasks = gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType());
-				TaskJSONReader.tasks.addAll(localtasks);
-				reader.close();
+				File localTasks = new File(Constants.localjsonTaskFile);
+				
+				if(localTasks.exists()) {
+					final BufferedReader reader1 = new BufferedReader(new FileReader(localTasks));
+					
+					List<Task> localtasks = gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType());
+					TaskJSONReader.tasks.addAll(localtasks);
+					reader1.close();
 
-				for (Task t : localtasks) {
-					t.setQuestionsJSONFile(Constants.localrsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
-					t.setAdditionalResources(Constants.localrsrcPath + "AdditionalResources" + Constants.innerFileSeparator + t.getName());
+					for (Task t : localtasks) {
+						t.setQuestionsJSONFile(Constants.localrsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
+						t.setAdditionalResources(Constants.localrsrcPath + "AdditionalResources" + Constants.innerFileSeparator + t.getName());
 
-					if (t.getCodeGen() == CodeGenerators.XSL) {
-						t.setCodeTemplate(Constants.localrsrcPath + "Tasks" + Constants.innerFileSeparator +  "XSLTemplates" + Constants.innerFileSeparator + t.getName() + ".xsl");
-						t.setModelFile(Constants.localrsrcPath + "ClaferModel" + Constants.innerFileSeparator + t.getName() + ".js");
-					} else if (t.getCodeGen() == CodeGenerators.CrySL) {
-						t.setCodeTemplate(Constants.ECLIPSE_LOC_TEMP_DIR + Constants.innerFileSeparator + t.getName());
+						if (t.getCodeGen() == CodeGenerators.XSL) {
+							t.setCodeTemplate(Constants.ECLIPSE_LOC_TEMP_DIR + Constants.innerFileSeparator + "Tasks" + Constants.innerFileSeparator +  "XSLTemplates" + Constants.innerFileSeparator + t.getName() + ".xsl");
+							t.setModelFile(Constants.ECLIPSE_LOC_TEMP_DIR  + Constants.innerFileSeparator + "ClaferModel" + Constants.innerFileSeparator + t.getName() + ".js");
+						} else if (t.getCodeGen() == CodeGenerators.CrySL) {
+							t.setCodeTemplate(Constants.ECLIPSE_LOC_TEMP_DIR + Constants.innerFileSeparator + t.getName());
+						}
 					}
 				}
 				

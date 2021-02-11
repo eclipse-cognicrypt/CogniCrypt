@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -35,7 +36,7 @@ import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class TaskIntegratorWizard extends Wizard {
 	
-	private TaskIntegratorWizardPage taskInformation;
+	private TaskIntegratorWizardPage taskInformationPage;
 	
 	public TaskIntegratorWizard() {
 		setWindowTitle("CogniCrypt Task Integrator");
@@ -46,8 +47,8 @@ public class TaskIntegratorWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		taskInformation = new TaskIntegratorWizardPage(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
-		addPage(taskInformation);
+		taskInformationPage = new TaskIntegratorWizardPage(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
+		addPage(taskInformationPage);
 		
 		addPage(new QuestionsPage());
 	}
@@ -57,11 +58,10 @@ public class TaskIntegratorWizard extends Wizard {
 	public boolean canFinish() {
 		
 		if(!IntegratorModel.getInstance().isGuidedModeChosen())
-			return taskInformation.checkNonGuidedFinish();
+			return taskInformationPage.checkNonGuidedFinish();
 	
-		if(IntegratorModel.getInstance().getIdentifiers().size() == 1) {
-			return taskInformation.checkSingleFinish();
-		}
+		if(IntegratorModel.getInstance().getIdentifiers().size() == 1)
+			return taskInformationPage.checkMandatoryFields();
 			
 		return super.canFinish();
 	}
@@ -107,10 +107,7 @@ public class TaskIntegratorWizard extends Wizard {
 					fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getTaskName());
 					return true;
 				} else {
-					final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
-					errorBox.setText("Problems with the provided files.");
-					errorBox.setMessage(fileWriteAttemptResult);
-					errorBox.open();
+					MessageDialog.openError(getShell(), "Warning", fileWriteAttemptResult);
 					return false;
 				}
 		} else {
@@ -118,8 +115,7 @@ public class TaskIntegratorWizard extends Wizard {
 			// collect input to task-related files from individual pages
 			
 			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption,  integratorModel.getLocationOfIconFile());
-			final ArrayList<Question> questions =
-					((QuestionsPage) getPage(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)).getCompositeToHoldGranularUIElements().getListOfAllQuestions();
+			final ArrayList<Question> questions = IntegratorModel.getInstance().getQuestions();
 			
 			// Check if the contents of the provided files are valid.
 			if (fileWriteAttemptResult.equals("")) {

@@ -20,12 +20,12 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.TaskInformationComposite;
-import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.integrator.task.widgets.QuestionDisplayComposite;
 
 public class TaskIntegratorWizardPage extends WizardPage {
 
 	private TaskInformationComposite compositeTaskInformation;
-	private CompositeToHoldGranularUIElements compositeToHoldGranularUIElements;
+	private QuestionDisplayComposite compositeToHoldGranularUIElements;
 	
 	/**
 	 * Create the wizard.
@@ -150,39 +150,30 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		
 	/**
 	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
-	 * Is used to determine wheter wizard can finish early
+	 * Is used to determine whether wizard can finish early
 	 */
 	public boolean checkNonGuidedFinish() {
 		
 		boolean mandatoryFields = checkMandatoryFields();
-		
-		boolean guidedMode = IntegratorModel.getInstance().isGuidedModeChosen();
 		boolean errorOnJSONFile = compositeTaskInformation.getCompJSON().getDecFilePath().getDescriptionText().contains(Constants.ERROR);		
 		
-		return mandatoryFields && !guidedMode && !errorOnJSONFile;
-	}
-	
-	public boolean checkSingleFinish() {
+		// parse JSON and check that all templates are added
 		
-		boolean mandatoryFields = checkMandatoryFields();
-		
-		boolean identifierEqualsTaskName = IntegratorModel.getInstance().getIdentifiers().get(0).contentEquals(IntegratorModel.getInstance().getTaskName());	
-		
-		return mandatoryFields && identifierEqualsTaskName;
+		return mandatoryFields && !errorOnJSONFile;
 	}
 	
 	public boolean checkMandatoryFields() {
 		boolean errorOnIconFile = compositeTaskInformation.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
-		boolean templatesEmpty = IntegratorModel.getInstance().isTemplatesEmpty(); 
+		boolean errorOnTemplates = compositeTaskInformation.getDecTemplates().getDescriptionText().contains(Constants.ERROR);
 		
-		return !errorOnIconFile && !templatesEmpty;
+		return !errorOnTemplates && !errorOnIconFile;
 	}	
 
 
 	/**
 	 * @return the compositeToHoldGranularUIElements
 	 */
-	public CompositeToHoldGranularUIElements getCompositeToHoldGranularUIElements() {
+	public QuestionDisplayComposite getCompositeToHoldGranularUIElements() {
 		return this.compositeToHoldGranularUIElements;
 	}
 
@@ -191,7 +182,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 	 *
 	 * @param compositeToHoldGranularUIElements the compositeToHoldGranularUIElements to set
 	 */
-	public void setCompositeToHoldGranularUIElements(final CompositeToHoldGranularUIElements compositeToHoldGranularUIElements) {
+	public void setCompositeToHoldGranularUIElements(final QuestionDisplayComposite compositeToHoldGranularUIElements) {
 		this.compositeToHoldGranularUIElements = compositeToHoldGranularUIElements;
 	}
 }

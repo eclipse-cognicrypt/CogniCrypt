@@ -15,6 +15,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Scanner;
@@ -39,10 +40,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.UIConstants;
 import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardPage;
@@ -53,11 +56,11 @@ public class TaskInformationComposite extends Composite {
 	private final TaskIntegratorWizardPage wizardPage;
 
 	private final Label lblTaskName;
-	private final ControlDecoration decTemplates;
+	private final ControlDecoration templatesDec;
+	
 	private final List templateList;
 	private final FileBrowserComposite compJSON, compPNG;
-	
-	final Button btnModifyTemplate;
+
 	final Button btnRemoveTemplate;
 
 	/**
@@ -107,10 +110,9 @@ public class TaskInformationComposite extends Composite {
 		lblTemplateList.setText("Templates");
 		
 		// Initialize the decorator for the label for the text box with initial error state
-		decTemplates = new ControlDecoration(lblTemplateList, SWT.TOP | SWT.RIGHT);
-		decTemplates.setShowOnlyOnFocus(false);
-		decTemplates.setImage(UIConstants.DEC_ERROR);
-		decTemplates.setDescriptionText(Constants.ERROR + Constants.ERROR_BLANK_TEMPLATE_LIST);
+		templatesDec = new ControlDecoration(lblTemplateList, SWT.TOP | SWT.RIGHT);
+		templatesDec.setShowOnlyOnFocus(false);
+		checkTemplatesDec();
 		
 		templateList = new List(compositeTaskInfo, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		final GridData gd_templateList = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
@@ -120,7 +122,6 @@ public class TaskInformationComposite extends Composite {
 		templateList.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				btnModifyTemplate.setEnabled(true);
 				btnRemoveTemplate.setEnabled(true);
 			}
 		});
@@ -132,10 +133,6 @@ public class TaskInformationComposite extends Composite {
 		final Button btnAddTemplate = new Button(compositeTemplateBtns, SWT.NONE);
 		btnAddTemplate.setText("Add");
 		
-		btnModifyTemplate = new Button(compositeTemplateBtns, SWT.NONE);
-		btnModifyTemplate.setText("Modify");
-		btnModifyTemplate.setEnabled(false);
-		
 		btnRemoveTemplate = new Button(compositeTemplateBtns, SWT.NONE);
 		btnRemoveTemplate.setText("Remove");
 		btnRemoveTemplate.setEnabled(false);
@@ -144,18 +141,6 @@ public class TaskInformationComposite extends Composite {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				addTemplate();
-			}
-		});
-		
-		btnModifyTemplate.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {	
-				int selectionCount = templateList.getSelectionCount();
-				removeTemplates(templateList.getSelection());
-				
-				for(int i=0; i < selectionCount; i++) {
-					addTemplate();
-				}
 			}
 		});
 		
@@ -249,10 +234,13 @@ public class TaskInformationComposite extends Composite {
 		return wizardPage;
 	}
 	
-
+	public ControlDecoration getDecTemplates() {
+		return templatesDec;
+	}
+	
+	
 	public void redrawTable() {
-		
-		btnModifyTemplate.setEnabled(false);
+
 		btnRemoveTemplate.setEnabled(false);
 		
 		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
@@ -280,7 +268,7 @@ public class TaskInformationComposite extends Composite {
 		String taskName = filePathParts[filePathParts.length - 1].replace(".java", "");
 		
 		if(Validator.checkIfTaskNameAlreadyExists(taskName)) {
-			MessageDialog.openError(getShell(), "Warning", "The chosen template's associated task has been added before.");
+			MessageDialog.openError(getShell(), "Warning", "The chosen template's associated task has already been integrated.");
 			return;
 		}
 		
@@ -308,7 +296,7 @@ public class TaskInformationComposite extends Composite {
 
 			if(!scanner.hasNextLine()) {
 				scanner.close();
-				MessageDialog.openError(getShell(), "Warning", "The chosen template's source code has no package and can therefor not be added.");
+				MessageDialog.openError(getShell(), "Warning", "The chosen template's source code contains no package and can therefor not be added.");
 				return;
 			}
 
@@ -321,6 +309,9 @@ public class TaskInformationComposite extends Composite {
 					packageLine = line;
 					break;
 				}
+				if (line.contains("class")) {
+					break;
+				}
 			}
 
 		}
@@ -331,29 +322,73 @@ public class TaskInformationComposite extends Composite {
 		String templateIdentifier = packageParts[packageParts.length - 1].replace(";", "");
 
 		IntegratorModel.getInstance().addTemplate(templateIdentifier, new File(templateFilePath));
-
+		
+		checkTemplatesDec();
 		wizardPage.checkPageComplete();
 
 		redrawTable();
-
-		decTemplates.setImage(UIConstants.DEC_REQUIRED);
-		decTemplates.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
 	}
 	
 	public void removeTemplates(String[] identifiers) {
+	
+		for(String id : identifiers) {
+			boolean deleteIdentifier = true; 
+			
+			for(Question q : IntegratorModel.getInstance().getQuestions()) {
+				ArrayList<Answer> answersToDelete = new ArrayList<>();
+				
+				for(Answer a : q.getAnswers()) {
+				
+					if(a.getOption().contentEquals(id)) {
+						final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
+						confirmationMessageBox.setMessage("Template is used in question \"" + q.getQuestionText()  + "\"\nDo you want to delete the corresponding answer?");
+						confirmationMessageBox.setText("Delete Answer?");
+						final int response = confirmationMessageBox.open();
+						if (response == SWT.YES) {
+							answersToDelete.add(a);
+						}else {
+							deleteIdentifier = false;
+							break;
+						}
+					}
+				}
+				
+				q.getAnswers().removeAll(answersToDelete);
+			}
+			
+			if (deleteIdentifier)
+				IntegratorModel.getInstance().removeTemplate(id);
+		}
 		
-		IntegratorModel.getInstance().removeTemplates(identifiers);
-		
+		checkTemplatesDec();
 		wizardPage.checkPageComplete();
 		
 		redrawTable();
-		
+	}
+	
+	
+	public void checkTemplatesDec() {
+		// Template list is empty
 		if(IntegratorModel.getInstance().isTemplatesEmpty()) {
 			IntegratorModel.getInstance().setTaskName(null);
 			lblTaskName.setText("");
 			
-			decTemplates.setImage(UIConstants.DEC_ERROR);
-			decTemplates.setDescriptionText(Constants.ERROR + Constants.ERROR_BLANK_TEMPLATE_LIST);
+			templatesDec.setImage(Constants.DEC_ERROR);
+			templatesDec.setDescriptionText(Constants.ERROR + Constants.ERROR_BLANK_TEMPLATE_LIST);
+			return;
+		}	
+			
+			
+		// Single template identifier does not match the task name
+		if(IntegratorModel.getInstance().getIdentifiers().size() == 1
+				&& !IntegratorModel.getInstance().getIdentifiers().get(0).contentEquals(IntegratorModel.getInstance().getTaskName())) {
+				
+			templatesDec.setImage(Constants.DEC_ERROR);
+			templatesDec.setDescriptionText(Constants.ERROR + Constants.ERROR_SINGLE_TEMPLATE_ID);
+			return;
 		}
+		
+		templatesDec.setImage(Constants.DEC_REQUIRED);
+		templatesDec.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
 	}
 }

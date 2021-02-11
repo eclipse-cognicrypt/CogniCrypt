@@ -11,6 +11,8 @@ import java.io.File;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -298,6 +300,12 @@ public class Constants {
 	public static final String ADD_QUESTION = "Add Question";
 	public static final String ADD_ANSWER = "Add Answer";
 		
+	// Images
+	public static final Image DEC_INFORMATION = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
+	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
+	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
+
 	// Warnings
 	public static final String NO_ANSWERS_WARNING = "Please add answers to the question by clicking \"" + ADD_ANSWER + "\" button";
 		
@@ -305,18 +313,18 @@ public class Constants {
 	public static final String INSTANTIATED_BY_WRONG_WIZARD_ERROR = "PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard";
 	public static final String ERROR = "ERROR: ";
 	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
-	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file. Please choose a valid one.";
+	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file.";
 	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
-	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
+	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The task name cannot be empty. Please enter a valid name for the task.";
 	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
-	public static final String ERROR_BLANK_TEMPLATE_LIST = "The Template list cannot be empty. Please add a template.";
-	
+	public static final String ERROR_BLANK_TEMPLATE_LIST = "The template list cannot be empty. Please add a template.";
+	public static final String ERROR_SINGLE_TEMPLATE_ID = "The template's identifier does not match the task name and can therefor not be used to generate a single template task. Please add another template.";
 	
 	// Labels	
 	public static final String LABEL_BROWSE_BUTTON = "Browse";
-	public static final String QUESTION = "Question";	
-	public static final String DESCRIBE_QUESTION = "Describe the question";
+	public static final String QUESTION = "Question Name";	
+	public static final String DESCRIBE_QUESTION = "Description";
 	// Dimensions
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites

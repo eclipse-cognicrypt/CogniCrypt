@@ -27,7 +27,6 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.UIConstants;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardPage;
 
@@ -92,7 +91,7 @@ public class FileBrowserComposite extends Composite {
 		getDecFilePath().setShowOnlyOnFocus(false);
 
 		// Initial error state.
-		getDecFilePath().setImage(UIConstants.DEC_ERROR);
+		getDecFilePath().setImage(Constants.DEC_ERROR);
 		getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_FILE_NAME);
 		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 
@@ -145,7 +144,7 @@ public class FileBrowserComposite extends Composite {
 			final File tempFileVariable = locationOfCryslTemplate;
 			// Validate the file IO. The directory check is removed.
 			if ((!tempFileVariable.exists() || !tempFileVariable.canRead()) && pathText.getParent().isVisible()) {//
-				getDecFilePath().setImage(UIConstants.DEC_ERROR);
+				getDecFilePath().setImage(Constants.DEC_ERROR);
 				getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
 				getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
 				// Check if the page can be set to completed.

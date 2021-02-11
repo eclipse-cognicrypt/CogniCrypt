@@ -27,9 +27,4 @@ public class Validator {
 
 		return taskNameAlreadyExists;
 	}
-
-	public static String getValidXMLString(final String stringData) {
-		return stringData.replace("<", "").replace(">", "").replace("&", "").replace("\'", "").replace("\"", "");
-	}
-
 }

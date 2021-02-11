@@ -26,7 +26,7 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.integrator.task.widgets.QuestionDisplayComposite;
 
 public class QuestionsPage extends TaskIntegratorWizardPage {
 	
@@ -44,7 +44,7 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
-		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, this));
+		setCompositeToHoldGranularUIElements(new QuestionDisplayComposite(container, this));
 		// fill the available space on the with the big composite
 		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
@@ -64,14 +64,14 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final int response = questionDialog.open();
-				final int questionID = QuestionsPage.this.getCompositeToHoldGranularUIElements().getListOfAllQuestions().size();
+				final int questionID = IntegratorModel.getInstance().getQuestions().size();
 				if (response == Window.OK) {
 					// Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
 					final Question questionDetails = questionDialog.getQuestionDetails();
 					questionDetails.setId(questionID);
 
 					// Update the array list.
-					getCompositeToHoldGranularUIElements().getListOfAllQuestions().add(questionDetails);
+					IntegratorModel.getInstance().getQuestions().add(questionDetails);
 					// rebuild the UI
 					getCompositeToHoldGranularUIElements().updateQuestionContainer();
 				}
@@ -86,7 +86,7 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 	 */
 	public void checkPageComplete() {
 		
-		ArrayList<Question> questions = getCompositeToHoldGranularUIElements().getListOfAllQuestions();
+		ArrayList<Question> questions = IntegratorModel.getInstance().getQuestions();
 		
 		HashSet<String> identifiers = new HashSet<>();
 		

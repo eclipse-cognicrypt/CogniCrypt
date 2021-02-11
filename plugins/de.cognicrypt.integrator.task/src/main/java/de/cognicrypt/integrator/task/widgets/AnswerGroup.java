@@ -23,10 +23,9 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 
-public class GroupAnswer extends Group {
+public class AnswerGroup extends Group {
 
 	public Text txtAnswer;
-	//public Text txtOption;
 	public Combo possibleIdentifiers;
 	private Answer answer;
 	public ArrayList<Answer> answers;
@@ -37,13 +36,12 @@ public class GroupAnswer extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public GroupAnswer(final Composite parent, final int style, final Answer answerParam, final boolean isEditable) {
+	public AnswerGroup(final Composite parent, final int style, final Answer answerParam, final boolean isEditable) {
 		super(parent, style);
 		setAnswer(answerParam);
 
 		this.txtAnswer = new Text(this, SWT.BORDER);
 
-		//this.txtOption = new Text(this, SWT.BORDER);
 		this.possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
 		this.possibleIdentifiers.setItems(IntegratorModel.getInstance().getIdentifiers().toArray(new String[0])); 
 		if (this.answer.getValue() != null) {
@@ -53,45 +51,36 @@ public class GroupAnswer extends Group {
 
 			@Override
 			public void focusLost(final FocusEvent e) {
-				GroupAnswer.this.answer.setValue(GroupAnswer.this.txtAnswer.getText());
+				AnswerGroup.this.answer.setValue(AnswerGroup.this.txtAnswer.getText());
 			}
 		});
 		this.txtAnswer.setEditable(isEditable);
 		
 		if (this.answer.getOption() != null) {
-			//this.txtOption.setText(this.answer.getOption());
 			String selected = this.answer.getOption();
 			this.possibleIdentifiers.select(IntegratorModel.getInstance().getIdentifiers().indexOf(selected));
 		}
-		/*this.txtOption.addFocusListener(new FocusAdapter() {
 
-			@Override
-			public void focusLost(final FocusEvent e) {
-				GroupAnswer.this.answer.setOption(GroupAnswer.this.txtOption.getText());
-			}
-		});*/
-		//this.txtOption.setEditable(showRemoveButton);
-		
 		this.possibleIdentifiers.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				GroupAnswer.this.answer.setOption(possibleIdentifiers.getText());
+				AnswerGroup.this.answer.setOption(possibleIdentifiers.getText());
 				
 			}
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				GroupAnswer.this.answer.setOption(possibleIdentifiers.getText());
+				AnswerGroup.this.answer.setOption(possibleIdentifiers.getText());
 			}
 		});
 
 		this.possibleIdentifiers.setEnabled(isEditable);
 		
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
-		/**
-		 * executes when GroupAnswer is called by Question Dialog class
-		 */
+		
+	
+		// executes when GroupAnswer is called by QuestionDialog class
 		if (isEditable) {
 			this.txtAnswer.setBounds(13, 9, 486, 29);
 			//this.txtOption.setBounds(590, 3, 20, 29);
@@ -102,13 +91,14 @@ public class GroupAnswer extends Group {
 		/**
 		 * executes when GroupAnswer is called by CompositeGranularUIForHighLevelQuestions class
 		 */
+		// Executes when GroupAnswer is called  by
 		else {
 			this.txtAnswer.setBounds(3, 3, 195, 29);
 			//this.txtOption.setBounds(200, 3, 20, 29);
 			this.possibleIdentifiers.setBounds(210, 3, 100, 25);
 			btnDefaultAnswer.setBounds(322, 7, 128, 29);
 		}
-		final ArrayList<Button> btnList = ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
+		final ArrayList<Button> btnList = ((QuestionModificationComposite) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
 		btnList.add(btnDefaultAnswer);
 		btnDefaultAnswer.setText("Default Answer");
 		if (this.answer.isDefaultAnswer()) {
@@ -124,7 +114,7 @@ public class GroupAnswer extends Group {
 				/**
 				 * When user changes the default answer the following loop removes the previous selection and then current selected default answer value is set to true
 				 */
-				for (final Button btn : ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList()) {
+				for (final Button btn : ((QuestionModificationComposite) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList()) {
 					btn.setSelection(false);
 				}
 				btnDefaultAnswer.setSelection(true);
@@ -132,9 +122,9 @@ public class GroupAnswer extends Group {
 				/**
 				 * sets the default answer to true for the current answer and for all other answer to false
 				 */
-				for (final Answer ans : ((CompositeToHoldSmallerUIElements) btnDefaultAnswer.getParent().getParent().getParent()).getListOfAllAnswers()) {
-					if (ans.equals(GroupAnswer.this.answer)) {
-						GroupAnswer.this.answer.setDefaultAnswer(true);
+				for (final Answer ans : ((QuestionModificationComposite) btnDefaultAnswer.getParent().getParent().getParent()).getAnswers()) {
+					if (ans.equals(AnswerGroup.this.answer)) {
+						AnswerGroup.this.answer.setDefaultAnswer(true);
 					} else {
 						ans.setDefaultAnswer(false);
 					}
@@ -152,17 +142,9 @@ public class GroupAnswer extends Group {
 
 				@Override
 				public void widgetSelected(final SelectionEvent e) {
-					final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-					confirmationMessageBox.setMessage("This information will be lost. Do you really want to delete?");
-					confirmationMessageBox.setText("Deleting answer");
-					final int response = confirmationMessageBox.open();
-					if (response == SWT.YES) {
-						((CompositeToHoldSmallerUIElements) btnRemove.getParent().getParent().getParent()).deleteAnswer(GroupAnswer.this.answer);
+						((QuestionModificationComposite) btnRemove.getParent().getParent().getParent()).deleteAnswer(AnswerGroup.this.answer);
 						btnList.remove(btnDefaultAnswer);
-					}
-
 				}
-
 			});
 		}
 

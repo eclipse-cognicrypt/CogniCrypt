@@ -13,21 +13,20 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class SegregatesQuestionsIntoPages {
 
-	private ArrayList<Question> listOfAllQuestions;
 	private ArrayList<Page> pages;
 	private int pageId = 0;
 
-	public SegregatesQuestionsIntoPages(final ArrayList<Question> listOfAllQuestions) {
-		setListOfAllQuestions(listOfAllQuestions);
-		this.pages = new ArrayList<>();
-		setPages(this.pages);
+	public SegregatesQuestionsIntoPages() {
+		pages = new ArrayList<>();
+		setPages(pages);
 		/**
 		 * following loop adds the questions to different pages
 		 */
-		for (final Question qstn : listOfAllQuestions) {
+		for (final Question qstn : IntegratorModel.getInstance().getQuestions()) {
 			// executes when question doesn't exists in any page
 			if (!questionExistsInAnyPage(qstn)) {
 				addQuestionToPage(qstn);
@@ -37,7 +36,7 @@ public class SegregatesQuestionsIntoPages {
 		/**
 		 * following loop checks whether the questions in the page has branch or not,if not then updates the page next Id
 		 */
-		for (final Page page : this.pages) {
+		for (final Page page : pages) {
 			boolean updatePageNextId = false;
 			for (final Question question : page.getContent()) {
 				if (!questionHasBranch(question)) {
@@ -51,21 +50,6 @@ public class SegregatesQuestionsIntoPages {
 
 	}
 
-	/**
-	 * @return the lists of all questions
-	 */
-	public ArrayList<Question> getListOfAllQuestions() {
-		return this.listOfAllQuestions;
-	}
-
-	/**
-	 * sets the list of all question
-	 *
-	 * @param listOfAllQuestions the list containing all the questions
-	 */
-	public void setListOfAllQuestions(final ArrayList<Question> listOfAllQuestions) {
-		this.listOfAllQuestions = listOfAllQuestions;
-	}
 
 	/**
 	 * checks if question exists in any page or not
@@ -74,7 +58,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @return true if the qstn exists in any page otherwise false
 	 */
 	private boolean questionExistsInAnyPage(final Question qstn) {
-		for (final Page page : this.pages) {
+		for (final Page page : pages) {
 			for (final Question question : page.getContent()) {
 				if (question.getId() == qstn.getId()) {
 					return true;
@@ -136,11 +120,11 @@ public class SegregatesQuestionsIntoPages {
 	private void addQuestionToNewPage(final Question qstn) {
 		final Page page = new Page();
 		page.setId(this.pageId);
-		this.pageId++;
+		pageId++;
 		final ArrayList<Question> question = new ArrayList<>();
 		page.setContent(question);
 		page.getContent().add(qstn);
-		this.pages.add(page);
+		pages.add(page);
 		/**
 		 * executes when question has branch
 		 */
@@ -166,7 +150,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @return the previous question
 	 */
 	private Question findPreviousQuestion(final Question qstn) {
-		for (final Question question : this.listOfAllQuestions) {
+		for (final Question question : IntegratorModel.getInstance().getQuestions()) {
 			if (question.getId() == qstn.getId() - 1) {
 				return question;
 			}
@@ -213,7 +197,7 @@ public class SegregatesQuestionsIntoPages {
 			/**
 			 * if the question is the last question then sets the answer next ID to -1
 			 */
-			if (qstn.getId() == this.listOfAllQuestions.size() - 1) {
+			if (qstn.getId() == IntegratorModel.getInstance().getQuestions().size() - 1) {
 				for (final Answer ans : qstn.getAnswers()) {
 					ans.setNextID(Constants.ANSWER_NO_FOLLOWING_QUESTION_NEXT_ID);
 				}
@@ -221,7 +205,7 @@ public class SegregatesQuestionsIntoPages {
 			/**
 			 * executes when the current question is not the last question
 			 */
-			else if (qstn.getId() != this.listOfAllQuestions.size() - 1) {
+			else if (qstn.getId() != IntegratorModel.getInstance().getQuestions().size() - 1) {
 				final ArrayList<Integer> ansNextIds = new ArrayList<>();
 				for (final Answer ans : qstn.getAnswers()) {
 					ansNextIds.add(ans.getNextID());
@@ -274,7 +258,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @return the question
 	 */
 	private Question questionWithId(final int id) {
-		for (final Question question : this.listOfAllQuestions) {
+		for (final Question question : IntegratorModel.getInstance().getQuestions()) {
 			if (question.getId() == id) {
 				return question;
 			}

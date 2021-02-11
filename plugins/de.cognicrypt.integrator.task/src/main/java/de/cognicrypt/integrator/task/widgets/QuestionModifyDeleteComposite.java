@@ -17,9 +17,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.QuestionDialog;
 
-public class CompositeModifyDeleteButtons extends Composite {
+public class QuestionModifyDeleteComposite extends Composite {
 
 	/**
 	 * Create the composite.
@@ -27,12 +28,11 @@ public class CompositeModifyDeleteButtons extends Composite {
 	 * @param parent
 	 * @param style
 	 */
-	int counter = 0;
 	// private ArrayList<ClaferFeature> claferFeatures;
 
-	public CompositeModifyDeleteButtons(final Composite parent, final Question questionParam) {
+	public QuestionModifyDeleteComposite(final Composite parent, final Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
-		// setClaferFeatures(claferFeatures);
+
 		/*
 		 * RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL); setLayout(rowLayout);
 		 */
@@ -49,10 +49,8 @@ public class CompositeModifyDeleteButtons extends Composite {
 				confirmationMessageBox.setText("Deleting Question");
 				final int response = confirmationMessageBox.open();
 				if (response == SWT.YES) {
-					((CompositeToHoldGranularUIElements) btnDelete.getParent().getParent().getParent().getParent())
-							.deleteQuestion(((CompositeGranularUIForHighLevelQuestions) btnDelete.getParent().getParent()).getQuestion());// (1) CompositeGranularUIForClaferFeature, (2)
-																																																														// composite inside (3)
-																																																														// CompositeToHoldGranularUIElements
+					((QuestionDisplayComposite) btnDelete.getParent().getParent().getParent().getParent())
+							.deleteQuestion(((QuestionInformationComposite) btnDelete.getParent().getParent()).getQuestion());
 				}
 			}
 		});
@@ -66,24 +64,15 @@ public class CompositeModifyDeleteButtons extends Composite {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
+				final ArrayList<Question> listOfAllQuestions = IntegratorModel.getInstance().getQuestions();
 				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, listOfAllQuestions); //change later
 				final int response = qstnDialog.open();
 				if (response == Window.OK) {
 					final Question modifiedQuestion = qstnDialog.getQuestionDetails();
-					((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).modifyHighLevelQuestion(questionParam, modifiedQuestion);
+					((QuestionDisplayComposite) btnModify.getParent().getParent().getParent().getParent()).modifyHighLevelQuestion(questionParam, modifiedQuestion);
 				}
 			}
 		});
 
-	}
-
-	/*
-	 * private void setClaferFeatures(ArrayList<ClaferFeature> claferFeatures) { this.claferFeatures = claferFeatures; }
-	 */
-
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
 	}
 }

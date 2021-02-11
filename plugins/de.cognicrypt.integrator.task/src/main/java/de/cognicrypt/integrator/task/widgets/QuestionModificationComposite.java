@@ -25,16 +25,13 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.XSLTags;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.models.XSLAttribute;
 
-public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
+public class QuestionModificationComposite extends ScrolledComposite {
 
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
 	private final Composite composite;
-	public ArrayList<GroupAnswer> groupAnswers;
-	private final ArrayList<XSLAttribute> XSLAttributes; // <attributeName, actualAttributeString>
 
-	private final ArrayList<Answer> arrayAnswer;
+	private final ArrayList<Answer> answers;
 
 	private final ArrayList<Button> btnList;
 
@@ -47,14 +44,13 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param targetArrayListOfDataToBeDisplayed
 	 * @param showRemoveButton
 	 */
-	public CompositeToHoldSmallerUIElements(final Composite parent, final int style, final ArrayList<?> targetArrayListOfDataToBeDisplayed, final boolean showRemoveButton) {
+	public QuestionModificationComposite(final Composite parent, final int style) {
 		super(parent, style | SWT.V_SCROLL);
 
 		setExpandVertical(true);
 		setExpandHorizontal(true);
 
-		this.arrayAnswer = new ArrayList<Answer>();
-		this.groupAnswers = new ArrayList<GroupAnswer>();
+		this.answers = new ArrayList<Answer>();
 		this.btnList = new ArrayList<Button>();
 
 		this.composite = new Composite(this, SWT.NONE);
@@ -63,43 +59,18 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 
 		setContent(this.composite);
 		setMinSize(this.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
-		
-		this.XSLAttributes = new ArrayList<XSLAttribute>();
-
 	}
-
 	
-
-	/**
-	 * If data is provided before hand, add it to the composite. This is specifically used for clafer.
-	 *
-	 * @param targetArrayListOfDataToBeDisplayed
-	 * @param showRemoveButton
-	 */
-	@SuppressWarnings("unchecked")
-	
-
-	
-	
-
-
-	/**
-	 * @param xslAttribute
-	 */
-	public void removeXSLAttribute(final XSLAttribute xslAttribute) {
-		getXSLAttributes().remove(xslAttribute);
-	}
 
 	/**
 	 * Creates the widgets in which user can give answer details
 	 *
 	 * @param answer
-	 * @param showRemoveButton
+	 * @param isEditable
 	 * @param templateIdentifier
 	 */
-	public void addAnswer(final Answer answer, final boolean showRemoveButton) {
-		GroupAnswer groupForAnswer = new GroupAnswer((Composite) getContent(), SWT.NONE, answer, showRemoveButton);
+	public void addAnswer(final Answer answer, final boolean isEditable) {
+		AnswerGroup groupForAnswer = new AnswerGroup((Composite) getContent(), SWT.NONE, answer, isEditable);
 		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 850, 50);
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
 
@@ -112,7 +83,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 * @param answerToBeDeleted
 	 */
 	public void deleteAnswer(final Answer answerToBeDeleted) {
-		this.arrayAnswer.remove(answerToBeDeleted);
+		this.answers.remove(answerToBeDeleted);
 		this.btnList.clear();
 		updateAnswerContainer();
 	}
@@ -127,7 +98,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
 
-		for (final Answer answer : this.arrayAnswer) {
+		for (final Answer answer : this.answers) {
 			addAnswer(answer, true); //change later
 		}
 	}
@@ -137,31 +108,6 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	 */
 	public ArrayList<Button> getDefaulAnswerBtnList() {
 		return this.btnList;
-	}
-
-	/**
-	 * Add the widgets and data inside the scrollable composite for Link code tab
-	 *
-	 * @param answer
-	 */
-	public void addELementsInCodeTabQuestionDialog(final Answer answer) {
-		final CompositeForCodeTab group = new CompositeForCodeTab((Composite) getContent(), SWT.NONE, answer);
-		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 50);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
-		setMinHeight(getLowestWidgetYAxisValue());
-	}
-
-	/**
-	 * Add the widgets and data inside the scrollable composite for Link Answer
-	 *
-	 * @param currentQuestion
-	 * @param listOfAllQuestions
-	 */
-	public void addElementsOfLinkAnswer(final Answer answer, final Question currentQuestion, final ArrayList<Question> listOfAllQuestions) {
-		final GroupForLinkAnswer group = new GroupForLinkAnswer((Composite) getContent(), SWT.NONE, answer, currentQuestion, listOfAllQuestions);
-		group.setBounds(5, getLowestWidgetYAxisValue(), 690, 50);
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
-		setMinHeight(getLowestWidgetYAxisValue());
 	}
 
 	@Override
@@ -188,46 +134,7 @@ public class CompositeToHoldSmallerUIElements extends ScrolledComposite {
 	/**
 	 * @return the listOfAllAnswer
 	 */
-	public ArrayList<Answer> getListOfAllAnswers() {
-		return this.arrayAnswer;
+	public ArrayList<Answer> getAnswers() {
+		return this.answers;
 	}
-
-	
-
-	
-
-	
-	/**
-	 * @param selectionOnComboXSLTags
-	 * @return
-	 */
-	public ArrayList<String> getListOfPossibleAttributes(final String selectionOnComboXSLTags) {
-
-		final ArrayList<String> listOfPossibleAttributes = new ArrayList<String>();
-
-		// Populate with all the possible attributes first.
-		for (final XSLTags XSLTag : Constants.XSLTags.values()) {
-			if (XSLTag.getXSLTagFaceName().equals(selectionOnComboXSLTags)) {
-				for (final String attribute : XSLTag.getXSLAttributes()) {
-					listOfPossibleAttributes.add(attribute);
-				}
-			}
-		}
-		// Remove the attributes that already exist in the list.
-		for (final XSLAttribute attribute : this.XSLAttributes) {
-			if (listOfPossibleAttributes.contains(attribute.getXSLAttributeName())) {
-				listOfPossibleAttributes.remove(attribute.getXSLAttributeName());
-			}
-		}
-
-		return listOfPossibleAttributes;
-	}
-
-	/**
-	 * @return the xSLAttributes
-	 */
-	public ArrayList<XSLAttribute> getXSLAttributes() {
-		return this.XSLAttributes;
-	}
-
 }

@@ -399,7 +399,7 @@ public class FileUtilities {
 	 */
 	public void writeJSONFile(final ArrayList<Question> questions) {
 
-		final SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages(questions);
+		final SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages();
 		final ArrayList<Page> pages = pageContent.getPages();
 		boolean taskHasPageHelpContent = false;
 		for (final Page page : pages) {

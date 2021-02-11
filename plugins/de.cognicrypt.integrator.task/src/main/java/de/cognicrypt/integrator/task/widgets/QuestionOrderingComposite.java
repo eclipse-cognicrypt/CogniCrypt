@@ -15,11 +15,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import de.cognicrypt.codegenerator.question.Question;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 /**
  * @author ravi This class enables the user to rearrange the question order using up and down buttons created by this class
  */
-public class CompositeUpDownButtons extends Composite {
+public class QuestionOrderingComposite extends Composite {
 
 	/**
 	 * Creates the composite
@@ -27,11 +28,11 @@ public class CompositeUpDownButtons extends Composite {
 	 * @param parent
 	 * @param currentQuestion
 	 */
-	public CompositeUpDownButtons(final Composite parent, final Question currentQuestion) {
+	public QuestionOrderingComposite(final Composite parent, final Question currentQuestion) {
 		super(parent, SWT.LEFT_TO_RIGHT);
 		setLayout(new GridLayout(2, false));
 
-		final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) getParent().getParent().getParent()).getListOfAllQuestions();
+		final ArrayList<Question> questions = IntegratorModel.getInstance().getQuestions();
 		final Button upBtn = new Button(this, SWT.None);
 		upBtn.setText("Up");
 		upBtn.setToolTipText("Click on this button to move this question up in the list");
@@ -40,8 +41,8 @@ public class CompositeUpDownButtons extends Composite {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				// Only executes if the currentQuestion is not the first question in the list
-				if (listOfAllQuestions.size() != 1) {
-					((CompositeToHoldGranularUIElements) upBtn.getParent().getParent().getParent().getParent()).moveUpTheQuestion(currentQuestion);
+				if (questions.size() != 1) {
+					((QuestionDisplayComposite) upBtn.getParent().getParent().getParent().getParent()).moveUpTheQuestion(currentQuestion);
 				}
 			}
 		});
@@ -54,8 +55,8 @@ public class CompositeUpDownButtons extends Composite {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				// Only executes if the currentQuestion is not the last question in the list
-				if (currentQuestion.getId() != listOfAllQuestions.size() - 1) {
-					((CompositeToHoldGranularUIElements) upBtn.getParent().getParent().getParent().getParent()).moveDownTheQuestion(currentQuestion);
+				if (currentQuestion.getId() != questions.size() - 1) {
+					((QuestionDisplayComposite) upBtn.getParent().getParent().getParent().getParent()).moveDownTheQuestion(currentQuestion);
 				}
 
 			}
@@ -63,7 +64,7 @@ public class CompositeUpDownButtons extends Composite {
 		/**
 		 * Both up and down buttons are disables if the list has only one question
 		 */
-		if (listOfAllQuestions.size() == 1) {
+		if (questions.size() == 1) {
 			upBtn.setEnabled(false);
 			downBtn.setEnabled(false);
 		} else {
@@ -76,7 +77,7 @@ public class CompositeUpDownButtons extends Composite {
 			/**
 			 * disables the down button if current question is the last question
 			 */
-			else if (currentQuestion.getId() == listOfAllQuestions.size() - 1) {
+			else if (currentQuestion.getId() == questions.size() - 1) {
 				downBtn.setEnabled(false);
 			}
 		}

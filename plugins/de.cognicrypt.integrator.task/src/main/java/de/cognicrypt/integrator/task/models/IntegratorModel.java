@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 
@@ -27,8 +28,10 @@ public class IntegratorModel {
 	private File locationOfJSONFile;
 	private boolean isGuidedModeChosen;
 	private final Task task;
-	private HashMap<String, File> cryslTemplateFiles;
 	
+	private HashMap<String, File> cryslTemplateFiles;
+	private final ArrayList<Question> questions;
+
 	// Singleton
 	private static IntegratorModel instance = new IntegratorModel();
 	
@@ -44,6 +47,7 @@ public class IntegratorModel {
 		super();
 		task = new Task();
 		cryslTemplateFiles = new HashMap<String, File>();
+		questions = new ArrayList<>();
 	}
 
 	/**
@@ -170,12 +174,8 @@ public class IntegratorModel {
 		return cryslTemplateFiles.containsKey(identifier);
 	}
 	
-	public void removeTemplates(String[] identifiers) {
-
-		for(String identifier : identifiers) {
+	public void removeTemplate(String identifier) {
 			cryslTemplateFiles.remove(identifier);
-		}
-
 	}
 	
 	public List<String> getIdentifiers(){
@@ -187,5 +187,9 @@ public class IntegratorModel {
 	
 	public File getTemplate(String identifier){
 		return cryslTemplateFiles.get(identifier);
+	}
+	
+	public ArrayList<Question> getQuestions() {
+		return questions;
 	}
 }

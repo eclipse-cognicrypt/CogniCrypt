@@ -18,26 +18,24 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.QuestionsPage;
 
-public class CompositeToHoldGranularUIElements extends ScrolledComposite {
+public class QuestionDisplayComposite extends ScrolledComposite {
 
 	QuestionsPage questionsPage;
 	
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
-	private final ArrayList<Question> listOfAllQuestions;
 	
 	/**
 	 * Create the composite.
 	 *
 	 * @param parent
 	 */
-	public CompositeToHoldGranularUIElements(final Composite parent, QuestionsPage questionsPage) {
+	public QuestionDisplayComposite(final Composite parent, QuestionsPage questionsPage) {
 		super(parent, SWT.BORDER | SWT.V_SCROLL);
 
 		this.questionsPage = questionsPage;
-
-		this.listOfAllQuestions = new ArrayList<Question>();
 
 		setExpandHorizontal(true);
 		setExpandVertical(true);
@@ -70,10 +68,10 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	
 
-	public void addQuestionUIElements(final Question question, final boolean linkAnswerPage) {
+	public void addQuestionUIElements(final Question question) {
 
-		new CompositeGranularUIForHighLevelQuestions((Composite) getContent(), // the content composite of ScrolledComposite.
-				SWT.NONE, question, linkAnswerPage);
+		new QuestionInformationComposite((Composite) getContent(), // the content composite of ScrolledComposite.
+				SWT.NONE, question);
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 
 	}
@@ -86,14 +84,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	public void moveUpTheQuestion(final Question question) {
 		int questionToBeMoveUp = 0;
 		int questionToBeMoveDown = 0;
-		for (final Question qstn : this.listOfAllQuestions) {
+		for (final Question qstn : IntegratorModel.getInstance().getQuestions()) {
 			if (qstn.getId() == question.getId()) {
 				questionToBeMoveUp = qstn.getId();
 			} else if (qstn.getId() == question.getId() - 1) {
 				questionToBeMoveDown = qstn.getId();
 			}
 		}
-		Collections.swap(this.listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
+		Collections.swap(IntegratorModel.getInstance().getQuestions(), questionToBeMoveUp, questionToBeMoveDown);
 		updateQuestionsID();
 		updateQuestionContainer();
 	}
@@ -106,14 +104,14 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	public void moveDownTheQuestion(final Question question) {
 		int questionToBeMoveUp = 0;
 		int questionToBeMoveDown = 0;
-		for (final Question qstn : this.listOfAllQuestions) {
+		for (final Question qstn : IntegratorModel.getInstance().getQuestions()) {
 			if (qstn.getId() == question.getId()) {
 				questionToBeMoveUp = qstn.getId();
 			} else if (qstn.getId() == question.getId() + 1) {
 				questionToBeMoveDown = qstn.getId();
 			}
 		}
-		Collections.swap(this.listOfAllQuestions, questionToBeMoveUp, questionToBeMoveDown);
+		Collections.swap(IntegratorModel.getInstance().getQuestions(), questionToBeMoveUp, questionToBeMoveDown);
 		updateQuestionsID();
 		updateQuestionContainer();
 	}
@@ -125,7 +123,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public void deleteQuestion(final Question questionToBeDeleted) {
 
-		this.listOfAllQuestions.remove(questionToBeDeleted);
+		IntegratorModel.getInstance().getQuestions().remove(questionToBeDeleted);
 		updateQuestionsID();
 		updateQuestionContainer();
 	}
@@ -136,7 +134,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 
 	private void updateQuestionsID() {
 		int qID = 0;
-		for (final Question qstn : this.listOfAllQuestions) {
+		for (final Question qstn : IntegratorModel.getInstance().getQuestions()) {
 			qstn.setId(qID++);
 		}
 
@@ -159,8 +157,8 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 		setMinHeight(getLowestWidgetYAxisValue());
 
 		// add all the clafer features excluding the deleted one.
-		for (final Question questionUnderConsideration : this.listOfAllQuestions) {
-			addQuestionUIElements(questionUnderConsideration, false);
+		for (final Question questionUnderConsideration : IntegratorModel.getInstance().getQuestions()) {
+			addQuestionUIElements(questionUnderConsideration);
 		}
 		updateLayout();
 		
@@ -182,7 +180,7 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 
 	public void modifyHighLevelQuestion(final Question originalQuestion, final Question modifiedQuestion) {
-		for (final Question questionUnderConsideration : this.listOfAllQuestions) {
+		for (final Question questionUnderConsideration : IntegratorModel.getInstance().getQuestions()) {
 			if (questionUnderConsideration.equals(originalQuestion)) {
 				questionUnderConsideration.setQuestionText(modifiedQuestion.getQuestionText());
 				questionUnderConsideration.setElement(modifiedQuestion.getElement());
@@ -216,14 +214,5 @@ public class CompositeToHoldGranularUIElements extends ScrolledComposite {
 	 */
 	public void setLowestWidgetYAxisValue(final int lowestWidgetYAxisValue) {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
-	}
-
-
-
-	/**
-	 * @return the listOfAllQuestions
-	 */
-	public ArrayList<Question> getListOfAllQuestions() {
-		return this.listOfAllQuestions;
 	}
 }

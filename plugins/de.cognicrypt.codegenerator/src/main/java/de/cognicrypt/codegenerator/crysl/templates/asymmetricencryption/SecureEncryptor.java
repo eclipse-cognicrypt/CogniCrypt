@@ -40,7 +40,7 @@ public class SecureEncryptor {
 	 *
 	 * @param plaintext the text to be encrypted.
 	 * @param keyPair the key pair of the communication partner, not this user's key pair.
-	 * @returns the cipherText the encrypted data.
+	 * @return the cipherText the encrypted data.
 	 */
 	public byte[] encryptData(byte[] plaintext, java.security.KeyPair keyPair) {
 		byte[] cipherText = null;
@@ -53,11 +53,11 @@ public class SecureEncryptor {
 	}
 
 	/**
-	 * Gets the private key of this user's key pair and decrypts the cipherText.\\mention the algorithm
+	 * Gets the private key of this user's key pair and decrypts the cipherText.
 	 *
-	 * @param ciphertext the ciphertext
-	 * @param keyPair the key pair
-	 * @return the byte[]
+	 * @param ciphertext the ciphertext to be decrypted.
+	 * @param keyPair the key pair of this user.
+	 * @return the decrypted data.
 	 */
 	public byte[] decrypt(byte[] ciphertext, java.security.KeyPair keyPair) {
 		int mode = Cipher.DECRYPT_MODE;

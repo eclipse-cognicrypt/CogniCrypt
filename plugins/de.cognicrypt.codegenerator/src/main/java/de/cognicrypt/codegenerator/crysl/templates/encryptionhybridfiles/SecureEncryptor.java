@@ -27,7 +27,7 @@ public class SecureEncryptor {
 	/**
 	 * Generates session key to encrypt and decrypt the data.
 	 *
-	 * @returns the session key the secret key for symmetric encryption.
+	 * @return the session key the secret key for symmetric encryption.
 	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a KeyGeneratorSpi implementation for the specified algorithm.
 	 */
@@ -59,7 +59,7 @@ public class SecureEncryptor {
 	 *
 	 * @param sessionKey the session key to encrypt and decrypt data through the communication.
 	 * @param keyPair the key pair from the communication partner.
-	 * @returns encrypted session key.
+	 * @return encrypted session key.
 	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
 	 * @throws IllegalBlockSizeException This exception is thrown when the size of input data is not a multiple of the block-size or if the encryption algorithm is unable to process the input data provided.
@@ -85,7 +85,7 @@ public class SecureEncryptor {
 	 * @param key the secret key for encryption, it also will be used for decryption.
 	 * @param plain_off the offset in input text where the input starts. 0, if all bytes in plaintext need to be encrypted.
 	 * @param len the length of the plaintext.
-	 * @returns a file that contains the byte with ivBytes and the outcome of encryption.
+	 * @return a file that contains the byte with ivBytes and the outcome of encryption.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
 	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
@@ -123,7 +123,7 @@ public class SecureEncryptor {
 	 * @param key the secret key that was used for encryption.
 	 * @param plain_off the offset in input ciphertext where the input starts. 0, if all bytes in ciphertext need to be decrypted.
 	 * @param len the length of the ciphertext.
-	 * @returns the decrypted file.
+	 * @return the decrypted file.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
 	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.

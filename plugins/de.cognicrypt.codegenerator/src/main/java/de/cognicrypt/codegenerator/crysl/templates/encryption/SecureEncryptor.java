@@ -24,7 +24,7 @@ public class SecureEncryptor {
 	 * hashes the key to create a secure secret key for later symmetric encryption or decryption.
 	 *
 	 * @param pwd the users chosen password for a password-based encryption (PBE).
-	 * @returns encryptionKey the secret key to be used for later encryption.
+	 * @return encryptionKey the secret key to be used for later encryption.
 	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
@@ -51,7 +51,7 @@ public class SecureEncryptor {
 	 * @param key the secret key for encryption, it also will be used for decryption.
 	 * @param plain_off the offset in input plaintext where the input starts. 0, if all bytes in plaintext need to be encrypted.
 	 * @param len the length of the plaintext.
-	 * @returns the result that contains the ivBytes and the outcome of encryption.
+	 * @return the result that contains the ivBytes and the outcome of encryption.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
 	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.
@@ -88,7 +88,7 @@ public class SecureEncryptor {
 	 * @param key the secret key that was used for encryption.
 	 * @param plain_off the offset in input ciphertext where the input starts. 0, if all bytes in ciphertext need to be decrypted.
 	 * @param len the ciphertext length.
-	 * @returns the decrypted data.
+	 * @return the decrypted data.
 	 * @throws InvalidAlgorithmParameterException This exception is thrown when the given algorithm parameters are inappropriate for the cipher.
 	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 * @throws NoSuchPaddingException This exception is thrown when the chosen padding is not supported in this environment.

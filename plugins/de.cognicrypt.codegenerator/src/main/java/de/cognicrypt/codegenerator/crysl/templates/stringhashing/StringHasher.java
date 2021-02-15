@@ -16,8 +16,18 @@ import java.util.Base64;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
+/**
+ * The Class StringHasher.
+ */
 public class StringHasher {
 
+	/**
+	 * Converts the message form string to bytes and creates the hash from it with MessageDigest.
+	 *
+	 * @param msg the msg
+	 * @return the java.lang. string
+	 * @throws GeneralSecurityException the general security exception
+	 */
 	public static java.lang.String createHash(java.lang.String msg) throws GeneralSecurityException {
 		byte[] plainBytes = msg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;
@@ -25,11 +35,18 @@ public class StringHasher {
 		return Base64.getEncoder().encodeToString(out);
 	}
 
-	public static boolean verifyHash(java.lang.String compareeHash, java.lang.String newMsg) {
+	/**
+	 * Verify hash.
+	 *
+	 * @param compareeHash the comparee hash
+	 * @param newMsg the new msg
+	 * @return true, if successful
+	 */
+	public static boolean verifyHash(java.lang.String compareHash, java.lang.String newMsg) {
 		byte[] plainBytes = newMsg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;
 		CrySLCodeGenerator.getInstance().includeClass("java.security.MessageDigest").addParameter(out , "out").generate();
-		return Base64.getEncoder().encodeToString(out).equals(compareeHash);
+		return Base64.getEncoder().encodeToString(out).equals(compareHash);
 	}
 
 }

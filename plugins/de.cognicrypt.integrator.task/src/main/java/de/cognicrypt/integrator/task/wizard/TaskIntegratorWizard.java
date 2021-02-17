@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
@@ -36,7 +35,7 @@ import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class TaskIntegratorWizard extends Wizard {
 	
-	private TaskIntegratorWizardPage taskInformationPage;
+	private TaskIntegratorWizardPage taskInformation;
 	
 	public TaskIntegratorWizard() {
 		setWindowTitle("CogniCrypt Task Integrator");
@@ -47,8 +46,8 @@ public class TaskIntegratorWizard extends Wizard {
 
 	@Override
 	public void addPages() {
-		taskInformationPage = new TaskIntegratorWizardPage(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
-		addPage(taskInformationPage);
+		taskInformation = new TaskIntegratorWizardPage(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
+		addPage(taskInformation);
 		
 		addPage(new QuestionsPage());
 	}
@@ -58,10 +57,11 @@ public class TaskIntegratorWizard extends Wizard {
 	public boolean canFinish() {
 		
 		if(!IntegratorModel.getInstance().isGuidedModeChosen())
-			return taskInformationPage.checkNonGuidedFinish();
+			return taskInformation.checkNonGuidedFinish();
 	
-		if(IntegratorModel.getInstance().getIdentifiers().size() == 1)
-			return taskInformationPage.checkMandatoryFields();
+		if(IntegratorModel.getInstance().getIdentifiers().size() == 1) {
+			return taskInformation.checkMandatoryFields();
+		}
 			
 		return super.canFinish();
 	}
@@ -90,52 +90,33 @@ public class TaskIntegratorWizard extends Wizard {
 		final FileUtilities fileUtilities = new FileUtilities(integratorModel.getTaskName());
 		Task task = integratorModel.getTask();
 		HashMap<String, File> crylTemplatesWithOption = integratorModel.getCryslTemplateFiles();
-		if (getContainer().getCurrentPage().getName().equals(Constants.PAGE_TASK_INFORMATION)) {
-			String fileWriteAttemptResult;
-			if (integratorModel.isGuidedModeChosen() == false) {
-				 fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption, integratorModel.getLocationOfJSONFile(), integratorModel.getLocationOfIconFile());}
-			else {
-				fileWriteAttemptResult = fileUtilities.writeCryslTemplate( (File) crylTemplatesWithOption.values().toArray()[0], integratorModel.getLocationOfIconFile());
+		String fileWriteAttemptResult;
+		
+		if(integratorModel.isGuidedModeChosen()) {
+			fileWriteAttemptResult = fileUtilities.writeData(crylTemplatesWithOption, integratorModel.getLocationOfIconFile());
+			if (integratorModel.getIdentifiers().size() == 1) {
 				fileUtilities.writeJSONFile(new ArrayList<Question>());
-			}
-				// Check if the contents of the provided files are valid.
-				if (fileWriteAttemptResult.equals("")) {
-					// Adding the trimmed task name to ensure it matches with the name of the image stored (refer FileUtilities)
-					task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
-					task.setCodeGen(CodeGenerators.CrySL);
-					fileUtilities.writeTaskToJSONFile(task);
-					fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getTaskName());
-					return true;
-				} else {
-					MessageDialog.openError(getShell(), "Warning", fileWriteAttemptResult);
-					return false;
-				}
-		} else {
-
-			// collect input to task-related files from individual pages
-			
-			final String fileWriteAttemptResult = fileUtilities.writeCryslTemplate(crylTemplatesWithOption,  integratorModel.getLocationOfIconFile());
-			final ArrayList<Question> questions = IntegratorModel.getInstance().getQuestions();
-			
-			// Check if the contents of the provided files are valid.
-			if (fileWriteAttemptResult.equals("")) {
-				// Adding the trimmed task name to ensure it matches with the name of the image stored (refer FileUtilities)
-				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
-				task.setCodeGen(CodeGenerators.CrySL);
-				task.setModelFile("");
-				task.setAdditionalResources("");
+			}else {
+				final ArrayList<Question> questions =
+						integratorModel.getQuestions();
 				fileUtilities.writeJSONFile(questions);
-				fileUtilities.writeTaskToJSONFile(task);
-				fileUtilities.updateThePluginXMLFileWithHelpData(integratorModel.getTaskName());
-			} else {
-				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
-				errorBox.setText("Problems with the provided files.");
-				errorBox.setMessage(fileWriteAttemptResult);
-				errorBox.open();
 			}
+		}else {
+			fileWriteAttemptResult = fileUtilities.writeData(crylTemplatesWithOption, integratorModel.getLocationOfIconFile(), integratorModel.getLocationOfJSONFile());
 		}
 		
-		return true;
+		if (fileWriteAttemptResult.equals("")) {
+			task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+			task.setCodeGen(CodeGenerators.CrySL);
+			fileUtilities.writeTaskToJSONFile(task);
+			return true;
+		}else {
+			final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
+			errorBox.setText("Problems with the provided files.");
+			errorBox.setMessage(fileWriteAttemptResult);
+			errorBox.open();
+			return false;
+		}
 	}
 
 	
@@ -167,6 +148,7 @@ public class TaskIntegratorWizard extends Wizard {
 			writer.write("[]");
 			writer.close();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

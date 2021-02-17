@@ -91,40 +91,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		}catch (final Exception ex) {
 			Activator.getDefault().logError(ex);
 		}
-		/**
-		try {
-			if (page.getName().equals(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS)) {
-				final PageForTaskIntegratorWizard highLevelQuestionPage = (PageForTaskIntegratorWizard) page;
-				final CompositeToHoldGranularUIElements highLevelQuestionPageComposite = highLevelQuestionPage.getCompositeToHoldGranularUIElements();
-				final IWizardPage nextPage = super.getNextPage();
-				final ArrayList<Question> listOfAllQuestions = highLevelQuestionPageComposite.getListOfAllQuestions();
-				if (nextPage instanceof PageForTaskIntegratorWizard) {
-					final PageForTaskIntegratorWizard pftiw = (PageForTaskIntegratorWizard) nextPage;
-					if (pftiw.getCompositeToHoldGranularUIElements() instanceof CompositeToHoldGranularUIElements) {
-						final CompositeToHoldGranularUIElements comp = pftiw.getCompositeToHoldGranularUIElements();
-						if (comp.getListOfAllQuestions().size() > 0) {
-							comp.deleteAllQuestion();
-						}
-						for(CompositeBrowseForFile b : getCompositeChoiceForModeOfWizard().getLstCryslTemplates()) {
-							listCryslTemplatesIdentifier.add(b.getText());
-						}
-						for (final Question question : listOfAllQuestions) {
-							comp.getListOfAllQuestions().add(question);
-							comp.addQuestionUIElements(question, true, listCryslTemplatesIdentifier);
-							// to rebuild the UI
-							comp.updateLayout();
-						}
-					}
-				}
-				
-				
-			}
-		}
-		catch (final Exception ex) {
-			Activator.getDefault().logError(ex);
-
-		}
-		**/
+		
 		return ValidateNextPress;
 	}
 
@@ -138,8 +105,6 @@ public class TaskIntegratorWizardPage extends WizardPage {
 			return;
 		
 		boolean mandatoryFields = checkMandatoryFields();
-		
-		// Validity of template files should be checked during add routine
 		
 		boolean guidedMode = IntegratorModel.getInstance().isGuidedModeChosen();
 		boolean multipleTemplatesExist = IntegratorModel.getInstance().getIdentifiers().size() > 1;
@@ -157,7 +122,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		boolean mandatoryFields = checkMandatoryFields();
 		boolean errorOnJSONFile = compositeTaskInformation.getCompJSON().getDecFilePath().getDescriptionText().contains(Constants.ERROR);		
 		
-		// parse JSON and check that all templates are added
+		// TODO parse JSON and check that all templates are added
 		
 		return mandatoryFields && !errorOnJSONFile;
 	}

@@ -48,10 +48,10 @@ public class QuestionDialog extends Dialog {
 	 * @param parentShell
 	 */
 	public QuestionDialog(final Shell parentShell) {
-		this(parentShell, null, null);
+		this(parentShell, null);
 	}
 
-	public QuestionDialog(final Shell parentShell, final Question question, final ArrayList<Question> listOfAllQuestions) {
+	public QuestionDialog(final Shell parentShell, final Question question) {
 		super(parentShell);
 		setShellStyle(SWT.CLOSE | SWT.RESIZE | SWT.TITLE);
 		this.question = question;
@@ -89,7 +89,7 @@ public class QuestionDialog extends Dialog {
 		final Button btnAddAnswer = new Button(composite, SWT.None);
 		btnAddAnswer.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1));
 		btnAddAnswer.setText(Constants.ADD_ANSWER);
-		// Visibility depends on question type
+
 		final GridData gdCompositeToHoldAnswers = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 		gdCompositeToHoldAnswers.heightHint = 300;
 		gdCompositeToHoldAnswers.widthHint = 890;

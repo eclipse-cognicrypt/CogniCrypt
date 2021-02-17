@@ -179,7 +179,6 @@ public class IntegratorModel {
 	}
 	
 	public List<String> getIdentifiers(){
-		
 		ArrayList<String> identifiers = new ArrayList<String>();
 		identifiers.addAll(cryslTemplateFiles.keySet());
 		return identifiers;

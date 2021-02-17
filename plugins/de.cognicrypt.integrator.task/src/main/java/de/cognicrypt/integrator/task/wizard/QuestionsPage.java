@@ -45,11 +45,10 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 		container.setLayout(new GridLayout(2, false));
 
 		setCompositeToHoldGranularUIElements(new QuestionDisplayComposite(container, this));
+		
 		// fill the available space on the with the big composite
 		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		//getCompositeToHoldGranularUIElements().updateQuestionContainer(listCryslTemplatesIdentifier);
-
 		if (!TaskIntegratorWizard.class.isInstance(getWizard())) {
 			Activator.getDefault().logError(Constants.INSTANTIATED_BY_WRONG_WIZARD_ERROR);
 		}
@@ -66,7 +65,6 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 				final int response = questionDialog.open();
 				final int questionID = IntegratorModel.getInstance().getQuestions().size();
 				if (response == Window.OK) {
-					// Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
 					final Question questionDetails = questionDialog.getQuestionDetails();
 					questionDetails.setId(questionID);
 

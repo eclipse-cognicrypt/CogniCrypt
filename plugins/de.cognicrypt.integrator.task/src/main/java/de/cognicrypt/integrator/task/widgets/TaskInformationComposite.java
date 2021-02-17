@@ -196,15 +196,12 @@ public class TaskInformationComposite extends Composite {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final boolean tempSelectionStatus = btnGuidedMode.getSelection();
-				// If the guided mode is selected, hide the widgets to get the location of the
-				// files required for the task.
+				// If the guided mode is selected, hide the widgets to get the location of the files required for the task.
 				compositeNonguidedMode.setVisible(!tempSelectionStatus);
-				// Set the data value.
 				IntegratorModel.getInstance().setGuidedModeChosen(tempSelectionStatus);
 
-				// If the guided mode is not selected, the rest of the pages are set to
-				// completed. This is to allow the finish button to be enabled on the first
-				// page.
+				// If the guided mode is not selected, the rest of the pages are set to completed
+				// This is to allow the finish button to be enabled on the first page.
 				for (final IWizardPage page : wizardPage.getWizard().getPages()) {
 					if (!page.getName().equals(Constants.PAGE_TASK_INFORMATION)) {
 						((WizardPage) page).setPageComplete(!tempSelectionStatus);

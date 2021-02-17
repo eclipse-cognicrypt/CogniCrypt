@@ -80,21 +80,13 @@ public class AnswerGroup extends Group {
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
 		
 	
-		// executes when GroupAnswer is called by QuestionDialog class
 		if (isEditable) {
 			this.txtAnswer.setBounds(13, 9, 486, 29);
-			//this.txtOption.setBounds(590, 3, 20, 29);
 			this.possibleIdentifiers.setBounds(511, 6, 100, 29);
 			btnDefaultAnswer.setBounds(623, 14, 128, 27);
 
-		}
-		/**
-		 * executes when GroupAnswer is called by CompositeGranularUIForHighLevelQuestions class
-		 */
-		// Executes when GroupAnswer is called  by
-		else {
+		}else {
 			this.txtAnswer.setBounds(3, 3, 195, 29);
-			//this.txtOption.setBounds(200, 3, 20, 29);
 			this.possibleIdentifiers.setBounds(210, 3, 100, 25);
 			btnDefaultAnswer.setBounds(322, 7, 128, 29);
 		}
@@ -149,17 +141,6 @@ public class AnswerGroup extends Group {
 		}
 
 	}
-
-	/**
-	 * @return the answer text
-	 */
-	/*
-	 * public String retrieveAnswer(){ getAnswer=txtAnswer.getText(); return getAnswer; }
-	 *//**
-			 * set the answer text
-			 *//*
-					 * public void setAnswerValue(){ answer.setValue(this.retrieveAnswer()); }
-					 */
 
 	@Override
 	protected void checkSubclass() {

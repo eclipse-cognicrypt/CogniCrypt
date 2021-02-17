@@ -133,26 +133,8 @@ public class TaskIntegratorWizard extends Wizard {
 				errorBox.setMessage(fileWriteAttemptResult);
 				errorBox.open();
 			}
-			
-			
-			
-
-			/*final File customLibLocation = null;
-
-			final ModelAdvancedMode objectForDataInGuidedMode =
-					getTIPageByName(Constants.PAGE_NAME_FOR_MODE_OF_WIZARD).getCompositeChoiceForModeOfWizard().getObjectForDataInNonGuidedMode();
-			objectForDataInGuidedMode.setTask();
-			if (fileWriteAttemptResult.equals("")) {
-				fileUtilities.writeTaskToJSONFile(task);
-				return true;
-			} else {
-				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
-				errorBox.setText("Problems with the provided data.");
-				errorBox.setMessage(fileWriteAttemptResult);
-				errorBox.open();
-				return false;
-			}*/
 		}
+		
 		return true;
 	}
 
@@ -185,7 +167,6 @@ public class TaskIntegratorWizard extends Wizard {
 			writer.write("[]");
 			writer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

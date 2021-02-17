@@ -32,14 +32,12 @@ import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardPage;
 
 public class FileBrowserComposite extends Composite {
 
-	private TaskIntegratorWizardPage wizardPage; // this is needed to set whether the page has been
-													// completed yet or not.
+	private TaskIntegratorWizardPage wizardPage; // this is needed to set whether the page has been completed yet or not.
 	private ControlDecoration decFilePath; // Decoration variable to be able to access it in the events.
 
 	private Listener onFileChangedListener;
 
 	private Text pathText;
-
 	private Text optionalText;
 
 	public FileBrowserComposite(final Composite parent, final int style, final String labelText,

@@ -64,8 +64,7 @@ public class QuestionModifyDeleteComposite extends Composite {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				final ArrayList<Question> listOfAllQuestions = IntegratorModel.getInstance().getQuestions();
-				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, listOfAllQuestions); //change later
+				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam);
 				final int response = qstnDialog.open();
 				if (response == Window.OK) {
 					final Question modifiedQuestion = qstnDialog.getQuestionDetails();

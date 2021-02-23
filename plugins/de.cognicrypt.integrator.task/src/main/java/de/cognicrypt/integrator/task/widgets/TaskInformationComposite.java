@@ -245,7 +245,7 @@ public class TaskInformationComposite extends Composite {
 		templateList.removeAll();
 		
 		for(Entry<String, File> e : templates.entrySet()) {
-			templateList.add(e.getKey());	
+			templateList.add(IntegratorModel.getInstance().getTaskName() + e.getKey());	
 		}
 	}
 	
@@ -316,7 +316,7 @@ public class TaskInformationComposite extends Composite {
 
 		// Extract identifier
 		String[] packageParts = packageLine.split("\\.");
-		String templateIdentifier = packageParts[packageParts.length - 1].replace(";", "");
+		String templateIdentifier = packageParts[packageParts.length - 1].replace(taskName, "").replace(";", "");
 
 		IntegratorModel.getInstance().addTemplate(templateIdentifier, new File(templateFilePath));
 		
@@ -354,7 +354,7 @@ public class TaskInformationComposite extends Composite {
 			}
 			
 			if (deleteIdentifier)
-				IntegratorModel.getInstance().removeTemplate(id);
+				IntegratorModel.getInstance().removeTemplate(id.replace(IntegratorModel.getInstance().getTaskName(), ""));
 		}
 		
 		checkTemplatesDec();
@@ -378,7 +378,7 @@ public class TaskInformationComposite extends Composite {
 			
 		// Single template identifier does not match the task name
 		if(IntegratorModel.getInstance().getIdentifiers().size() == 1
-				&& !IntegratorModel.getInstance().getIdentifiers().get(0).contentEquals(IntegratorModel.getInstance().getTaskName())) {
+				&& !IntegratorModel.getInstance().getIdentifiers().get(0).contentEquals("")) {
 				
 			templatesDec.setImage(Constants.DEC_ERROR);
 			templatesDec.setDescriptionText(Constants.ERROR + Constants.ERROR_SINGLE_TEMPLATE_ID);

@@ -93,7 +93,7 @@ public class TaskIntegratorWizard extends Wizard {
 		String fileWriteAttemptResult;
 		
 		if(integratorModel.isGuidedModeChosen()) {
-			fileWriteAttemptResult = fileUtilities.writeData(crylTemplatesWithOption, integratorModel.getLocationOfIconFile());
+			fileWriteAttemptResult = fileUtilities.writeData();
 			if (integratorModel.getIdentifiers().size() == 1) {
 				fileUtilities.writeJSONFile(new ArrayList<Question>());
 			}else {
@@ -102,7 +102,7 @@ public class TaskIntegratorWizard extends Wizard {
 				fileUtilities.writeJSONFile(questions);
 			}
 		}else {
-			fileWriteAttemptResult = fileUtilities.writeData(crylTemplatesWithOption, integratorModel.getLocationOfIconFile(), integratorModel.getLocationOfJSONFile());
+			fileWriteAttemptResult = fileUtilities.writeDataNonGuidedMode();
 		}
 		
 		if (fileWriteAttemptResult.equals("")) {

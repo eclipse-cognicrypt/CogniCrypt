@@ -69,7 +69,7 @@ public class IntegratorModel {
 		task.setDescription(nameOfTheTask);
 	}
 
-	public File getLocationOfIconFile() {
+	public File getIconFile() {
 		return locationOfIconFile;
 	}
 
@@ -81,7 +81,7 @@ public class IntegratorModel {
 	/**
 	 * @return the locationOfJSONFile
 	 */
-	public File getLocationOfJSONFile() {
+	public File getJSONFile() {
 		return this.locationOfJSONFile;
 	}
 

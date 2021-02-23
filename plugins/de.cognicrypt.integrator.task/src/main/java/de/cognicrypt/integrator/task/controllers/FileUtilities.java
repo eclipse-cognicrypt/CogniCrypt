@@ -66,7 +66,8 @@ import de.cognicrypt.utils.Utils;
 public class FileUtilities {
 
 	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
-
+	IntegratorModel integratorModel;
+	
 	/**
 	 * The class needs to be initialized with a task name, as it is used extensively
 	 * in the methods.
@@ -76,10 +77,14 @@ public class FileUtilities {
 	public FileUtilities() {
 		super();
 		setErrors(new StringBuilder());
+		integratorModel = IntegratorModel.getInstance();
 	}
 	
-	public String writeData(final HashMap<String, File> cryslTemplateFile, final File iconFile) {
-		copyImage(iconFile);
+	public String writeData() {
+		
+		final HashMap<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
+		
+		copyImage(integratorModel.getIconFile());
 		for (String key : cryslTemplateFile.keySet()) {
 			try {
 				copyTemplate(cryslTemplateFile.get(key), key);
@@ -91,9 +96,12 @@ public class FileUtilities {
 		return getErrors().toString();
 	}
 
-	public String writeData(final HashMap<String, File> cryslTemplateFile, final File iconFile, File jsonFile) {
-		copyImage(iconFile);
-		copyJSON(jsonFile);
+	public String writeDataNonGuidedMode() {
+		
+		final HashMap<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
+		
+		copyImage(integratorModel.getIconFile());
+		copyJSON(integratorModel.getJSONFile());
 		for (String key : cryslTemplateFile.keySet()) {
 			try {
 				copyTemplate(cryslTemplateFile.get(key), key);

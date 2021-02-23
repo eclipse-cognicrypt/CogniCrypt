@@ -59,12 +59,12 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.TaskInformationComposite;
 import de.cognicrypt.utils.Utils;
 
 public class FileUtilities {
 
-	private String taskName;
 	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
 
 	/**
@@ -73,9 +73,8 @@ public class FileUtilities {
 	 *
 	 * @param taskName
 	 */
-	public FileUtilities(final String taskName) {
+	public FileUtilities() {
 		super();
-		setTaskName(taskName);
 		setErrors(new StringBuilder());
 	}
 	
@@ -121,13 +120,13 @@ public class FileUtilities {
 	
 	public void copyTemplate(final File existingFileLocation, String option) throws IOException {
 		File parentFolder = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
-		File templateFolder = new File(parentFolder, getTrimmedTaskName() + option);
+		File templateFolder = new File(parentFolder, IntegratorModel.getInstance().getTrimmedTaskName() + option);
 		
 		if (!templateFolder.isDirectory()) {
 			templateFolder.mkdir();
 		}
 
-		File targetDirectory = new File(templateFolder, getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+		File targetDirectory = new File(templateFolder, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JAVA_EXTENSION);
 		
 		Path path = existingFileLocation.toPath();
 		Path path2 = targetDirectory.toPath();
@@ -148,7 +147,7 @@ public class FileUtilities {
 			File targetDirectory = null;
 			try {
 				if (existingFileLocation.getPath().endsWith(Constants.PNG_EXTENSION)) {
-					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, getTrimmedTaskName() + Constants.PNG_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.PNG_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
@@ -172,7 +171,7 @@ public class FileUtilities {
 			File targetDirectory = null;
 			try {
 				if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-					targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, getTrimmedTaskName() + Constants.JSON_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
@@ -199,7 +198,7 @@ public class FileUtilities {
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			reader = new BufferedReader(
-					new FileReader(new File(Constants.localjsonTaskFile)));
+					new FileReader(new File(Constants.customjsonTaskFile)));
 			final List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {
 			}.getType());
 			// Add the new task to the list.
@@ -207,7 +206,7 @@ public class FileUtilities {
 			reader.close();
 
 			writer = new BufferedWriter(
-					new FileWriter(new File(Constants.localjsonTaskFile)));
+					new FileWriter(new File(Constants.customjsonTaskFile)));
 			gson.toJson(tasks, new TypeToken<List<Task>>() {
 			}.getType(), writer);
 			writer.close();
@@ -234,7 +233,7 @@ public class FileUtilities {
 
 		final File jsonFile = new File(
 				Constants.ECLIPSE_LOC_TASKDESC_DIR,
-				getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
 
 		try {
 			final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
@@ -273,35 +272,6 @@ public class FileUtilities {
 			appendFileErrors(jsonFileLocation.getName());
 			return false;
 		}
-	}
-	
-	
-	/**
-	 * Return the name of that task that is set for the file writes..
-	 *
-	 * @return
-	 */
-	private String getTaskName() {
-		return this.taskName;
-	}
-
-	/**
-	 * get machine-readable task name
-	 *
-	 * @return task name without non-alphanumerics
-	 */
-	private String getTrimmedTaskName() {
-		return getTaskName().replaceAll("[^A-Za-z0-9]", "");
-	}
-
-	/**
-	 * Set the name of the task that is being written to File. The names of the
-	 * result files are set based on the provided task name.
-	 *
-	 * @param taskName
-	 */
-	private void setTaskName(final String taskName) {
-		this.taskName = taskName;
 	}
 
 	/**

@@ -87,7 +87,7 @@ public class TaskIntegratorWizard extends Wizard {
 		final IntegratorModel integratorModel = IntegratorModel.getInstance();
 		
 		integratorModel.setTask();
-		final FileUtilities fileUtilities = new FileUtilities(integratorModel.getTaskName());
+		final FileUtilities fileUtilities = new FileUtilities();
 		Task task = integratorModel.getTask();
 		HashMap<String, File> crylTemplatesWithOption = integratorModel.getCryslTemplateFiles();
 		String fileWriteAttemptResult;
@@ -133,7 +133,7 @@ public class TaskIntegratorWizard extends Wizard {
 		File resourceCCtaskdesc = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR);
 		File resourceCCtasks = new File(Constants.ECLIPSE_LOC_TASKS_DIR);
 		File resourceCCXSL = new File(Constants.ECLIPSE_LOC_XSL_DIR);
-		File resourceCCtasksjson = new File(Constants.localjsonTaskFile);
+		File resourceCCtasksjson = new File(Constants.customjsonTaskFile);
 		
 		
 		resourceCCaddres.mkdir();

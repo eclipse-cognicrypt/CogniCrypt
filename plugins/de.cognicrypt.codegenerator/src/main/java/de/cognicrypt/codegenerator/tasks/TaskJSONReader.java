@@ -45,9 +45,6 @@ public class TaskJSONReader {
 				TaskJSONReader.tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
 				reader.close();
 
-				
-				//final Gson gson1 = new Gson();
-				
 				for (Task t : TaskJSONReader.tasks) {
 					t.setQuestionsJSONFile(Constants.rsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
 					t.setAdditionalResources(Constants.rsrcPath + "AdditionalResources" + Constants.innerFileSeparator + t.getName());
@@ -60,16 +57,16 @@ public class TaskJSONReader {
 					}
 				}
 				
-				File localTasks = new File(Constants.localjsonTaskFile);
+				File customTasksFile = new File(Constants.customjsonTaskFile);
 				
-				if(localTasks.exists()) {
-					final BufferedReader reader1 = new BufferedReader(new FileReader(localTasks));
+				if(customTasksFile.exists()) {
+					final BufferedReader reader1 = new BufferedReader(new FileReader(customTasksFile));
 					
-					List<Task> localtasks = gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType());
-					TaskJSONReader.tasks.addAll(localtasks);
+					List<Task> customTasks = gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType());
+					TaskJSONReader.tasks.addAll(customTasks);
 					reader1.close();
 
-					for (Task t : localtasks) {
+					for (Task t : customTasks) {
 						t.setQuestionsJSONFile(Constants.localrsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
 						t.setAdditionalResources(Constants.localrsrcPath + "AdditionalResources" + Constants.innerFileSeparator + t.getName());
 

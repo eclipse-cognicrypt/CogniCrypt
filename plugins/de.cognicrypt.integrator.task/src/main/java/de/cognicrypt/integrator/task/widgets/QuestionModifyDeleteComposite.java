@@ -33,9 +33,6 @@ public class QuestionModifyDeleteComposite extends Composite {
 	public QuestionModifyDeleteComposite(final Composite parent, final Question questionParam) {
 		super(parent, SWT.RIGHT_TO_LEFT);
 
-		/*
-		 * RowLayout rowLayout = new RowLayout(SWT.HORIZONTAL); setLayout(rowLayout);
-		 */
 		setLayout(new GridLayout(2, false));
 
 		final Button btnDelete = new Button(this, SWT.NONE);
@@ -46,7 +43,7 @@ public class QuestionModifyDeleteComposite extends Composite {
 			public void widgetSelected(final SelectionEvent e) {
 				final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
 				confirmationMessageBox.setMessage("This information will be lost. Do you really want to delete?");
-				confirmationMessageBox.setText("Deleting Question");
+				confirmationMessageBox.setText("Delete Question");
 				final int response = confirmationMessageBox.open();
 				if (response == SWT.YES) {
 					((QuestionDisplayComposite) btnDelete.getParent().getParent().getParent().getParent())

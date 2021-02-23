@@ -56,6 +56,10 @@ public class IntegratorModel {
 	public String getTaskName() {
 		return task.getName();
 	}
+	
+	public String getTrimmedTaskName() {
+		return task.getName().replaceAll("[^A-Za-z0-9]", "");
+	}
 
 	/**
 	 * @param nameOfTheTask the nameOfTheTask to set

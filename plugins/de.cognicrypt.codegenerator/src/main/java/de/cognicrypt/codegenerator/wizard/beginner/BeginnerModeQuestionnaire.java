@@ -14,7 +14,6 @@ package de.cognicrypt.codegenerator.wizard.beginner;
 
 import java.util.List;
 
-import de.cognicrypt.codegenerator.question.LocalQuestionsJSONReader;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.question.QuestionsJSONReader;
@@ -36,7 +35,7 @@ public class BeginnerModeQuestionnaire {
 	public BeginnerModeQuestionnaire(final Task task, final String filePath) {
 		this.task = task;
 		if(filePath.startsWith(Constants.LOCAL_JSON_FILE_DIRECTORY_PATH)) {
-			this.pageList = (new LocalQuestionsJSONReader()).getPages(filePath);
+			this.pageList = (new QuestionsJSONReader()).getCustomPages(filePath);
 		}else {
 			this.pageList = (new QuestionsJSONReader()).getPages(filePath);
 		}

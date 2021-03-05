@@ -38,7 +38,6 @@ public class FileBrowserComposite extends Composite {
 	private Listener onFileChangedListener;
 
 	private Text pathText;
-	private Text optionalText;
 
 	public FileBrowserComposite(final Composite parent, final int style, final String labelText,
 			final String[] fileTypes, final String stringOnFileDialog, final TaskIntegratorWizardPage wizardPage,
@@ -77,37 +76,59 @@ public class FileBrowserComposite extends Composite {
 	private void init(final Composite parent, final int style, final String labelText, final String[] fileTypes,
 			final String stringOnDialog, final TaskIntegratorWizardPage theContainerpageForValidation) {
 		setTheLocalContainerPage(theContainerpageForValidation);
-		final GridLayout gridLayout = new GridLayout(3, false);
+		final GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 8;
 		setLayout(gridLayout);
 
 		final Label label = new Label(this, SWT.NONE);
 		label.setText(labelText);
+		
+		final Label spacer = new Label(this, SWT.NONE);
 
 		// Initialize the decorator for the label for the text box.
-		setDecFilePath(new ControlDecoration(label, SWT.TOP | SWT.RIGHT));
-		getDecFilePath().setShowOnlyOnFocus(false);
+		decFilePath = new ControlDecoration(label, SWT.TOP | SWT.RIGHT);
+		decFilePath.setShowOnlyOnFocus(false);
 
 		// Initial error state.
-		getDecFilePath().setImage(Constants.DEC_ERROR);
-		getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_FILE_NAME);
-		getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
-
+		decFilePath.setImage(Constants.DEC_ERROR);
+		decFilePath.setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_FILE_NAME);
+		
 		this.pathText = new Text(this, SWT.BORDER);
 		final GridData gdTextBox = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 
 		// do not claim space for all the text if not available
-		gdTextBox.widthHint = 500;
 		this.pathText.setLayoutData(gdTextBox);
-		this.optionalText = new Text(this, SWT.BORDER);
-		final GridData gdTextBoxOption = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 
-		// do not claim space for all the text if not available
-		gdTextBoxOption.widthHint = 100;
-		this.optionalText.setLayoutData(gdTextBoxOption);
-		if (!labelText.equals(Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE)) {
-			this.optionalText.setVisible(false);
-		}
+		pathText.addModifyListener(e -> {
+
+			File locationOfCryslTemplate = new File(pathText.getText());
+			final File tempFileVariable = locationOfCryslTemplate;
+			// Validate the file IO. The directory check is removed.
+			if ((!tempFileVariable.exists() || !tempFileVariable.canRead()) && pathText.getParent().isVisible()) {
+				decFilePath.setImage(Constants.DEC_ERROR);
+				decFilePath.setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
+				
+				// Check if the page can be set to completed.
+				getTheLocalContainerPage().checkPageComplete();
+			} else {
+				// If there are no problems with the file, revert the error decoration and store the locations.
+				decFilePath.setImage(null);
+				decFilePath.setDescriptionText("");
+				decFilePath.showHoverText("");
+				switch (labelText) {
+				case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
+					IntegratorModel.getInstance().setLocationOfJSONFile(tempFileVariable);
+					break;
+				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
+					IntegratorModel.getInstance().setLocationOfIconFile(tempFileVariable);
+					break;
+				}
+
+				// Check if the page can be set to completed.
+				getTheLocalContainerPage().checkPageComplete();
+			}
+		});
+		
 		final Button browseButton = new Button(this, SWT.NONE);
 		browseButton.setText(Constants.LABEL_BROWSE_BUTTON);
 
@@ -133,37 +154,6 @@ public class FileBrowserComposite extends Composite {
 					}
 				}
 
-			}
-		});
-
-		pathText.addModifyListener(e -> {
-
-			File locationOfCryslTemplate = new File(pathText.getText());
-			final File tempFileVariable = locationOfCryslTemplate;
-			// Validate the file IO. The directory check is removed.
-			if ((!tempFileVariable.exists() || !tempFileVariable.canRead()) && pathText.getParent().isVisible()) {//
-				getDecFilePath().setImage(Constants.DEC_ERROR);
-				getDecFilePath().setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_UNABLE_TO_READ_FILE);
-				getDecFilePath().showHoverText(getDecFilePath().getDescriptionText());
-				// Check if the page can be set to completed.
-				getTheLocalContainerPage().checkPageComplete();
-			} else {
-				// If there are no problems with the file, revert the error decoration and store
-				// the locations.
-				getDecFilePath().setImage(null);
-				getDecFilePath().setDescriptionText("");
-				getDecFilePath().showHoverText("");
-				switch (labelText) {
-				case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
-					IntegratorModel.getInstance().setLocationOfJSONFile(tempFileVariable);
-					break;
-				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
-					IntegratorModel.getInstance().setLocationOfIconFile(tempFileVariable);
-					break;
-				}
-
-				// Check if the page can be set to completed.
-				getTheLocalContainerPage().checkPageComplete();
 			}
 		});
 	}
@@ -222,24 +212,11 @@ public class FileBrowserComposite extends Composite {
 		return this.pathText.getText();
 	}
 
-	public String getOptionalText() {
-		return optionalText.getText();
-	}
-
 	/**
 	 * @return the decNameOfTheTask
 	 */
 	public ControlDecoration getDecFilePath() {
 		return this.decFilePath;
-	}
-
-	/**
-	 * Keep the decorator object as global to allow access in the event listeners.
-	 *
-	 * @param decNameOfTheTask the decNameOfTheTask to set
-	 */
-	private void setDecFilePath(final ControlDecoration decFilePath) {
-		this.decFilePath = decFilePath;
 	}
 
 	/**
@@ -249,14 +226,5 @@ public class FileBrowserComposite extends Composite {
 	 */
 	public void setPathText(String text) {
 		pathText.setText(text);
-	}
-
-	/**
-	 * Change Identifier Option.
-	 * 
-	 * @param text String to set ID
-	 */
-	public void setOptionalText(String text) {
-		optionalText.setText(text);
 	}
 }

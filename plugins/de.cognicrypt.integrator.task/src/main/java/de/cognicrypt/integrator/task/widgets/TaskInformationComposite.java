@@ -42,6 +42,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
@@ -61,7 +63,7 @@ public class TaskInformationComposite extends Composite {
 	private final List templateList;
 	private final FileBrowserComposite compJSON, compPNG;
 
-	final Button btnRemoveTemplate;
+	private final Button btnRemoveTemplate;
 
 	/**
 	 * Create the composite.
@@ -88,15 +90,12 @@ public class TaskInformationComposite extends Composite {
 		lblTaskName = new Label(compositeTaskInfo, SWT.NONE);
 		lblTaskName.setText("");
 		
-		final Label lblTaskDescription = new Label(compositeTaskInfo, SWT.NONE);
-		lblTaskDescription.setText("Description");
 
-		final Text txtTaskDescription = new Text(compositeTaskInfo, SWT.BORDER | SWT.WRAP | SWT.MULTI);
-		final GridData gdTaskDescription = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gdTaskDescription.heightHint = 67;
+		final Text txtTaskDescription = new Text(compositeTaskInfo, SWT.BORDER);
+		txtTaskDescription.setMessage("Describe the task");
+		final GridData gdTaskDescription= new GridData(SWT.FILL, SWT.CENTER, true, true);
+		gdTaskDescription.widthHint = 0;
 		txtTaskDescription.setLayoutData(gdTaskDescription);
-		txtTaskDescription.setTextLimit(Constants.MULTI_LINE_TEXT_BOX_LIMIT);
-		txtTaskDescription.setFocus();
 		
 		txtTaskDescription.addModifyListener(
 				e -> IntegratorModel.getInstance().setTaskDescription(txtTaskDescription.getText().trim()));
@@ -131,10 +130,12 @@ public class TaskInformationComposite extends Composite {
 		compositeTemplateBtns.setLayout(new RowLayout(SWT.HORIZONTAL));
 		
 		final Button btnAddTemplate = new Button(compositeTemplateBtns, SWT.NONE);
-		btnAddTemplate.setText("Add");
+		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
+		btnAddTemplate.setImage(sharedImages.getImage(ISharedImages.IMG_OBJ_ADD));
+		btnAddTemplate.setFocus();
 		
 		btnRemoveTemplate = new Button(compositeTemplateBtns, SWT.NONE);
-		btnRemoveTemplate.setText("Remove");
+		btnRemoveTemplate.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_DELETE));
 		btnRemoveTemplate.setEnabled(false);
 
 		btnAddTemplate.addSelectionListener(new SelectionAdapter() {
@@ -147,7 +148,13 @@ public class TaskInformationComposite extends Composite {
 		btnRemoveTemplate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				removeTemplates(templateList.getSelection());
+				
+				String[] templateIds = templateList.getSelection(); 
+				
+				for(int i=0; i < templateIds.length; i++)
+					templateIds[i] = templateIds[i].replace(IntegratorModel.getInstance().getTaskName(), "");
+				
+				removeTemplates(templateIds);
 			}
 		});
 		
@@ -236,7 +243,7 @@ public class TaskInformationComposite extends Composite {
 	}
 	
 	
-	public void redrawTable() {
+	private void redrawTemplateList() {
 
 		btnRemoveTemplate.setEnabled(false);
 		
@@ -323,48 +330,36 @@ public class TaskInformationComposite extends Composite {
 		checkTemplatesDec();
 		wizardPage.checkPageComplete();
 
-		redrawTable();
+		redrawTemplateList();
 	}
 	
 	public void removeTemplates(String[] identifiers) {
 	
 		for(String id : identifiers) {
-			boolean deleteIdentifier = true; 
+			boolean templateCanBeRemoved = true; 
 			
 			for(Question q : IntegratorModel.getInstance().getQuestions()) {
-				ArrayList<Answer> answersToDelete = new ArrayList<>();
-				
 				for(Answer a : q.getAnswers()) {
-				
 					if(a.getOption().contentEquals(id)) {
-						final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-						confirmationMessageBox.setMessage("Template is used in question \"" + q.getQuestionText()  + "\"\nDo you want to delete the corresponding answer?");
-						confirmationMessageBox.setText("Delete Answer?");
-						final int response = confirmationMessageBox.open();
-						if (response == SWT.YES) {
-							answersToDelete.add(a);
-						}else {
-							deleteIdentifier = false;
-							break;
-						}
+						MessageDialog.openError(getShell(), "Warning", "The chosen template is used in question \"" + q.getQuestionText()  + "\" and can therefor not be removed.");
+						templateCanBeRemoved = false;
+						break;
 					}
 				}
-				
-				q.getAnswers().removeAll(answersToDelete);
 			}
 			
-			if (deleteIdentifier)
-				IntegratorModel.getInstance().removeTemplate(id.replace(IntegratorModel.getInstance().getTaskName(), ""));
+			if (templateCanBeRemoved)
+				IntegratorModel.getInstance().removeTemplate(id);
 		}
 		
 		checkTemplatesDec();
 		wizardPage.checkPageComplete();
 		
-		redrawTable();
+		redrawTemplateList();
 	}
 	
 	
-	public void checkTemplatesDec() {
+	private void checkTemplatesDec() {
 		// Template list is empty
 		if(IntegratorModel.getInstance().isTemplatesEmpty()) {
 			IntegratorModel.getInstance().setTaskName(null);

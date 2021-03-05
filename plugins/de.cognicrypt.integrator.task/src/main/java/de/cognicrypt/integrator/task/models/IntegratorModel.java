@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
@@ -194,5 +195,13 @@ public class IntegratorModel {
 	
 	public ArrayList<Question> getQuestions() {
 		return questions;
+	}
+	
+	public Question getQuestion(int questionIndex) {
+		return questions.get(questionIndex);
+	}
+	
+	public Answer getAnswer(int questionIndex, int answerIndex) {
+		return questions.get(questionIndex).getAnswers().get(answerIndex);
 	}
 }

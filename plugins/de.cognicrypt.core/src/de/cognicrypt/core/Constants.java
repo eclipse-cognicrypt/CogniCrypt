@@ -316,22 +316,24 @@ public class Constants {
 	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file.";
 	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
-	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The task name cannot be empty. Please enter a valid name for the task.";
 	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
 	public static final String ERROR_BLANK_TEMPLATE_LIST = "The template list cannot be empty. Please add a template.";
 	public static final String ERROR_SINGLE_TEMPLATE_ID = "The template's identifier does not match the task name and can therefor not be used to generate a single template task. Please add another template.";
+	public static final String ERROR_MESSAGE_BLANK_QUESTION_NAME = "The question name cannot be empty. Please enter a valid name for the question.";
+	public static final String ERROR_BLANK_ANSWERS_LIST = "The answers list cannot be empty. Please add an answer.";
+	public static final String ERROR_EMPTY_ANSWER_TEXT = "The text of an answer cannot be empty.";
 	
 	// Labels	
-	public static final String LABEL_BROWSE_BUTTON = "Browse";
-	public static final String QUESTION = "Question Name";	
+	public static final String LABEL_BROWSE_BUTTON = "Choose File";
+	public static final String QUESTION = "Question";	
 	public static final String DESCRIBE_QUESTION = "Description";
 	// Dimensions
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
 	public static final String WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE = "Select code template";
-	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Select questions file";
-	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Select icon file";
+	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Questions";
+	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Icon";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
 
 	// Default bounds for the composites

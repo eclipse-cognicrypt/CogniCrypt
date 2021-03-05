@@ -10,6 +10,8 @@ package de.cognicrypt.integrator.task.widgets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.SortedSet;
+
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridData;
@@ -25,16 +27,18 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.XSLTags;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
+import de.cognicrypt.integrator.task.wizard.QuestionsPage;
 
 public class QuestionModificationComposite extends ScrolledComposite {
 
-	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
+	private QuestionsPage questionsPage;
+	
+	private int lowestWidgetYAxisValue;
 	private final Composite composite;
 
-	private final ArrayList<Answer> answers;
-
+	private final int questionIndex;
+	
 	private final ArrayList<Button> btnList;
-
 
 	/**
 	 * Create the composite. Warnings suppressed for casting array lists.
@@ -42,23 +46,29 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	 * @param parent
 	 * @param style
 	 * @param targetArrayListOfDataToBeDisplayed
-	 * @param showRemoveButton
 	 */
-	public QuestionModificationComposite(final Composite parent, final int style) {
+	public QuestionModificationComposite(final Composite parent, final int style, int questionIndex, QuestionsPage questionsPage) {
 		super(parent, style | SWT.V_SCROLL);
 
+		setLayout(new GridLayout());
+		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		setExpandVertical(true);
 		setExpandHorizontal(true);
+		setAlwaysShowScrollBars(true);
 
-		this.answers = new ArrayList<Answer>();
-		this.btnList = new ArrayList<Button>();
+		this.questionsPage = questionsPage;
+		
+		this.questionIndex = questionIndex;
+		btnList = new ArrayList<Button>();
 
-		this.composite = new Composite(this, SWT.NONE);
-		this.composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		this.composite.setLayout(new GridLayout(1, false));
-
-		setContent(this.composite);
-		setMinSize(this.composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		composite = new Composite(this, SWT.NONE);
+		composite.setLayout(new GridLayout());
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		
+		setContent(composite);
+		
+		setLowestWidgetYAxisValue(0);
+		setMinHeight(109);
 	}
 	
 
@@ -69,37 +79,36 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	 * @param isEditable
 	 * @param templateIdentifier
 	 */
-	public void addAnswer(final Answer answer, final boolean isEditable) {
-		AnswerGroup groupForAnswer = new AnswerGroup((Composite) getContent(), SWT.NONE, answer, isEditable);
-		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 850, 50);
+	public void addAnswerUIElements(final int answerIndex) {
+		AnswerGroup groupForAnswer = new AnswerGroup(composite, SWT.NONE, answerIndex, questionIndex, questionsPage);
+		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 554, 50);
+		
 		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
-
 		setMinHeight(getLowestWidgetYAxisValue());
 	}
 
 	/**
 	 * To delete the answer
 	 *
-	 * @param answerToBeDeleted
+	 * @param answerIndex index of the answer to delete
 	 */
-	public void deleteAnswer(final Answer answerToBeDeleted) {
-		this.answers.remove(answerToBeDeleted);
-		this.btnList.clear();
+	public void removeAnswer(final int answerIndex) {
+		((QuestionInformationComposite) getParent()).removeAnswer(answerIndex);
+		
+		btnList.clear();
 		updateAnswerContainer();
 	}
 
 	public void updateAnswerContainer() {
-		final Composite contentOfThisScrolledComposite = (Composite) getContent();
-
-		for (final Control answerToDelete : contentOfThisScrolledComposite.getChildren()) {
+		for (final Control answerToDelete : composite.getChildren()) {
 			answerToDelete.dispose();
 		}
 
 		setLowestWidgetYAxisValue(0);
 		setMinHeight(getLowestWidgetYAxisValue());
 
-		for (final Answer answer : this.answers) {
-			addAnswer(answer, true); //change later
+		for(int i=0; i < IntegratorModel.getInstance().getQuestion(questionIndex).getAnswers().size(); i++) {
+			addAnswerUIElements(i);
 		}
 	}
 
@@ -127,14 +136,5 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	 */
 	public void setLowestWidgetYAxisValue(final int lowestWidgetYAxisValue) {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
-	}
-
-	
-
-	/**
-	 * @return the listOfAllAnswer
-	 */
-	public ArrayList<Answer> getAnswers() {
-		return this.answers;
 	}
 }

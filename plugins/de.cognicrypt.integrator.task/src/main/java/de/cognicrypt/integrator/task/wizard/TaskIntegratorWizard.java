@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
@@ -26,11 +27,13 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.omg.CORBA.FREE_MEM;
 
+import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.integrator.task.controllers.FileUtilities;
+import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class TaskIntegratorWizard extends Wizard {
@@ -59,13 +62,11 @@ public class TaskIntegratorWizard extends Wizard {
 		if(!IntegratorModel.getInstance().isGuidedModeChosen())
 			return taskInformation.checkNonGuidedFinish();
 	
-		if(IntegratorModel.getInstance().getIdentifiers().size() == 1) {
+		if(IntegratorModel.getInstance().getIdentifiers().size() == 1)
 			return taskInformation.checkMandatoryFields();
-		}
-			
+		
 		return super.canFinish();
 	}
-	
 	
 	/*
 	 * (non-Javadoc)
@@ -74,14 +75,12 @@ public class TaskIntegratorWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-
-		
 		File ressourceFolder = new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR);
 		
 		if(!ressourceFolder.exists()) {
-			//make ressource directory for Code Generation Templates if it doesn't exist
+			//make resource directory for Code Generation Templates if it doesn't exist
 			ressourceFolder.mkdirs();
-			initlocalResourceDir(); //initialize needed subfolders 
+			initlocalResourceDir(); // initialize needed sub-directories
 		}
 		
 		final IntegratorModel integratorModel = IntegratorModel.getInstance();
@@ -89,16 +88,27 @@ public class TaskIntegratorWizard extends Wizard {
 		integratorModel.setTask();
 		final FileUtilities fileUtilities = new FileUtilities();
 		Task task = integratorModel.getTask();
-		HashMap<String, File> crylTemplatesWithOption = integratorModel.getCryslTemplateFiles();
+
 		String fileWriteAttemptResult;
 		
 		if(integratorModel.isGuidedModeChosen()) {
-			fileWriteAttemptResult = fileUtilities.writeData();
+			
 			if (integratorModel.getIdentifiers().size() == 1) {
+				fileWriteAttemptResult = fileUtilities.writeData();
 				fileUtilities.writeJSONFile(new ArrayList<Question>());
 			}else {
-				final ArrayList<Question> questions =
-						integratorModel.getQuestions();
+				
+				if(Validator.checkForUnusedIdentifiers()) {
+					final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+					confirmationMessageBox.setMessage("A template was added but is not used. Do you want to generate the task anyway?");
+					confirmationMessageBox.setText("Warning: Unused Template");
+					final int response = confirmationMessageBox.open();
+					if (response == SWT.CANCEL) // abort
+						return false;
+				}
+				
+				fileWriteAttemptResult = fileUtilities.writeData();
+				final ArrayList<Question> questions = integratorModel.getQuestions();
 				fileUtilities.writeJSONFile(questions);
 			}
 		}else {
@@ -124,8 +134,8 @@ public class TaskIntegratorWizard extends Wizard {
 		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 
 		File resourceCCres = new File(Constants.ECLIPSE_LOC_RES_DIR);
 		
-		resourceCCTemp.mkdir(); //make local directory for Code Generation Templates
-		resourceCCres.mkdir();  ////make local directory for Resources for Code Generation Templates
+		resourceCCTemp.mkdir(); // make local directory for Code Generation Templates
+		resourceCCres.mkdir();  //// make local directory for Resources for Code Generation Templates
 		
 		File resourceCCaddres = new File(Constants.ECLIPSE_LOC_ADDRES_DIR);
 		File resourceCCcla = new File(Constants.ECLIPSE_LOC_CLA_DIR);
@@ -148,7 +158,6 @@ public class TaskIntegratorWizard extends Wizard {
 			writer.write("[]");
 			writer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

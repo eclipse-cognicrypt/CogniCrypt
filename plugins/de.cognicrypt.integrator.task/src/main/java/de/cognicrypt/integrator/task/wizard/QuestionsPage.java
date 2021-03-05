@@ -26,14 +26,17 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.widgets.QuestionDisplayComposite;
+import de.cognicrypt.integrator.task.widgets.QuestionInformationComposite;
+import de.cognicrypt.integrator.task.widgets.QuestionsDisplayComposite;
 
 public class QuestionsPage extends TaskIntegratorWizardPage {
+	
+	QuestionsDisplayComposite questionsDisplayComposite;
+	QuestionInformationComposite questionInformationComposite;
 	
 	public QuestionsPage() {
 		super(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS);
 	}
-	
 	
 	@Override
 	public void createControl(final Composite parent) {
@@ -44,16 +47,15 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
-		setCompositeToHoldGranularUIElements(new QuestionDisplayComposite(container, this));
+		questionsDisplayComposite = new QuestionsDisplayComposite(container, this);
 		
-		// fill the available space on the with the big composite
-		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		// fill the available space with the big composite
+		questionsDisplayComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		if (!TaskIntegratorWizard.class.isInstance(getWizard())) {
 			Activator.getDefault().logError(Constants.INSTANTIATED_BY_WRONG_WIZARD_ERROR);
 		}
 
-		final QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
 		final Button addQuestionBtn = new Button(container, SWT.NONE);
 		addQuestionBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		addQuestionBtn.setText(Constants.ADD_QUESTION);
@@ -62,17 +64,17 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				final int response = questionDialog.open();
 				final int questionID = IntegratorModel.getInstance().getQuestions().size();
-				if (response == Window.OK) {
-					final Question questionDetails = questionDialog.getQuestionDetails();
-					questionDetails.setId(questionID);
+				final Question questionDetails = new Question();
+				questionDetails.setQuestionText("");
+				questionDetails.setHelpText("");
+				questionDetails.setAnswers(new ArrayList<Answer>());
+				questionDetails.setId(questionID);
 
-					// Update the array list.
-					IntegratorModel.getInstance().getQuestions().add(questionDetails);
-					// rebuild the UI
-					getCompositeToHoldGranularUIElements().updateQuestionContainer();
-				}
+				// Update the array list.
+				IntegratorModel.getInstance().getQuestions().add(questionDetails);
+				// rebuild the UI
+				questionsDisplayComposite.updateQuestionContainer();
 			}
 		});
 	}
@@ -84,18 +86,25 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 	 */
 	public void checkPageComplete() {
 		
-		ArrayList<Question> questions = IntegratorModel.getInstance().getQuestions();
+		if(questionsDisplayComposite.getQuestionsInformationComposites().isEmpty())
+			return;
 		
-		HashSet<String> identifiers = new HashSet<>();
+		boolean isPageComplete = true;
 		
-		for(Question q : questions) {
-			for(Answer a : q.getAnswers()) {
-				if (a.getOption() != null || a.getOption().contentEquals(""))
-					identifiers.add(a.getOption());
+		// Iterate over all question composites and check if there is any error
+		for(QuestionInformationComposite questionInformationComposite : questionsDisplayComposite.getQuestionsInformationComposites()) {
+			if (questionInformationComposite.questionDec.getDescriptionText().contains(Constants.ERROR)
+					|| questionInformationComposite.answersDec.getDescriptionText().contains(Constants.ERROR)) {
+				isPageComplete = false;
+				break;
 			}
+			
 		}
 		
-		// Set the page to incomplete if amount of answers is at least amount of templates
-		setPageComplete(identifiers.size() >= IntegratorModel.getInstance().getIdentifiers().size());
+		setPageComplete(isPageComplete);
+	}
+	
+	public QuestionsDisplayComposite getQuestionsDisplayComposite() {
+		return questionsDisplayComposite;
 	}
 }

@@ -10,22 +10,26 @@
  */
 package de.cognicrypt.integrator.task.wizard;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+
+import de.cognicrypt.codegenerator.question.Answer;
+import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.TaskInformationComposite;
-import de.cognicrypt.integrator.task.widgets.QuestionDisplayComposite;
+import de.cognicrypt.integrator.task.widgets.QuestionsDisplayComposite;
 
 public class TaskIntegratorWizardPage extends WizardPage {
 
-	private TaskInformationComposite compositeTaskInformation;
-	private QuestionDisplayComposite compositeToHoldGranularUIElements;
+	private TaskInformationComposite taskInformationComposite;
 	
 	/**
 	 * Create the wizard.
@@ -48,7 +52,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		final Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 		
-		compositeTaskInformation = new TaskInformationComposite(container, SWT.NONE, this);
+		taskInformationComposite = new TaskInformationComposite(container, SWT.NONE, this);
 
 		// make the page layout two-column
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -84,8 +88,30 @@ public class TaskIntegratorWizardPage extends WizardPage {
 			if (page.getName().equals(Constants.PAGE_TASK_INFORMATION)) {
 				final IWizardPage nextPage = super.getNextPage();
 				if (nextPage instanceof QuestionsPage) {
+					
+					if(IntegratorModel.getInstance().getQuestions().isEmpty()) {
+						final Question firstQuestion = new Question();
+						firstQuestion.setQuestionText("");
+						firstQuestion.setHelpText("");
+						
+						ArrayList<Answer> answers = new ArrayList<>();
+						for(String id : IntegratorModel.getInstance().getIdentifiers()) {
+							Answer a = new Answer();
+							a.setOption(id);
+							a.setValue("");
+							answers.add(a);
+						}
+						
+						answers.get(0).setDefaultAnswer(true);
+						
+						firstQuestion.setAnswers(answers);
+						firstQuestion.setId(0);
+						
+						IntegratorModel.getInstance().getQuestions().add(firstQuestion);
+					}
+					
 					final QuestionsPage questionsPage = (QuestionsPage) nextPage;
-					questionsPage.getCompositeToHoldGranularUIElements().updateQuestionContainer();
+					questionsPage.getQuestionsDisplayComposite().updateQuestionContainer();
 				}
 			}
 		}catch (final Exception ex) {
@@ -101,7 +127,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 	 * Is used to determine whether wizard can flip to next page
 	 */
 	public void checkPageComplete() {
-		if(compositeTaskInformation == null)
+		if(taskInformationComposite == null)
 			return;
 		
 		boolean mandatoryFields = checkMandatoryFields();
@@ -120,34 +146,15 @@ public class TaskIntegratorWizardPage extends WizardPage {
 	public boolean checkNonGuidedFinish() {
 		
 		boolean mandatoryFields = checkMandatoryFields();
-		boolean errorOnJSONFile = compositeTaskInformation.getCompJSON().getDecFilePath().getDescriptionText().contains(Constants.ERROR);		
-		
-		// TODO parse JSON and check that all templates are added
+		boolean errorOnJSONFile = taskInformationComposite.getCompJSON().getDecFilePath().getDescriptionText().contains(Constants.ERROR);		
 		
 		return mandatoryFields && !errorOnJSONFile;
 	}
 	
 	public boolean checkMandatoryFields() {
-		boolean errorOnIconFile = compositeTaskInformation.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
-		boolean errorOnTemplates = compositeTaskInformation.getDecTemplates().getDescriptionText().contains(Constants.ERROR);
+		boolean errorOnIconFile = taskInformationComposite.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
+		boolean errorOnTemplates = taskInformationComposite.getDecTemplates().getDescriptionText().contains(Constants.ERROR);
 		
 		return !errorOnTemplates && !errorOnIconFile;
 	}	
-
-
-	/**
-	 * @return the compositeToHoldGranularUIElements
-	 */
-	public QuestionDisplayComposite getCompositeToHoldGranularUIElements() {
-		return this.compositeToHoldGranularUIElements;
-	}
-
-	/**
-	 * The composite is maintained as a global variable to have access to it as part of the page object.
-	 *
-	 * @param compositeToHoldGranularUIElements the compositeToHoldGranularUIElements to set
-	 */
-	public void setCompositeToHoldGranularUIElements(final QuestionDisplayComposite compositeToHoldGranularUIElements) {
-		this.compositeToHoldGranularUIElements = compositeToHoldGranularUIElements;
-	}
 }

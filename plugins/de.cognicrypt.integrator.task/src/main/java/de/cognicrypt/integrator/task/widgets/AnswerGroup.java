@@ -11,89 +11,91 @@ import java.util.ArrayList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
+
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
+import de.cognicrypt.integrator.task.wizard.QuestionsPage;
 
 public class AnswerGroup extends Group {
 
-	public Text txtAnswer;
-	public Combo possibleIdentifiers;
-	private Answer answer;
-	public ArrayList<Answer> answers;
-
+	private Text txtAnswer;
+	private Combo possibleIdentifiers;
+	
 	/**
 	 * Create the composite.
 	 *
 	 * @param parent
 	 * @param style
 	 */
-	public AnswerGroup(final Composite parent, final int style, final Answer answerParam, final boolean isEditable) {
+	public AnswerGroup(final Composite parent, final int style, final int answerIndex, final int questionIndex, QuestionsPage questionsPage) {
 		super(parent, style);
-		setAnswer(answerParam);
-
-		this.txtAnswer = new Text(this, SWT.BORDER);
-
-		this.possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
-		this.possibleIdentifiers.setItems(IntegratorModel.getInstance().getIdentifiers().toArray(new String[0])); 
-		if (this.answer.getValue() != null) {
-			this.txtAnswer.setText(this.answer.getValue());
+		
+		setLayout(new GridLayout(4, true));
+		
+		Answer answer = IntegratorModel.getInstance().getAnswer(questionIndex, answerIndex);
+		
+		txtAnswer = new Text(this, SWT.BORDER);
+		txtAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
+		if (answer.getValue() != null) {
+			txtAnswer.setText(answer.getValue());
 		}
-		this.txtAnswer.addFocusListener(new FocusAdapter() {
+		
+		txtAnswer.addModifyListener(new ModifyListener() {
 
 			@Override
-			public void focusLost(final FocusEvent e) {
-				AnswerGroup.this.answer.setValue(AnswerGroup.this.txtAnswer.getText());
+			public void modifyText(ModifyEvent e) {
+				answer.setValue(txtAnswer.getText());
+				((QuestionInformationComposite) parent.getParent().getParent()).checkAnswersDec();
 			}
+			
 		});
-		this.txtAnswer.setEditable(isEditable);
+
+		possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
+		possibleIdentifiers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		possibleIdentifiers.setItems(IntegratorModel.getInstance().getIdentifiers().toArray(new String[0])); 
 		
-		if (this.answer.getOption() != null) {
-			String selected = this.answer.getOption();
-			this.possibleIdentifiers.select(IntegratorModel.getInstance().getIdentifiers().indexOf(selected));
+		if (answer.getOption() != null) {
+			String selected = answer.getOption();
+			possibleIdentifiers.select(IntegratorModel.getInstance().getIdentifiers().indexOf(selected));
 		}
 
-		this.possibleIdentifiers.addSelectionListener(new SelectionListener() {
+		possibleIdentifiers.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AnswerGroup.this.answer.setOption(possibleIdentifiers.getText());
-				
+				answer.setOption(possibleIdentifiers.getText());
 			}
 			
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				AnswerGroup.this.answer.setOption(possibleIdentifiers.getText());
+				answer.setOption(possibleIdentifiers.getText());
 			}
 		});
-
-		this.possibleIdentifiers.setEnabled(isEditable);
+		
 		
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
-		
+		btnDefaultAnswer.setLayoutData(new GridData(SWT.NONE, SWT.CENTER, true, true));
 	
-		if (isEditable) {
-			this.txtAnswer.setBounds(13, 9, 486, 29);
-			this.possibleIdentifiers.setBounds(511, 6, 100, 29);
-			btnDefaultAnswer.setBounds(623, 14, 128, 27);
-
-		}else {
-			this.txtAnswer.setBounds(3, 3, 195, 29);
-			this.possibleIdentifiers.setBounds(210, 3, 100, 25);
-			btnDefaultAnswer.setBounds(322, 7, 128, 29);
-		}
-		final ArrayList<Button> btnList = ((QuestionModificationComposite) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList();
+		final ArrayList<Button> btnList = ((QuestionModificationComposite) parent.getParent()).getDefaulAnswerBtnList();
 		btnList.add(btnDefaultAnswer);
 		btnDefaultAnswer.setText("Default Answer");
-		if (this.answer.isDefaultAnswer()) {
+		if (answer.isDefaultAnswer()) {
 			btnDefaultAnswer.setSelection(true);
 		}
 		btnDefaultAnswer.setToolTipText("The answer that will be automatically selected when question appears for the first time");
@@ -106,7 +108,7 @@ public class AnswerGroup extends Group {
 				/**
 				 * When user changes the default answer the following loop removes the previous selection and then current selected default answer value is set to true
 				 */
-				for (final Button btn : ((QuestionModificationComposite) btnDefaultAnswer.getParent().getParent().getParent()).getDefaulAnswerBtnList()) {
+				for (final Button btn : ((QuestionModificationComposite) parent.getParent()).getDefaulAnswerBtnList()) {
 					btn.setSelection(false);
 				}
 				btnDefaultAnswer.setSelection(true);
@@ -114,50 +116,34 @@ public class AnswerGroup extends Group {
 				/**
 				 * sets the default answer to true for the current answer and for all other answer to false
 				 */
-				for (final Answer ans : ((QuestionModificationComposite) btnDefaultAnswer.getParent().getParent().getParent()).getAnswers()) {
-					if (ans.equals(AnswerGroup.this.answer)) {
-						AnswerGroup.this.answer.setDefaultAnswer(true);
+				for (final Answer a : IntegratorModel.getInstance().getQuestions().get(questionIndex).getAnswers()) {
+					if (a.equals(answer)) {
+						answer.setDefaultAnswer(true);
 					} else {
-						ans.setDefaultAnswer(false);
+						a.setDefaultAnswer(false);
 					}
 				}
 
 			}
 		});
+		
+		final Button btnRemove = new Button(this, SWT.NONE);
+		btnRemove.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true));
+		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
+		btnRemove.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_DELETE));
+		btnRemove.addSelectionListener(new SelectionAdapter() {
 
-		btnDefaultAnswer.setEnabled(isEditable);
-		if (isEditable) {
-			final Button btnRemove = new Button(this, SWT.NONE);
-			btnRemove.setBounds(763, 6, 80, 31);
-			btnRemove.setText("Remove");
-			btnRemove.addSelectionListener(new SelectionAdapter() {
-
-				@Override
-				public void widgetSelected(final SelectionEvent e) {
-						((QuestionModificationComposite) btnRemove.getParent().getParent().getParent()).deleteAnswer(AnswerGroup.this.answer);
-						btnList.remove(btnDefaultAnswer);
-				}
-			});
-		}
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				((QuestionModificationComposite) parent.getParent()).removeAnswer(answerIndex);
+				btnList.remove(btnDefaultAnswer);
+			}
+		});
 
 	}
 
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
-	}
-
-	/**
-	 * @return the answer
-	 */
-	public Answer getAnswer() {
-		return this.answer;
-	}
-
-	/**
-	 * @param answer the answer to set
-	 */
-	public void setAnswer(final Answer answer) {
-		this.answer = answer;
 	}
 }

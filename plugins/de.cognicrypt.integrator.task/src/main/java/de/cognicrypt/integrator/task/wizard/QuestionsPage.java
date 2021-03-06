@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -52,10 +53,6 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 		// fill the available space with the big composite
 		questionsDisplayComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
-		if (!TaskIntegratorWizard.class.isInstance(getWizard())) {
-			Activator.getDefault().logError(Constants.INSTANTIATED_BY_WRONG_WIZARD_ERROR);
-		}
-
 		final Button addQuestionBtn = new Button(container, SWT.NONE);
 		addQuestionBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
 		addQuestionBtn.setText(Constants.ADD_QUESTION);
@@ -65,16 +62,21 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final int questionID = IntegratorModel.getInstance().getQuestions().size();
-				final Question questionDetails = new Question();
-				questionDetails.setQuestionText("");
-				questionDetails.setHelpText("");
-				questionDetails.setAnswers(new ArrayList<Answer>());
-				questionDetails.setId(questionID);
+				
+				if (questionID == 0) {
+					final Question questionDetails = new Question();
+					questionDetails.setQuestionText("");
+					questionDetails.setHelpText("");
+					questionDetails.setAnswers(new ArrayList<Answer>());
+					questionDetails.setId(questionID);
 
-				// Update the array list.
-				IntegratorModel.getInstance().getQuestions().add(questionDetails);
-				// rebuild the UI
-				questionsDisplayComposite.updateQuestionContainer();
+					// Update the array list.
+					IntegratorModel.getInstance().getQuestions().add(questionDetails);
+					// rebuild the UI
+					questionsDisplayComposite.updateQuestionContainer();
+				} else {
+					MessageDialog.openError(getShell(), "Warning", "Multiple questions are currently not supported.");
+				}
 			}
 		});
 	}

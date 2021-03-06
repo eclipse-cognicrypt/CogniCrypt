@@ -54,9 +54,8 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		
 		taskInformationComposite = new TaskInformationComposite(container, SWT.NONE, this);
 
-		// make the page layout two-column
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		container.setLayout(new GridLayout(2, false));
+		container.setLayout(new GridLayout(1, false));
 	}
 
 	

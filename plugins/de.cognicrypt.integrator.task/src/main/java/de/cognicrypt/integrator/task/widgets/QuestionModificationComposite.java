@@ -14,6 +14,7 @@ import java.util.SortedSet;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -33,7 +34,6 @@ public class QuestionModificationComposite extends ScrolledComposite {
 
 	private QuestionsPage questionsPage;
 	
-	private int lowestWidgetYAxisValue;
 	private final Composite composite;
 
 	private final int questionIndex;
@@ -50,41 +50,33 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	public QuestionModificationComposite(final Composite parent, final int style, int questionIndex, QuestionsPage questionsPage) {
 		super(parent, style | SWT.V_SCROLL);
 
-		setLayout(new GridLayout());
-		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		setExpandVertical(true);
-		setExpandHorizontal(true);
-		setAlwaysShowScrollBars(true);
-
 		this.questionsPage = questionsPage;
 		
 		this.questionIndex = questionIndex;
 		btnList = new ArrayList<Button>();
 
 		composite = new Composite(this, SWT.NONE);
-		composite.setLayout(new GridLayout());
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		setContent(composite);
 		
-		setLowestWidgetYAxisValue(0);
-		setMinHeight(109);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		composite.setLayout(layout);
 	}
 	
 
 	/**
 	 * Creates the widgets in which user can give answer details
 	 *
-	 * @param answer
-	 * @param isEditable
-	 * @param templateIdentifier
+	 * @param answerIndex
 	 */
-	public void addAnswerUIElements(final int answerIndex) {
-		AnswerGroup groupForAnswer = new AnswerGroup(composite, SWT.NONE, answerIndex, questionIndex, questionsPage);
-		groupForAnswer.setBounds(Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS, getLowestWidgetYAxisValue(), 554, 50);
-		
-		setLowestWidgetYAxisValue(getLowestWidgetYAxisValue() + 50);
-		setMinHeight(getLowestWidgetYAxisValue());
+	private void addAnswerUIElements(final int answerIndex) {
+		AnswerGroup a = new AnswerGroup(composite, SWT.NONE, answerIndex, questionIndex, questionsPage);
+		a.setLayout(new GridLayout(5, false));
+		a.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		Point size = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		composite.setSize((int) (2 * size.x), size.y);
 	}
 
 	/**
@@ -104,9 +96,6 @@ public class QuestionModificationComposite extends ScrolledComposite {
 			answerToDelete.dispose();
 		}
 
-		setLowestWidgetYAxisValue(0);
-		setMinHeight(getLowestWidgetYAxisValue());
-
 		for(int i=0; i < IntegratorModel.getInstance().getQuestion(questionIndex).getAnswers().size(); i++) {
 			addAnswerUIElements(i);
 		}
@@ -122,19 +111,5 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
-	}
-
-	/**
-	 * @return the lowestWidgetYAxisValue
-	 */
-	public int getLowestWidgetYAxisValue() {
-		return this.lowestWidgetYAxisValue;
-	}
-
-	/**
-	 * @param lowestWidgetYAxisValue the lowestWidgetYAxisValue to set
-	 */
-	public void setLowestWidgetYAxisValue(final int lowestWidgetYAxisValue) {
-		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_SMALLER_UI_ELEMENTS;
 	}
 }

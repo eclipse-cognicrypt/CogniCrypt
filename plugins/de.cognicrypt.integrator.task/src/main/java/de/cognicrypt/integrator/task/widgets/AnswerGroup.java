@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.ISharedImages;
@@ -44,17 +45,14 @@ public class AnswerGroup extends Group {
 	 */
 	public AnswerGroup(final Composite parent, final int style, final int answerIndex, final int questionIndex, QuestionsPage questionsPage) {
 		super(parent, style);
-		
-		setLayout(new GridLayout(4, true));
-		
+
 		Answer answer = IntegratorModel.getInstance().getAnswer(questionIndex, answerIndex);
 		
 		txtAnswer = new Text(this, SWT.BORDER);
-		txtAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
-		if (answer.getValue() != null) {
+		txtAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+
+		if (answer.getValue() != null)
 			txtAnswer.setText(answer.getValue());
-		}
 		
 		txtAnswer.addModifyListener(new ModifyListener() {
 
@@ -67,7 +65,6 @@ public class AnswerGroup extends Group {
 		});
 
 		possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);
-		possibleIdentifiers.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		possibleIdentifiers.setItems(IntegratorModel.getInstance().getIdentifiers().toArray(new String[0])); 
 		
 		if (answer.getOption() != null) {
@@ -90,8 +87,7 @@ public class AnswerGroup extends Group {
 		
 		
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
-		btnDefaultAnswer.setLayoutData(new GridData(SWT.NONE, SWT.CENTER, true, true));
-	
+
 		final ArrayList<Button> btnList = ((QuestionModificationComposite) parent.getParent()).getDefaulAnswerBtnList();
 		btnList.add(btnDefaultAnswer);
 		btnDefaultAnswer.setText("Default Answer");
@@ -127,8 +123,10 @@ public class AnswerGroup extends Group {
 			}
 		});
 		
+		final Label spacer = new Label(this, SWT.HORIZONTAL);
+	    spacer.setLayoutData(new GridData(20, SWT.NONE));
+		
 		final Button btnRemove = new Button(this, SWT.NONE);
-		btnRemove.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true));
 		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
 		btnRemove.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_DELETE));
 		btnRemove.addSelectionListener(new SelectionAdapter() {

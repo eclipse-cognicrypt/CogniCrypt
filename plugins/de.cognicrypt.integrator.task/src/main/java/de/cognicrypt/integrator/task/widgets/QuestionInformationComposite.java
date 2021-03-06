@@ -149,15 +149,15 @@ public class QuestionInformationComposite extends Composite {
 			}
 		});
 		btnAddAnswer.setText("Add Answer");
-		
 		btnAddAnswer.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, true, true));
+		
 
 		answersComposite = new QuestionModificationComposite(this, SWT.NONE, questionIndex, questionsPage);
-
+		GridData answersGrid = new GridData(SWT.FILL, SWT.FILL, true, true);
+		answersGrid.heightHint = 99;
+		answersComposite.setLayoutData(answersGrid);
 		
-		for(int i=0; i < q.getAnswers().size(); i++) {
-			answersComposite.addAnswerUIElements(i);
-		}
+		answersComposite.updateAnswerContainer();
 		
 		answersDec = new ControlDecoration(lblAnswers, SWT.TOP | SWT.RIGHT);
 		answersDec.setShowOnlyOnFocus(false);
@@ -189,7 +189,7 @@ public class QuestionInformationComposite extends Composite {
 			a.setDefaultAnswer(true);
 		
 		IntegratorModel.getInstance().getQuestions().get(questionIndex).getAnswers().add(a);
-		answersComposite.addAnswerUIElements(answerIndex);
+		answersComposite.updateAnswerContainer();
 		
 		checkAnswersDec();
 	}

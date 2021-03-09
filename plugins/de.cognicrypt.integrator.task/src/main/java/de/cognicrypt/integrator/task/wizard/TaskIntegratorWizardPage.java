@@ -137,7 +137,15 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		// Set the page to incomplete if the validation failed on any of the text boxes
 		setPageComplete(mandatoryFields && guidedMode && multipleTemplatesExist);
 	}
-		
+	
+	/**
+	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
+	 * Is used to determine whether wizard can finish early
+	 */
+	public boolean checkImportModeFinish() {		
+		return !taskInformationComposite.getImportZIP().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
+	}
+	
 	/**
 	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
 	 * Is used to determine whether wizard can finish early
@@ -147,7 +155,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		boolean mandatoryFields = checkMandatoryFields();
 		boolean errorOnJSONFile = taskInformationComposite.getCompJSON().getDecFilePath().getDescriptionText().contains(Constants.ERROR);		
 		
-		return mandatoryFields && !errorOnJSONFile;
+		return (mandatoryFields && !errorOnJSONFile);
 	}
 	
 	public boolean checkMandatoryFields() {

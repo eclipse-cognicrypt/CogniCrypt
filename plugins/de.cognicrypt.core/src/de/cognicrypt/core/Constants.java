@@ -335,6 +335,7 @@ public class Constants {
 	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Questions";
 	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Icon";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
+	public static final String WIDGET_DATA_LOCATION_OF_IMPORT_FILE = "ImportFile";
 
 	// Default bounds for the composites
 	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1050, 600);
@@ -614,6 +615,8 @@ public class Constants {
 	public final static String ECLIPSE_LOC_TASKDESC_DIR = ECLIPSE_LOC_RES_DIR + "/TaskDesc";
 	public final static String ECLIPSE_LOC_TASKS_DIR = ECLIPSE_LOC_RES_DIR + "/Tasks";
 	public final static String ECLIPSE_LOC_XSL_DIR = ECLIPSE_LOC_TASKS_DIR + "/XSLTemplates";
+	public final static String ECLIPSE_LOC_EXPORT_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/ExportableTasks";
+	
 	public final static String customjsonTaskFile = ECLIPSE_LOC_TASKS_DIR + "/tasks.json";
 	
 	// define the max java version before which plugin works.

@@ -10,13 +10,17 @@ package de.cognicrypt.integrator.task.wizard;
 import java.awt.image.RescaleOp;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -59,6 +63,10 @@ public class TaskIntegratorWizard extends Wizard {
 	@Override
 	public boolean canFinish() {
 		
+		if(IntegratorModel.getInstance().isImportModeChosen()) {
+			return taskInformation.checkImportModeFinish();
+		}
+		
 		if(!IntegratorModel.getInstance().isGuidedModeChosen())
 			return taskInformation.checkNonGuidedFinish();
 	
@@ -84,12 +92,46 @@ public class TaskIntegratorWizard extends Wizard {
 		}
 		
 		final IntegratorModel integratorModel = IntegratorModel.getInstance();
+		final FileUtilities fileUtilities = new FileUtilities();
+		
+		String fileWriteAttemptResult;
+		Task task;
+		
+		if(integratorModel.isImportModeChosen()) {
+			fileUtilities.unzipFile();
+			fileWriteAttemptResult = fileUtilities.writeDataImportMode();
+			if (fileWriteAttemptResult.equals("")) {
+			task = integratorModel.getTask();
+			task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+			task.setCodeGen(CodeGenerators.CrySL);
+			fileUtilities.writeTaskToJSONFile(task);
+			return true;
+			}else {
+				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
+				errorBox.setText("Problems with the provided ZIP (Most likly has a wrong stucture).");
+				errorBox.setMessage(fileWriteAttemptResult);
+				errorBox.open();
+				return false;
+			}
+		}else{
 		
 		integratorModel.setTask();
-		final FileUtilities fileUtilities = new FileUtilities();
-		Task task = integratorModel.getTask();
+		
+		task = integratorModel.getTask();
 
-		String fileWriteAttemptResult;
+		integratorModel.setLocationOfExportFile(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + ".zip"));
+		
+		File taskDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName());
+		taskDir.mkdir();
+		
+		File templateDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/template");
+		templateDir.mkdir();
+		
+		File resourceDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/res");
+		resourceDir.mkdir();
+		
+		
+		
 		
 		if(integratorModel.isGuidedModeChosen()) {
 			
@@ -115,10 +157,30 @@ public class TaskIntegratorWizard extends Wizard {
 			fileWriteAttemptResult = fileUtilities.writeDataNonGuidedMode();
 		}
 		
+
+		
+		
 		if (fileWriteAttemptResult.equals("")) {
 			task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
 			task.setCodeGen(CodeGenerators.CrySL);
 			fileUtilities.writeTaskToJSONFile(task);
+			
+			
+			try {
+				String sourceFile = Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName();
+		        FileOutputStream fos = new FileOutputStream(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + ".zip");
+		        ZipOutputStream zipOut = new ZipOutputStream(fos);
+		        File fileToZip = new File(sourceFile);
+	
+		        fileUtilities.zipFile(fileToZip, fileToZip.getName(), zipOut);
+		        zipOut.close();
+		        fos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		        
+		        
+		        
 			return true;
 		}else {
 			final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
@@ -127,6 +189,8 @@ public class TaskIntegratorWizard extends Wizard {
 			errorBox.open();
 			return false;
 		}
+		
+		}
 	}
 
 	
@@ -134,8 +198,10 @@ public class TaskIntegratorWizard extends Wizard {
 		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 
 		File resourceCCres = new File(Constants.ECLIPSE_LOC_RES_DIR);
 		
+		
 		resourceCCTemp.mkdir(); // make local directory for Code Generation Templates
 		resourceCCres.mkdir();  //// make local directory for Resources for Code Generation Templates
+		
 		
 		File resourceCCaddres = new File(Constants.ECLIPSE_LOC_ADDRES_DIR);
 		File resourceCCcla = new File(Constants.ECLIPSE_LOC_CLA_DIR);
@@ -144,7 +210,7 @@ public class TaskIntegratorWizard extends Wizard {
 		File resourceCCtasks = new File(Constants.ECLIPSE_LOC_TASKS_DIR);
 		File resourceCCXSL = new File(Constants.ECLIPSE_LOC_XSL_DIR);
 		File resourceCCtasksjson = new File(Constants.customjsonTaskFile);
-		
+		File resourceExport = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
 		
 		resourceCCaddres.mkdir();
 		resourceCCcla.mkdir();
@@ -152,6 +218,7 @@ public class TaskIntegratorWizard extends Wizard {
 		resourceCCtaskdesc.mkdir();
 		resourceCCtasks.mkdir();
 		resourceCCXSL.mkdir();
+		resourceExport.mkdir();
 		try {
 			resourceCCtasksjson.createNewFile();
 			BufferedWriter writer = new BufferedWriter(new FileWriter(resourceCCtasksjson));

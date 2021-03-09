@@ -32,6 +32,7 @@ import org.eclipse.osgi.container.namespaces.EclipsePlatformNamespace;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -61,7 +62,7 @@ public class TaskInformationComposite extends Composite {
 	private final ControlDecoration templatesDec;
 	
 	private final List templateList;
-	private final FileBrowserComposite compJSON, compPNG;
+	private final FileBrowserComposite compJSON, compPNG, compImport;
 
 	private final Button btnRemoveTemplate;
 
@@ -196,6 +197,15 @@ public class TaskInformationComposite extends Composite {
 				"Select JSON file that contains the high-level questions", wizardPage);
 		compJSON.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
+		final Button btnImportMode = new Button(this, SWT.CHECK);
+		btnImportMode.setText("Import Mode");
+		
+		compImport = new FileBrowserComposite(this, SWT.NONE,
+				Constants.WIDGET_DATA_LOCATION_OF_IMPORT_FILE, new String[] { "*.zip" },
+				"Select ZIP file that contains the task information", wizardPage);
+		compImport.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		compImport.setVisible(false);
+		
 		requestLayout();
 
 		btnGuidedMode.addSelectionListener(new SelectionAdapter() {
@@ -219,6 +229,20 @@ public class TaskInformationComposite extends Composite {
 				wizardPage.checkPageComplete();
 			}
 		});
+		
+		btnImportMode.addSelectionListener(new SelectionAdapter(){
+			
+			@Override
+			public void widgetSelected(final SelectionEvent e) {
+				final boolean tempSelectionStatus = btnImportMode.getSelection();
+				compImport.setVisible(tempSelectionStatus);
+				compositeTaskInfo.setVisible(!tempSelectionStatus);
+				compositeFileImports.setVisible(!tempSelectionStatus);
+				
+				IntegratorModel.getInstance().setImportModeChosen(tempSelectionStatus);
+			}
+		});
+		
 	}
 
 	@Override
@@ -234,6 +258,11 @@ public class TaskInformationComposite extends Composite {
 		return compJSON;
 	}
 
+	public FileBrowserComposite getImportZIP() {
+		return compImport;
+	}
+
+	
 	public TaskIntegratorWizardPage getLocalContainerPage() {
 		return wizardPage;
 	}

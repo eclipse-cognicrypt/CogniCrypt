@@ -10,10 +10,13 @@
  */
 package de.cognicrypt.integrator.task.controllers;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,7 +31,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -114,38 +121,74 @@ public class FileUtilities {
 	}
 	
 
-	/**
-	 * For the sake of reusability.
-	 *
-	 * @param fileName
-	 */
-	private void appendFileErrors(final String fileName) {
-		getErrors().append("The contents of the file ");
-		getErrors().append(fileName);
-		getErrors().append(" are invalid.");
-		getErrors().append("\n");
+	public String writeDataImportMode() {
+		String taskName = integratorModel.getImportFile().getName().replace(".zip", "");
+		integratorModel.setTaskName(taskName);
+		File iconLocation = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/res/" + taskName + ".png");
+		if(iconLocation.exists()) {
+			integratorModel.setLocationOfIconFile(iconLocation);
+			copyImage(iconLocation);
+		}else {
+			getErrors().append("ZIP invalide (Icon File not found) \n");
+		}
+		File jsonLocation = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/res/" + taskName + ".json");
+		if(iconLocation.exists()) {
+			integratorModel.setLocationOfIconFile(jsonLocation);
+			copyJSON(jsonLocation);
+		}else {
+			getErrors().append("ZIP invalide (Question JSON File not found) \n");
+		}
+		
+		File[] templates = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/template").listFiles();
+		if (templates != null) {
+			for (File f : templates) {
+				String destName = f.getName();
+				File destDir = new File(Constants.ECLIPSE_LOC_TEMP_DIR, destName);
+				destDir.mkdir();
+				File templateFile = f.listFiles()[0];
+				File dest = new File(destDir, integratorModel.getTrimmedTaskName() + ".java");
+				try {
+					Files.copy(templateFile.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING,
+							StandardCopyOption.COPY_ATTRIBUTES);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+			}
+		}else {
+			getErrors().append("ZIP invalide (Template Files not found) \n");
+		}
+		deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName));
+		integratorModel.setTask();
+		return getErrors().toString();
 	}	
 	
 	public void copyTemplate(final File existingFileLocation, String option) throws IOException {
 		File parentFolder = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
+		File parentFolder2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/template");
 		File templateFolder = new File(parentFolder, IntegratorModel.getInstance().getTrimmedTaskName() + option);
+		File templateFolder2 = new File(parentFolder2, IntegratorModel.getInstance().getTrimmedTaskName() + option);
 		
 		if (!templateFolder.isDirectory()) {
 			templateFolder.mkdir();
+			templateFolder2.mkdir();
 		}
 
-		File targetDirectory = new File(templateFolder, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+		File targetDirectory1 = new File(templateFolder, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+		File targetDirectory2 = new File(templateFolder2, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+
 		
-		Path path = existingFileLocation.toPath();
-		Path path2 = targetDirectory.toPath();
+		Path path1 = existingFileLocation.toPath();
+		Path path2 = targetDirectory1.toPath();
+		Path path3 = targetDirectory2.toPath();
 		
-		Activator.getDefault().logError("Copy " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
+		Activator.getDefault().logError("Copy " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory1.getAbsolutePath());
 			
-		Files.copy(path, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+		Files.copy(path1, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+		
+		Files.copy(path1, path3, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);		
 	}
 	
-	
-
 	/**
 	 * Copy the image file to the appropriate location.
 	 *
@@ -153,14 +196,17 @@ public class FileUtilities {
 	 */
 	public void copyImage(final File existingFileLocation) {
 			File targetDirectory = null;
+			File targetDirectory2 = null;
 			try {
 				if (existingFileLocation.getPath().endsWith(Constants.PNG_EXTENSION)) {
 					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.PNG_EXTENSION);
+					targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res", IntegratorModel.getInstance().getTrimmedTaskName() + Constants.PNG_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
 				Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
 				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+				Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
 
 			} catch (final Exception e) {
 				Activator.getDefault().logError(e);
@@ -176,24 +222,29 @@ public class FileUtilities {
 	 * @param existingFileLocation
 	 */
 	public void copyJSON(final File existingFileLocation) {
-			File targetDirectory = null;
-			try {
-				if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-					targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
-				} else {
-					throw new Exception("Unknown file type.");
-				}
-				Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
-				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-
-			} catch (final Exception e) {
-				Activator.getDefault().logError(e);
-				getErrors().append("There was a problem copying file ");
-				getErrors().append(existingFileLocation.getName());
-				getErrors().append("\n");
+		File targetDirectory = null;
+		File targetDirectory2 = null;
+		try {
+			if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
+				targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res", IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
+			} else {
+				throw new Exception("Unknown file type.");
 			}
+			Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
+			Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+			Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e);
+			getErrors().append("There was a problem copying file ");
+			getErrors().append(existingFileLocation.getName());
+			getErrors().append("\n");
+		}
 	}
+
 	
+
 	/**
 	 * Update the task.json file with the new Task.
 	 *
@@ -218,14 +269,18 @@ public class FileUtilities {
 			gson.toJson(tasks, new TypeToken<List<Task>>() {
 			}.getType(), writer);
 			writer.close();
+			
+			writer = new BufferedWriter(
+					new FileWriter(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res/task.json")));
+			gson.toJson(tasks, new TypeToken<List<Task>>() {
+			}.getType(), writer);
+			writer.close();
 
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
 			getErrors().append("There was a problem updating the task file.\n");
 		}
 	}
-
-
 
 	/**
 	 * @param questions listOfAllQuestions
@@ -242,6 +297,10 @@ public class FileUtilities {
 		final File jsonFile = new File(
 				Constants.ECLIPSE_LOC_TASKDESC_DIR,
 				IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
+		
+		final File jsonFile2 = new File(
+				Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res",
+				IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
 
 		try {
 			final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
@@ -254,6 +313,12 @@ public class FileUtilities {
 			// write the data into the .json file
 			writerForJsonFile.write(gson.toJson(pages));
 			writerForJsonFile.close();
+			
+			final FileWriter writerForJsonFile2 = new FileWriter(jsonFile2);
+
+			// write the data into the .json file
+			writerForJsonFile2.write(gson.toJson(pages));
+			writerForJsonFile2.close();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
@@ -262,6 +327,96 @@ public class FileUtilities {
 		}
 	}
 
+	
+	public void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+		if (fileToZip.isHidden()) {
+			return;
+		}
+		if (fileToZip.isDirectory()) {
+			if (fileName.endsWith("/")) {
+				zipOut.putNextEntry(new ZipEntry(fileName));
+				zipOut.closeEntry();
+			} else {
+				zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+				zipOut.closeEntry();
+			}
+			File[] children = fileToZip.listFiles();
+			for (File childFile : children) {
+				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+			}
+			return;
+		}
+		FileInputStream fis = new FileInputStream(fileToZip);
+		ZipEntry zipEntry = new ZipEntry(fileName);
+		zipOut.putNextEntry(zipEntry);
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zipOut.write(bytes, 0, length);
+		}
+		fis.close();
+	}
+
+	public void unzipFile() {
+		String fileZip = IntegratorModel.getInstance().getImportFile().toString();
+		File destDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
+		byte[] buffer = new byte[1024];
+		try {
+			ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+			ZipEntry zipEntry = zis.getNextEntry();
+			while (zipEntry != null) {
+				File newFile = newFile(destDir, zipEntry);
+				if (zipEntry.isDirectory()) {
+					if (!newFile.isDirectory() && !newFile.mkdirs()) {
+						throw new IOException("Failed to create directory " + newFile);
+					}
+				} else {
+					// fix for Windows-created archives
+					File parent = newFile.getParentFile();
+					if (!parent.isDirectory() && !parent.mkdirs()) {
+						throw new IOException("Failed to create directory " + parent);
+					}
+
+					// write file content
+					FileOutputStream fos = new FileOutputStream(newFile);
+					int len;
+					while ((len = zis.read(buffer)) > 0) {
+						fos.write(buffer, 0, len);
+					}
+					fos.close();
+				}
+				zipEntry = zis.getNextEntry();
+			}
+			zis.closeEntry();
+			zis.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+		File destFile = new File(destinationDir, zipEntry.getName());
+
+		String destDirPath = destinationDir.getCanonicalPath();
+		String destFilePath = destFile.getCanonicalPath();
+
+		if (!destFilePath.startsWith(destDirPath + File.separator)) {
+			throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+		}
+
+		return destFile;
+	}
+
+	boolean deleteDirectory(File directoryToBeDeleted) {
+		File[] allContents = directoryToBeDeleted.listFiles();
+		if (allContents != null) {
+			for (File file : allContents) {
+				deleteDirectory(file);
+			}
+		}
+		return directoryToBeDeleted.delete();
+	}
+	
 	/**
 	 * Validate the provided JSON file before copying it to the target location.
 	 *
@@ -281,6 +436,19 @@ public class FileUtilities {
 			return false;
 		}
 	}
+	
+	/**
+	 * For the sake of reusability.
+	 *
+	 * @param fileName
+	 */
+	private void appendFileErrors(final String fileName) {
+		getErrors().append("The contents of the file ");
+		getErrors().append(fileName);
+		getErrors().append(" are invalid.");
+		getErrors().append("\n");
+	}
+	
 
 	/**
 	 * @return the list of errors.

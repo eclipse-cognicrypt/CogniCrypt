@@ -9,6 +9,7 @@ package de.cognicrypt.integrator.task.widgets;
 
 import java.io.File;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -27,6 +28,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardPage;
 
@@ -111,7 +113,8 @@ public class FileBrowserComposite extends Composite {
 				// Check if the page can be set to completed.
 				getTheLocalContainerPage().checkPageComplete();
 			} else {
-				// If there are no problems with the file, revert the error decoration and store the locations.
+				// If there are no problems with the file, revert the error decoration and store
+				// the locations.
 				decFilePath.setImage(null);
 				decFilePath.setDescriptionText("");
 				decFilePath.showHoverText("");
@@ -121,6 +124,17 @@ public class FileBrowserComposite extends Composite {
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
 					IntegratorModel.getInstance().setLocationOfIconFile(tempFileVariable);
+					break;
+				case Constants.WIDGET_DATA_LOCATION_OF_IMPORT_FILE:
+					String taskName = tempFileVariable.getName().replace(".zip", "");
+					if (Validator.checkIfTaskNameAlreadyExists(taskName)) {
+						pathText.setText("");
+						MessageDialog.openError(getShell(), "Warning",
+								"The chosen template's associated task has already been integrated.");
+					}else {
+						IntegratorModel.getInstance().setLocationOfImportFile(tempFileVariable);
+					}
+					//wizardPage.getWizard().getContainer().updateButtons();
 					break;
 				}
 

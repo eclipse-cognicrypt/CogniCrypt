@@ -27,7 +27,10 @@ public class IntegratorModel {
 	private File locationOfCryslTemplate;
 	private File locationOfIconFile;
 	private File locationOfJSONFile;
+	private File locationExportFile;
+	private File locationImportFile;
 	private boolean isGuidedModeChosen;
+	private boolean isImportModeChosen;
 	private final Task task;
 	
 	private HashMap<String, File> cryslTemplateFiles;
@@ -78,6 +81,13 @@ public class IntegratorModel {
 		this.locationOfIconFile = locationOfIconFile;
 	}
 
+	public File getImportFile() {
+		return locationImportFile;
+	}
+
+	public void setLocationOfImportFile(File locationOfImportFile) {
+		this.locationImportFile = locationOfImportFile;
+	}
 
 	/**
 	 * @return the locationOfJSONFile
@@ -91,6 +101,20 @@ public class IntegratorModel {
 	 */
 	public void setLocationOfJSONFile(final File locationOfJSONFile) {
 		this.locationOfJSONFile = locationOfJSONFile;
+	}
+	
+	/**
+	 * @return the locationExportFile
+	 */
+	public File getExportFile() {
+		return this.locationExportFile;
+	}
+	
+	/**
+	 * @param locationExportFile the locationExportFile to set
+	 */
+	public void setLocationOfExportFile(final File locationExportFile) {
+		this.locationExportFile = locationExportFile;
 	}
 
 	/**
@@ -108,6 +132,20 @@ public class IntegratorModel {
 	}
 
 	/**
+	 * @return the isGuidedModeChosen
+	 */
+	public boolean isImportModeChosen() {
+		return this.isImportModeChosen;
+	}
+
+	/**
+	 * @param isGuidedModeChosen the isGuidedModeChosen to set
+	 */
+	public void setImportModeChosen(final boolean isImportModeChosen) {
+		this.isImportModeChosen = isImportModeChosen;
+	}
+	
+	/**
 	 * @return the task
 	 */
 	public Task getTask() {
@@ -119,12 +157,9 @@ public class IntegratorModel {
 	 */
 	public void setTask() {
 		task.setName(getTaskName());
-		task.setDescription(getDescription());
-		task.setModelFile(Constants.CFR_FILE_DIRECTORY_PATH + getTaskName() + Constants.JS_EXTENSION);
-		task.setQuestionsJSONFile(Constants.LOCAL_JSON_FILE_DIRECTORY_PATH + getTaskName() + Constants.JSON_EXTENSION);
+		task.setDescription(getDescription() == null ? "" : getDescription());
+		task.setQuestionsJSONFile(Constants.ECLIPSE_LOC_TASKDESC_DIR + "/" + getTaskName() + Constants.JSON_EXTENSION);
 		task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
-		task.setCodeTemplate(Constants.XSL_FILE_DIRECTORY_PATH + getTaskName() + Constants.XSL_EXTENSION);
-		task.setAdditionalResources(Constants.JAR_FILE_DIRECTORY_PATH + getTaskName());
 	}
 
 

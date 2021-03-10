@@ -37,6 +37,7 @@ import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.integrator.task.controllers.FileUtilities;
+import de.cognicrypt.integrator.task.controllers.FileUtilitiesImportMode;
 import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 
@@ -84,29 +85,32 @@ public class TaskIntegratorWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		File ressourceFolder = new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR);
-		
-		if(!ressourceFolder.exists()) {
-			//make resource directory for Code Generation Templates if it doesn't exist
+
+		if (!ressourceFolder.exists()) {
+			// make resource directory for Code Generation Templates if it doesn't exist
 			ressourceFolder.mkdirs();
 			initlocalResourceDir(); // initialize needed sub-directories
 		}
-		
+
 		final IntegratorModel integratorModel = IntegratorModel.getInstance();
 		final FileUtilities fileUtilities = new FileUtilities();
+		final FileUtilitiesImportMode fileUtilitiesImportMode = new FileUtilitiesImportMode();
+
 		
 		String fileWriteAttemptResult;
-		Task task;
 		
-		if(integratorModel.isImportModeChosen()) {
-			fileUtilities.unzipFile();
-			fileWriteAttemptResult = fileUtilities.writeDataImportMode();
+		Task task;
+
+		if (integratorModel.isImportModeChosen()) {
+			FileUtilities.unzipFile();
+			fileWriteAttemptResult = fileUtilitiesImportMode.writeDataImportMode();
 			if (fileWriteAttemptResult.equals("")) {
-			task = integratorModel.getTask();
-			task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
-			task.setCodeGen(CodeGenerators.CrySL);
-			fileUtilities.writeTaskToJSONFile(task);
-			return true;
-			}else {
+				task = integratorModel.getTask();
+				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+				task.setCodeGen(CodeGenerators.CrySL);
+				fileUtilitiesImportMode.writeTaskToJSONFile(task);
+				return true;
+			} else {
 				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
 				errorBox.setText("Problems with the provided ZIP (Most likly has a wrong stucture).");
 				errorBox.setMessage(fileWriteAttemptResult);
@@ -114,85 +118,72 @@ public class TaskIntegratorWizard extends Wizard {
 				return false;
 			}
 		}else{
-		
-		integratorModel.setTask();
-		
-		task = integratorModel.getTask();
+			integratorModel.setTask();
+			task = integratorModel.getTask();
 
-		integratorModel.setLocationOfExportFile(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + ".zip"));
-		
-		File taskDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName());
-		taskDir.mkdir();
-		
-		File templateDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/template");
-		templateDir.mkdir();
-		
-		File resourceDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/res");
-		resourceDir.mkdir();
-		
-		
-		
-		
-		if(integratorModel.isGuidedModeChosen()) {
-			
-			if (integratorModel.getIdentifiers().size() == 1) {
+			File taskDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName());
+			taskDir.mkdir();
+
+			File templateDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/template");
+			templateDir.mkdir();
+
+			File resourceDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/res");
+			resourceDir.mkdir();
+
+			if (integratorModel.isGuidedModeChosen()) {
 				fileWriteAttemptResult = fileUtilities.writeData();
-				fileUtilities.writeJSONFile(new ArrayList<Question>());
-			}else {
-				
-				if(Validator.checkForUnusedIdentifiers()) {
-					final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
-					confirmationMessageBox.setMessage("A template was added but is not used. Do you want to generate the task anyway?");
-					confirmationMessageBox.setText("Warning: Unused Template");
-					final int response = confirmationMessageBox.open();
-					if (response == SWT.CANCEL) // abort
-						return false;
+				if (integratorModel.getIdentifiers().size() == 1) {
+					fileUtilities.writeJSONFile(new ArrayList<Question>());
+				} else {
+
+					if (Validator.checkForUnusedIdentifiers()) {
+						final MessageBox confirmationMessageBox = new MessageBox(getShell(),
+								SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
+						confirmationMessageBox.setMessage(
+								"A template was added but is not used. Do you want to generate the task anyway?");
+						confirmationMessageBox.setText("Warning: Unused Template");
+						final int response = confirmationMessageBox.open();
+						if (response == SWT.CANCEL) // abort
+							return false;
+					}
+
+					fileUtilities.writeJSONFile(integratorModel.getQuestions());
 				}
-				
-				fileWriteAttemptResult = fileUtilities.writeData();
-				final ArrayList<Question> questions = integratorModel.getQuestions();
-				fileUtilities.writeJSONFile(questions);
+			} else {
+				fileWriteAttemptResult = fileUtilities.writeDataNonGuidedMode();
 			}
-		}else {
-			fileWriteAttemptResult = fileUtilities.writeDataNonGuidedMode();
-		}
-		
 
-		
-		
-		if (fileWriteAttemptResult.equals("")) {
-			task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
-			task.setCodeGen(CodeGenerators.CrySL);
-			fileUtilities.writeTaskToJSONFile(task);
-			
-			
-			try {
-				String sourceFile = Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName();
-		        FileOutputStream fos = new FileOutputStream(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + ".zip");
-		        ZipOutputStream zipOut = new ZipOutputStream(fos);
-		        File fileToZip = new File(sourceFile);
-	
-		        fileUtilities.zipFile(fileToZip, fileToZip.getName(), zipOut);
-		        zipOut.close();
-		        fos.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (fileWriteAttemptResult.equals("")) {
+				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+				task.setCodeGen(CodeGenerators.CrySL);
+				fileUtilities.writeTaskToJSONFile(task);
+
+				try {
+					String sourceFile = Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName();
+					FileOutputStream fos = new FileOutputStream(
+							Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + ".zip");
+					ZipOutputStream zipOut = new ZipOutputStream(fos);
+					File fileToZip = new File(sourceFile);
+
+					FileUtilities.zipFile(fileToZip, fileToZip.getName(), zipOut);
+					zipOut.close();
+					fos.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				FileUtilities.deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName()));
+				return true;
+			} else {
+				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
+				errorBox.setText("Problems with the provided files.");
+				errorBox.setMessage(fileWriteAttemptResult);
+				errorBox.open();
+				return false;
 			}
-		        
-		        
-		        
-			return true;
-		}else {
-			final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
-			errorBox.setText("Problems with the provided files.");
-			errorBox.setMessage(fileWriteAttemptResult);
-			errorBox.open();
-			return false;
-		}
-		
 		}
 	}
-
+	
 	
 	public void initlocalResourceDir() {
 		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 

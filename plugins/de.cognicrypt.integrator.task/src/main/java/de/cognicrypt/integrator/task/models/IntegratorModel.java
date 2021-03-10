@@ -27,7 +27,6 @@ public class IntegratorModel {
 	private File locationOfCryslTemplate;
 	private File locationOfIconFile;
 	private File locationOfJSONFile;
-	private File locationExportFile;
 	private File locationImportFile;
 	private boolean isGuidedModeChosen;
 	private boolean isImportModeChosen;
@@ -103,19 +102,6 @@ public class IntegratorModel {
 		this.locationOfJSONFile = locationOfJSONFile;
 	}
 	
-	/**
-	 * @return the locationExportFile
-	 */
-	public File getExportFile() {
-		return this.locationExportFile;
-	}
-	
-	/**
-	 * @param locationExportFile the locationExportFile to set
-	 */
-	public void setLocationOfExportFile(final File locationExportFile) {
-		this.locationExportFile = locationExportFile;
-	}
 
 	/**
 	 * @return the isGuidedModeChosen
@@ -158,8 +144,8 @@ public class IntegratorModel {
 	public void setTask() {
 		task.setName(getTaskName());
 		task.setDescription(getDescription() == null ? "" : getDescription());
-		task.setQuestionsJSONFile(Constants.ECLIPSE_LOC_TASKDESC_DIR + "/" + getTaskName() + Constants.JSON_EXTENSION);
 		task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
+		task.setQuestionsJSONFile(Constants.ECLIPSE_LOC_TASKDESC_DIR + "/" + getTaskName() + Constants.JSON_EXTENSION);
 	}
 
 

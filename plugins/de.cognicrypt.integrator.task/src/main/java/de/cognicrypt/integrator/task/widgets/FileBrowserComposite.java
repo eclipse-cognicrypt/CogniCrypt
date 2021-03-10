@@ -134,7 +134,6 @@ public class FileBrowserComposite extends Composite {
 					}else {
 						IntegratorModel.getInstance().setLocationOfImportFile(tempFileVariable);
 					}
-					//wizardPage.getWizard().getContainer().updateButtons();
 					break;
 				}
 

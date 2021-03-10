@@ -121,61 +121,23 @@ public class FileUtilities {
 	}
 	
 
-	public String writeDataImportMode() {
-		String taskName = integratorModel.getImportFile().getName().replace(".zip", "");
-		integratorModel.setTaskName(taskName);
-		File iconLocation = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/res/" + taskName + ".png");
-		if(iconLocation.exists()) {
-			integratorModel.setLocationOfIconFile(iconLocation);
-			copyImage(iconLocation);
-		}else {
-			getErrors().append("ZIP invalide (Icon File not found) \n");
-		}
-		File jsonLocation = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/res/" + taskName + ".json");
-		if(iconLocation.exists()) {
-			integratorModel.setLocationOfIconFile(jsonLocation);
-			copyJSON(jsonLocation);
-		}else {
-			getErrors().append("ZIP invalide (Question JSON File not found) \n");
-		}
-		
-		File[] templates = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/template").listFiles();
-		if (templates != null) {
-			for (File f : templates) {
-				String destName = f.getName();
-				File destDir = new File(Constants.ECLIPSE_LOC_TEMP_DIR, destName);
-				destDir.mkdir();
-				File templateFile = f.listFiles()[0];
-				File dest = new File(destDir, integratorModel.getTrimmedTaskName() + ".java");
-				try {
-					Files.copy(templateFile.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING,
-							StandardCopyOption.COPY_ATTRIBUTES);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-			}
-		}else {
-			getErrors().append("ZIP invalide (Template Files not found) \n");
-		}
-		deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName));
-		integratorModel.setTask();
-		return getErrors().toString();
-	}	
 	
-	public void copyTemplate(final File existingFileLocation, String option) throws IOException {
-		File parentFolder = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
-		File parentFolder2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/template");
-		File templateFolder = new File(parentFolder, IntegratorModel.getInstance().getTrimmedTaskName() + option);
-		File templateFolder2 = new File(parentFolder2, IntegratorModel.getInstance().getTrimmedTaskName() + option);
+	
+	private void copyTemplate(final File existingFileLocation, String option) throws IOException {
+		File parentFolder1 = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
+		File parentFolder2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/template");
+		File templateFolder1 = new File(parentFolder1, integratorModel.getTrimmedTaskName() + option);
+		File templateFolder2 = new File(parentFolder2, integratorModel.getTrimmedTaskName() + option);
 		
-		if (!templateFolder.isDirectory()) {
-			templateFolder.mkdir();
-			templateFolder2.mkdir();
+		if (!templateFolder1.isDirectory()) {
+			templateFolder1.mkdir();
+		}
+		if (!templateFolder2.isDirectory()) {
+		templateFolder2.mkdir();
 		}
 
-		File targetDirectory1 = new File(templateFolder, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JAVA_EXTENSION);
-		File targetDirectory2 = new File(templateFolder2, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+		File targetDirectory1 = new File(templateFolder1, integratorModel.getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+		File targetDirectory2 = new File(templateFolder2, integratorModel.getTrimmedTaskName() + Constants.JAVA_EXTENSION);
 
 		
 		Path path1 = existingFileLocation.toPath();
@@ -184,9 +146,9 @@ public class FileUtilities {
 		
 		Activator.getDefault().logError("Copy " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory1.getAbsolutePath());
 			
-		Files.copy(path1, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+		Files.copy(path1, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator
 		
-		Files.copy(path1, path3, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);		
+		Files.copy(path1, path3, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used to make the exportable ZIP	
 	}
 	
 	/**
@@ -194,7 +156,7 @@ public class FileUtilities {
 	 *
 	 * @param existingFileLocation
 	 */
-	public void copyImage(final File existingFileLocation) {
+	private void copyImage(final File existingFileLocation) {
 			File targetDirectory = null;
 			File targetDirectory2 = null;
 			try {
@@ -205,8 +167,8 @@ public class FileUtilities {
 					throw new Exception("Unknown file type.");
 				}
 				Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
-				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-				Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator
+				Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used to make the exportable ZIP
 
 			} catch (final Exception e) {
 				Activator.getDefault().logError(e);
@@ -221,7 +183,7 @@ public class FileUtilities {
 	 *
 	 * @param existingFileLocation
 	 */
-	public void copyJSON(final File existingFileLocation) {
+	private void copyJSON(final File existingFileLocation) {
 		File targetDirectory = null;
 		File targetDirectory2 = null;
 		try {
@@ -232,8 +194,8 @@ public class FileUtilities {
 				throw new Exception("Unknown file type.");
 			}
 			Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
-			Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-			Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
+			Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator	
+			Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used to make the exportable ZIP	
 
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
@@ -328,94 +290,6 @@ public class FileUtilities {
 	}
 
 	
-	public void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
-		if (fileToZip.isHidden()) {
-			return;
-		}
-		if (fileToZip.isDirectory()) {
-			if (fileName.endsWith("/")) {
-				zipOut.putNextEntry(new ZipEntry(fileName));
-				zipOut.closeEntry();
-			} else {
-				zipOut.putNextEntry(new ZipEntry(fileName + "/"));
-				zipOut.closeEntry();
-			}
-			File[] children = fileToZip.listFiles();
-			for (File childFile : children) {
-				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
-			}
-			return;
-		}
-		FileInputStream fis = new FileInputStream(fileToZip);
-		ZipEntry zipEntry = new ZipEntry(fileName);
-		zipOut.putNextEntry(zipEntry);
-		byte[] bytes = new byte[1024];
-		int length;
-		while ((length = fis.read(bytes)) >= 0) {
-			zipOut.write(bytes, 0, length);
-		}
-		fis.close();
-	}
-
-	public void unzipFile() {
-		String fileZip = IntegratorModel.getInstance().getImportFile().toString();
-		File destDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
-		byte[] buffer = new byte[1024];
-		try {
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-			ZipEntry zipEntry = zis.getNextEntry();
-			while (zipEntry != null) {
-				File newFile = newFile(destDir, zipEntry);
-				if (zipEntry.isDirectory()) {
-					if (!newFile.isDirectory() && !newFile.mkdirs()) {
-						throw new IOException("Failed to create directory " + newFile);
-					}
-				} else {
-					// fix for Windows-created archives
-					File parent = newFile.getParentFile();
-					if (!parent.isDirectory() && !parent.mkdirs()) {
-						throw new IOException("Failed to create directory " + parent);
-					}
-
-					// write file content
-					FileOutputStream fos = new FileOutputStream(newFile);
-					int len;
-					while ((len = zis.read(buffer)) > 0) {
-						fos.write(buffer, 0, len);
-					}
-					fos.close();
-				}
-				zipEntry = zis.getNextEntry();
-			}
-			zis.closeEntry();
-			zis.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
-		File destFile = new File(destinationDir, zipEntry.getName());
-
-		String destDirPath = destinationDir.getCanonicalPath();
-		String destFilePath = destFile.getCanonicalPath();
-
-		if (!destFilePath.startsWith(destDirPath + File.separator)) {
-			throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
-		}
-
-		return destFile;
-	}
-
-	boolean deleteDirectory(File directoryToBeDeleted) {
-		File[] allContents = directoryToBeDeleted.listFiles();
-		if (allContents != null) {
-			for (File file : allContents) {
-				deleteDirectory(file);
-			}
-		}
-		return directoryToBeDeleted.delete();
-	}
 	
 	/**
 	 * Validate the provided JSON file before copying it to the target location.
@@ -464,4 +338,94 @@ public class FileUtilities {
 		this.errors = errors;
 	}
 
+	public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+		if (fileToZip.isHidden()) {
+			return;
+		}
+		if (fileToZip.isDirectory()) {
+			if (fileName.endsWith("/")) {
+				zipOut.putNextEntry(new ZipEntry(fileName));
+				zipOut.closeEntry();
+			} else {
+				zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+				zipOut.closeEntry();
+			}
+			File[] children = fileToZip.listFiles();
+			for (File childFile : children) {
+				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+			}
+			return;
+		}
+		FileInputStream fis = new FileInputStream(fileToZip);
+		ZipEntry zipEntry = new ZipEntry(fileName);
+		zipOut.putNextEntry(zipEntry);
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zipOut.write(bytes, 0, length);
+		}
+		fis.close();
+	}
+
+	public static void unzipFile() {
+		String fileZip = IntegratorModel.getInstance().getImportFile().toString();
+		File destDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
+		byte[] buffer = new byte[1024];
+		try {
+			ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+			ZipEntry zipEntry = zis.getNextEntry();
+			while (zipEntry != null) {
+				File newFile = newFile(destDir, zipEntry);
+				if (zipEntry.isDirectory()) {
+					if (!newFile.isDirectory() && !newFile.mkdirs()) {
+						throw new IOException("Failed to create directory " + newFile);
+					}
+				} else {
+					// fix for Windows-created archives
+					File parent = newFile.getParentFile();
+					if (!parent.isDirectory() && !parent.mkdirs()) {
+						throw new IOException("Failed to create directory " + parent);
+					}
+
+					// write file content
+					FileOutputStream fos = new FileOutputStream(newFile);
+					int len;
+					while ((len = zis.read(buffer)) > 0) {
+						fos.write(buffer, 0, len);
+					}
+					fos.close();
+				}
+				zipEntry = zis.getNextEntry();
+			}
+			zis.closeEntry();
+			zis.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+		File destFile = new File(destinationDir, zipEntry.getName());
+
+		String destDirPath = destinationDir.getCanonicalPath();
+		String destFilePath = destFile.getCanonicalPath();
+
+		if (!destFilePath.startsWith(destDirPath + File.separator)) {
+			throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+		}
+
+		return destFile;
+	}
+
+	public static boolean deleteDirectory(File directoryToBeDeleted) {
+		File[] allContents = directoryToBeDeleted.listFiles();
+		if (allContents != null) {
+			for (File file : allContents) {
+				deleteDirectory(file);
+			}
+		}
+		return directoryToBeDeleted.delete();
+	}
+	
+	
 }

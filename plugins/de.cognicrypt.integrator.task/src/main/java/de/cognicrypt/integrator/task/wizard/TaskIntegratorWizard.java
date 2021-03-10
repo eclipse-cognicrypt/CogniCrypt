@@ -109,6 +109,11 @@ public class TaskIntegratorWizard extends Wizard {
 				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
 				task.setCodeGen(CodeGenerators.CrySL);
 				fileUtilitiesImportMode.writeTaskToJSONFile(task);
+				
+				final MessageBox msgBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
+				msgBox.setText("Task succesfully imported.");
+				msgBox.setMessage("The task has been succesfully imported. You can use it after restarting Eclipse.");
+				msgBox.open();
 				return true;
 			} else {
 				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);
@@ -173,6 +178,11 @@ public class TaskIntegratorWizard extends Wizard {
 				}
 
 				FileUtilities.deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName()));
+				final MessageBox msgBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
+				msgBox.setText("Task succesfully generated.");
+				msgBox.setMessage("The task has been succesfully generated. You can use it after restarting Eclipse. An exportable ZIP File for this task has been copied to:" +
+				Constants.ECLIPSE_LOC_EXPORT_DIR);
+				msgBox.open();
 				return true;
 			} else {
 				final MessageBox errorBox = new MessageBox(getShell(), SWT.ERROR | SWT.OK);

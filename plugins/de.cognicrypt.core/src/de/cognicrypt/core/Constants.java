@@ -268,6 +268,7 @@ public class Constants {
 	public static final String PASSWORD = "Password";
 	public static final String PORT_NUMBER = "Port number";
 	public static final String IP_ADDRESS = "Ip address";
+	
 	// Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 
@@ -278,14 +279,6 @@ public class Constants {
 
 	public static final String DEFAULT_ICON_PATH = "icons/task-default-icon.png";
 	
-	public static final String PAGE_NAME_FOR_CLAFER_FILE_CREATION = "pageForClaferFileCreation";
-	public static final String PAGE_TITLE_FOR_CLAFER_FILE_CREATION = "Add the variablity modelling here";
-	public static final String PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION = "Here you can add features to the variability model here.";
-
-	public static final String PAGE_NAME_FOR_XSL_FILE_CREATION = "pageForXSLFileCreation";
-	public static final String PAGE_TITLE_FOR_XSL_FILE_CREATION = "Add data for the code generation";
-	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
-
 	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
 	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Questions catalog";
 	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS =
@@ -338,167 +331,16 @@ public class Constants {
 	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Questions";
 	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Icon";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
-	public static final String WIDGET_DATA_LOCATION_OF_IMPORT_FILE = "ImportFile";
-
-	// Default bounds for the composites
-	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1050, 600);
-	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 - 10); // 897 - 10
-	public static final Rectangle RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 100, 29); // 1000 - 83 - 10 -10
-	public static final Rectangle RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 49, 100, 29); // 1000 - 83 - 10 -10
-	// public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new
-	// Rectangle(10, 10, 744, 280);
-	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
-	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
-
-	public static final int SINGLE_LINE_TEXT_BOX_LIMIT = 256;
-	public static final int MULTI_LINE_TEXT_BOX_LIMIT = 2560;
-
-	// Form data for CompositeGranularUIForClaferFeature
-	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
+	public static final String WIDGET_DATA_LOCATION_OF_IMPORT_FILE = "Import File";
 
 	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
-	public static final int PADDING_BETWEEN_SMALLER_UI_ELEMENTS = 3;
-
-	public static final int WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 409;
-	public static final int HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 37;
-
-	// TypeOfTargetDataForSmallUIElements int values. Add the type of data that
-	// needs to be shown on the composite here.
-	public static final int FEATURE_PROPERTY = 0;
-	public static final int FEATURE_CONSTRAINT = 1;
-
-	// source for the contents of this enum : https://www.w3.org/TR/xslt20/
-	public static enum XSLTags {
-		XSL_VARIABLE_TAG("Variable", "<xsl:variable>", "</xsl:variable>", new String[] {"name", "select", "as"
-		/*
-		 * , "static", "visibility"
-		 */
-		}), XSL_VALUE_OF_TAG("Value of", "<xsl:value-of/>", "", new String[] {"select", "separator", "disable-output-escaping"}), XSL_IF_TAG("If", "<xsl:if>", "</xsl:if>",
-				new String[] {"test"}), XSL_RESULT_DOCUMENT("Result Document", "<xsl:result-document>", "</xsl:result-document>",
-						new String[] {"href", "format", "validation", "type", "method", "byte-order-mark", "cdata-section-elements", "doctype-public", "doctype-system", "encoding",
-								"escape-uri-attributes", "include-content-type", "indent", "media-type", "normalization-form", "omit-xml-declaration", "standalone", "undeclare-prefixes",
-								"use-character-maps", "output-version"
-						/*
-						 * , "allow-duplicate-names", "build-tree", "html-version", "item-separator", "json-node-output-method", "parameter-document", "suppress-indentation",
-						 */
-						}), XSL_APPLY_TEMPLATES("Apply Templates", "<xsl:apply-templates />", "", new String[] {"select", "mode"}), XSL_CHOOSE_TAG("Choose", "<xsl:choose>", "</xsl:choose>",
-								new String[] {}), XSL_WHEN_TAG("When", "<xsl:when>", "</xsl:when>",
-										new String[] {"test"}), XSL_OTHERWISE_TAG("Otherwise", "<xsl:otherwise>", "</xsl:otherwise>", new String[] {});
-
-		private final String XSLTagFaceName;
-		private final String XSLBeginTag;
-		private final String XSLEndTag;
-		private final String[] XSLAttributes;
-
-		/**
-		 * @param XSLTagFaceNameParam
-		 * @param XSLBeginTagParam
-		 * @param XSLEndTagParam
-		 */
-		private XSLTags(final String XSLTagFaceNameParam, final String XSLBeginTagParam, final String XSLEndTagParam, final String[] XSLAttributesParam) {
-			this.XSLTagFaceName = XSLTagFaceNameParam;
-			this.XSLBeginTag = XSLBeginTagParam;
-			this.XSLEndTag = XSLEndTagParam;
-			this.XSLAttributes = XSLAttributesParam;
-		}
-
-		/**
-		 * @return the xSLTagFaceName
-		 */
-		public String getXSLTagFaceName() {
-			return this.XSLTagFaceName;
-		}
-
-		/**
-		 * @return the xSLBeginTag
-		 */
-		public String getXSLBeginTag() {
-			return this.XSLBeginTag;
-		}
-
-		/**
-		 * @return the xSLEndTag
-		 */
-		public String getXSLEndTag() {
-			return this.XSLEndTag;
-		}
-
-		/**
-		 * @return the xSLAttributes
-		 */
-		public String[] getXSLAttributes() {
-			return this.XSLAttributes;
-		}
-
-	}
-
-	public static enum FeatureConstraintRelationship {
-		EQUAL("="), NOTEQUAL("!="), LESSTHAN("<"), GREATERTHAN(">"), LESSTHANEQUALTO("<="), GREATERTHANEQUALTO(">="), AND("and"), OR("or");
-
-		private final String operatorValue;
-
-		FeatureConstraintRelationship(final String operatorValue) {
-			this.operatorValue = operatorValue;
-		}
-
-		/**
-		 * @return the operatorValue
-		 */
-		public String getOperatorValue() {
-			return this.operatorValue;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see java.lang.Enum#toString() Just return the operator value instead of the name.
-		 */
-		@Override
-		public String toString() {
-			return this.operatorValue;
-		}
-
-	}
-
-	public static enum FeatureType {
-		CONCRETE, ABSTRACT;
-
-		/*
-		 * Although "concrete" is never used in the actual cfr file, "abstract" is used. Hence the toString() returns lower case.
-		 */
-		@Override
-		public String toString() {
-			return name().toLowerCase();
-		}
-
-	}
-
-	public static final String SLASH = "/";
-	public static final String ATTRIBUTE_BEGIN = "[@";
-	public static final String ATTRIBUTE_END = "=\'\']";
-	public static final String DOT = ".";
 
 	// for the file utils for the task integrator.
-	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
-	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
-	public static final String CFR_BIN_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModelBin" + innerFileSeparator;
-	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
 	public static final String LOCAL_JSON_FILE_DIRECTORY_PATH = localrsrcPath + "TaskDesc" + innerFileSeparator;
-	public static final String IMAGE_FILE_DIRECTORY_PATH = rsrcPath + "images" + innerFileSeparator;
-	public static final String XML_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
-	public static final String pluginXmlFile = "plugin.xml";
-	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
-	public static final String HELP_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
-	public static final String CFR_EXTENSION = ".cfr";
 	public static final String JAVA_EXTENSION = ".java";
 	public static final String PNG_EXTENSION = ".png";
-	public static final String CFR_BIN_EXTENSION = ".dat";
-	public static final String JS_EXTENSION = ".js";
-	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XML_EXTENSION = ".xml";
-	public static final String XSL_EXTENSION = ".xsl";
-	public static final String PLUGIN_XML_FILE = innerFileSeparator + "plugin.xml";
 
 	public static final String DEFAULT_FEATURE_SET_FILE = "DefaultFeatureSet";
 
@@ -517,10 +359,6 @@ public class Constants {
 	public static final String MVN_SKIPTESTS_COMMAND = "-DskipTests=true";
 	public static final String MVN_ECLIPSE_COMMAND = "eclipse:eclipse";
 
-	// for the list of items to be included inside the combo of the questionTab
-	public static final String dropDown = "Drop down";
-	public static final String textBox = "Text box";
-	public static final String radioButton = "Radio button";
 
 	// for creating SuppressWarnings.xml
 	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings" + XML_EXTENSION;

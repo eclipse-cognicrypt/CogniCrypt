@@ -122,8 +122,8 @@ public class TaskIntegratorWizardPage extends WizardPage {
 
 	
 	/**
-	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR
-	 * Is used to determine whether wizard can flip to next page
+	 * Determines whether the next button is enabled
+	 * Sets page to complete if there are no errors on mandatory fields, guided mode is chosen and multiple templates exist
 	 */
 	public void checkPageComplete() {
 		if(taskInformationComposite == null)
@@ -139,16 +139,16 @@ public class TaskIntegratorWizardPage extends WizardPage {
 	}
 	
 	/**
-	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
-	 * Is used to determine whether wizard can finish early
+	 * 
+	 * @return true if there are no errors on zip file
 	 */
 	public boolean checkImportModeFinish() {		
 		return !taskInformationComposite.getImportZIP().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
 	}
 	
 	/**
-	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR.
-	 * Is used to determine whether wizard can finish early
+	 * 
+	 * @return true if there are no errors on mandatory fields and json file
 	 */
 	public boolean checkNonGuidedFinish() {
 		
@@ -158,6 +158,10 @@ public class TaskIntegratorWizardPage extends WizardPage {
 		return (mandatoryFields && !errorOnJSONFile);
 	}
 	
+	/**
+	 * 
+	 * @return true if there are no errors on templates and icon file
+	 */
 	public boolean checkMandatoryFields() {
 		boolean errorOnIconFile = taskInformationComposite.getCompPNG().getDecFilePath().getDescriptionText().contains(Constants.ERROR);
 		boolean errorOnTemplates = taskInformationComposite.getDecTemplates().getDescriptionText().contains(Constants.ERROR);

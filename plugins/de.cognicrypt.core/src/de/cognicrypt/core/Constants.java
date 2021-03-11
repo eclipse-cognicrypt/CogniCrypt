@@ -307,14 +307,12 @@ public class Constants {
 	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
 
 	// Warnings
-	public static final String NO_ANSWERS_WARNING = "Please add answers to the question by clicking \"" + ADD_ANSWER + "\" button";
+	
 		
 	// Errors
-	public static final String INSTANTIATED_BY_WRONG_WIZARD_ERROR = "PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard";
 	public static final String ERROR = "ERROR: ";
 	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
 	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file.";
-	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
 	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
 	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
 	public static final String ERROR_BLANK_TEMPLATE_LIST = "The template list cannot be empty. Please add a template.";
@@ -322,6 +320,14 @@ public class Constants {
 	public static final String ERROR_MESSAGE_BLANK_QUESTION_NAME = "The question name cannot be empty. Please enter a valid name for the question.";
 	public static final String ERROR_BLANK_ANSWERS_LIST = "The answers list cannot be empty. Please add an answer.";
 	public static final String ERROR_EMPTY_ANSWER_TEXT = "The text of an answer cannot be empty.";
+	
+	public static final String ERROR_TASK_ALREADY_INTEGRATED = "The chosen template's associated task has already been integrated.";
+	public static final String ERROR_DIFFERENT_TASK_NAME = "The chosen template's file name does not match the task name of previously added templates and can therefor not be added.";
+	public static final String ERROR_FILE_NOT_FOUND = "The chosen template file could not be found.";
+	public static final String ERROR_NO_PACKAGE = "The chosen template's source code contains no package and can therefor not be added.";
+	
+	public static final String ERROR_TEMPLATE_IS_USED_IN_ANSWER = "The chosen template is used in an answer and can therefor not be removed.";
+	
 	
 	// Labels	
 	public static final String LABEL_BROWSE_BUTTON = "Choose File";

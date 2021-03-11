@@ -60,7 +60,7 @@ public class TaskInformationComposite extends Composite {
 
 	private final Label lblTaskName;
 	private final ControlDecoration templatesDec;
-	
+
 	private final List templateList;
 	private final FileBrowserComposite compJSON, compPNG, compImport;
 
@@ -77,9 +77,9 @@ public class TaskInformationComposite extends Composite {
 		super(parent, style);
 
 		this.wizardPage = wizardPage;
-		
+
 		IntegratorModel.resetInstance();
-		
+
 		setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		setLayout(new GridLayout(1, false));
 
@@ -90,51 +90,51 @@ public class TaskInformationComposite extends Composite {
 
 		lblTaskName = new Label(compositeTaskInfo, SWT.NONE);
 		lblTaskName.setText("");
-		
+
 
 		final Text txtTaskDescription = new Text(compositeTaskInfo, SWT.BORDER);
 		txtTaskDescription.setMessage("Describe the task");
 		final GridData gdTaskDescription= new GridData(SWT.FILL, SWT.CENTER, true, true);
 		gdTaskDescription.widthHint = 0;
 		txtTaskDescription.setLayoutData(gdTaskDescription);
-		
+
 		txtTaskDescription.addModifyListener(
 				e -> IntegratorModel.getInstance().setTaskDescription(txtTaskDescription.getText().trim()));
-		
-		
+
+
 		/* Template Section */
 		final Label spacer = new Label(compositeTaskInfo, SWT.HORIZONTAL);
-	    spacer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, 30));
-			
+		spacer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, 30));
+
 		final Label lblTemplateList = new Label(compositeTaskInfo, SWT.NONE);
 		lblTemplateList.setText("Templates");
-		
+
 		// Initialize the decorator for the label for the text box with initial error state
 		templatesDec = new ControlDecoration(lblTemplateList, SWT.TOP | SWT.RIGHT);
 		templatesDec.setShowOnlyOnFocus(false);
 		checkTemplatesDec();
-		
+
 		templateList = new List(compositeTaskInfo, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
 		final GridData gd_templateList = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_templateList.heightHint = 25*5;
 		templateList.setLayoutData(gd_templateList);
-		
+
 		templateList.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				btnRemoveTemplate.setEnabled(true);
 			}
 		});
-		
+
 		final Composite compositeTemplateBtns = new Composite(compositeTaskInfo, SWT.NONE);
 		compositeTemplateBtns.setVisible(true);
 		compositeTemplateBtns.setLayout(new RowLayout(SWT.HORIZONTAL));
-		
+
 		final Button btnAddTemplate = new Button(compositeTemplateBtns, SWT.NONE);
 		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
 		btnAddTemplate.setImage(sharedImages.getImage(ISharedImages.IMG_OBJ_ADD));
 		btnAddTemplate.setFocus();
-		
+
 		btnRemoveTemplate = new Button(compositeTemplateBtns, SWT.NONE);
 		btnRemoveTemplate.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_DELETE));
 		btnRemoveTemplate.setEnabled(false);
@@ -145,30 +145,30 @@ public class TaskInformationComposite extends Composite {
 				addTemplate();
 			}
 		});
-		
+
 		btnRemoveTemplate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				
+
 				String[] templateIds = templateList.getSelection(); 
-				
+
 				for(int i=0; i < templateIds.length; i++)
 					templateIds[i] = templateIds[i].replace(IntegratorModel.getInstance().getTaskName(), "");
-				
+
 				removeTemplates(templateIds);
 			}
 		});
-		
-		
+
+
 		/* File Import Section */
 		Label spacerBeforeFileImports = new Label(this, SWT.HORIZONTAL);
 		spacerBeforeFileImports.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, 30));
-		
+
 		final Composite compositeFileImports = new Composite(this, SWT.NONE);
 		compositeFileImports.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		compositeFileImports.setVisible(true);
 		compositeFileImports.setLayout(new GridLayout(1, false));
-		
+
 		compPNG = new FileBrowserComposite(compositeFileImports, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE, new String[] { "*.png" },
 				"Select PNG file that contains the task icon",
@@ -176,11 +176,11 @@ public class TaskInformationComposite extends Composite {
 		compPNG.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		String defaultIconPath = Utils.getResourceFromWithin(Constants.DEFAULT_ICON_PATH, "de.cognicrypt.core").getAbsolutePath();
 		compPNG.setPathText(defaultIconPath);
-		
-		
+
+
 		Label spacerBeforeGuidedMode = new Label(compositeFileImports, SWT.HORIZONTAL);
 		spacerBeforeGuidedMode.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, 30));
-		
+
 		final Button btnGuidedMode = new Button(compositeFileImports, SWT.CHECK);
 		btnGuidedMode.setText("Guided Mode");
 		// Guided mode set by default.
@@ -191,21 +191,21 @@ public class TaskInformationComposite extends Composite {
 		compositeNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		compositeNonguidedMode.setVisible(false);
 		compositeNonguidedMode.setLayout(new GridLayout(1, false));
-		
+
 		compJSON = new FileBrowserComposite(compositeNonguidedMode, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" },
 				"Select JSON file that contains the high-level questions", wizardPage);
 		compJSON.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
+
 		final Button btnImportMode = new Button(this, SWT.CHECK);
 		btnImportMode.setText("Import Mode");
-		
+
 		compImport = new FileBrowserComposite(this, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_IMPORT_FILE, new String[] { "*.zip" },
 				"Select ZIP file that contains the task information", wizardPage);
 		compImport.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		compImport.setVisible(false);
-		
+
 		requestLayout();
 
 		btnGuidedMode.addSelectionListener(new SelectionAdapter() {
@@ -229,27 +229,27 @@ public class TaskInformationComposite extends Composite {
 				wizardPage.checkPageComplete();
 			}
 		});
-		
+
 		btnImportMode.addSelectionListener(new SelectionAdapter(){
-			
+
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final boolean tempSelectionStatus = btnImportMode.getSelection();
 				compImport.setVisible(tempSelectionStatus);
 				compositeTaskInfo.setVisible(!tempSelectionStatus);
 				compositeFileImports.setVisible(!tempSelectionStatus);
-				
+
 				IntegratorModel.getInstance().setImportModeChosen(tempSelectionStatus);
 			}
 		});
-		
+
 	}
 
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
-	
+
 	public FileBrowserComposite getCompPNG() {
 		return compPNG;
 	}
@@ -262,154 +262,79 @@ public class TaskInformationComposite extends Composite {
 		return compImport;
 	}
 
-	
+
 	public TaskIntegratorWizardPage getLocalContainerPage() {
 		return wizardPage;
 	}
-	
+
 	public ControlDecoration getDecTemplates() {
 		return templatesDec;
 	}
-	
-	
-	private void redrawTemplateList() {
 
-		btnRemoveTemplate.setEnabled(false);
-		
-		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
-		
+
+	private void redrawTemplateList() {		
 		templateList.removeAll();
-		
+		btnRemoveTemplate.setEnabled(false);
+
+		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
+
 		for(Entry<String, File> e : templates.entrySet()) {
 			templateList.add(IntegratorModel.getInstance().getTaskName() + e.getKey());	
 		}
 	}
-	
+
 
 	public void addTemplate() {
-		
+
 		final FileDialog fileDialog = new FileDialog(getShell(), SWT.NONE);
 		fileDialog.setFilterExtensions(new String[] { "*.java" });
 		fileDialog.setText(Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE);
 
-		String templateFilePath = fileDialog.open();
-		if (templateFilePath == null) 
-			return; // user canceled file dialog
+		IntegratorModel im  = IntegratorModel.getInstance();
 
-		// Set the task name or verify that it's equal
-		String[] filePathParts = templateFilePath.split("(\\/|\\\\)");
-		String taskName = filePathParts[filePathParts.length - 1].replace(".java", "");
-		
-		if(Validator.checkIfTaskNameAlreadyExists(taskName)) {
-			MessageDialog.openError(getShell(), "Warning", "The chosen template's associated task has already been integrated.");
-			return;
-		}
-		
-		if (IntegratorModel.getInstance().getTaskName() == null) {
-			IntegratorModel.getInstance().setTaskName(taskName);
-			lblTaskName.setText(taskName);
-			lblTaskName.getParent().requestLayout();
-		}else if (!taskName.contentEquals(IntegratorModel.getInstance().getTaskName())) {
-			MessageDialog.openError(getShell(), "Warning", "The chosen template's file name does not match the task name of previously added templates and can therefor not be added.");
-			return;
-		}
-
-		// Extract package line from the template's source code
-		String packageLine = "";
-
-		Scanner scanner;
-		try {
-			scanner = new Scanner(new File(templateFilePath));
-		} catch (FileNotFoundException e1) {
-			MessageDialog.openError(getShell(), "Warning", "The chosen template file could not be found.");
-			return;
-		}
-
-		while (packageLine.contentEquals("")) {
-
-			if(!scanner.hasNextLine()) {
-				scanner.close();
-				MessageDialog.openError(getShell(), "Warning", "The chosen template's source code contains no package and can therefor not be added.");
-				return;
+		try{
+			if (im.addTemplate(fileDialog.open())) {
+				lblTaskName.setText(im.getTaskName());
+				lblTaskName.getParent().requestLayout();
 			}
 
-			String[] expr = scanner.nextLine().split(";");
+			checkTemplatesDec();
+			wizardPage.checkPageComplete();
 
-			// Lines may contain multiple expressions
-			for(String e : expr) {
-				String line = e.trim();
-				if (line.startsWith("package")) {
-					packageLine = line;
-					break;
-				}
-				if (line.contains("class")) {
-					break;
-				}
-			}
+			redrawTemplateList();
 
-		}
-		scanner.close();
-
-		// Extract identifier
-		String[] packageParts = packageLine.split("\\.");
-		String templateIdentifier = packageParts[packageParts.length - 1].replace(taskName, "").replace(";", "");
-
-		IntegratorModel.getInstance().addTemplate(templateIdentifier, new File(templateFilePath));
-		
-		checkTemplatesDec();
-		wizardPage.checkPageComplete();
-
-		redrawTemplateList();
+		}catch(Exception e) {
+			MessageDialog.openError(getShell(), "Warning", e.getMessage());
+		}		
 	}
-	
+
 	public void removeTemplates(String[] identifiers) {
-	
+
 		for(String id : identifiers) {
-			boolean templateCanBeRemoved = true; 
-			
-			for(Question q : IntegratorModel.getInstance().getQuestions()) {
-				for(Answer a : q.getAnswers()) {
-					if(a.getOption().contentEquals(id)) {
-						MessageDialog.openError(getShell(), "Warning", "The chosen template is used in question \"" + q.getQuestionText()  + "\" and can therefor not be removed.");
-						templateCanBeRemoved = false;
-						break;
-					}
-				}
+			try {
+				if (IntegratorModel.getInstance().removeTemplate(id))
+					lblTaskName.setText("");
+			}catch(Exception e){
+				MessageDialog.openError(getShell(), "Warning", e.getMessage());
 			}
-			
-			if (templateCanBeRemoved)
-				IntegratorModel.getInstance().removeTemplate(id);
 		}
-		
+
 		checkTemplatesDec();
 		wizardPage.checkPageComplete();
-		
+
 		redrawTemplateList();
 	}
-	
-	
+
+
 	private void checkTemplatesDec() {
-		// Template list is empty
-		if(IntegratorModel.getInstance().isTemplatesEmpty()) {
-			IntegratorModel.getInstance().setTaskName(null);
-			lblTaskName.setText("");
-			
+		try {
+			IntegratorModel.getInstance().checkTemplatesDec();
+
+			templatesDec.setImage(Constants.DEC_REQUIRED);
+			templatesDec.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
+		}catch(Exception e) {
 			templatesDec.setImage(Constants.DEC_ERROR);
-			templatesDec.setDescriptionText(Constants.ERROR + Constants.ERROR_BLANK_TEMPLATE_LIST);
-			return;
-		}	
-			
-			
-		// Single template identifier does not match the task name
-		if(IntegratorModel.getInstance().getIdentifiers().size() == 1
-				&& !IntegratorModel.getInstance().getIdentifiers().get(0).contentEquals("")) {
-				
-			templatesDec.setImage(Constants.DEC_ERROR);
-			templatesDec.setDescriptionText(Constants.ERROR + Constants.ERROR_SINGLE_TEMPLATE_ID);
-			return;
+			templatesDec.setDescriptionText(Constants.ERROR + e.getMessage());
 		}
-		
-		templatesDec.setImage(Constants.DEC_REQUIRED);
-		templatesDec.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
 	}
 }

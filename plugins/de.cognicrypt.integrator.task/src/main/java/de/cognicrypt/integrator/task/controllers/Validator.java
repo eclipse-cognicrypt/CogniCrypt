@@ -18,7 +18,7 @@ import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class Validator {
-
+	
 	/*
 	 * Returns true if @taskName has already been added
 	 */

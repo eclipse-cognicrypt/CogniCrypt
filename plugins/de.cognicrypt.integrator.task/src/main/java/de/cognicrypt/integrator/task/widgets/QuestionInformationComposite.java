@@ -178,68 +178,55 @@ public class QuestionInformationComposite extends Composite {
 		return questionText.getText();
 	}
 	
+	/**
+	 * Creates a new answer and updates the GUIe
+	 */
 	public void addAnswer() {
-		int answerIndex = IntegratorModel.getInstance().getQuestion(questionIndex).getAnswers().size();
+		IntegratorModel.getInstance().addAnswer(questionIndex);
 		
-		Answer a = new Answer();
-		a.setValue("");
-		a.setOption(IntegratorModel.getInstance().getIdentifiers().get(answerIndex % IntegratorModel.getInstance().getIdentifiers().size()));
-		
-		if(answerIndex == 0)
-			a.setDefaultAnswer(true);
-		
-		IntegratorModel.getInstance().getQuestions().get(questionIndex).getAnswers().add(a);
 		answersComposite.updateAnswerContainer();
-		
 		checkAnswersDec();
 	}
 	
-	
+	/**
+	 * Removes an answer and updates the GUI
+	 * @param answerIndex to be removed
+	 */
 	public void removeAnswer(int answerIndex) {
+		IntegratorModel.getInstance().removeAnswer(answerIndex, answerIndex);
 		
-		boolean wasDefaultAnswer = IntegratorModel.getInstance().getAnswer(questionIndex, answerIndex).isDefaultAnswer();
-		
-		IntegratorModel.getInstance().getQuestion(questionIndex).getAnswers().remove(answerIndex);
-		
-		if(wasDefaultAnswer && !IntegratorModel.getInstance().getQuestion(questionIndex).getAnswers().isEmpty())
-			IntegratorModel.getInstance().getAnswer(questionIndex, 0).setDefaultAnswer(true);
-			
 		checkAnswersDec();
 	}
 	
+	/**
+	 * Updates the question decorator and checks if the page is complete
+	 */
 	private void checkQuestionDec() {
-		if(IntegratorModel.getInstance().getQuestion(questionIndex).getQuestionText().isEmpty()) { 
-			questionDec.setImage(Constants.DEC_ERROR);
-			questionDec.setDescriptionText(Constants.ERROR + Constants.ERROR_MESSAGE_BLANK_QUESTION_NAME);
-		}else {
+		try {
+			IntegratorModel.getInstance().checkQuestionDec(questionIndex);
+			
 			questionDec.setImage(Constants.DEC_REQUIRED);
 			questionDec.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
+		}catch(Exception e) {
+			questionDec.setImage(Constants.DEC_ERROR);
+			questionDec.setDescriptionText(Constants.ERROR + e.getMessage());
 		}
 		
 		questionsPage.checkPageComplete();
 	}
 	
+	/**
+	 * Updates the answers decorator and checks if the page is complete
+	 */
 	public void checkAnswersDec() {
-		
-		ArrayList<Answer> answers = IntegratorModel.getInstance().getQuestions().get(questionIndex).getAnswers(); 
-
-		if(answers.isEmpty()) { 
-			answersDec.setImage(Constants.DEC_ERROR);
-			answersDec.setDescriptionText(Constants.ERROR + Constants.ERROR_BLANK_ANSWERS_LIST);
-		}else {
-			boolean answerIsEmpty = false;
-
-			for(Answer a : answers) {
-				answerIsEmpty |= a.getValue().isEmpty();
-			}
+		try {
+			IntegratorModel.getInstance().checkAnswersDec(questionIndex);
 			
-			if(answerIsEmpty) {
-				answersDec.setImage(Constants.DEC_ERROR);
-				answersDec.setDescriptionText(Constants.ERROR + Constants.ERROR_EMPTY_ANSWER_TEXT);
-			}else {
-				answersDec.setImage(Constants.DEC_REQUIRED);
-				answersDec.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
-			}
+			answersDec.setImage(Constants.DEC_REQUIRED);
+			answersDec.setDescriptionText(Constants.MESSAGE_REQUIRED_FIELD);
+		}catch (Exception e) {
+			answersDec.setImage(Constants.DEC_ERROR);
+			answersDec.setDescriptionText(Constants.ERROR + e.getMessage());
 		}
 		
 		questionsPage.checkPageComplete();

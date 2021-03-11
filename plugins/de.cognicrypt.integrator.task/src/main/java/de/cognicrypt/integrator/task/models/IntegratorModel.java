@@ -26,12 +26,9 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.controllers.Validator;
 
 public class IntegratorModel {
-	
-	private String description;
-	private String taskDescription;
 	private File locationOfCryslTemplate;
-	private File locationOfIconFile;
-	private File locationOfJSONFile;
+	private File iconFile;
+	private File jsonFile;
 	private File locationImportFile;
 	private boolean isGuidedModeChosen;
 	private boolean isImportModeChosen;
@@ -42,13 +39,19 @@ public class IntegratorModel {
 	private HashMap<String, File> cryslTemplateFiles;
 	private final ArrayList<Question> questions;
 
-	// Singleton
 	private static IntegratorModel instance = new IntegratorModel();
 	
+	/**
+	 * 
+	 * @return singleton object
+	 */
 	public static IntegratorModel getInstance() {
 		return instance;
 	}
 	
+	/**
+	 * Resets the singleton object that contains the plugin state
+	 */
 	public static void resetInstance() {
 		instance = new IntegratorModel();
 	}
@@ -59,150 +62,11 @@ public class IntegratorModel {
 		cryslTemplateFiles = new HashMap<String, File>();
 		questions = new ArrayList<>();
 	}
-
-	/**
-	 * @return the nameOfTheTask
-	 */
-	public String getTaskName() {
-		return task.getName();
-	}
-	
-	public String getTrimmedTaskName() {
-		return task.getName().replaceAll("[^A-Za-z0-9]", "");
-	}
-
-	/**
-	 * @param nameOfTheTask the nameOfTheTask to set
-	 */
-	public void setTaskName(final String nameOfTheTask) {
-		task.setName(nameOfTheTask);
-		task.setDescription(nameOfTheTask);
-	}
-
-	public File getIconFile() {
-		return locationOfIconFile;
-	}
-
-	public void setLocationOfIconFile(File locationOfIconFile) {
-		this.locationOfIconFile = locationOfIconFile;
-	}
-
-	public File getImportFile() {
-		return locationImportFile;
-	}
-
-	public void setLocationOfImportFile(File locationOfImportFile) {
-		this.locationImportFile = locationOfImportFile;
-	}
-
-	/**
-	 * @return the locationOfJSONFile
-	 */
-	public File getJSONFile() {
-		return this.locationOfJSONFile;
-	}
-
-	/**
-	 * @param locationOfJSONFile the locationOfJSONFile to set
-	 */
-	public void setLocationOfJSONFile(final File locationOfJSONFile) {
-		this.locationOfJSONFile = locationOfJSONFile;
-	}
-	
-
-	/**
-	 * @return the isGuidedModeChosen
-	 */
-	public boolean isGuidedModeChosen() {
-		return this.isGuidedModeChosen;
-	}
-
-	/**
-	 * @param isGuidedModeChosen the isGuidedModeChosen to set
-	 */
-	public void setGuidedModeChosen(final boolean isGuidedModeChosen) {
-		this.isGuidedModeChosen = isGuidedModeChosen;
-	}
-
-	/**
-	 * @return the isGuidedModeChosen
-	 */
-	public boolean isImportModeChosen() {
-		return this.isImportModeChosen;
-	}
-
-	/**
-	 * @param isGuidedModeChosen the isGuidedModeChosen to set
-	 */
-	public void setImportModeChosen(final boolean isImportModeChosen) {
-		this.isImportModeChosen = isImportModeChosen;
-	}
-	
-	/**
-	 * @return the task
-	 */
-	public Task getTask() {
-		return this.task;
-	}
-
-	/**
-	 * Generate the Task instance from the advanced mode model.
-	 */
-	public void setTask() {
-		task.setName(getTaskName());
-		task.setDescription(getDescription() == null ? "" : getDescription());
-		task.setTaskDescription(getTaskDescription() == null ? "" : getTaskDescription());
-		task.setQuestionsJSONFile(Constants.ECLIPSE_LOC_TASKDESC_DIR + "/" + getTaskName() + Constants.JSON_EXTENSION);
-	}
-
-
-	/**
-	 * @return the taskDescryption
-	 */
-	public String getTaskDescription() {
-		return this.taskDescription;
-	}
-
-	/**
-	 * @param taskDescription the taskDescryption to set
-	 */
-	public void setTaskDescription(final String taskDescription) {
-		this.taskDescription = taskDescription;
-	}
-	
-	
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-
-	public File getLocationOfCryslTemplate() {
-		return locationOfCryslTemplate;
-	}
-
-	public void setLocationOfCryslTemplate(File locationOfCryslTemplate) {
-		this.locationOfCryslTemplate = locationOfCryslTemplate;
-	}
-	
-
-	
-	
-	public HashMap<String, File> getCryslTemplateFiles() {
-		return cryslTemplateFiles;
-	}
-	
-	public boolean isTemplatesEmpty() {
-		return cryslTemplateFiles.isEmpty();
-	}
 	
 	
 	/**
 	 * 
-	 * @param templateFilePath
+	 * @param templateFilePath to be added
 	 * @return true if the added template was the first one
 	 * @throws Exception if warning has to be shown
 	 */
@@ -271,6 +135,9 @@ public class IntegratorModel {
 		return newTaskName;
 	}
 	
+	/**
+	 * @throws Exception if templates is empty or single template's identifier does not match the task name (task information page is incomplete)
+	 */
 	public void checkTemplatesDec() throws Exception {
 		// Template list is empty
 		if(isTemplatesEmpty())
@@ -280,16 +147,12 @@ public class IntegratorModel {
 		if(getIdentifiers().size() == 1 && !getIdentifiers().get(0).isEmpty())
 			throw new Exception(Constants.ERROR_SINGLE_TEMPLATE_ID);
 	}
-	
-	
-	public boolean contains(String identifier) {
-		return cryslTemplateFiles.containsKey(identifier);
-	}
-	
+
 	/**
 	 * 
-	 * @param templateIdentifier
+	 * @param templateIdentifier to be removed
 	 * @return true if last template was removed
+	 * @throws Exception if template is used in an answer and therefor not removed
 	 */
 	public boolean removeTemplate(String templateIdentifier) throws Exception {
 		
@@ -312,6 +175,189 @@ public class IntegratorModel {
 		return false;
 	}
 	
+	
+	/**
+	 * Creates a new answer and adds it to the question
+	 * @param questionIndex
+	 */
+	public void addAnswer(int questionIndex) {
+		int answerIndex = questions.get(questionIndex).getAnswers().size();
+		
+		Answer a = new Answer();
+		a.setValue("");
+		a.setOption(getIdentifiers().get(answerIndex % getIdentifiers().size()));
+		
+		if(answerIndex == 0)
+			a.setDefaultAnswer(true);
+		
+		questions.get(questionIndex).getAnswers().add(a);
+	}
+	
+	/**
+	 * Removes an answer and updates the default answer
+	 * @param answerIndex to be removed from the question
+	 * @param questionIndex
+	 */
+	public void removeAnswer(int questionIndex, int answerIndex) {
+		
+		boolean wasDefaultAnswer = getAnswer(questionIndex, answerIndex).isDefaultAnswer();
+		
+		getQuestion(questionIndex).getAnswers().remove(answerIndex);
+		
+		if(wasDefaultAnswer && !getQuestion(questionIndex).getAnswers().isEmpty())
+			getAnswer(questionIndex, 0).setDefaultAnswer(true);
+	}
+	
+	/**
+	 * 
+	 * @param questionIndex
+	 * @throws Exception if question text is empty
+	 */
+	public void checkQuestionDec(int questionIndex) throws Exception {
+		if(getQuestion(questionIndex).getQuestionText().isEmpty())
+			throw new Exception(Constants.ERROR_MESSAGE_BLANK_QUESTION_NAME);
+	}
+	
+	/**
+	 * 
+	 * @param questionIndex
+	 * @throws Exception if no answers were given or an answer's text is empty
+	 */
+	public void checkAnswersDec(int questionIndex) throws Exception {
+		
+		ArrayList<Answer> answers = getQuestions().get(questionIndex).getAnswers(); 
+
+		if(answers.isEmpty())
+			throw new Exception(Constants.ERROR_BLANK_ANSWERS_LIST);
+
+		boolean isAnswerTextEmpty = false;
+
+		for(Answer a : answers) {
+			isAnswerTextEmpty |= a.getValue().isEmpty();
+		}
+
+		if(isAnswerTextEmpty)
+			throw new Exception(Constants.ERROR_EMPTY_ANSWER_TEXT);
+	}
+	
+	
+	/**
+	 * 
+	 * @param debug can be set to true for unit testing without plugin dependencies
+	 */
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+	
+
+	public String getTaskName() {
+		return task.getName();
+	}
+	
+	/**
+	 * 
+	 * @return task name without special characters
+	 */
+	public String getTrimmedTaskName() {
+		return getTaskName().replaceAll("[^A-Za-z0-9]", "");
+	}
+
+
+	public void setTaskName(final String taskName) {
+		task.setName(taskName);
+		
+		
+		if(taskName != null) {
+			task.setDescription(taskName);
+			
+		}
+	}
+	
+	public void setQuestionsJSONFile() {
+		task.setQuestionsJSONFile(Constants.ECLIPSE_LOC_TASKDESC_DIR + "/" + getTaskName() + Constants.JSON_EXTENSION);
+	}
+
+	public File getIconFile() {
+		return iconFile;
+	}
+
+	public void setLocationOfIconFile(File locationOfIconFile) {
+		this.iconFile = locationOfIconFile;
+	}
+
+	public File getImportFile() {
+		return locationImportFile;
+	}
+
+	public void setLocationOfImportFile(File locationOfImportFile) {
+		this.locationImportFile = locationOfImportFile;
+	}
+
+	public File getJSONFile() {
+		return this.jsonFile;
+	}
+
+	public void setJSONFile(final File locationOfJSONFile) {
+		this.jsonFile = locationOfJSONFile;
+	}
+	
+	public boolean isGuidedModeChosen() {
+		return this.isGuidedModeChosen;
+	}
+
+	public void setGuidedModeChosen(final boolean isGuidedModeChosen) {
+		this.isGuidedModeChosen = isGuidedModeChosen;
+	}
+
+	public boolean isImportModeChosen() {
+		return this.isImportModeChosen;
+	}
+
+	public void setImportModeChosen(final boolean isImportModeChosen) {
+		this.isImportModeChosen = isImportModeChosen;
+	}
+	
+	public Task getTask() {
+		return this.task;
+	}
+
+	public String getTaskDescription() {
+		return task.getTaskDescription();
+	}
+
+	public void setTaskDescription(final String taskDescription) {
+		task.setTaskDescription(taskDescription);
+	}
+	
+	public String getDescription() {
+		return task.getDescription();
+	}
+
+	public void setDescription(String description) {
+		task.setDescription(description);
+	}
+
+	public File getLocationOfCryslTemplate() {
+		return locationOfCryslTemplate;
+	}
+
+	public void setLocationOfCryslTemplate(File locationOfCryslTemplate) {
+		this.locationOfCryslTemplate = locationOfCryslTemplate;
+	}
+	
+	public HashMap<String, File> getCryslTemplateFiles() {
+		return cryslTemplateFiles;
+	}
+	
+	public boolean isTemplatesEmpty() {
+		return cryslTemplateFiles.isEmpty();
+	}
+	
+	
+	public boolean contains(String identifier) {
+		return cryslTemplateFiles.containsKey(identifier);
+	}
+	
 	public List<String> getIdentifiers(){
 		ArrayList<String> identifiers = new ArrayList<String>();
 		identifiers.addAll(cryslTemplateFiles.keySet());
@@ -332,9 +378,5 @@ public class IntegratorModel {
 	
 	public Answer getAnswer(int questionIndex, int answerIndex) {
 		return questions.get(questionIndex).getAnswers().get(answerIndex);
-	}
-	
-	public void setDebug(boolean debug) {
-		this.debug = debug;
 	}
 }

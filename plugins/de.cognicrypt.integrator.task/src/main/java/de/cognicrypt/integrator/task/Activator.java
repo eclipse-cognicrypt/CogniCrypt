@@ -50,7 +50,6 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
-		//return null;
 	}
 
 	private void log(final int severity, final String message, final Exception ex) {

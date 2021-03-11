@@ -305,9 +305,6 @@ public class Constants {
 	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
 	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
 	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
-
-	// Warnings
-	
 		
 	// Errors
 	public static final String ERROR = "ERROR: ";

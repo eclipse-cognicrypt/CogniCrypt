@@ -61,7 +61,6 @@ public class AnswerGroup extends Group {
 				answer.setValue(txtAnswer.getText());
 				((QuestionInformationComposite) parent.getParent().getParent()).checkAnswersDec();
 			}
-			
 		});
 
 		possibleIdentifiers = new Combo(this, SWT.DROP_DOWN | SWT.READ_ONLY);

@@ -120,7 +120,7 @@ public class FileBrowserComposite extends Composite {
 				decFilePath.showHoverText("");
 				switch (labelText) {
 				case Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE:
-					IntegratorModel.getInstance().setLocationOfJSONFile(tempFileVariable);
+					IntegratorModel.getInstance().setJSONFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE:
 					IntegratorModel.getInstance().setLocationOfIconFile(tempFileVariable);

@@ -132,7 +132,7 @@ public class TaskInformationPageTest {
 			fail("Template is not used in a question and should therefor be removed");
 		}
 	}
-
+	
 	@Test
 	public void testDecoratorErrors() {
 		try {

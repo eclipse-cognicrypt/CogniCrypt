@@ -52,6 +52,9 @@ public class TaskIntegratorWizard extends Wizard {
 		setDefaultPageImageDescriptor(image);
 	}
 
+	/**
+	 * Adds the task information and question page
+	 */
 	@Override
 	public void addPages() {
 		taskInformation = new TaskIntegratorWizardPage(Constants.PAGE_TASK_INFORMATION, Constants.PAGE_TITLE_FOR_MODE_OF_WIZARD, Constants.PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD);
@@ -62,6 +65,9 @@ public class TaskIntegratorWizard extends Wizard {
 
 	
 	@Override
+	/**
+	 * Checks if the task integrator wizard can finish (determines if Generate button is enabled)
+	 */
 	public boolean canFinish() {
 		
 		if(IntegratorModel.getInstance().isImportModeChosen()) {
@@ -77,9 +83,9 @@ public class TaskIntegratorWizard extends Wizard {
 		return super.canFinish();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
+	 * Finishes the task integrator by generating the local file structure and copying the specified tasks
+	 * @return true if task could be generated successfully
 	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	@Override
@@ -89,14 +95,15 @@ public class TaskIntegratorWizard extends Wizard {
 		if (!ressourceFolder.exists()) {
 			// make resource directory for Code Generation Templates if it doesn't exist
 			ressourceFolder.mkdirs();
-			initlocalResourceDir(); // initialize needed sub-directories
+			initLocalResourceDir(); // initialize needed sub-directories
 		}
 
 		final IntegratorModel integratorModel = IntegratorModel.getInstance();
+		integratorModel.setQuestionsJSONFile();
+		
 		final FileUtilities fileUtilities = new FileUtilities();
 		final FileUtilitiesImportMode fileUtilitiesImportMode = new FileUtilitiesImportMode();
 
-		
 		String fileWriteAttemptResult;
 		
 		Task task;
@@ -123,7 +130,6 @@ public class TaskIntegratorWizard extends Wizard {
 				return false;
 			}
 		}else{
-			integratorModel.setTask();
 			task = integratorModel.getTask();
 
 			File taskDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName());
@@ -194,15 +200,15 @@ public class TaskIntegratorWizard extends Wizard {
 		}
 	}
 	
-	
-	public void initlocalResourceDir() {
+	/**
+	 * Creates the local resource directory and its subdirectories
+	 */
+	public void initLocalResourceDir() {
 		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 
 		File resourceCCres = new File(Constants.ECLIPSE_LOC_RES_DIR);
 		
-		
 		resourceCCTemp.mkdir(); // make local directory for Code Generation Templates
 		resourceCCres.mkdir();  //// make local directory for Resources for Code Generation Templates
-		
 		
 		File resourceCCaddres = new File(Constants.ECLIPSE_LOC_ADDRES_DIR);
 		File resourceCCcla = new File(Constants.ECLIPSE_LOC_CLA_DIR);

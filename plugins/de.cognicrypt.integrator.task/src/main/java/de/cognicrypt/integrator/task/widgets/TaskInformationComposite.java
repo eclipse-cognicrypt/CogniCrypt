@@ -71,6 +71,7 @@ public class TaskInformationComposite extends Composite {
 	 *
 	 * @param parent
 	 * @param style
+	 * @param wizardPage
 	 */
 	public TaskInformationComposite(final Composite parent, final int style,
 			final TaskIntegratorWizardPage wizardPage) {
@@ -98,8 +99,8 @@ public class TaskInformationComposite extends Composite {
 		gdTaskDescription.widthHint = 0;
 		txtTaskDescription.setLayoutData(gdTaskDescription);
 
-		txtTaskDescription.addModifyListener(
-				e -> IntegratorModel.getInstance().setTaskDescription(txtTaskDescription.getText().trim()));
+		// Modify the task description
+		txtTaskDescription.addModifyListener(e -> IntegratorModel.getInstance().setTaskDescription(txtTaskDescription.getText().trim()));
 
 
 		/* Template Section */
@@ -122,7 +123,8 @@ public class TaskInformationComposite extends Composite {
 		templateList.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				btnRemoveTemplate.setEnabled(true);
+				if (templateList.getSelectionCount() != 0)
+					btnRemoveTemplate.setEnabled(true); // enable remove button if a template is selected
 			}
 		});
 
@@ -153,7 +155,9 @@ public class TaskInformationComposite extends Composite {
 				String[] templateIds = templateList.getSelection(); 
 
 				for(int i=0; i < templateIds.length; i++)
-					templateIds[i] = templateIds[i].replace(IntegratorModel.getInstance().getTaskName(), "");
+					// template identifiers are displayed with their task name as prefix to make the empty standard identifier look less weird
+					// the prefix has to be removed from the GUI selection to get the actual template identifier
+					templateIds[i] = templateIds[i].replace(IntegratorModel.getInstance().getTaskName(), ""); 
 
 				removeTemplates(templateIds);
 			}
@@ -183,9 +187,8 @@ public class TaskInformationComposite extends Composite {
 
 		final Button btnGuidedMode = new Button(compositeFileImports, SWT.CHECK);
 		btnGuidedMode.setText("Guided Mode");
-		// Guided mode set by default.
 		btnGuidedMode.setSelection(true);
-		IntegratorModel.getInstance().setGuidedModeChosen(btnGuidedMode.getSelection());
+		IntegratorModel.getInstance().setGuidedModeChosen(true);
 
 		final Composite compositeNonguidedMode = new Composite(compositeFileImports, SWT.NONE);
 		compositeNonguidedMode.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -224,9 +227,6 @@ public class TaskInformationComposite extends Composite {
 						((WizardPage) page).setPageComplete(!tempSelectionStatus);
 					}
 				}
-
-				// Check if the page can be set to completed.
-				wizardPage.checkPageComplete();
 			}
 		});
 
@@ -235,6 +235,8 @@ public class TaskInformationComposite extends Composite {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final boolean tempSelectionStatus = btnImportMode.getSelection();
+				
+				// If the import mode is selected, hide the other UI elements
 				compImport.setVisible(tempSelectionStatus);
 				compositeTaskInfo.setVisible(!tempSelectionStatus);
 				compositeFileImports.setVisible(!tempSelectionStatus);
@@ -245,47 +247,10 @@ public class TaskInformationComposite extends Composite {
 
 	}
 
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
-	}
-
-	public FileBrowserComposite getCompPNG() {
-		return compPNG;
-	}
-
-	public FileBrowserComposite getCompJSON() {
-		return compJSON;
-	}
-
-	public FileBrowserComposite getImportZIP() {
-		return compImport;
-	}
-
-
-	public TaskIntegratorWizardPage getLocalContainerPage() {
-		return wizardPage;
-	}
-
-	public ControlDecoration getDecTemplates() {
-		return templatesDec;
-	}
-
-
-	private void redrawTemplateList() {		
-		templateList.removeAll();
-		btnRemoveTemplate.setEnabled(false);
-
-		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
-
-		for(Entry<String, File> e : templates.entrySet()) {
-			templateList.add(IntegratorModel.getInstance().getTaskName() + e.getKey());	
-		}
-	}
-
-
+	/**
+	 * Opens a file dialog and adds the selected template
+	 */
 	public void addTemplate() {
-
 		final FileDialog fileDialog = new FileDialog(getShell(), SWT.NONE);
 		fileDialog.setFilterExtensions(new String[] { "*.java" });
 		fileDialog.setText(Constants.WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE);
@@ -308,6 +273,10 @@ public class TaskInformationComposite extends Composite {
 		}		
 	}
 
+	/**
+	 * 
+	 * @param identifiers to be removed
+	 */
 	public void removeTemplates(String[] identifiers) {
 
 		for(String id : identifiers) {
@@ -325,7 +294,9 @@ public class TaskInformationComposite extends Composite {
 		redrawTemplateList();
 	}
 
-
+	/**
+	 * Check if the template decorators have to signal error or not
+	 */
 	private void checkTemplatesDec() {
 		try {
 			IntegratorModel.getInstance().checkTemplatesDec();
@@ -336,5 +307,44 @@ public class TaskInformationComposite extends Composite {
 			templatesDec.setImage(Constants.DEC_ERROR);
 			templatesDec.setDescriptionText(Constants.ERROR + e.getMessage());
 		}
+	}
+	
+	/**
+	 * Redraws the template list after add or remove
+	 */
+	private void redrawTemplateList() {		
+		templateList.removeAll();
+		btnRemoveTemplate.setEnabled(false);
+
+		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
+
+		for(Entry<String, File> e : templates.entrySet()) {
+			templateList.add(IntegratorModel.getInstance().getTaskName() + e.getKey());	
+		}
+	}
+	
+	@Override
+	protected void checkSubclass() {
+		// Disable the check that prevents subclassing of SWT components
+	}
+
+	public FileBrowserComposite getCompPNG() {
+		return compPNG;
+	}
+
+	public FileBrowserComposite getCompJSON() {
+		return compJSON;
+	}
+
+	public FileBrowserComposite getImportZIP() {
+		return compImport;
+	}
+
+	public TaskIntegratorWizardPage getLocalContainerPage() {
+		return wizardPage;
+	}
+
+	public ControlDecoration getDecTemplates() {
+		return templatesDec;
 	}
 }

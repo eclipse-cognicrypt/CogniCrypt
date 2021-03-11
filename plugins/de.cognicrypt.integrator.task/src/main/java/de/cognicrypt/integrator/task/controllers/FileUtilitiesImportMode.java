@@ -50,7 +50,7 @@ public class FileUtilitiesImportMode {
 		}
 		copyTemplatesImportMode();
 		FileUtilities.deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName));
-		integratorModel.setTask();
+		IntegratorModel.getInstance().setQuestionsJSONFile();
 		return errors.toString();
 	}	
 	

@@ -318,6 +318,8 @@ public class Constants {
 	
 	public static final String ERROR_TEMPLATE_IS_USED_IN_ANSWER = "The chosen template is used in an answer and can therefor not be removed.";
 	
+	public static final String ERROR_MULTIPLE_QUESTIONS_NOT_SUPPORTED = "Multiple questions are currently not supported.";
+	
 	
 	// Labels	
 	public static final String LABEL_BROWSE_BUTTON = "Choose File";

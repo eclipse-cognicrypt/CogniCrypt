@@ -91,7 +91,7 @@ public class QuestionInformationComposite extends Composite {
 				confirmationMessageBox.setText("Remove Question");
 				final int response = confirmationMessageBox.open();
 				if (response == SWT.YES) {
-					questionsDisplayComposite.deleteQuestion(questionIndex);
+					questionsDisplayComposite.removeQuestion(questionIndex);
 				}
 			}
 		});

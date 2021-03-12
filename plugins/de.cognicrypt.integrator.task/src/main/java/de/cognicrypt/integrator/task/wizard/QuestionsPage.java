@@ -26,6 +26,7 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
+import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.QuestionInformationComposite;
 import de.cognicrypt.integrator.task.widgets.QuestionsDisplayComposite;
@@ -58,27 +59,25 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 		addQuestionBtn.setText(Constants.ADD_QUESTION);
 
 		addQuestionBtn.addSelectionListener(new SelectionAdapter() {
-
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				final int questionID = IntegratorModel.getInstance().getQuestions().size();
-				
-				if (questionID == 0) {
-					final Question questionDetails = new Question();
-					questionDetails.setQuestionText("");
-					questionDetails.setHelpText("");
-					questionDetails.setAnswers(new ArrayList<Answer>());
-					questionDetails.setId(questionID);
-
-					// Update the array list.
-					IntegratorModel.getInstance().getQuestions().add(questionDetails);
-					// rebuild the UI
-					questionsDisplayComposite.updateQuestionContainer();
-				} else {
-					MessageDialog.openError(getShell(), "Warning", "Multiple questions are currently not supported.");
-				}
+				addQuestion();
 			}
 		});
+	}
+	
+	
+	/**
+	 * Adds a question to the plugin state
+	 */
+	private void addQuestion() {
+		try {
+			IntegratorModel.getInstance().addQuestion();
+			
+			questionsDisplayComposite.updateQuestionContainer();
+		}catch(ErrorMessageException e) {
+			MessageDialog.openError(getShell(), "Warning", e.getMessage());
+		}
 	}
 
 	

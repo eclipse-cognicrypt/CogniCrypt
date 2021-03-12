@@ -24,6 +24,7 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.controllers.Validator;
+import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
 
 public class IntegratorModel {
 	private File locationOfCryslTemplate;
@@ -68,9 +69,9 @@ public class IntegratorModel {
 	 * 
 	 * @param templateFilePath to be added
 	 * @return true if the added template was the first one
-	 * @throws Exception if warning has to be shown
+	 * @throws ErrorMessageException if warning has to be shown
 	 */
-	public boolean addTemplate(String templateFilePath) throws Exception {
+	public boolean addTemplate(String templateFilePath) throws ErrorMessageException {
 		
 		boolean newTaskName = false;
 		
@@ -82,14 +83,14 @@ public class IntegratorModel {
 		String taskName = filePathParts[filePathParts.length - 1].replace(".java", "");
 		
 		if(!debug && Validator.checkIfTaskNameAlreadyExists(taskName)) { // can not be tested because TaskJSONReader requires the plugin bundle
-			throw new Exception(Constants.ERROR_TASK_ALREADY_INTEGRATED);
+			throw new ErrorMessageException(Constants.ERROR_TASK_ALREADY_INTEGRATED);
 		}
 		
 		if (getTaskName() == null) {
 			setTaskName(taskName);
 			newTaskName = true;
 		}else if (!taskName.contentEquals(IntegratorModel.getInstance().getTaskName())) {
-			throw new Exception(Constants.ERROR_DIFFERENT_TASK_NAME);
+			throw new ErrorMessageException(Constants.ERROR_DIFFERENT_TASK_NAME);
 		}
 		
 		// Extract package line from the template's source code
@@ -99,14 +100,14 @@ public class IntegratorModel {
 		try {
 			scanner = new Scanner(new File(templateFilePath));
 		} catch (FileNotFoundException e1) {
-			throw new Exception(Constants.ERROR_FILE_NOT_FOUND);
+			throw new ErrorMessageException(Constants.ERROR_FILE_NOT_FOUND);
 		}
 		
 		while (packageLine.contentEquals("")) {
 
 			if(!scanner.hasNextLine()) {
 				scanner.close();
-				throw new Exception(Constants.ERROR_NO_PACKAGE);
+				throw new ErrorMessageException(Constants.ERROR_NO_PACKAGE);
 			}
 
 			String[] expr = scanner.nextLine().split(";");
@@ -136,34 +137,33 @@ public class IntegratorModel {
 	}
 	
 	/**
-	 * @throws Exception if templates is empty or single template's identifier does not match the task name (task information page is incomplete)
+	 * @throws ErrorMessageException if templates is empty or single template's identifier does not match the task name (task information page is incomplete)
 	 */
-	public void checkTemplatesDec() throws Exception {
+	public void checkTemplatesDec() throws ErrorMessageException {
 		// Template list is empty
 		if(isTemplatesEmpty())
-			throw new Exception(Constants.ERROR_BLANK_TEMPLATE_LIST);
+			throw new ErrorMessageException(Constants.ERROR_BLANK_TEMPLATE_LIST);
 				
 		// Single template identifier does not match the task name
 		if(getIdentifiers().size() == 1 && !getIdentifiers().get(0).isEmpty())
-			throw new Exception(Constants.ERROR_SINGLE_TEMPLATE_ID);
+			throw new ErrorMessageException(Constants.ERROR_SINGLE_TEMPLATE_ID);
 	}
 
 	/**
 	 * 
 	 * @param templateIdentifier to be removed
 	 * @return true if last template was removed
-	 * @throws Exception if template is used in an answer and therefor not removed
+	 * @throws ErrorMessageException if template is used in an answer and therefor not removed
 	 */
-	public boolean removeTemplate(String templateIdentifier) throws Exception {
+	public boolean removeTemplate(String templateIdentifier) throws ErrorMessageException {
 		
 		for(Question q : questions) {
 			for(Answer a : q.getAnswers()) {
 				if(a.getOption().contentEquals(templateIdentifier)) {
-					throw new Exception(Constants.ERROR_TEMPLATE_IS_USED_IN_ANSWER);
+					throw new ErrorMessageException(Constants.ERROR_TEMPLATE_IS_USED_IN_ANSWER);
 				}
 			}
 		}
-
 
 		cryslTemplateFiles.remove(templateIdentifier);
 
@@ -175,6 +175,37 @@ public class IntegratorModel {
 		return false;
 	}
 	
+	/**
+	 * Adds a question to the plugin state
+	 */
+	public void addQuestion() throws ErrorMessageException {
+		int questionID = questions.size();
+		
+		if (questionID > 0)
+			throw new ErrorMessageException(Constants.ERROR_MULTIPLE_QUESTIONS_NOT_SUPPORTED);
+		
+		Question questionDetails = new Question();
+		questionDetails.setQuestionText("");
+		questionDetails.setHelpText("");
+		questionDetails.setAnswers(new ArrayList<Answer>());
+		questionDetails.setId(questionID);
+
+		questions.add(questionDetails);
+	}
+	
+	/**
+	 * Deletes the question
+	 *
+	 * @param questionIndex index of the question to be deleted
+	 */
+	public void removeQuestion(int questionIndex) {
+
+		questions.remove(questionIndex);
+		
+		int qID = 0;
+		for (Question qstn : questions)
+			qstn.setId(qID++);
+	}
 	
 	/**
 	 * Creates a new answer and adds it to the question
@@ -211,24 +242,24 @@ public class IntegratorModel {
 	/**
 	 * 
 	 * @param questionIndex
-	 * @throws Exception if question text is empty
+	 * @throws ErrorMessageException if question text is empty
 	 */
-	public void checkQuestionDec(int questionIndex) throws Exception {
+	public void checkQuestionDec(int questionIndex) throws ErrorMessageException {
 		if(getQuestion(questionIndex).getQuestionText().isEmpty())
-			throw new Exception(Constants.ERROR_MESSAGE_BLANK_QUESTION_NAME);
+			throw new ErrorMessageException(Constants.ERROR_MESSAGE_BLANK_QUESTION_NAME);
 	}
 	
 	/**
 	 * 
 	 * @param questionIndex
-	 * @throws Exception if no answers were given or an answer's text is empty
+	 * @throws ErrorMessageException if no answers were given or an answer's text is empty
 	 */
-	public void checkAnswersDec(int questionIndex) throws Exception {
+	public void checkAnswersDec(int questionIndex) throws ErrorMessageException {
 		
 		ArrayList<Answer> answers = getQuestions().get(questionIndex).getAnswers(); 
 
 		if(answers.isEmpty())
-			throw new Exception(Constants.ERROR_BLANK_ANSWERS_LIST);
+			throw new ErrorMessageException(Constants.ERROR_BLANK_ANSWERS_LIST);
 
 		boolean isAnswerTextEmpty = false;
 
@@ -237,7 +268,7 @@ public class IntegratorModel {
 		}
 
 		if(isAnswerTextEmpty)
-			throw new Exception(Constants.ERROR_EMPTY_ANSWER_TEXT);
+			throw new ErrorMessageException(Constants.ERROR_EMPTY_ANSWER_TEXT);
 	}
 	
 	
@@ -267,10 +298,8 @@ public class IntegratorModel {
 		task.setName(taskName);
 		
 		
-		if(taskName != null) {
-			task.setDescription(taskName);
-			
-		}
+		if(taskName != null)
+			task.setDescription(taskName);	
 	}
 	
 	public void setQuestionsJSONFile() {

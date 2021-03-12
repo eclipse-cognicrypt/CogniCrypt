@@ -46,8 +46,8 @@ public class QuestionsDisplayComposite extends ScrolledComposite {
 		setLayout(new GridLayout(2, false));
 
 		// All the granular UI elements will be added to this composite for the ScrolledComposite to work.
-		final Composite contentComposite = new Composite(this, SWT.NONE);
-		final GridLayout gridLayout = new GridLayout(1, false);
+		Composite contentComposite = new Composite(this, SWT.NONE);
+		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 30;
 		contentComposite.setLayout(gridLayout);
 		setContent(contentComposite);
@@ -55,7 +55,7 @@ public class QuestionsDisplayComposite extends ScrolledComposite {
 	}
 	
 
-	public void addQuestionUIElements(final int questionIndex) {
+	public void addQuestionUIElements(int questionIndex) {
 		questionsInformationComposites.add(new QuestionInformationComposite((Composite) getContent(), SWT.NONE, questionIndex, this, questionsPage));
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
@@ -66,34 +66,21 @@ public class QuestionsDisplayComposite extends ScrolledComposite {
 	 *
 	 * @param questionIndex index of the question to be deleted
 	 */
-	public void deleteQuestion(final int questionIndex) {
+	public void removeQuestion(int questionIndex) {
 
-		IntegratorModel.getInstance().getQuestions().remove(questionIndex);
-		updateQuestionsID();
+		IntegratorModel.getInstance().removeQuestion(questionIndex);
+		
 		updateQuestionContainer();
 	}
-
-	/**
-	 * updates the question Id everytime when a question is deleted
-	 */
-
-	private void updateQuestionsID() {
-		int qID = 0;
-		for (final Question qstn : IntegratorModel.getInstance().getQuestions()) {
-			qstn.setId(qID++);
-		}
-
-	}
-
 
 	/**
 	 * Updates the question container
 	 */
 	public void updateQuestionContainer() {
-		final Composite compositeContentOfThisScrolledComposite = (Composite) getContent();
+		Composite compositeContentOfThisScrolledComposite = (Composite) getContent();
 
 		// first dispose all the granular UI elements (which includes the deleted one).
-		for (final Control uiRepresentationOfQuestions : compositeContentOfThisScrolledComposite.getChildren()) {
+		for (Control uiRepresentationOfQuestions : compositeContentOfThisScrolledComposite.getChildren()) {
 			uiRepresentationOfQuestions.dispose();
 		}
 		
@@ -132,7 +119,7 @@ public class QuestionsDisplayComposite extends ScrolledComposite {
 	/**
 	 * @param lowestWidgetYAxisValue the lowestWidgetYAxisValue to set
 	 */
-	public void setLowestWidgetYAxisValue(final int lowestWidgetYAxisValue) {
+	public void setLowestWidgetYAxisValue(int lowestWidgetYAxisValue) {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	}
 	

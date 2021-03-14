@@ -138,6 +138,7 @@ public class SootRunner {
 						rules.add(r.readRule(providerRule));
 					}
 					
+					// If detected provider is BC-JCA, then loading of JCA ruleset is skipped in next code section in order to avoid conflicts between two rulesets
 					if (detectedProvider == "BouncyCastle-JCA") {
 						 bannedRulesets.add("JavaCryptographicArchitecture");
 					}

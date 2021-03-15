@@ -70,20 +70,23 @@ import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.TaskInformationComposite;
 import de.cognicrypt.utils.Utils;
 
+/**
+ * This class is used to copy the necessary files for Task Integration to the correct destinations
+ * where the Code Generator can use them
+ * @author felix
+ * 
+ */
 public class FileUtilities {
 
 	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
 	IntegratorModel integratorModel;
 	
 	/**
-	 * The class needs to be initialized with a task name, as it is used extensively
-	 * in the methods.
-	 *
-	 * @param taskName
+	 * Set local attributes and build Directory Structure for custom tasks if it doesn't exist
 	 */
 	public FileUtilities() {
 		super();
-		setErrors(new StringBuilder());
+		errors = new StringBuilder();
 		integratorModel = IntegratorModel.getInstance();
 		
 		File ressourceFolder = new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR);
@@ -96,7 +99,7 @@ public class FileUtilities {
 	}
 	
 	/**
-	 * Creates the local resource directory and its subdirectories
+	 * Creates the local resource directory for custom tasks and its subdirectories
 	 */
 	public void initLocalResourceDir() {
 		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 
@@ -131,6 +134,11 @@ public class FileUtilities {
 		}
 	}
 	
+	/**
+	 * copy given Template Files and given Image File to local resource directory for custom tasks 
+	 * (only used in Guided Mode Integration)
+	 * @return String with the error messages ("" if no errors happend)
+	 */
 	public String writeData() {
 		
 		final HashMap<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
@@ -140,13 +148,17 @@ public class FileUtilities {
 			try {
 				copyTemplate(cryslTemplateFile.get(key), key);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				errors.append("There was a problem copying file " + cryslTemplateFile.get(key).toString() + "/n");
 			}
 		}
-		return getErrors().toString();
+		return errors.toString();
 	}
 
+	/**
+	 * copy given Template Files, given Image File and given QuestionJSONFile to local resource directory for custom tasks 
+	 * (only used in Non-Guided Mode Integration)
+	 * @return String with the error messages ("" if no erros happend)
+	 */
 	public String writeDataNonGuidedMode() {
 		
 		final HashMap<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
@@ -157,16 +169,20 @@ public class FileUtilities {
 			try {
 				copyTemplate(cryslTemplateFile.get(key), key);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				errors.append("There was a problem copying file " + cryslTemplateFile.get(key).toString() + "/n");
 			}
 		}
-		return getErrors().toString();
+		return errors.toString();
 	}
 	
 
 	
-	
+	/**
+	 * Copy the template file to the appropriate location for code generator + exportable zip.
+	 * @param existingFileLocation one of the existing template files choosen by the user
+	 * @param option identifier for given template file
+	 * @throws IOException
+	 */
 	private void copyTemplate(final File existingFileLocation, String option) throws IOException {
 		File parentFolder1 = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
 		File parentFolder2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/template");
@@ -196,17 +212,16 @@ public class FileUtilities {
 	}
 	
 	/**
-	 * Copy the image file to the appropriate location.
-	 *
-	 * @param existingFileLocation
+	 * Copy the image file to the appropriate location for code generator + exportable zip.
+	 * @param existingFileLocation the existing image file choosen by the user
 	 */
 	private void copyImage(final File existingFileLocation) {
 			File targetDirectory = null;
 			File targetDirectory2 = null;
 			try {
 				if (existingFileLocation.getPath().endsWith(Constants.PNG_EXTENSION)) {
-					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.PNG_EXTENSION);
-					targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res", IntegratorModel.getInstance().getTrimmedTaskName() + Constants.PNG_EXTENSION);
+					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, integratorModel.getTrimmedTaskName() + Constants.PNG_EXTENSION);
+					targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res", integratorModel.getTrimmedTaskName() + Constants.PNG_EXTENSION);
 				} else {
 					throw new Exception("Unknown file type.");
 				}
@@ -216,24 +231,21 @@ public class FileUtilities {
 
 			} catch (final Exception e) {
 				Activator.getDefault().logError(e);
-				getErrors().append("There was a problem copying file ");
-				getErrors().append(existingFileLocation.getName());
-				getErrors().append("\n");
+				errors.append("There was a problem copying file " + existingFileLocation.getName() + "\n");
 			}
 	}
 
 	/**
-	 * Copy the Question JSON file to the appropriate location.
-	 *
-	 * @param existingFileLocation
+	 * Copy the questionJSON file to the appropriate location for code generator + exportable zip.
+	 * @param existingFileLocation the existing questionJSON file choosen by the user (only Non-Guided Mode)
 	 */
 	private void copyJSON(final File existingFileLocation) {
 		File targetDirectory = null;
 		File targetDirectory2 = null;
 		try {
 			if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-				targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
-				targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res", IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res", integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
 			} else {
 				throw new Exception("Unknown file type.");
 			}
@@ -243,16 +255,17 @@ public class FileUtilities {
 
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
-			getErrors().append("There was a problem copying file ");
-			getErrors().append(existingFileLocation.getName());
-			getErrors().append("\n");
+			errors.append("There was a problem copying file ");
+			errors.append(existingFileLocation.getName());
+			errors.append("\n");
 		}
 	}
 
 	
 
 	/**
-	 * Update the task.json file with the new Task.
+	 * Update the task.json file with the new Task in the local resource directory for custom tasks and 
+	 * write it to appropriate location for the exportable ZIP
 	 *
 	 * @param task the Task to be added.
 	 */
@@ -277,23 +290,20 @@ public class FileUtilities {
 			writer.close();
 			
 			writer = new BufferedWriter(
-					new FileWriter(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res/task.json")));
-			gson.toJson(tasks, new TypeToken<List<Task>>() {
+					new FileWriter(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res/task.json")));
+			gson.toJson(task, new TypeToken<List<Task>>() {
 			}.getType(), writer);
 			writer.close();
 
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
-			getErrors().append("There was a problem updating the task file.\n");
+			errors.append("There was a problem updating the task file.\n");
 		}
 	}
 
 	/**
-	 * @param questions listOfAllQuestions
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
-	 * @throws TransformerException
+	 * Build the questionJSON file to the appropriate location for code generator + exportable zip.
+	 * @param questions
 	 */
 	public void writeJSONFile(final ArrayList<Question> questions) {
 
@@ -302,11 +312,11 @@ public class FileUtilities {
 
 		final File jsonFile = new File(
 				Constants.ECLIPSE_LOC_TASKDESC_DIR,
-				IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
 		
 		final File jsonFile2 = new File(
-				Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + IntegratorModel.getInstance().getTaskName() + "/res",
-				IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res",
+				integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
 
 		try {
 			final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
@@ -361,27 +371,19 @@ public class FileUtilities {
 	 * @param fileName
 	 */
 	private void appendFileErrors(final String fileName) {
-		getErrors().append("The contents of the file ");
-		getErrors().append(fileName);
-		getErrors().append(" are invalid.");
-		getErrors().append("\n");
+		errors.append("The contents of the file ");
+		errors.append(fileName);
+		errors.append(" are invalid.");
+		errors.append("\n");
 	}
 	
-
 	/**
-	 * @return the list of errors.
+	 * convert a given File/Directory to a ZIP File (Used for creating the exportable ZIP in (Non-)Guided Mode) 
+	 * @param fileToZip 
+	 * @param fileName
+	 * @param zipOut
+	 * @throws IOException
 	 */
-	private StringBuilder getErrors() {
-		return this.errors;
-	}
-
-	/**
-	 * @param set the string builder to maintain the list of errors.
-	 */
-	private void setErrors(final StringBuilder errors) {
-		this.errors = errors;
-	}
-
 	public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
 		if (fileToZip.isHidden()) {
 			return;
@@ -411,6 +413,9 @@ public class FileUtilities {
 		fis.close();
 	}
 
+	/**
+	 * unzip the exportable ZIP file choosen by the user 
+	 */
 	public static void unzipFile() {
 		String fileZip = IntegratorModel.getInstance().getImportFile().toString();
 		File destDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
@@ -448,6 +453,13 @@ public class FileUtilities {
 		}
 	}
 
+	/**
+	 * helper function for unzipFile
+	 * @param destinationDir
+	 * @param zipEntry
+	 * @return
+	 * @throws IOException
+	 */
 	public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
 		File destFile = new File(destinationDir, zipEntry.getName());
 
@@ -461,6 +473,11 @@ public class FileUtilities {
 		return destFile;
 	}
 
+	/**
+	 * delete the given directory (used for clean up in the local ExportableTask directory)
+	 * @param directoryToBeDeleted
+	 * @return true if direcotry succesfully deleted
+	 */
 	public static boolean deleteDirectory(File directoryToBeDeleted) {
 		File[] allContents = directoryToBeDeleted.listFiles();
 		if (allContents != null) {

@@ -24,13 +24,23 @@ public class FileUtilitiesImportMode {
 	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
 	IntegratorModel integratorModel;
 	
-	
+	/**
+	 * This class is used to copy the necessary files for Task Integration to the correct destinations
+	 * where the Code Generator can use them (ImportMode)
+	 * @author felix
+	 * 
+	 */
 	public FileUtilitiesImportMode(){
 		super();
 		errors = new StringBuilder();
 		integratorModel = IntegratorModel.getInstance();
 	}
 
+	/**
+	 * copy given template files, given image file and given questionJSON file to local resource directory for custom tasks 
+	 * (only used in Guided Mode Integration)
+	 * @return String with the error messages ("" if no errors happend)
+	 */
 	public String writeDataImportMode() {
 		String taskName = integratorModel.getImportFile().getName().replace(".zip", "");
 		integratorModel.setTaskName(taskName);
@@ -54,6 +64,11 @@ public class FileUtilitiesImportMode {
 		return errors.toString();
 	}	
 	
+	/**
+	 * Copy the template files to the appropriate location for code generator
+	 * 
+	 * @throws IOException
+	 */
 	private void copyTemplatesImportMode(){
 		File templateDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/template");
 		if(!templateDir.exists()) {
@@ -72,7 +87,7 @@ public class FileUtilitiesImportMode {
 					Files.copy(templateFile.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING,
 							StandardCopyOption.COPY_ATTRIBUTES);
 				} catch (Exception e) {
-					e.printStackTrace();
+					errors.append("There was a problem copying file " + f.toString() + "/n");
 				}
 
 			}
@@ -83,9 +98,8 @@ public class FileUtilitiesImportMode {
 	
 
 	/**
-	 * Copy the image file to the appropriate location.
-	 *
-	 * @param existingFileLocation
+	 * Copy the image file to the appropriate location for code generator
+	 * @param existingFileLocation the existing image file from the exportable ZIP
 	 */
 	private void copyImage(final File existingFileLocation) {
 			File targetDirectory = null;
@@ -106,9 +120,8 @@ public class FileUtilitiesImportMode {
 	}
 
 	/**
-	 * Copy the Question JSON file to the appropriate location.
-	 *
-	 * @param existingFileLocation
+	 * Copy the questionJSON file to the appropriate location for code generator
+	 * @param existingFileLocation the existing questionJSON file from the exportable ZIP
 	 */
 	private void copyJSON(final File existingFileLocation) {
 		File targetDirectory = null;

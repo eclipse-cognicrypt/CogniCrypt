@@ -291,7 +291,7 @@ public class FileUtilities {
 			
 			writer = new BufferedWriter(
 					new FileWriter(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res/task.json")));
-			gson.toJson(task, new TypeToken<List<Task>>() {
+			gson.toJson(tasks, new TypeToken<List<Task>>() {
 			}.getType(), writer);
 			writer.close();
 
@@ -416,12 +416,10 @@ public class FileUtilities {
 	/**
 	 * unzip the exportable ZIP file choosen by the user 
 	 */
-	public static void unzipFile() {
-		String fileZip = IntegratorModel.getInstance().getImportFile().toString();
-		File destDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
+	public static void unzipFile(String zipFile, File destDir) {
 		byte[] buffer = new byte[1024];
 		try {
-			ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+			ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
 			ZipEntry zipEntry = zis.getNextEntry();
 			while (zipEntry != null) {
 				File newFile = newFile(destDir, zipEntry);

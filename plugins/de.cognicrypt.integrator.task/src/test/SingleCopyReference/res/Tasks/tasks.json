@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Test",
+    "description": "Test",
+    "image": "Test",
+    "codeGen": "CrySL",
+    "questionsJSONFile": "/home/blu/.dotfiles/.local/bin/eclipseDev/resources/CogniCrypt/res/TaskDesc/Test.json",
+    "isSelected": false
+  }
+]

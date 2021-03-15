@@ -41,9 +41,7 @@ public class IntegratorModel {
 	private boolean isGuidedModeChosen;
 	private boolean isImportModeChosen;
 	private final Task task;
-	
-	private boolean debug;
-	
+
 	private HashMap<String, File> cryslTemplateFiles;
 	private final ArrayList<Question> questions;
 
@@ -89,7 +87,7 @@ public class IntegratorModel {
 		String[] filePathParts = templateFilePath.split("(\\/|\\\\)");
 		String taskName = filePathParts[filePathParts.length - 1].replace(".java", "");
 		
-		if(!debug && Validator.checkIfTaskNameAlreadyExists(taskName)) { // can not be tested because TaskJSONReader requires the plugin bundle
+		if(Validator.checkIfTaskNameAlreadyExists(taskName)) { // can not be tested because TaskJSONReader requires the plugin bundle
 			throw new ErrorMessageException(Constants.ERROR_TASK_ALREADY_INTEGRATED);
 		}
 		
@@ -283,7 +281,7 @@ public class IntegratorModel {
 	 * @return true if an identifier is not used in any answer
 	 */
 	public boolean checkForUnusedIdentifiers() {
-		return !isImportModeChosen && isGuidedModeChosen && Validator.checkForUnusedIdentifiers();
+		return !isImportModeChosen && isGuidedModeChosen && getIdentifiers().size() > 1 && Validator.checkForUnusedIdentifiers();
 	}
 	
 	/**
@@ -299,7 +297,7 @@ public class IntegratorModel {
 		String fileWriteAttemptResult;
 
 		if (isImportModeChosen) {
-			FileUtilities.unzipFile();
+			FileUtilities.unzipFile(locationImportFile.toString(), new File(Constants.ECLIPSE_LOC_EXPORT_DIR));
 			fileWriteAttemptResult = fileUtilitiesImportMode.writeDataImportMode();
 			if (fileWriteAttemptResult.equals("")) {
 				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
@@ -355,16 +353,6 @@ public class IntegratorModel {
 		}
 		
 	}
-
-	
-	/**
-	 * 
-	 * @param debug can be set to true for unit testing without plugin dependencies
-	 */
-	public void setDebug(boolean debug) {
-		this.debug = debug;
-	}
-	
 
 	public String getTaskName() {
 		return task.getName();

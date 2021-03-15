@@ -39,7 +39,7 @@ public class FileUtilitiesImportMode {
 	/**
 	 * copy given template files, given image file and given questionJSON file to local resource directory for custom tasks 
 	 * (only used in Guided Mode Integration)
-	 * @return String with the error messages ("" if no errors happend)
+	 * @return String with the error messages ("" if no errors happened)
 	 */
 	public String writeDataImportMode() {
 		String taskName = integratorModel.getImportFile().getName().replace(".zip", "");
@@ -49,14 +49,14 @@ public class FileUtilitiesImportMode {
 			integratorModel.setLocationOfIconFile(iconLocation);
 			copyImage(iconLocation);
 		}else {
-			errors.append("ZIP invalide (Icon File not found) \n");
+			errors.append("ZIP invalid (Icon File not found) \n");
 		}
 		File jsonLocation = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/res/" + taskName + ".json");
 		if(iconLocation.exists()) {
 			integratorModel.setLocationOfIconFile(jsonLocation);
 			copyJSON(jsonLocation);
 		}else {
-			errors.append("ZIP invalide (Question JSON File not found) \n");
+			errors.append("ZIP invalid (Question JSON File not found) \n");
 		}
 		copyTemplatesImportMode();
 		FileUtilities.deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName));
@@ -72,7 +72,7 @@ public class FileUtilitiesImportMode {
 	private void copyTemplatesImportMode(){
 		File templateDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/template");
 		if(!templateDir.exists()) {
-			errors.append("ZIP invalide (Template Dir not found) \n");
+			errors.append("ZIP invalid (Template Dir not found) \n");
 			return;
 		}
 		File[] templates = templateDir.listFiles();
@@ -92,7 +92,7 @@ public class FileUtilitiesImportMode {
 
 			}
 		}else {
-			errors.append("ZIP invalide (Template Files not found) \n");
+			errors.append("ZIP invalid (Template Files not found) \n");
 		}
 	}
 	

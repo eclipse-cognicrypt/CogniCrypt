@@ -1,4 +1,4 @@
-package de.cognicrypt.integrator.task.tests;
+package de.cognicrypt.integrator.task.plugintests;
 
 import static org.junit.Assert.*;
 
@@ -19,7 +19,6 @@ public class TaskInformationPageTest {
 	public void setupTest() {
 		IntegratorModel.resetInstance();
 		im = IntegratorModel.getInstance();
-		im.setDebug(true);
 	}
 	
 	@Test

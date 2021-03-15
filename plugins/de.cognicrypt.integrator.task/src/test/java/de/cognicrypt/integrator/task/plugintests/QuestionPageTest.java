@@ -1,4 +1,4 @@
-package de.cognicrypt.integrator.task.tests;
+package de.cognicrypt.integrator.task.plugintests;
 
 import static org.junit.Assert.*;
 
@@ -19,8 +19,7 @@ public class QuestionPageTest {
 	public void setupTest() {
 		IntegratorModel.resetInstance();
 		im = IntegratorModel.getInstance();
-		im.setDebug(true);
-		
+
 		try {
 			im.addTemplate(pathPrefix + "TestInt/Test.java");
 			im.addTemplate(pathPrefix + "TestString/Test.java");

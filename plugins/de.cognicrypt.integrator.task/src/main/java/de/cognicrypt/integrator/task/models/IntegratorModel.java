@@ -12,17 +12,24 @@ package de.cognicrypt.integrator.task.models;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.zip.ZipOutputStream;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.core.Constants.CodeGenerators;
+import de.cognicrypt.integrator.task.controllers.FileUtilities;
+import de.cognicrypt.integrator.task.controllers.FileUtilitiesImportMode;
 import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
 
@@ -271,6 +278,84 @@ public class IntegratorModel {
 			throw new ErrorMessageException(Constants.ERROR_EMPTY_ANSWER_TEXT);
 	}
 	
+	/**
+	 * 
+	 * @return true if an identifier is not used in any answer
+	 */
+	public boolean checkForUnusedIdentifiers() {
+		return !isImportModeChosen && isGuidedModeChosen && Validator.checkForUnusedIdentifiers();
+	}
+	
+	/**
+	 * Copies the task using FileUtilities
+	 * @throws ErrorMessageException if something goes wrong during copy
+	 */
+	public void copyTask() throws ErrorMessageException {
+		setQuestionsJSONFile();
+		
+		final FileUtilities fileUtilities = new FileUtilities();
+		final FileUtilitiesImportMode fileUtilitiesImportMode = new FileUtilitiesImportMode();
+
+		String fileWriteAttemptResult;
+
+		if (isImportModeChosen) {
+			FileUtilities.unzipFile();
+			fileWriteAttemptResult = fileUtilitiesImportMode.writeDataImportMode();
+			if (fileWriteAttemptResult.equals("")) {
+				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+				task.setCodeGen(CodeGenerators.CrySL);
+				fileUtilitiesImportMode.writeTaskToJSONFile(task);
+			} else {
+				throw new ErrorMessageException(fileWriteAttemptResult, Constants.ERROR_PROBLEMS_WITH_ZIP);
+			}
+		}else{
+			File taskDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName());
+			taskDir.mkdir();
+
+			File templateDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/template");
+			templateDir.mkdir();
+
+			File resourceDir = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + "/res");
+			resourceDir.mkdir();
+
+			if (isGuidedModeChosen) {
+				fileWriteAttemptResult = fileUtilities.writeData();
+				if (getIdentifiers().size() == 1) {
+					fileUtilities.writeJSONFile(new ArrayList<Question>());
+				} else {
+					fileUtilities.writeJSONFile(getQuestions());
+				}
+			} else {
+				fileWriteAttemptResult = fileUtilities.writeDataNonGuidedMode();
+			}
+
+			if (fileWriteAttemptResult.equals("")) {
+				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
+				task.setCodeGen(CodeGenerators.CrySL);
+				fileUtilities.writeTaskToJSONFile(task);
+
+				try {
+					String sourceFile = Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName();
+					FileOutputStream fos = new FileOutputStream(
+							Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName() + ".zip");
+					ZipOutputStream zipOut = new ZipOutputStream(fos);
+					File fileToZip = new File(sourceFile);
+
+					FileUtilities.zipFile(fileToZip, fileToZip.getName(), zipOut);
+					zipOut.close();
+					fos.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				FileUtilities.deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + task.getName()));
+			} else {
+				throw new ErrorMessageException(fileWriteAttemptResult, Constants.ERROR_PROBLEMS_WITH_FILES);
+			}
+		}
+		
+	}
+
 	
 	/**
 	 * 

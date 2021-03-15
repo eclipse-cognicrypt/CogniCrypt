@@ -272,7 +272,7 @@ public class Constants {
 	// Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 
-	// Task Integrator Wizard
+	// Task Integrator Wizard	
 	public static final String PAGE_TASK_INFORMATION = "pageForTaskInformation";
 	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "New task";
 	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Provide the basic details about the task and add templates.";
@@ -299,6 +299,30 @@ public class Constants {
 	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
 	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
 		
+	// define custom Code Generation Template/Resource Directory
+	public final static String RELATIVE_CogniCrypt_RESOURCE_DIR = "resources/CogniCrypt";
+	public final static String ECLIPSE_CogniCrypt_RESOURCE_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_CogniCrypt_RESOURCE_DIR;
+	public final static String RELATIVE_LOC_TEMP_DIR = RELATIVE_CogniCrypt_RESOURCE_DIR + "/templates";
+	public final static String ECLIPSE_LOC_TEMP_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_LOC_TEMP_DIR;
+	public final static String ECLIPSE_LOC_RES_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/res";
+	public final static String ECLIPSE_LOC_ADDRES_DIR = ECLIPSE_LOC_RES_DIR + "/AdditionalResources";
+	public final static String ECLIPSE_LOC_CLA_DIR = ECLIPSE_LOC_RES_DIR + "/ClaferModel";
+	public final static String ECLIPSE_LOC_IMG_DIR = ECLIPSE_LOC_RES_DIR + "/images";
+	public final static String ECLIPSE_LOC_TASKDESC_DIR = ECLIPSE_LOC_RES_DIR + "/TaskDesc";
+	public final static String ECLIPSE_LOC_TASKS_DIR = ECLIPSE_LOC_RES_DIR + "/Tasks";
+	public final static String ECLIPSE_LOC_XSL_DIR = ECLIPSE_LOC_TASKS_DIR + "/XSLTemplates";
+	public final static String ECLIPSE_LOC_EXPORT_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/ExportableTasks";
+	
+	public final static String customjsonTaskFile = ECLIPSE_LOC_TASKS_DIR + "/tasks.json";
+
+	public static final String IMPORT_SUCCESSFUL = "The task has been succesfully imported and can be used after restarting Eclipse.";
+	public static final String EXPORT_SUCCESSFUL = "The task has been succesfully generated. You can use it after restarting Eclipse. An exportable ZIP File for this task has been copied to:" + ECLIPSE_LOC_EXPORT_DIR;
+
+	
+	// Warning
+	public static final String WARNING_TEMPLATE_NOT_USED_TITLE = "Unused Template";
+	public static final String WARNING_TEMPLATE_NOT_USED = "A template was added but is not used. Do you want to generate the task anyway?";
+	
 	// Errors
 	public static final String ERROR = "ERROR: ";
 	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
@@ -319,6 +343,9 @@ public class Constants {
 	public static final String ERROR_TEMPLATE_IS_USED_IN_ANSWER = "The chosen template is used in an answer and can therefor not be removed.";
 	
 	public static final String ERROR_MULTIPLE_QUESTIONS_NOT_SUPPORTED = "Multiple questions are currently not supported.";
+	
+	public static final String ERROR_PROBLEMS_WITH_ZIP = "Problems with the provided ZIP (Most likly has a wrong stucture).";
+	public static final String ERROR_PROBLEMS_WITH_FILES = "Problems with the provided files.";
 	
 	
 	// Labels	
@@ -444,23 +471,6 @@ public class Constants {
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
-
-	
-	//define custom Code Generation Template/Resource Directory
-	public final static String RELATIVE_CogniCrypt_RESOURCE_DIR = "resources/CogniCrypt";
-	public final static String ECLIPSE_CogniCrypt_RESOURCE_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_CogniCrypt_RESOURCE_DIR;
-	public final static String RELATIVE_LOC_TEMP_DIR = RELATIVE_CogniCrypt_RESOURCE_DIR + "/templates";
-	public final static String ECLIPSE_LOC_TEMP_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_LOC_TEMP_DIR;
-	public final static String ECLIPSE_LOC_RES_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/res";
-	public final static String ECLIPSE_LOC_ADDRES_DIR = ECLIPSE_LOC_RES_DIR + "/AdditionalResources";
-	public final static String ECLIPSE_LOC_CLA_DIR = ECLIPSE_LOC_RES_DIR + "/ClaferModel";
-	public final static String ECLIPSE_LOC_IMG_DIR = ECLIPSE_LOC_RES_DIR + "/images";
-	public final static String ECLIPSE_LOC_TASKDESC_DIR = ECLIPSE_LOC_RES_DIR + "/TaskDesc";
-	public final static String ECLIPSE_LOC_TASKS_DIR = ECLIPSE_LOC_RES_DIR + "/Tasks";
-	public final static String ECLIPSE_LOC_XSL_DIR = ECLIPSE_LOC_TASKS_DIR + "/XSLTemplates";
-	public final static String ECLIPSE_LOC_EXPORT_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/ExportableTasks";
-	
-	public final static String customjsonTaskFile = ECLIPSE_LOC_TASKS_DIR + "/tasks.json";
 	
 	// define the max java version before which plugin works.
 	public static final String CC_JAVA_VERSION = "1.8";

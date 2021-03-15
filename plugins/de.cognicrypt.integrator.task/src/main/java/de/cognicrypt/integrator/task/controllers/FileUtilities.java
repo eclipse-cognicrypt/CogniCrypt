@@ -85,6 +85,50 @@ public class FileUtilities {
 		super();
 		setErrors(new StringBuilder());
 		integratorModel = IntegratorModel.getInstance();
+		
+		File ressourceFolder = new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR);
+
+		if (!ressourceFolder.exists()) {
+			// make resource directory for Code Generation Templates if it doesn't exist
+			ressourceFolder.mkdirs();
+			initLocalResourceDir(); // initialize needed sub-directories
+		}
+	}
+	
+	/**
+	 * Creates the local resource directory and its subdirectories
+	 */
+	public void initLocalResourceDir() {
+		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 
+		File resourceCCres = new File(Constants.ECLIPSE_LOC_RES_DIR);
+		
+		resourceCCTemp.mkdir(); // make local directory for Code Generation Templates
+		resourceCCres.mkdir();  //// make local directory for Resources for Code Generation Templates
+		
+		File resourceCCaddres = new File(Constants.ECLIPSE_LOC_ADDRES_DIR);
+		File resourceCCcla = new File(Constants.ECLIPSE_LOC_CLA_DIR);
+		File resourceCCimg = new File(Constants.ECLIPSE_LOC_IMG_DIR);
+		File resourceCCtaskdesc = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR);
+		File resourceCCtasks = new File(Constants.ECLIPSE_LOC_TASKS_DIR);
+		File resourceCCXSL = new File(Constants.ECLIPSE_LOC_XSL_DIR);
+		File resourceCCtasksjson = new File(Constants.customjsonTaskFile);
+		File resourceExport = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
+		
+		resourceCCaddres.mkdir();
+		resourceCCcla.mkdir();
+		resourceCCimg.mkdir();
+		resourceCCtaskdesc.mkdir();
+		resourceCCtasks.mkdir();
+		resourceCCXSL.mkdir();
+		resourceExport.mkdir();
+		try {
+			resourceCCtasksjson.createNewFile();
+			BufferedWriter writer = new BufferedWriter(new FileWriter(resourceCCtasksjson));
+			writer.write("[]");
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public String writeData() {

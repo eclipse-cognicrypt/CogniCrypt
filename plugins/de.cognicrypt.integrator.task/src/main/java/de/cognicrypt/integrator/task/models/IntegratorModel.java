@@ -13,10 +13,7 @@ package de.cognicrypt.integrator.task.models;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.zip.ZipOutputStream;
 
 import de.cognicrypt.codegenerator.question.Answer;
@@ -29,7 +26,7 @@ import de.cognicrypt.integrator.task.controllers.FileUtilitiesImportMode;
 import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
 
-public class IntegratorModel {
+public final class IntegratorModel {
 	private File locationOfCryslTemplate;
 	private File iconFile;
 	private File jsonFile;
@@ -38,8 +35,8 @@ public class IntegratorModel {
 	private boolean isImportModeChosen;
 	private final Task task;
 
-	private HashMap<String, File> cryslTemplateFiles;
-	private final ArrayList<Question> questions;
+	private Map<String, File> cryslTemplateFiles;
+	private final List<Question> questions;
 
 	private static IntegratorModel instance = new IntegratorModel();
 	
@@ -76,9 +73,9 @@ public class IntegratorModel {
 		
 		boolean newTaskName = false;
 		
-		if (templateFilePath == null) 
+		if (templateFilePath == null) {
 			return false; // user canceled the file dialog
-		
+		}
 		// Set the task name or verify that it's equal
 		String[] filePathParts = templateFilePath.split("(\\/|\\\\)");
 		String taskName = filePathParts[filePathParts.length - 1].replace(".java", "");
@@ -104,7 +101,7 @@ public class IntegratorModel {
 			throw new ErrorMessageException(Constants.ERROR_FILE_NOT_FOUND);
 		}
 		
-		while (packageLine.contentEquals("")) {
+		while ("".contentEquals(packageLine)) {
 
 			if(!scanner.hasNextLine()) {
 				scanner.close();
@@ -142,12 +139,13 @@ public class IntegratorModel {
 	 */
 	public void checkTemplatesDec() throws ErrorMessageException {
 		// Template list is empty
-		if(isTemplatesEmpty())
+		if(isTemplatesEmpty()) {
 			throw new ErrorMessageException(Constants.ERROR_BLANK_TEMPLATE_LIST);
-				
+		}
 		// Single template identifier does not match the task name
-		if(getIdentifiers().size() == 1 && !getIdentifiers().get(0).isEmpty())
+		if(getIdentifiers().size() == 1 && !getIdentifiers().get(0).isEmpty()) {
 			throw new ErrorMessageException(Constants.ERROR_SINGLE_TEMPLATE_ID);
+		}
 	}
 
 	/**
@@ -182,9 +180,9 @@ public class IntegratorModel {
 	public void addQuestion() throws ErrorMessageException {
 		int questionID = questions.size();
 		
-		if (questionID > 0)
+		if (questionID > 0) {
 			throw new ErrorMessageException(Constants.ERROR_MULTIPLE_QUESTIONS_NOT_SUPPORTED);
-		
+		}
 		Question questionDetails = new Question();
 		questionDetails.setQuestionText("");
 		questionDetails.setHelpText("");
@@ -204,8 +202,9 @@ public class IntegratorModel {
 		questions.remove(questionIndex);
 		
 		int qID = 0;
-		for (Question qstn : questions)
+		for (Question qstn : questions) {
 			qstn.setId(qID++);
+		}
 	}
 	
 	/**
@@ -219,8 +218,9 @@ public class IntegratorModel {
 		a.setValue("");
 		a.setOption(getIdentifiers().get(answerIndex % getIdentifiers().size()));
 		
-		if(answerIndex == 0)
+		if(answerIndex == 0) {
 			a.setDefaultAnswer(true);
+		}
 		
 		questions.get(questionIndex).getAnswers().add(a);
 	}
@@ -236,8 +236,9 @@ public class IntegratorModel {
 		
 		getQuestion(questionIndex).getAnswers().remove(answerIndex);
 		
-		if(wasDefaultAnswer && !getQuestion(questionIndex).getAnswers().isEmpty())
+		if(wasDefaultAnswer && !getQuestion(questionIndex).getAnswers().isEmpty()) {
 			getAnswer(questionIndex, 0).setDefaultAnswer(true);
+		}
 	}
 	
 	/**
@@ -246,8 +247,9 @@ public class IntegratorModel {
 	 * @throws ErrorMessageException if question text is empty
 	 */
 	public void checkQuestionDec(int questionIndex) throws ErrorMessageException {
-		if(getQuestion(questionIndex).getQuestionText().isEmpty())
+		if(getQuestion(questionIndex).getQuestionText().isEmpty()) {
 			throw new ErrorMessageException(Constants.ERROR_MESSAGE_BLANK_QUESTION_NAME);
+		}
 	}
 	
 	/**
@@ -259,8 +261,9 @@ public class IntegratorModel {
 		
 		ArrayList<Answer> answers = getQuestions().get(questionIndex).getAnswers(); 
 
-		if(answers.isEmpty())
+		if(answers.isEmpty()) {
 			throw new ErrorMessageException(Constants.ERROR_BLANK_ANSWERS_LIST);
+		}
 
 		boolean isAnswerTextEmpty = false;
 
@@ -268,8 +271,9 @@ public class IntegratorModel {
 			isAnswerTextEmpty |= a.getValue().isEmpty();
 		}
 
-		if(isAnswerTextEmpty)
+		if(isAnswerTextEmpty) {
 			throw new ErrorMessageException(Constants.ERROR_EMPTY_ANSWER_TEXT);
+		}
 	}
 	
 	/**
@@ -295,7 +299,7 @@ public class IntegratorModel {
 		if (isImportModeChosen) {
 			FileUtilities.unzipFile(locationImportFile.toString(), new File(Constants.ECLIPSE_LOC_EXPORT_DIR));
 			fileWriteAttemptResult = fileUtilitiesImportMode.writeDataImportMode();
-			if (fileWriteAttemptResult.equals("")) {
+			if ("".equals(fileWriteAttemptResult)) {
 				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
 				task.setCodeGen(CodeGenerators.CrySL);
 				fileUtilitiesImportMode.writeTaskToJSONFile(task);
@@ -323,7 +327,7 @@ public class IntegratorModel {
 				fileWriteAttemptResult = fileUtilities.writeDataNonGuidedMode();
 			}
 
-			if (fileWriteAttemptResult.equals("")) {
+			if ("".equals(fileWriteAttemptResult)) {
 				task.setImage(task.getName().replaceAll("[^A-Za-z0-9]", ""));
 				task.setCodeGen(CodeGenerators.CrySL);
 				fileUtilities.writeTaskToJSONFile(task);
@@ -367,8 +371,9 @@ public class IntegratorModel {
 		task.setName(taskName);
 		
 		
-		if(taskName != null)
-			task.setDescription(taskName);	
+		if(taskName != null) {
+			task.setDescription(taskName);
+		}
 	}
 	
 	public void setQuestionsJSONFile() {
@@ -443,7 +448,7 @@ public class IntegratorModel {
 		this.locationOfCryslTemplate = locationOfCryslTemplate;
 	}
 	
-	public HashMap<String, File> getCryslTemplateFiles() {
+	public Map<String, File> getCryslTemplateFiles() {
 		return cryslTemplateFiles;
 	}
 	
@@ -466,7 +471,7 @@ public class IntegratorModel {
 		return cryslTemplateFiles.get(identifier);
 	}
 	
-	public ArrayList<Question> getQuestions() {
+	public List<Question> getQuestions() {
 		return questions;
 	}
 	

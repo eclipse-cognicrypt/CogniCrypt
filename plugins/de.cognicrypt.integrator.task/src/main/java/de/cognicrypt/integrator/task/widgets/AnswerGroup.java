@@ -40,7 +40,7 @@ public class AnswerGroup extends Group {
 	 * @param parent
 	 * @param style
 	 */
-	public AnswerGroup(final Composite parent, final int style, final int answerIndex, final int questionIndex, QuestionsPage questionsPage) {
+	public AnswerGroup(final Composite parent, final int style, final int answerIndex, final int questionIndex) {
 		super(parent, style);
 
 		Answer answer = IntegratorModel.getInstance().getAnswer(questionIndex, answerIndex);
@@ -48,9 +48,9 @@ public class AnswerGroup extends Group {
 		txtAnswer = new Text(this, SWT.BORDER);
 		txtAnswer.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 
-		if (answer.getValue() != null)
+		if (answer.getValue() != null) {
 			txtAnswer.setText(answer.getValue());
-		
+		}
 		txtAnswer.addModifyListener(new ModifyListener() {
 
 			@Override

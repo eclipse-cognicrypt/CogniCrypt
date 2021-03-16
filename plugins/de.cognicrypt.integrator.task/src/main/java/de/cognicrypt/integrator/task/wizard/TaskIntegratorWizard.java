@@ -50,12 +50,14 @@ public class TaskIntegratorWizard extends Wizard {
 			return taskInformation.checkImportModeFinish();
 		}
 
-		if(!IntegratorModel.getInstance().isGuidedModeChosen())
+		if(!IntegratorModel.getInstance().isGuidedModeChosen()) {
 			return taskInformation.checkNonGuidedFinish();
-
-		if(IntegratorModel.getInstance().getIdentifiers().size() == 1)
+		}
+			
+		if(IntegratorModel.getInstance().getIdentifiers().size() == 1) {
 			return taskInformation.checkMandatoryFields();
-
+		}
+			
 		return super.canFinish();
 	}
 
@@ -73,8 +75,9 @@ public class TaskIntegratorWizard extends Wizard {
 			confirmationMessageBox.setMessage(Constants.WARNING_TEMPLATE_NOT_USED);
 			confirmationMessageBox.setText(Constants.WARNING_TEMPLATE_NOT_USED_TITLE);
 			final int response = confirmationMessageBox.open();
-			if (response == SWT.CANCEL) // abort
+			if (response == SWT.CANCEL) { // abort
 				return false;
+			}
 		}
 
 		try {

@@ -65,13 +65,6 @@ public class FileBrowserComposite extends Composite {
 		init(parent, style, labelText, fileTypes, stringOnDialog, wizardPage);
 	}
 
-	public FileBrowserComposite(Composite parent, int style, String labelText, String[] fileTypes,
-			String stringOnDialog, TaskIntegratorWizardPage theContainerpageForValidation,) {
-		super(parent, style);
-
-		init(parent, style, labelText, fileTypes, stringOnDialog, theContainerpageForValidation);
-	}
-
 	private void init(final Composite parent, final int style, final String labelText, final String[] fileTypes,
 			final String stringOnDialog, final TaskIntegratorWizardPage theContainerpageForValidation) {
 		setTheLocalContainerPage(theContainerpageForValidation);

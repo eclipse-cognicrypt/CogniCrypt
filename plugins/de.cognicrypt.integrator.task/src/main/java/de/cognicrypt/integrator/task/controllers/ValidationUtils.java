@@ -7,7 +7,6 @@
 
 package de.cognicrypt.integrator.task.controllers;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +41,7 @@ public abstract class ValidationUtils {
 	 * Returns true if an added template is not used
 	 */
 	public static boolean checkForUnusedIdentifiers() {
-		ArrayList<Question> questions = IntegratorModel.getInstance().getQuestions();
+		List<Question> questions = IntegratorModel.getInstance().getQuestions();
 		
 		HashSet<String> identifiers = new HashSet<>();
 		

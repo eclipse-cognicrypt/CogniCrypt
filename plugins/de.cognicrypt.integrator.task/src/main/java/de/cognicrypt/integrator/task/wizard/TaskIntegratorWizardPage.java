@@ -81,7 +81,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 	 * @return true always
 	 */
 	protected boolean nextPressed(final IWizardPage page) {
-		final boolean ValidateNextPress = true;
+		final boolean validateNextPress = true;
 		try {
 			if (page.getName().equals(Constants.PAGE_TASK_INFORMATION)) {
 				final IWizardPage nextPage = super.getNextPage();
@@ -116,7 +116,7 @@ public class TaskIntegratorWizardPage extends WizardPage {
 			Activator.getDefault().logError(ex);
 		}
 		
-		return ValidateNextPress;
+		return validateNextPress;
 	}
 
 	
@@ -125,9 +125,10 @@ public class TaskIntegratorWizardPage extends WizardPage {
 	 * Sets page to complete if there are no errors on mandatory fields, guided mode is chosen and multiple templates exist
 	 */
 	public void checkPageComplete() {
-		if(taskInformationComposite == null)
+		if(taskInformationComposite == null) {
 			return;
-		
+		}
+			
 		boolean mandatoryFields = checkMandatoryFields();
 		
 		boolean guidedMode = IntegratorModel.getInstance().isGuidedModeChosen();
@@ -150,11 +151,10 @@ public class TaskIntegratorWizardPage extends WizardPage {
 	 * @return true if there are no errors on mandatory fields and json file
 	 */
 	public boolean checkNonGuidedFinish() {
-		
 		boolean mandatoryFields = checkMandatoryFields();
 		boolean errorOnJSONFile = taskInformationComposite.getCompJSON().getDecFilePath().getDescriptionText().contains(Constants.ERROR);		
 		
-		return (mandatoryFields && !errorOnJSONFile);
+		return mandatoryFields && !errorOnJSONFile;
 	}
 	
 	/**

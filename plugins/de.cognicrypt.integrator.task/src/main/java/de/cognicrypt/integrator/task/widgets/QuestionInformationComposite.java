@@ -48,9 +48,8 @@ public class QuestionInformationComposite extends Composite {
 	 * Create the composite.
 	 *
 	 * @param parent
-	 * @param style
 	 */
-	public QuestionInformationComposite(final Composite parent, final int style, final int questionIndex, QuestionsDisplayComposite questionsDisplayComposite, QuestionsPage questionsPage) {
+	public QuestionInformationComposite(final Composite parent, final int questionIndex, QuestionsDisplayComposite questionsDisplayComposite, QuestionsPage questionsPage) {
 		super(parent, SWT.BORDER);
 
 		this.questionsPage = questionsPage;
@@ -145,7 +144,7 @@ public class QuestionInformationComposite extends Composite {
 		btnAddAnswer.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, true, true));
 		
 
-		answersComposite = new QuestionModificationComposite(this, SWT.NONE, questionIndex, questionsPage);
+		answersComposite = new QuestionModificationComposite(this, SWT.NONE, questionIndex);
 		GridData answersGrid = new GridData(SWT.FILL, SWT.FILL, true, true);
 		answersGrid.heightHint = 99;
 		answersComposite.setLayoutData(answersGrid);

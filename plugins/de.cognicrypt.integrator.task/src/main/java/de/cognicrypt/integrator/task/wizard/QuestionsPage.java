@@ -79,9 +79,10 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 	@Override
 	public void checkPageComplete() {
 		
-		if(questionsDisplayComposite.getQuestionsInformationComposites().isEmpty())
+		if(questionsDisplayComposite.getQuestionsInformationComposites().isEmpty()) {
 			return;
-		
+		}
+			
 		boolean isPageComplete = true;
 		
 		// Iterate over all question composites and check if there is any error

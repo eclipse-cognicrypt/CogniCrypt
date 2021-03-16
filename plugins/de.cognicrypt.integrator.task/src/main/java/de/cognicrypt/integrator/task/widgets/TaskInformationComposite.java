@@ -11,7 +11,7 @@
 package de.cognicrypt.integrator.task.widgets;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -45,8 +45,10 @@ public class TaskInformationComposite extends Composite {
 	private final ControlDecoration templatesDec;
 
 	private final List templateList;
-	private final FileBrowserComposite compJSON, compPNG, compImport;
-
+	private final FileBrowserComposite compJSON;
+	private final FileBrowserComposite compPNG;
+	private final FileBrowserComposite compImport;
+	
 	private final Button btnRemoveTemplate;
 
 	/**
@@ -99,15 +101,16 @@ public class TaskInformationComposite extends Composite {
 		checkTemplatesDec();
 
 		templateList = new List(compositeTaskInfo, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-		final GridData gd_templateList = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_templateList.heightHint = 25*5;
-		templateList.setLayoutData(gd_templateList);
+		final GridData templateListGrid = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		templateListGrid.heightHint = 25*5;
+		templateList.setLayoutData(templateListGrid);
 
 		templateList.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				if (templateList.getSelectionCount() != 0)
+				if (templateList.getSelectionCount() != 0) {
 					btnRemoveTemplate.setEnabled(true); // enable remove button if a template is selected
+				}
 			}
 		});
 
@@ -137,11 +140,12 @@ public class TaskInformationComposite extends Composite {
 
 				String[] templateIds = templateList.getSelection(); 
 
-				for(int i=0; i < templateIds.length; i++)
+				for(int i=0; i < templateIds.length; i++) {
 					// template identifiers are displayed with their task name as prefix to make the empty standard identifier look less weird
 					// the prefix has to be removed from the GUI selection to get the actual template identifier
 					templateIds[i] = templateIds[i].replace(IntegratorModel.getInstance().getTaskName(), ""); 
-
+				}
+					
 				removeTemplates(templateIds);
 			}
 		});
@@ -264,8 +268,9 @@ public class TaskInformationComposite extends Composite {
 
 		for(String id : identifiers) {
 			try {
-				if (IntegratorModel.getInstance().removeTemplate(id))
+				if (IntegratorModel.getInstance().removeTemplate(id)) {
 					lblTaskName.setText("");
+				}
 			}catch(Exception e){
 				MessageDialog.openError(getShell(), "Warning", e.getMessage());
 			}
@@ -299,7 +304,7 @@ public class TaskInformationComposite extends Composite {
 		templateList.removeAll();
 		btnRemoveTemplate.setEnabled(false);
 
-		HashMap<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
+		Map<String, File> templates = IntegratorModel.getInstance().getCryslTemplateFiles();
 
 		for(Entry<String, File> e : templates.entrySet()) {
 			templateList.add(IntegratorModel.getInstance().getTaskName() + e.getKey());	

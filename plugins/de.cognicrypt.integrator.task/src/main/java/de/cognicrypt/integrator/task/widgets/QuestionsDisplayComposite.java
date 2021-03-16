@@ -8,6 +8,8 @@
 package de.cognicrypt.integrator.task.widgets;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridLayout;
@@ -23,7 +25,7 @@ public class QuestionsDisplayComposite extends ScrolledComposite {
 	
 	private int lowestWidgetYAxisValue = Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	
-	private ArrayList<QuestionInformationComposite> questionsInformationComposites;
+	private List<QuestionInformationComposite> questionsInformationComposites;
 
 	/**
 	 * Create the composite.
@@ -52,7 +54,7 @@ public class QuestionsDisplayComposite extends ScrolledComposite {
 	
 
 	public void addQuestionUIElements(int questionIndex) {
-		questionsInformationComposites.add(new QuestionInformationComposite((Composite) getContent(), SWT.NONE, questionIndex, this, questionsPage));
+		questionsInformationComposites.add(new QuestionInformationComposite((Composite) getContent(), questionIndex, this, questionsPage));
 		setMinSize(((Composite) getContent()).computeSize(SWT.DEFAULT, SWT.DEFAULT));
 	}
 
@@ -119,7 +121,7 @@ public class QuestionsDisplayComposite extends ScrolledComposite {
 		this.lowestWidgetYAxisValue = lowestWidgetYAxisValue + Constants.PADDING_BETWEEN_GRANULAR_UI_ELEMENTS;
 	}
 	
-	public ArrayList<QuestionInformationComposite> getQuestionsInformationComposites() {
+	public List<QuestionInformationComposite> getQuestionsInformationComposites() {
 		return questionsInformationComposites;
 	}
 }

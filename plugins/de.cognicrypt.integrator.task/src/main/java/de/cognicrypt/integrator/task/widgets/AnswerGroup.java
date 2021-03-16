@@ -7,7 +7,8 @@
 
 package de.cognicrypt.integrator.task.widgets;
 
-import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -27,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.wizard.QuestionsPage;
 
 public class AnswerGroup extends Group {
 
@@ -84,7 +84,7 @@ public class AnswerGroup extends Group {
 		
 		final Button btnDefaultAnswer = new Button(this, SWT.RADIO);
 
-		final ArrayList<Button> btnList = ((QuestionModificationComposite) parent.getParent()).getDefaulAnswerBtnList();
+		final List<Button> btnList = ((QuestionModificationComposite) parent.getParent()).getDefaulAnswerBtnList();
 		btnList.add(btnDefaultAnswer);
 		btnDefaultAnswer.setText(Constants.DEFAULT_ANSWER);
 		if (answer.isDefaultAnswer()) {

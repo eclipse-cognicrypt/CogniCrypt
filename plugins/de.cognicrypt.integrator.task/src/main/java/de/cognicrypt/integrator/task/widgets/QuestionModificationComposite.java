@@ -8,6 +8,8 @@
 package de.cognicrypt.integrator.task.widgets;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
@@ -17,17 +19,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
-import de.cognicrypt.integrator.task.wizard.QuestionsPage;
 
 public class QuestionModificationComposite extends ScrolledComposite {
 
-	private QuestionsPage questionsPage;
-	
 	private final Composite composite;
 
 	private final int questionIndex;
 	
-	private final ArrayList<Button> btnList;
+	private final List<Button> btnList;
 
 	/**
 	 * Create the composite. Warnings suppressed for casting array lists.
@@ -36,11 +35,9 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	 * @param style
 	 * @param targetArrayListOfDataToBeDisplayed
 	 */
-	public QuestionModificationComposite(final Composite parent, final int style, int questionIndex, QuestionsPage questionsPage) {
+	public QuestionModificationComposite(final Composite parent, final int style, int questionIndex) {
 		super(parent, style | SWT.V_SCROLL);
 
-		this.questionsPage = questionsPage;
-		
 		this.questionIndex = questionIndex;
 		btnList = new ArrayList<Button>();
 
@@ -60,7 +57,7 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	 * @param answerIndex
 	 */
 	private void addAnswerUIElements(final int answerIndex) {
-		AnswerGroup a = new AnswerGroup(composite, SWT.NONE, answerIndex, questionIndex, questionsPage);
+		AnswerGroup a = new AnswerGroup(composite, SWT.NONE, answerIndex, questionIndex);
 		a.setLayout(new GridLayout(5, false));
 		a.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
@@ -93,7 +90,7 @@ public class QuestionModificationComposite extends ScrolledComposite {
 	/**
 	 * @return the btnList List of radio buttons for default Answer field
 	 */
-	public ArrayList<Button> getDefaulAnswerBtnList() {
+	public List<Button> getDefaulAnswerBtnList() {
 		return this.btnList;
 	}
 

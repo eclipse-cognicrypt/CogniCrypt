@@ -21,9 +21,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -110,7 +109,7 @@ public class FileUtilities {
 	 */
 	public String writeData() {
 		
-		final HashMap<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
+		final Map<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
 		
 		copyImage(integratorModel.getIconFile());
 		for (String key : cryslTemplateFile.keySet()) {
@@ -130,7 +129,7 @@ public class FileUtilities {
 	 */
 	public String writeDataNonGuidedMode() {
 		
-		final HashMap<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
+		final Map<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
 		
 		copyImage(integratorModel.getIconFile());
 		copyJSON(integratorModel.getJSONFile());

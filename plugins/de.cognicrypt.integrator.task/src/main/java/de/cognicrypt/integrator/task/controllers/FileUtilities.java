@@ -169,7 +169,7 @@ public class FileUtilities {
 			try {
 				copyTemplate(cryslTemplateFile.get(key), key);
 			} catch (IOException e) {
-				errors.append("There was a problem copying file " + cryslTemplateFile.get(key).toString() + "/n");
+				errors.append(Constants.ERROR_FILE_COPY + cryslTemplateFile.get(key).toString() + "\n");
 			}
 		}
 		return errors.toString();
@@ -223,7 +223,7 @@ public class FileUtilities {
 					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, integratorModel.getTrimmedTaskName() + Constants.PNG_EXTENSION);
 					targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res", integratorModel.getTrimmedTaskName() + Constants.PNG_EXTENSION);
 				} else {
-					throw new Exception("Unknown file type.");
+					throw new Exception(Constants.ERROR_UNKNOWN_FILE_TYPE);
 				}
 				Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
 				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator
@@ -231,7 +231,7 @@ public class FileUtilities {
 
 			} catch (final Exception e) {
 				Activator.getDefault().logError(e);
-				errors.append("There was a problem copying file " + existingFileLocation.getName() + "\n");
+				errors.append(Constants.ERROR_FILE_COPY + existingFileLocation.getName() + "\n");
 			}
 	}
 
@@ -247,7 +247,7 @@ public class FileUtilities {
 				targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
 				targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res", integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
 			} else {
-				throw new Exception("Unknown file type.");
+				throw new Exception(Constants.ERROR_UNKNOWN_FILE_TYPE);
 			}
 			Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
 			Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator	
@@ -255,9 +255,7 @@ public class FileUtilities {
 
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
-			errors.append("There was a problem copying file ");
-			errors.append(existingFileLocation.getName());
-			errors.append("\n");
+			errors.append(Constants.ERROR_FILE_COPY + existingFileLocation.getName() + "\n");
 		}
 	}
 
@@ -297,7 +295,7 @@ public class FileUtilities {
 
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
-			errors.append("There was a problem updating the task file.\n");
+			errors.append(Constants.ERROR_TASK_UPDATE);
 		}
 	}
 
@@ -425,13 +423,13 @@ public class FileUtilities {
 				File newFile = newFile(destDir, zipEntry);
 				if (zipEntry.isDirectory()) {
 					if (!newFile.isDirectory() && !newFile.mkdirs()) {
-						throw new IOException("Failed to create directory " + newFile);
+						throw new IOException(Constants.ERROR_DIRECTORY_CREATION + newFile);
 					}
 				} else {
 					// fix for Windows-created archives
 					File parent = newFile.getParentFile();
 					if (!parent.isDirectory() && !parent.mkdirs()) {
-						throw new IOException("Failed to create directory " + parent);
+						throw new IOException(Constants.ERROR_DIRECTORY_CREATION + parent);
 					}
 
 					// write file content
@@ -465,7 +463,7 @@ public class FileUtilities {
 		String destFilePath = destFile.getCanonicalPath();
 
 		if (!destFilePath.startsWith(destDirPath + File.separator)) {
-			throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
+			throw new IOException(Constants.ERROR_ENTRY_OUTSIDE_TARGETDIR + zipEntry.getName());
 		}
 
 		return destFile;

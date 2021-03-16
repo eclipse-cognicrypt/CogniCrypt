@@ -75,20 +75,20 @@ public class QuestionInformationComposite extends Composite {
 
 		final Label lblQuestion = new Label(questionsAndDelete, SWT.NONE);
 		lblQuestion.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, true));
-		lblQuestion.setText("Question");
+		lblQuestion.setText(Constants.QUESTION_LABEL);
 		
 		final Button btnDeleteQuestion = new Button(questionsAndDelete, SWT.NONE);
 		btnDeleteQuestion.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, true, true));
 		ISharedImages sharedImages = PlatformUI.getWorkbench().getSharedImages();
 		btnDeleteQuestion.setImage(sharedImages.getImage(ISharedImages.IMG_TOOL_DELETE));
-		btnDeleteQuestion.setToolTipText("Click to delete the question");
+		btnDeleteQuestion.setToolTipText(Constants.DELTETE_BTN_TOOLTIP);
 		btnDeleteQuestion.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final MessageBox confirmationMessageBox = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO);
-				confirmationMessageBox.setMessage("Are you sure that you want to remove this question?");
-				confirmationMessageBox.setText("Remove Question");
+				confirmationMessageBox.setMessage(Constants.DELETE_CONFIRMATION);
+				confirmationMessageBox.setText(Constants.REMOVE_QUESTION);
 				final int response = confirmationMessageBox.open();
 				if (response == SWT.YES) {
 					questionsDisplayComposite.removeQuestion(questionIndex);
@@ -120,7 +120,7 @@ public class QuestionInformationComposite extends Composite {
 		final Text txtDescription = new Text(this, SWT.BORDER);
 		final GridData gdTxtDescription= new GridData(SWT.FILL, SWT.CENTER, true, true);
 		gdTxtDescription.widthHint = 0;
-		txtDescription.setMessage("Describe the question");
+		txtDescription.setMessage(Constants.QUESTION_DESCRIPTION);
 		txtDescription.setText(q.getHelpText());
 		txtDescription.setLayoutData(gdTxtDescription);
 		
@@ -137,10 +137,10 @@ public class QuestionInformationComposite extends Composite {
 	    
 		final Label lblAnswers = new Label(answersAndAdd, SWT.NONE);
 		lblAnswers.setLayoutData(new GridData(SWT.LEFT, SWT.BOTTOM, true, true));
-		lblAnswers.setText("Answers");
+		lblAnswers.setText(Constants.ANSWERS_LABEL);
 		
 		final Button btnAddAnswer = new Button(answersAndAdd, SWT.NONE);
-		btnAddAnswer.setToolTipText("Click to add an answer");
+		btnAddAnswer.setToolTipText(Constants.ADD_ANSWER_TOOLTIP);
 		btnAddAnswer.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -148,7 +148,7 @@ public class QuestionInformationComposite extends Composite {
 				addAnswer();
 			}
 		});
-		btnAddAnswer.setText("Add Answer");
+		btnAddAnswer.setText(Constants.ADD_ANSWER);
 		btnAddAnswer.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, true, true));
 		
 

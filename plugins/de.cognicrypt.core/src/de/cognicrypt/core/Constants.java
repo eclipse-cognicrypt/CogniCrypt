@@ -273,26 +273,46 @@ public class Constants {
 	public static boolean WizardActionFromContextMenuFlag = false;
 
 	// Task Integrator Wizard	
+	public static final String PLUGIN_ID = "de.cognicrypt.integrator.task";
+	
 	public static final String PAGE_TASK_INFORMATION = "pageForTaskInformation";
 	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "New task";
 	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Provide the basic details about the task and add templates.";
 
+	public static final String TASK_DESCRIPTION_MESSAGE = "Describe the task";
+	public static final String TEMPLATES = "Templates";
+	
+	public static final String ICON_DESCRIPTION = "Select PNG file that contains the task icon";
 	public static final String DEFAULT_ICON_PATH = "icons/task-default-icon.png";
+	
+	public static final String GUIDED_MODE_DESCRIPTION = "Guided Mode";
+	public static final String JSON_DESCRIPTION = "Select JSON file that contains the high-level questions";
+	
+	public static final String ZIP_DESCRIPTION = "Select ZIP file that contains the task information";
 	
 	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
 	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Questions catalog";
 	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS =
 			"Add questions and possible answers with their associated templates for the code generation wizard";
 
-	public static final String PAGE_NAME_FOR_LINK_ANSWERS = "pageForLinkAnswers";
-	public static final String PAGE_TITLE_FOR_LINK_ANSWERS = "Select the question that needs to be linked to another question";
-	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS =
-			"Here you can configure which question should be displayed next upon selection of a particular answer of the current question" + "by clicking the Link Answer button.";
-
+	public static final String QUESTION_LABEL = "Question";
+	public static final String DELTETE_BTN_TOOLTIP = "Click to delete the question";
+	
+	public static final String REMOVE_QUESTION = "Remove Question";
+	public static final String DELETE_CONFIRMATION = "Are you sure that you want to remove this question?";
+	
+	public static final String QUESTION_DESCRIPTION = "Describe the question";
+	public static final String ANSWERS_LABEL = "Answers";
+	
+	public static final String ADD_ANSWER_TOOLTIP = "Click to add an answer";
+	
+	public static final String TASK_SUCCESFULLY_IMPORTED = "Task succesfully imported";
+	
 	// Buttons
 	public static final String ADD_QUESTION = "Add Question";
 	public static final String ADD_ANSWER = "Add Answer";
-		
+	public static final String GENERATE_BUTTON = "Generate";
+	
 	// Images
 	public static final Image DEC_INFORMATION = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
 	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
@@ -318,6 +338,8 @@ public class Constants {
 	public static final String IMPORT_SUCCESSFUL = "The task has been succesfully imported and can be used after restarting Eclipse.";
 	public static final String EXPORT_SUCCESSFUL = "The task has been succesfully generated. You can use it after restarting Eclipse. An exportable ZIP File for this task has been copied to:" + ECLIPSE_LOC_EXPORT_DIR;
 
+	public static final String DEFAULT_ANSWER = "Default Answer";
+	public static final String DEFAULT_ANSWER_TOOLTIP = "The answer that will be automatically selected when question appears for the first time";
 	
 	// Warning
 	public static final String WARNING_TEMPLATE_NOT_USED_TITLE = "Unused Template";
@@ -346,7 +368,15 @@ public class Constants {
 	
 	public static final String ERROR_PROBLEMS_WITH_ZIP = "Problems with the provided ZIP (Most likly has a wrong stucture).";
 	public static final String ERROR_PROBLEMS_WITH_FILES = "Problems with the provided files.";
+	public static final String ERROR_ICON_FILE_NOT_FOUND = "ZIP invalid (Icon File not found) \n"; 
+	public static final String ERROR_JSON_FILE_NOT_FOUND = "ZIP invalid (Question JSON File not found) \n";
+	public static final String ERROR_TEMPLATE_FILE_NOT_FOUND = "ZIP invalid (Template Files not found) \n";
 	
+	public static final String ERROR_FILE_COPY = "There was a problem copying file ";
+	public static final String ERROR_UNKNOWN_FILE_TYPE = "Unknown file type.";
+	public static final String ERROR_TASK_UPDATE = "There was a problem updating the task file.\n";
+	public static final String ERROR_DIRECTORY_CREATION = "Failed to create directory ";
+	public static final String ERROR_ENTRY_OUTSIDE_TARGETDIR = "Entry is outside of the target dir: ";
 	
 	// Labels	
 	public static final String LABEL_BROWSE_BUTTON = "Choose File";
@@ -370,7 +400,8 @@ public class Constants {
 	public static final String PNG_EXTENSION = ".png";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XML_EXTENSION = ".xml";
-
+	public static final String ZIP_EXTENSION = ".zip";
+	
 	public static final String DEFAULT_FEATURE_SET_FILE = "DefaultFeatureSet";
 
 	public static final String PREDICATEENSURER_GROUPID = "de.upb.cognicrypt.predicateensurer";

@@ -49,14 +49,14 @@ public class FileUtilitiesImportMode {
 			integratorModel.setLocationOfIconFile(iconLocation);
 			copyImage(iconLocation);
 		}else {
-			errors.append("ZIP invalid (Icon File not found) \n");
+			errors.append(Constants.ERROR_ICON_FILE_NOT_FOUND);
 		}
 		File jsonLocation = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName + "/res/" + taskName + ".json");
 		if(iconLocation.exists()) {
 			integratorModel.setLocationOfIconFile(jsonLocation);
 			copyJSON(jsonLocation);
 		}else {
-			errors.append("ZIP invalid (Question JSON File not found) \n");
+			errors.append(Constants.ERROR_JSON_FILE_NOT_FOUND);
 		}
 		copyTemplatesImportMode();
 		FileUtilities.deleteDirectory(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + taskName));
@@ -87,12 +87,12 @@ public class FileUtilitiesImportMode {
 					Files.copy(templateFile.toPath(), dest.toPath(), StandardCopyOption.REPLACE_EXISTING,
 							StandardCopyOption.COPY_ATTRIBUTES);
 				} catch (Exception e) {
-					errors.append("There was a problem copying file " + f.toString() + "/n");
+					errors.append(Constants.ERROR_FILE_COPY + f.toString() + "/n");
 				}
 
 			}
 		}else {
-			errors.append("ZIP invalid (Template Files not found) \n");
+			errors.append(Constants.ERROR_TEMPLATE_FILE_NOT_FOUND);
 		}
 	}
 	
@@ -107,13 +107,13 @@ public class FileUtilitiesImportMode {
 				if (existingFileLocation.getPath().endsWith(Constants.PNG_EXTENSION)) {
 					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.PNG_EXTENSION);
 				} else {
-					throw new Exception("Unknown file type.");
+					throw new Exception(Constants.ERROR_UNKNOWN_FILE_TYPE);
 				}
 				Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
 				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generato
 				} catch (final Exception e) {
 				Activator.getDefault().logError(e);
-				errors.append("There was a problem copying file ");
+				errors.append(Constants.ERROR_FILE_COPY);
 				errors.append(existingFileLocation.getName());
 				errors.append("\n");
 			}
@@ -130,14 +130,14 @@ public class FileUtilitiesImportMode {
 			if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
 				targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, IntegratorModel.getInstance().getTrimmedTaskName() + Constants.JSON_EXTENSION);
 			} else {
-				throw new Exception("Unknown file type.");
+				throw new Exception(Constants.ERROR_UNKNOWN_FILE_TYPE);
 			}
 			Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
 			Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator		
 
 		} catch (final Exception e) {
 			Activator.getDefault().logError(e);
-			errors.append("There was a problem copying file ");
+			errors.append(Constants.ERROR_FILE_COPY);
 			errors.append(existingFileLocation.getName());
 			errors.append("\n");
 		}
@@ -157,8 +157,8 @@ public class FileUtilitiesImportMode {
 		try {
 			reader = new BufferedReader(
 					new FileReader(new File(Constants.customjsonTaskFile)));
-			final List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {
-			}.getType());
+			final List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {}.getType());
+			
 			// Add the new task to the list.
 			tasks.add(task);
 			reader.close();
@@ -171,7 +171,7 @@ public class FileUtilitiesImportMode {
 
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
-			errors.append("There was a problem updating the task file.\n");
+			errors.append(Constants.ERROR_TASK_UPDATE);
 		}
 	}
 }

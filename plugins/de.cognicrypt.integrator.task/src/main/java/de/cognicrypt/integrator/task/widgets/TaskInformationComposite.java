@@ -94,7 +94,7 @@ public class TaskInformationComposite extends Composite {
 
 
 		final Text txtTaskDescription = new Text(compositeTaskInfo, SWT.BORDER);
-		txtTaskDescription.setMessage("Describe the task");
+		txtTaskDescription.setMessage(Constants.TASK_DESCRIPTION_MESSAGE);
 		final GridData gdTaskDescription= new GridData(SWT.FILL, SWT.CENTER, true, true);
 		gdTaskDescription.widthHint = 0;
 		txtTaskDescription.setLayoutData(gdTaskDescription);
@@ -108,7 +108,7 @@ public class TaskInformationComposite extends Composite {
 		spacer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, 30));
 
 		final Label lblTemplateList = new Label(compositeTaskInfo, SWT.NONE);
-		lblTemplateList.setText("Templates");
+		lblTemplateList.setText(Constants.TEMPLATES);
 
 		// Initialize the decorator for the label for the text box with initial error state
 		templatesDec = new ControlDecoration(lblTemplateList, SWT.TOP | SWT.RIGHT);
@@ -175,7 +175,7 @@ public class TaskInformationComposite extends Composite {
 
 		compPNG = new FileBrowserComposite(compositeFileImports, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_PNG_FILE, new String[] { "*.png" },
-				"Select PNG file that contains the task icon",
+				Constants.ICON_DESCRIPTION,
 				wizardPage);
 		compPNG.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		String defaultIconPath = Utils.getResourceFromWithin(Constants.DEFAULT_ICON_PATH, "de.cognicrypt.core").getAbsolutePath();
@@ -186,7 +186,7 @@ public class TaskInformationComposite extends Composite {
 		spacerBeforeGuidedMode.setLayoutData(new GridData(GridData.FILL_HORIZONTAL, 30));
 
 		final Button btnGuidedMode = new Button(compositeFileImports, SWT.CHECK);
-		btnGuidedMode.setText("Guided Mode");
+		btnGuidedMode.setText(Constants.GUIDED_MODE_DESCRIPTION);
 		btnGuidedMode.setSelection(true);
 		IntegratorModel.getInstance().setGuidedModeChosen(true);
 
@@ -197,7 +197,7 @@ public class TaskInformationComposite extends Composite {
 
 		compJSON = new FileBrowserComposite(compositeNonguidedMode, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_JSON_FILE, new String[] { "*.json" },
-				"Select JSON file that contains the high-level questions", wizardPage);
+				Constants.JSON_DESCRIPTION, wizardPage);
 		compJSON.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		final Button btnImportMode = new Button(this, SWT.CHECK);
@@ -205,7 +205,7 @@ public class TaskInformationComposite extends Composite {
 
 		compImport = new FileBrowserComposite(this, SWT.NONE,
 				Constants.WIDGET_DATA_LOCATION_OF_IMPORT_FILE, new String[] { "*.zip" },
-				"Select ZIP file that contains the task information", wizardPage);
+				Constants.ZIP_DESCRIPTION, wizardPage);
 		compImport.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		compImport.setVisible(false);
 

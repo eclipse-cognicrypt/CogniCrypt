@@ -106,7 +106,7 @@ public class TaskIntegratorWizard extends Wizard {
 			integratorModel.copyTask();
 
 			final MessageBox msgBox = new MessageBox(getShell(), SWT.ICON_INFORMATION | SWT.OK);
-			msgBox.setText("Task succesfully imported");
+			msgBox.setText(Constants.TASK_SUCCESFULLY_IMPORTED);
 			msgBox.setMessage(integratorModel.isImportModeChosen() ? Constants.IMPORT_SUCCESSFUL : Constants.EXPORT_SUCCESSFUL);
 			msgBox.open();
 

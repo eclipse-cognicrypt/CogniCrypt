@@ -126,11 +126,11 @@ public class FileBrowserComposite extends Composite {
 					IntegratorModel.getInstance().setLocationOfIconFile(tempFileVariable);
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_IMPORT_FILE:
-					String taskName = tempFileVariable.getName().replace(".zip", "");
+					String taskName = tempFileVariable.getName().replace(Constants.ZIP_EXTENSION, "");
 					if (Validator.checkIfTaskNameAlreadyExists(taskName)) {
 						pathText.setText("");
 						MessageDialog.openError(getShell(), "Warning",
-								"The chosen template's associated task has already been integrated.");
+								Constants.ERROR_TASK_ALREADY_INTEGRATED);
 					}else {
 						IntegratorModel.getInstance().setLocationOfImportFile(tempFileVariable);
 					}

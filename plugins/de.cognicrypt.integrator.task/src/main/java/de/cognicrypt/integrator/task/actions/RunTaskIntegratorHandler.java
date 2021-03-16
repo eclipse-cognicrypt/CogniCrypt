@@ -25,6 +25,7 @@ public class RunTaskIntegratorHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Constants.WizardActionFromContextMenuFlag = true;
 		final TaskIntegratorWizardDialog dialog = new TaskIntegratorWizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), new TaskIntegratorWizard());
+		dialog.setMinimumPageSize(1000, 700);
 		dialog.setHelpAvailable(false);
 		return dialog.open();
 	}

@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.controllers.Validator;
+import de.cognicrypt.integrator.task.controllers.ValidationUtils;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.TaskIntegratorWizardPage;
 
@@ -124,7 +124,7 @@ public class FileBrowserComposite extends Composite {
 					break;
 				case Constants.WIDGET_DATA_LOCATION_OF_IMPORT_FILE:
 					String taskName = tempFileVariable.getName().replace(Constants.ZIP_EXTENSION, "");
-					if (Validator.checkIfTaskNameAlreadyExists(taskName)) {
+					if (ValidationUtils.checkIfTaskNameAlreadyExists(taskName)) {
 						pathText.setText("");
 						MessageDialog.openError(getShell(), "Warning",
 								Constants.ERROR_TASK_ALREADY_INTEGRATED);

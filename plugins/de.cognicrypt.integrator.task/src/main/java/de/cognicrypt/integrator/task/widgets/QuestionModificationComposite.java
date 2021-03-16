@@ -8,24 +8,14 @@
 package de.cognicrypt.integrator.task.widgets;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.SortedSet;
-
-import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.MessageBox;
-import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.ClaferDependency;
-import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.QuestionsPage;
 
@@ -75,7 +65,7 @@ public class QuestionModificationComposite extends ScrolledComposite {
 		a.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 		Point size = composite.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		composite.setSize((int) (2 * size.x), size.y);
+		composite.setSize(2 * size.x, size.y);
 	}
 
 	/**

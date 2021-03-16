@@ -8,15 +8,11 @@
 package de.cognicrypt.integrator.task.widgets;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.wizard.QuestionsPage;

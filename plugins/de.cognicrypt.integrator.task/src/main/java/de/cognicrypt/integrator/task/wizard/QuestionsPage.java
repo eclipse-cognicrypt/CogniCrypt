@@ -7,13 +7,7 @@
 
 package de.cognicrypt.integrator.task.wizard;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,10 +16,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.QuestionInformationComposite;
@@ -85,6 +76,7 @@ public class QuestionsPage extends TaskIntegratorWizardPage {
 	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR
 	 * Is used to determine whether wizard can flip to next page
 	 */
+	@Override
 	public void checkPageComplete() {
 		
 		if(questionsDisplayComposite.getQuestionsInformationComposites().isEmpty())

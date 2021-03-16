@@ -7,38 +7,13 @@
 
 package de.cognicrypt.integrator.task.wizard;
 
-import java.awt.image.RescaleOp;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.omg.CORBA.FREE_MEM;
-
-import de.cognicrypt.codegenerator.question.Answer;
-import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.core.Constants.CodeGenerators;
-import de.cognicrypt.integrator.task.controllers.FileUtilities;
-import de.cognicrypt.integrator.task.controllers.FileUtilitiesImportMode;
-import de.cognicrypt.integrator.task.controllers.Validator;
 import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 

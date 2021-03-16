@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.zip.ZipOutputStream;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;

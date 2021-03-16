@@ -25,7 +25,6 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 import de.cognicrypt.integrator.task.widgets.TaskInformationComposite;
-import de.cognicrypt.integrator.task.widgets.QuestionsDisplayComposite;
 
 public class TaskIntegratorWizardPage extends WizardPage {
 

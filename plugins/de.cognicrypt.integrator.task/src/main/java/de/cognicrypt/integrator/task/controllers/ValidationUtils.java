@@ -10,6 +10,7 @@ package de.cognicrypt.integrator.task.controllers;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
@@ -17,18 +18,18 @@ import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.tasks.TaskJSONReader;
 import de.cognicrypt.integrator.task.models.IntegratorModel;
 
-public class Validator {
+public abstract class ValidationUtils {
 	
 	/*
 	 * Returns true if @taskName has already been added
 	 */
 	public static boolean checkIfTaskNameAlreadyExists(final String taskName) {
-		final List<Task> existingTasks = TaskJSONReader.getTasks(); // Required to validate the task name that is chosen by the user.
+		final List<Task> existingTasks = TaskJSONReader.getTasks(); // required to validate the task name that is chosen by the user.
 		boolean taskNameAlreadyExists = false;
 
-		// Validation : check whether the name already exists.
+		// Validation: check whether the name already exists.
 		for (final Task task : existingTasks) {
-			if (task.getName().toLowerCase().equals(taskName.toLowerCase()) || task.getDescription().toLowerCase().equals(taskName.toLowerCase())) {
+			if (task.getName().toLowerCase(Locale.ENGLISH).equals(taskName.toLowerCase(Locale.ENGLISH)) || task.getDescription().toLowerCase(Locale.ENGLISH).equals(taskName.toLowerCase(Locale.ENGLISH))) {
 				taskNameAlreadyExists = true;
 				break;
 			}
@@ -47,8 +48,9 @@ public class Validator {
 		
 		for(Question q : questions) {
 			for(Answer a : q.getAnswers()) {
-				if (a.getOption() != null)
+				if (a.getOption() != null) {
 					identifiers.add(a.getOption());
+				}
 			}
 		}
 		

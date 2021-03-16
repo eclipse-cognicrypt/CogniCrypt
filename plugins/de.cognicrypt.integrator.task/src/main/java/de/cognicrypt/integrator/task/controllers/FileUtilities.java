@@ -41,12 +41,11 @@ import de.cognicrypt.integrator.task.models.IntegratorModel;
 /**
  * This class is used to copy the necessary files for Task Integration to the correct destinations
  * where the Code Generator can use them
- * @author felix
  * 
  */
 public class FileUtilities {
 
-	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
+	private StringBuilder errors; // Maintain all the errors to display them on the wizard
 	IntegratorModel integratorModel;
 	
 	/**
@@ -94,9 +93,11 @@ public class FileUtilities {
 		resourceExport.mkdir();
 		try {
 			resourceCCtasksjson.createNewFile();
-			BufferedWriter writer = new BufferedWriter(new FileWriter(resourceCCtasksjson));
+			FileWriter fileWriter = new FileWriter(resourceCCtasksjson);
+			BufferedWriter writer = new BufferedWriter(fileWriter);
 			writer.write("[]");
 			writer.close();
+			fileWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -116,7 +117,7 @@ public class FileUtilities {
 			try {
 				copyTemplate(cryslTemplateFile.get(key), key);
 			} catch (IOException e) {
-				errors.append("There was a problem copying file " + cryslTemplateFile.get(key).toString() + "/n");
+				errors.append("There was a problem copying file " + cryslTemplateFile.get(key).toString() + "\n");
 			}
 		}
 		return errors.toString();
@@ -236,9 +237,8 @@ public class FileUtilities {
 	 * @param task the Task to be added.
 	 */
 	public void writeTaskToJSONFile(final Task task) {
-
-		BufferedReader reader = null;
-		BufferedWriter writer = null;
+		BufferedReader reader;
+		BufferedWriter writer;
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			reader = new BufferedReader(
@@ -271,10 +271,10 @@ public class FileUtilities {
 	 * Build the questionJSON file to the appropriate location for code generator + exportable zip.
 	 * @param questions
 	 */
-	public void writeJSONFile(final ArrayList<Question> questions) {
+	public void writeJSONFile(final List<Question> questions) {
 
 		final SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages();
-		final ArrayList<Page> pages = pageContent.getPages();
+		final List<Page> pages = pageContent.getPages();
 
 		final File jsonFile = new File(
 				Constants.ECLIPSE_LOC_TASKDESC_DIR,
@@ -304,6 +304,7 @@ public class FileUtilities {
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
+		
 		if (!validateJSONFile(jsonFile)) {
 			jsonFile.delete();
 		}
@@ -320,9 +321,11 @@ public class FileUtilities {
 	private boolean validateJSONFile(final File jsonFileLocation) {
 		try {
 			final Gson gson = new Gson();
-			final BufferedReader reader = new BufferedReader(new FileReader(jsonFileLocation));
+			FileReader fileReader = new FileReader(jsonFileLocation);
+			final BufferedReader reader = new BufferedReader(fileReader);
 			gson.fromJson(reader, Object.class);
 			reader.close();
+			fileReader.close();
 			return true;
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);

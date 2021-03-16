@@ -26,7 +26,7 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.Constants.CodeGenerators;
 import de.cognicrypt.integrator.task.controllers.FileUtilities;
 import de.cognicrypt.integrator.task.controllers.FileUtilitiesImportMode;
-import de.cognicrypt.integrator.task.controllers.Validator;
+import de.cognicrypt.integrator.task.controllers.ValidationUtils;
 import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
 
 public class IntegratorModel {
@@ -83,7 +83,7 @@ public class IntegratorModel {
 		String[] filePathParts = templateFilePath.split("(\\/|\\\\)");
 		String taskName = filePathParts[filePathParts.length - 1].replace(".java", "");
 		
-		if(Validator.checkIfTaskNameAlreadyExists(taskName)) { // can not be tested because TaskJSONReader requires the plugin bundle
+		if(ValidationUtils.checkIfTaskNameAlreadyExists(taskName)) { // can not be tested because TaskJSONReader requires the plugin bundle
 			throw new ErrorMessageException(Constants.ERROR_TASK_ALREADY_INTEGRATED);
 		}
 		
@@ -277,7 +277,7 @@ public class IntegratorModel {
 	 * @return true if an identifier is not used in any answer
 	 */
 	public boolean checkForUnusedIdentifiers() {
-		return !isImportModeChosen && isGuidedModeChosen && getIdentifiers().size() > 1 && Validator.checkForUnusedIdentifiers();
+		return !isImportModeChosen && isGuidedModeChosen && getIdentifiers().size() > 1 && ValidationUtils.checkForUnusedIdentifiers();
 	}
 	
 	/**

@@ -9,6 +9,8 @@ package de.cognicrypt.integrator.task.controllers;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Page;
 import de.cognicrypt.codegenerator.question.Question;
@@ -17,7 +19,7 @@ import de.cognicrypt.integrator.task.models.IntegratorModel;
 
 public class SegregatesQuestionsIntoPages {
 
-	private ArrayList<Page> pages;
+	private List<Page> pages;
 	private int pageId = 0;
 
 	public SegregatesQuestionsIntoPages() {
@@ -139,10 +141,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @return true if the current question is the first question in the list of Questions
 	 */
 	private boolean isFirstQuestion(final Question qstn) {
-		if (qstn.getId() == 0) {
-			return true;
-		}
-		return false;
+		return qstn.getId() == 0;
 	}
 
 	/**
@@ -309,7 +308,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @param nextId answer next id
 	 * @return the answer whose next id is equal to nextId
 	 */
-	private Answer findAnswer(final ArrayList<Answer> answers, final int nextId) {
+	private Answer findAnswer(final List<Answer> answers, final int nextId) {
 		for (final Answer answer : answers) {
 			if (answer.getNextID() == nextId) {
 				return answer;
@@ -323,7 +322,7 @@ public class SegregatesQuestionsIntoPages {
 	 * @return the page array
 	 */
 
-	public ArrayList<Page> getPages() {
+	public List<Page> getPages() {
 		return this.pages;
 	}
 
@@ -332,7 +331,7 @@ public class SegregatesQuestionsIntoPages {
 	 *
 	 * @param pages
 	 */
-	public void setPages(final ArrayList<Page> pages) {
+	public void setPages(final List<Page> pages) {
 		this.pages = pages;
 	}
 

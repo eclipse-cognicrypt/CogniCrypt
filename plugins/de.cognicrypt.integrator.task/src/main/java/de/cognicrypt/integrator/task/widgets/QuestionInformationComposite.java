@@ -185,7 +185,7 @@ public class QuestionInformationComposite extends Composite {
 	 * @param answerIndex to be removed
 	 */
 	public void removeAnswer(int answerIndex) {
-		IntegratorModel.getInstance().removeAnswer(answerIndex, answerIndex);
+		IntegratorModel.getInstance().removeAnswer(questionIndex, answerIndex);
 		
 		checkAnswersDec();
 	}

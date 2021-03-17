@@ -62,10 +62,10 @@ public class FileBrowserComposite extends Composite {
 			String stringOnDialog, TaskIntegratorWizardPage wizardPage) {
 		super(parent, style);
 
-		init(parent, style, labelText, fileTypes, stringOnDialog, wizardPage);
+		init(labelText, fileTypes, stringOnDialog, wizardPage);
 	}
 
-	private void init(final Composite parent, final int style, final String labelText, final String[] fileTypes,
+	private void init(final String labelText, final String[] fileTypes,
 			final String stringOnDialog, final TaskIntegratorWizardPage theContainerpageForValidation) {
 		setTheLocalContainerPage(theContainerpageForValidation);
 		final GridLayout gridLayout = new GridLayout(2, false);
@@ -125,6 +125,7 @@ public class FileBrowserComposite extends Composite {
 						IntegratorModel.getInstance().setLocationOfImportFile(tempFileVariable);
 					}
 					break;
+				default:
 				}
 
 				// Check if the page can be set to completed.

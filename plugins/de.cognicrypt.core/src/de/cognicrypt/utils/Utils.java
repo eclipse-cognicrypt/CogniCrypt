@@ -230,6 +230,8 @@ public class Utils {
 	 * @return absolute path
 	 */
 	public static File getResourceFromWithin(final String inputPath, final String pluginID) {
+		// Activator.getDefault().logError(inputPath);
+		
 		try {
 			final Bundle bundle = Platform.getBundle(pluginID);
 			if (bundle == null) {
@@ -248,8 +250,7 @@ public class Utils {
 				}
 				return new File(resolvedURI);
 			}
-		}
-		catch (final IOException ex) {
+		} catch (final IOException ex) {
 			Activator.getDefault().logError(ex, Constants.ERROR_MESSAGE_NO_FILE);
 		} catch (URISyntaxException ex) {
 			Activator.getDefault().logError(ex);

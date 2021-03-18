@@ -13,6 +13,7 @@
 package de.cognicrypt.codegenerator.tasks;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -55,7 +56,29 @@ public class TaskJSONReader {
 						t.setCodeTemplate(Constants.codeTemplateFolder + t.getName().toLowerCase());
 					}
 				}
+				
+				File customTasksFile = new File(Constants.customjsonTaskFile);
+				
+				if(customTasksFile.exists()) {
+					final BufferedReader reader1 = new BufferedReader(new FileReader(customTasksFile));
+					
+					List<Task> customTasks = gson.fromJson(reader1, new TypeToken<List<Task>>() {}.getType());
+					TaskJSONReader.tasks.addAll(customTasks);
+					reader1.close();
 
+					for (Task t : customTasks) {
+						t.setQuestionsJSONFile(Constants.localrsrcPath + "TaskDesc" + Constants.innerFileSeparator + t.getName() + ".json");
+						t.setAdditionalResources(Constants.localrsrcPath + "AdditionalResources" + Constants.innerFileSeparator + t.getName());
+
+						if (t.getCodeGen() == CodeGenerators.XSL) {
+							t.setCodeTemplate(Constants.ECLIPSE_LOC_TEMP_DIR + Constants.innerFileSeparator + "Tasks" + Constants.innerFileSeparator +  "XSLTemplates" + Constants.innerFileSeparator + t.getName() + ".xsl");
+							t.setModelFile(Constants.ECLIPSE_LOC_TEMP_DIR  + Constants.innerFileSeparator + "ClaferModel" + Constants.innerFileSeparator + t.getName() + ".js");
+						} else if (t.getCodeGen() == CodeGenerators.CrySL) {
+							t.setCodeTemplate(Constants.ECLIPSE_LOC_TEMP_DIR + Constants.innerFileSeparator + t.getName());
+						}
+					}
+				}
+				
 			} catch (final FileNotFoundException e) {
 				Activator.getDefault().logError(e);
 			} catch (final IOException e) {

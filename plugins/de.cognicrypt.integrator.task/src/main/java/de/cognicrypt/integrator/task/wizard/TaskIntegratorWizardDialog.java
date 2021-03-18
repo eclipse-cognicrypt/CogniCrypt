@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
+import de.cognicrypt.core.Constants;
+
 public class TaskIntegratorWizardDialog extends WizardDialog {
 
 	public TaskIntegratorWizardDialog(final Shell parentShell, final IWizard newWizard) {
@@ -27,7 +29,7 @@ public class TaskIntegratorWizardDialog extends WizardDialog {
 	protected void createButtonsForButtonBar(final Composite parent) {
 		super.createButtonsForButtonBar(parent);
 		final Button finishButton = getButton(IDialogConstants.FINISH_ID);
-		finishButton.setText("Generate");
+		finishButton.setText(Constants.GENERATE_BUTTON);
 	}
 
 }

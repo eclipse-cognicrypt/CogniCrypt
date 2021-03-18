@@ -13,33 +13,20 @@ package de.cognicrypt.integrator.task.controllers;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipFile;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
-import org.clafer.ast.AstClafer;
-import org.dom4j.Attribute;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
-import org.xml.sax.SAXException;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,295 +35,213 @@ import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.integrator.task.Activator;
-import de.cognicrypt.utils.Utils;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
 
+/**
+ * This class is used to copy the necessary files for Task Integration to the correct destinations
+ * where the Code Generator can use them
+ * 
+ */
 public class FileUtilities {
 
-	private String taskName;
-	private StringBuilder errors; // Maintain all the errors to display them on the wizard.
-
+	private StringBuilder errors; // Maintain all the errors to display them on the wizard
+	IntegratorModel integratorModel;
+	
 	/**
-	 * The class needs to be initialized with a task name, as it is used extensively
-	 * in the methods.
-	 *
-	 * @param taskName
+	 * Set local attributes and build Directory Structure for custom tasks if it doesn't exist
 	 */
-	public FileUtilities(final String taskName) {
+	public FileUtilities() {
 		super();
-		setTaskName(taskName);
-		setErrors(new StringBuilder());
+		errors = new StringBuilder();
+		integratorModel = IntegratorModel.getInstance();
+		
+		File ressourceFolder = new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR);
+
+		if (!ressourceFolder.exists()) {
+			// make resource directory for Code Generation Templates if it doesn't exist
+			ressourceFolder.mkdirs();
+			initLocalResourceDir(); // initialize needed sub-directories
+		}
 	}
-
 	
-
-	
-
-	private void writeHelpFile(final String helpFileContents) {
-		final File xmlFile = new File(Utils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH),
-				getTrimmedTaskName() + Constants.XML_EXTENSION);
-
+	/**
+	 * Creates the local resource directory for custom tasks and its subdirectories
+	 */
+	public void initLocalResourceDir() {
+		File resourceCCTemp = new File(Constants.ECLIPSE_LOC_TEMP_DIR); 
+		File resourceCCres = new File(Constants.ECLIPSE_LOC_RES_DIR);
+		
+		resourceCCTemp.mkdir(); // make local directory for Code Generation Templates
+		resourceCCres.mkdir();  //// make local directory for Resources for Code Generation Templates
+		
+		File resourceCCaddres = new File(Constants.ECLIPSE_LOC_ADDRES_DIR);
+		File resourceCCcla = new File(Constants.ECLIPSE_LOC_CLA_DIR);
+		File resourceCCimg = new File(Constants.ECLIPSE_LOC_IMG_DIR);
+		File resourceCCtaskdesc = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR);
+		File resourceCCtasks = new File(Constants.ECLIPSE_LOC_TASKS_DIR);
+		File resourceCCXSL = new File(Constants.ECLIPSE_LOC_XSL_DIR);
+		File resourceCCtasksjson = new File(Constants.customjsonTaskFile);
+		File resourceExport = new File(Constants.ECLIPSE_LOC_EXPORT_DIR);
+		
+		resourceCCaddres.mkdir();
+		resourceCCcla.mkdir();
+		resourceCCimg.mkdir();
+		resourceCCtaskdesc.mkdir();
+		resourceCCtasks.mkdir();
+		resourceCCXSL.mkdir();
+		resourceExport.mkdir();
 		try {
-			final PrintWriter writer = new PrintWriter(xmlFile);
-			writer.println(helpFileContents);
-			writer.flush();
+			resourceCCtasksjson.createNewFile();
+			FileWriter fileWriter = new FileWriter(resourceCCtasksjson);
+			BufferedWriter writer = new BufferedWriter(fileWriter);
+			writer.write("[]");
 			writer.close();
-		} catch (final FileNotFoundException e) {
-			Activator.getDefault().logError(e);
-			getErrors().append("There was a problem wrting the Help data.\n");
-		}
-
-		if (!validateXMLFile(xmlFile)) {
-			xmlFile.delete();
-			getErrors().append("The XML data is invalid.\n");
-		}
-
-	}
-
-	
-
-	public String writeCryslTemplate(final File cryslTemplateFile, final File jsonFileLocation, final File iconFile) {
-		copyFileFromPath(cryslTemplateFile);
-		copyFileFromPath(jsonFileLocation);
-		copyFileFromPath(iconFile);
-		return getErrors().toString();
-	}
-
-	public String writeCryslTemplate(final HashMap<String, File> cryslTemplateFile, final File jsonFileLocation,
-			final File iconFile) {
-		for (String key : cryslTemplateFile.keySet()) {
-			try {
-				copyFileFromPath(cryslTemplateFile.get(key), key);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		copyFileFromPath(jsonFileLocation);
-		copyFileFromPath(iconFile);
-		return getErrors().toString();
-	}
-
-	public String writeCryslTemplate(final File cryslTemplateFile, final File iconFile) {
-		copyFileFromPath(cryslTemplateFile);
-		copyFileFromPath(iconFile);
-		return getErrors().toString();
-	}
-
-	public String writeCryslTemplate(final HashMap<String, File> cryslTemplateFile, final File iconFile) {
-		for (String key : cryslTemplateFile.keySet()) {
-			try {
-				copyFileFromPath(cryslTemplateFile.get(key), key);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		copyFileFromPath(iconFile);
-		return getErrors().toString();
-	}
-
-	/**
-	 * Validate an XML file.
-	 *
-	 * @param helpLocation
-	 * @return
-	 */
-	private boolean validateXMLFile(final File helpLocation) {
-		final SAXReader reader = new SAXReader();
-		reader.setValidation(false);
-		try {
-			reader.read(helpLocation);
-		} catch (final DocumentException e) {
-			Activator.getDefault().logError(e);
-			appendFileErrors(helpLocation.getName());
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * For the sake of reusability.
-	 *
-	 * @param fileName
-	 */
-	private void appendFileErrors(final String fileName) {
-		getErrors().append("The contents of the file ");
-		getErrors().append(fileName);
-		getErrors().append(" are invalid.");
-		getErrors().append("\n");
-	}
-
-	/**
-	 * Validate the provided JAR file before copying it to the target location.
-	 *
-	 * @param customLibLocation
-	 * @return a boolean value for the validity of the file.
-	 */
-	private boolean validateJARFile(final File customLibLocation) {
-		final boolean validFile = true;
-		// Loop through the files, since the custom library is a directory.
-		if (customLibLocation.isDirectory()) {
-			for (final File tmpLibLocation : customLibLocation.listFiles()) {
-				if (tmpLibLocation.getPath().endsWith(Constants.JAR_EXTENSION)) {
-					ZipFile customLib;
-					try {
-						customLib = new ZipFile(tmpLibLocation);
-						customLib.entries();
-						customLib.close();
-					} catch (final IOException ex) {
-						Activator.getDefault().logError(ex);
-						appendFileErrors(tmpLibLocation.getName());
-						return false;
-					}
-				}
-			}
-		}
-		return validFile;
-	}
-
-	/**
-	 * Validate the provided XSL file before copying it to the target location.
-	 *
-	 * @param xslFileLocation
-	 * @return a boolean value for the validity of the file.
-	 */
-	private boolean validateXSLFile(final File xslFileLocation) {
-		try {
-			TransformerFactory.newInstance().newTransformer(new StreamSource(xslFileLocation));
-		} catch (final TransformerConfigurationException e) {
-			Activator.getDefault().logError(e);
-			appendFileErrors(xslFileLocation.getName());
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * Validate the provided JSON file before copying it to the target location.
-	 *
-	 * @param jsonFileLocation
-	 * @return a boolean value for the validity of the file.
-	 */
-	private boolean validateJSONFile(final File jsonFileLocation) {
-		try {
-			final Gson gson = new Gson();
-			final BufferedReader reader = new BufferedReader(new FileReader(jsonFileLocation));
-			gson.fromJson(reader, Object.class);
-			reader.close();
-			return true;
+			fileWriter.close();
 		} catch (IOException e) {
-			Activator.getDefault().logError(e);
-			appendFileErrors(jsonFileLocation.getName());
-			return false;
+			e.printStackTrace();
 		}
 	}
-
 	
-
-	public void copyFileFromPath(final File existingFileLocation, String option) throws IOException {
-		File parentFolder = Utils.getResourceFromWithin(Constants.codeTemplateFolder, "de.cognicrypt.codegenerator");
-		File templateFolder = new File(parentFolder, getTrimmedTaskName() + option);
-		if (!templateFolder.isDirectory()) {
-			templateFolder.mkdir();
+	/**
+	 * copy given Template Files and given Image File to local resource directory for custom tasks 
+	 * (only used in Guided Mode Integration)
+	 * @return String with the error messages ("" if no errors happend)
+	 */
+	public String writeData() {
+		
+		final Map<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
+		
+		copyImage(integratorModel.getIconFile());
+		for (String key : cryslTemplateFile.keySet()) {
+			try {
+				copyTemplate(cryslTemplateFile.get(key), key);
+			} catch (IOException e) {
+				errors.append("There was a problem copying file " + cryslTemplateFile.get(key).toString() + "\n");
+			}
 		}
-		File resourceFromWithin = Utils.getResourceFromWithin(Constants.codeTemplateFolder + getTrimmedTaskName()
-				+ option + Constants.innerFileSeparator, "de.cognicrypt.codegenerator");
-		File targetDirectory = new File(resourceFromWithin, getTrimmedTaskName() + Constants.JAVA_EXTENSION);
-		if (targetDirectory != null) {
-			Path path = existingFileLocation.toPath();
-			Path path2 = targetDirectory.toPath();
-			Files.copy(path, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-		}
+		return errors.toString();
 	}
 
 	/**
-	 * Copy the given file to the appropriate location.
-	 *
-	 * @param existingFileLocation
+	 * copy given Template Files, given Image File and given QuestionJSONFile to local resource directory for custom tasks 
+	 * (only used in Non-Guided Mode Integration)
+	 * @return String with the error messages ("" if no erros happend)
 	 */
-	public void copyFileFromPath(final File existingFileLocation) {
-		if (existingFileLocation.exists() && !existingFileLocation.isDirectory()) {
-			File targetDirectory = null;
+	public String writeDataNonGuidedMode() {
+		
+		final Map<String, File> cryslTemplateFile = integratorModel.getCryslTemplateFiles();
+		
+		copyImage(integratorModel.getIconFile());
+		copyJSON(integratorModel.getJSONFile());
+		for (String key : cryslTemplateFile.keySet()) {
 			try {
+				copyTemplate(cryslTemplateFile.get(key), key);
+			} catch (IOException e) {
+				errors.append(Constants.ERROR_FILE_COPY + cryslTemplateFile.get(key).toString() + "\n");
+			}
+		}
+		return errors.toString();
+	}
+	
 
-				if (existingFileLocation.getPath().endsWith(Constants.CFR_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.CFR_EXTENSION);
-				} else if (existingFileLocation.getPath().endsWith(Constants.JS_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.CFR_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.JS_EXTENSION);
-				} else if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.JSON_EXTENSION);
-				} else if (existingFileLocation.getPath().endsWith(Constants.PNG_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.IMAGE_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.PNG_EXTENSION);
-				} else if (existingFileLocation.getPath().endsWith(Constants.XSL_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.XSL_EXTENSION);
-				} else if (existingFileLocation.getPath().endsWith(Constants.XML_EXTENSION)) {
-					targetDirectory = new File(Utils.getResourceFromWithin(Constants.HELP_FILE_DIRECTORY_PATH,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.XML_EXTENSION);
-				} else if (existingFileLocation.getPath().endsWith(Constants.JAVA_EXTENSION)) {
-					File parentFolder = Utils.getResourceFromWithin(Constants.codeTemplateFolder,
-							"de.cognicrypt.codegenerator");
-					File templateFolder = new File(parentFolder, getTrimmedTaskName());
-					if (!templateFolder.isDirectory()) {
-						templateFolder.mkdir();
-					}
-					targetDirectory = new File(Utils.getResourceFromWithin(
-							Constants.codeTemplateFolder + getTrimmedTaskName() + Constants.innerFileSeparator,
-							"de.cognicrypt.codegenerator"), getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+	
+	/**
+	 * Copy the template file to the appropriate location for code generator + exportable zip.
+	 * @param existingFileLocation one of the existing template files choosen by the user
+	 * @param option identifier for given template file
+	 * @throws IOException
+	 */
+	private void copyTemplate(final File existingFileLocation, String option) throws IOException {
+		File parentFolder1 = new File(Constants.ECLIPSE_LOC_TEMP_DIR);
+		File parentFolder2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/template");
+		File templateFolder1 = new File(parentFolder1, integratorModel.getTrimmedTaskName() + option);
+		File templateFolder2 = new File(parentFolder2, integratorModel.getTrimmedTaskName() + option);
+		
+		if (!templateFolder1.isDirectory()) {
+			templateFolder1.mkdir();
+		}
+		if (!templateFolder2.isDirectory()) {
+		templateFolder2.mkdir();
+		}
+
+		File targetDirectory1 = new File(templateFolder1, integratorModel.getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+		File targetDirectory2 = new File(templateFolder2, integratorModel.getTrimmedTaskName() + Constants.JAVA_EXTENSION);
+
+		
+		Path path1 = existingFileLocation.toPath();
+		Path path2 = targetDirectory1.toPath();
+		Path path3 = targetDirectory2.toPath();
+		
+		Activator.getDefault().logError("Copy " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory1.getAbsolutePath());
+			
+		Files.copy(path1, path2, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator
+		
+		Files.copy(path1, path3, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used to make the exportable ZIP	
+	}
+	
+	/**
+	 * Copy the image file to the appropriate location for code generator + exportable zip.
+	 * @param existingFileLocation the existing image file choosen by the user
+	 */
+	private void copyImage(final File existingFileLocation) {
+			File targetDirectory = null;
+			File targetDirectory2 = null;
+			try {
+				if (existingFileLocation.getPath().endsWith(Constants.PNG_EXTENSION)) {
+					targetDirectory = new File(Constants.ECLIPSE_LOC_IMG_DIR, integratorModel.getTrimmedTaskName() + Constants.PNG_EXTENSION);
+					targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res", integratorModel.getTrimmedTaskName() + Constants.PNG_EXTENSION);
 				} else {
-					throw new Exception("Unknown file type.");
+					throw new Exception(Constants.ERROR_UNKNOWN_FILE_TYPE);
 				}
-
-				if (targetDirectory != null) {
-					Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(),
-							StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES);
-				}
+				Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
+				Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator
+				Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used to make the exportable ZIP
 
 			} catch (final Exception e) {
 				Activator.getDefault().logError(e);
-				getErrors().append("There was a problem copying file ");
-				getErrors().append(existingFileLocation.getName());
-				getErrors().append("\n");
+				errors.append(Constants.ERROR_FILE_COPY + existingFileLocation.getName() + "\n");
 			}
-			// If we are dealing with a custom library location.
-		} else if (existingFileLocation.exists() && existingFileLocation.isDirectory()) {
-			final File tempDirectory = new File(Utils.getResourceFromWithin(Constants.JAR_FILE_DIRECTORY_PATH),
-					getTrimmedTaskName() + Constants.innerFileSeparator);
-			tempDirectory.mkdir();
-			// Loop through all the containing files.
-			for (final File customLibFile : existingFileLocation.listFiles()) {
-				final File tmpFile = new File(
-						tempDirectory.toString() + Constants.innerFileSeparator + customLibFile.getName());
-				try {
-					Files.copy(customLibFile.toPath(), tmpFile.toPath(), StandardCopyOption.REPLACE_EXISTING,
-							StandardCopyOption.COPY_ATTRIBUTES);
-				} catch (final IOException e) {
-					Activator.getDefault().logError(e);
-					getErrors().append("There was a problem copying file ");
-					getErrors().append(existingFileLocation.getName());
-					getErrors().append("\n");
-				}
-			}
-		}
 	}
 
 	/**
-	 * Update the task.json file with the new Task.
+	 * Copy the questionJSON file to the appropriate location for code generator + exportable zip.
+	 * @param existingFileLocation the existing questionJSON file choosen by the user (only Non-Guided Mode)
+	 */
+	private void copyJSON(final File existingFileLocation) {
+		File targetDirectory = null;
+		File targetDirectory2 = null;
+		try {
+			if (existingFileLocation.getPath().endsWith(Constants.JSON_EXTENSION)) {
+				targetDirectory = new File(Constants.ECLIPSE_LOC_TASKDESC_DIR, integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				targetDirectory2 = new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res", integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
+			} else {
+				throw new Exception(Constants.ERROR_UNKNOWN_FILE_TYPE);
+			}
+			Activator.getDefault().logError("CopyNonCustom " + existingFileLocation.getAbsolutePath() + " to " + targetDirectory.getAbsolutePath());
+			Files.copy(existingFileLocation.toPath(), targetDirectory.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used by the code generator	
+			Files.copy(existingFileLocation.toPath(), targetDirectory2.toPath(), StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.COPY_ATTRIBUTES); //copy to folder structure which is used to make the exportable ZIP	
+
+		} catch (final Exception e) {
+			Activator.getDefault().logError(e);
+			errors.append(Constants.ERROR_FILE_COPY + existingFileLocation.getName() + "\n");
+		}
+	}
+
+	
+
+	/**
+	 * Update the task.json file with the new Task in the local resource directory for custom tasks and 
+	 * write it to appropriate location for the exportable ZIP
 	 *
 	 * @param task the Task to be added.
 	 */
 	public void writeTaskToJSONFile(final Task task) {
-
-		BufferedReader reader = null;
-		BufferedWriter writer = null;
+		BufferedReader reader;
+		BufferedWriter writer;
 		final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		try {
 			reader = new BufferedReader(
-					new FileReader(Utils.getResourceFromWithin(Constants.jsonTaskFile, "de.cognicrypt.codegenerator")));
+					new FileReader(new File(Constants.customjsonTaskFile)));
 			final List<Task> tasks = gson.fromJson(reader, new TypeToken<List<Task>>() {
 			}.getType());
 			// Add the new task to the list.
@@ -344,53 +249,39 @@ public class FileUtilities {
 			reader.close();
 
 			writer = new BufferedWriter(
-					new FileWriter(Utils.getResourceFromWithin(Constants.jsonTaskFile, "de.cognicrypt.codegenerator")));
+					new FileWriter(new File(Constants.customjsonTaskFile)));
+			gson.toJson(tasks, new TypeToken<List<Task>>() {
+			}.getType(), writer);
+			writer.close();
+			
+			writer = new BufferedWriter(
+					new FileWriter(new File(Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res/task.json")));
 			gson.toJson(tasks, new TypeToken<List<Task>>() {
 			}.getType(), writer);
 			writer.close();
 
 		} catch (final IOException e) {
 			Activator.getDefault().logError(e);
-			getErrors().append("There was a problem updating the task file.\n");
+			errors.append(Constants.ERROR_TASK_UPDATE);
 		}
 	}
 
-
-
 	/**
-	 * @param questions listOfAllQuestions
-	 * @throws IOException
-	 * @throws SAXException
-	 * @throws ParserConfigurationException
-	 * @throws TransformerException
+	 * Build the questionJSON file to the appropriate location for code generator + exportable zip.
+	 * @param questions
 	 */
-	public void writeJSONFile(final ArrayList<Question> questions) {
+	public void writeJSONFile(final List<Question> questions) {
 
-		final SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages(questions);
-		final ArrayList<Page> pages = pageContent.getPages();
-		boolean taskHasPageHelpContent = false;
-		for (final Page page : pages) {
-			for (final Question question : page.getContent()) {
-				if (!question.getHelpText().isEmpty()) {
-					taskHasPageHelpContent = true;
-					break;
-				}
-			}
-		}
-
-		/**
-		 * creates the xml file containing the help content of the task, adds the
-		 * location of the xml file in the plugin.xml file and sets the page help id
-		 */
-		/*
-		 * try { new CreateAndModifyXmlfile(pages, getTaskName(),
-		 * taskHasPageHelpContent); } catch (IOException | ParserConfigurationException
-		 * | SAXException | TransformerException e) { e.printStackTrace(); }
-		 */
+		final SegregatesQuestionsIntoPages pageContent = new SegregatesQuestionsIntoPages();
+		final List<Page> pages = pageContent.getPages();
 
 		final File jsonFile = new File(
-				Utils.getResourceFromWithin(Constants.JSON_FILE_DIRECTORY_PATH, "de.cognicrypt.codegenerator"),
-				getTrimmedTaskName() + Constants.JSON_EXTENSION);
+				Constants.ECLIPSE_LOC_TASKDESC_DIR,
+				integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
+		
+		final File jsonFile2 = new File(
+				Constants.ECLIPSE_LOC_EXPORT_DIR + "/" + integratorModel.getTaskName() + "/res",
+				integratorModel.getTrimmedTaskName() + Constants.JSON_EXTENSION);
 
 		try {
 			final Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
@@ -403,129 +294,165 @@ public class FileUtilities {
 			// write the data into the .json file
 			writerForJsonFile.write(gson.toJson(pages));
 			writerForJsonFile.close();
+			
+			final FileWriter writerForJsonFile2 = new FileWriter(jsonFile2);
+
+			// write the data into the .json file
+			writerForJsonFile2.write(gson.toJson(pages));
+			writerForJsonFile2.close();
 		} catch (final IOException e) {
 			e.printStackTrace();
 		}
+		
 		if (!validateJSONFile(jsonFile)) {
 			jsonFile.delete();
 		}
 	}
 
+	
+	
 	/**
-	 * @param xslFileContents
+	 * Validate the provided JSON file before copying it to the target location.
+	 *
+	 * @param jsonFileLocation
+	 * @return a boolean value for the validity of the file.
 	 */
-	private void writeXSLFile(final String xslFileContents) {
-		final File xslFile = new File(Utils.getResourceFromWithin(Constants.XSL_FILE_DIRECTORY_PATH),
-				getTrimmedTaskName() + Constants.XSL_EXTENSION);
-
+	private boolean validateJSONFile(final File jsonFileLocation) {
 		try {
-			final PrintWriter writer = new PrintWriter(xslFile);
-			writer.println(xslFileContents);
-			writer.flush();
-			writer.close();
-		} catch (final FileNotFoundException e) {
+			final Gson gson = new Gson();
+			FileReader fileReader = new FileReader(jsonFileLocation);
+			final BufferedReader reader = new BufferedReader(fileReader);
+			gson.fromJson(reader, Object.class);
+			reader.close();
+			fileReader.close();
+			return true;
+		} catch (IOException e) {
 			Activator.getDefault().logError(e);
-			getErrors().append("There was a problem wrting the XSL data.\n");
-		}
-
-		if (!validateXSLFile(xslFile)) {
-			xslFile.delete();
-			getErrors().append("The XSL data is invalid.\n");
+			appendFileErrors(jsonFileLocation.getName());
+			return false;
 		}
 	}
-
-	private void writeCryslTemplateFile(final String cryslTemplateFile) {
-		final File cryslDestFile = new File(Utils.getResourceFromWithin(Constants.codeTemplateFolder),
-				getTrimmedTaskName() + ".java");
-		try {
-			final PrintWriter writer = new PrintWriter(cryslDestFile);
-			writer.println(cryslTemplateFile);
-			writer.flush();
-			writer.close();
-		} catch (final FileNotFoundException e) {
-			Activator.getDefault().logError(e);
-			getErrors().append("There was a problem wrting the Crysl Template data.\n");
+	
+	/**
+	 * For the sake of reusability.
+	 *
+	 * @param fileName
+	 */
+	private void appendFileErrors(final String fileName) {
+		errors.append("The contents of the file ");
+		errors.append(fileName);
+		errors.append(" are invalid.");
+		errors.append("\n");
+	}
+	
+	/**
+	 * convert a given File/Directory to a ZIP File (Used for creating the exportable ZIP in (Non-)Guided Mode) 
+	 * @param fileToZip 
+	 * @param fileName
+	 * @param zipOut
+	 * @throws IOException
+	 */
+	public static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {
+		if (fileToZip.isHidden()) {
+			return;
 		}
+		if (fileToZip.isDirectory()) {
+			if (fileName.endsWith("/")) {
+				zipOut.putNextEntry(new ZipEntry(fileName));
+				zipOut.closeEntry();
+			} else {
+				zipOut.putNextEntry(new ZipEntry(fileName + "/"));
+				zipOut.closeEntry();
+			}
+			File[] children = fileToZip.listFiles();
+			for (File childFile : children) {
+				zipFile(childFile, fileName + "/" + childFile.getName(), zipOut);
+			}
+			return;
+		}
+		FileInputStream fis = new FileInputStream(fileToZip);
+		ZipEntry zipEntry = new ZipEntry(fileName);
+		zipOut.putNextEntry(zipEntry);
+		byte[] bytes = new byte[1024];
+		int length;
+		while ((length = fis.read(bytes)) >= 0) {
+			zipOut.write(bytes, 0, length);
+		}
+		fis.close();
 	}
 
-	public void updateThePluginXMLFileWithHelpData(final String machineReadableTaskName) {
-		File pluginXMLFile = Utils.getResourceFromWithin(Constants.PLUGIN_XML_FILE);
-		if (!pluginXMLFile.exists()) {
-			pluginXMLFile = Utils.getResourceFromWithin("src" + Constants.innerFileSeparator + ".."
-					+ Constants.innerFileSeparator + Constants.PLUGIN_XML_FILE);
-		}
-		final SAXReader reader = new SAXReader();
-		Document pluginXMLDocument = null;
-		reader.setValidation(false);
+	/**
+	 * unzip the exportable ZIP file choosen by the user 
+	 */
+	public static void unzipFile(String zipFile, File destDir) {
+		byte[] buffer = new byte[1024];
 		try {
-			pluginXMLDocument = reader.read(pluginXMLFile);
-		} catch (final DocumentException e) {
-			Activator.getDefault().logError(e);
-		}
-		if (pluginXMLDocument != null) {
+			ZipInputStream zis = new ZipInputStream(new FileInputStream(zipFile));
+			ZipEntry zipEntry = zis.getNextEntry();
+			while (zipEntry != null) {
+				File newFile = newFile(destDir, zipEntry);
+				if (zipEntry.isDirectory()) {
+					if (!newFile.isDirectory() && !newFile.mkdirs()) {
+						throw new IOException(Constants.ERROR_DIRECTORY_CREATION + newFile);
+					}
+				} else {
+					// fix for Windows-created archives
+					File parent = newFile.getParentFile();
+					if (!parent.isDirectory() && !parent.mkdirs()) {
+						throw new IOException(Constants.ERROR_DIRECTORY_CREATION + parent);
+					}
 
-			final Element root = pluginXMLDocument.getRootElement();
-			for (final Iterator<Element> extensionElement = root.elementIterator("extension"); extensionElement
-					.hasNext();) {
-				final Element currentExtensionElement = extensionElement.next();
-				final Attribute point = currentExtensionElement.attribute("point");
-				if (point != null && point.getValue().equals("org.eclipse.help.contexts")) {
-					currentExtensionElement.addElement("contexts").addAttribute("file",
-							Constants.HELP_FILE_DIRECTORY_PATH + machineReadableTaskName + Constants.XML_EXTENSION);
+					// write file content
+					FileOutputStream fos = new FileOutputStream(newFile);
+					int len;
+					while ((len = zis.read(buffer)) > 0) {
+						fos.write(buffer, 0, len);
+					}
+					fos.close();
 				}
+				zipEntry = zis.getNextEntry();
 			}
-
-			try (FileWriter fileWriter = new FileWriter(pluginXMLFile)) {
-				final OutputFormat format = OutputFormat.createPrettyPrint();
-				final XMLWriter writer = new XMLWriter(fileWriter, format);
-				writer.write(pluginXMLDocument);
-				writer.close();
-			} catch (final IOException e) {
-				Activator.getDefault().logError(e);
-			}
+			zis.closeEntry();
+			zis.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Return the name of that task that is set for the file writes..
-	 *
+	 * helper function for unzipFile
+	 * @param destinationDir
+	 * @param zipEntry
 	 * @return
+	 * @throws IOException
 	 */
-	private String getTaskName() {
-		return this.taskName;
+	public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
+		File destFile = new File(destinationDir, zipEntry.getName());
+
+		String destDirPath = destinationDir.getCanonicalPath();
+		String destFilePath = destFile.getCanonicalPath();
+
+		if (!destFilePath.startsWith(destDirPath + File.separator)) {
+			throw new IOException(Constants.ERROR_ENTRY_OUTSIDE_TARGETDIR + zipEntry.getName());
+		}
+
+		return destFile;
 	}
 
 	/**
-	 * get machine-readable task name
-	 *
-	 * @return task name without non-alphanumerics
+	 * delete the given directory (used for clean up in the local ExportableTask directory)
+	 * @param directoryToBeDeleted
+	 * @return true if direcotry succesfully deleted
 	 */
-	private String getTrimmedTaskName() {
-		return getTaskName().replaceAll("[^A-Za-z0-9]", "");
+	public static boolean deleteDirectory(File directoryToBeDeleted) {
+		File[] allContents = directoryToBeDeleted.listFiles();
+		if (allContents != null) {
+			for (File file : allContents) {
+				deleteDirectory(file);
+			}
+		}
+		return directoryToBeDeleted.delete();
 	}
-
-	/**
-	 * Set the name of the task that is being written to File. The names of the
-	 * result files are set based on the provided task name.
-	 *
-	 * @param taskName
-	 */
-	private void setTaskName(final String taskName) {
-		this.taskName = taskName;
-	}
-
-	/**
-	 * @return the list of errors.
-	 */
-	private StringBuilder getErrors() {
-		return this.errors;
-	}
-
-	/**
-	 * @param set the string builder to maintain the list of errors.
-	 */
-	private void setErrors(final StringBuilder errors) {
-		this.errors = errors;
-	}
-
+	
+	
 }

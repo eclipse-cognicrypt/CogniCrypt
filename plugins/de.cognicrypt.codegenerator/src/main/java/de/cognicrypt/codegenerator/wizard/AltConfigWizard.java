@@ -250,7 +250,12 @@ public class AltConfigWizard extends Wizard {
 			switch (genKind) {
 				case CrySL:
 					CrySLBasedCodeGenerator.clearParameterCache();
-					File templateFile = CodeGenUtils.getResourceFromWithin(codeTemplate).listFiles()[0];
+					File templateFile;
+					if(codeTemplate.startsWith(Constants.ECLIPSE_LOC_TEMP_DIR)) {
+						templateFile = new File(codeTemplate).listFiles()[0];	
+					}else {
+						templateFile = CodeGenUtils.getResourceFromWithin(codeTemplate).listFiles()[0];
+					}
 					codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 					String projectRelDir = Constants.outerFileSeparator + codeGenerator.getDeveloperProject()
 						.getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
@@ -272,8 +277,13 @@ public class AltConfigWizard extends Wizard {
 					break;
 				case XSL:
 					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();
-					final InstanceGenerator instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
-						.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
+					InstanceGenerator instanceGenerator;
+					if(codeTemplate.startsWith(Constants.ECLIPSE_LOC_TEMP_DIR)) {
+						instanceGenerator = new InstanceGenerator(selectedTask.getModelFile(), "c0_" + taskName, selectedTask.getDescription());
+					}else {
+						instanceGenerator = new InstanceGenerator(CodeGenUtils.getResourceFromWithin(selectedTask.getModelFile())
+							.getAbsolutePath(), "c0_" + taskName, selectedTask.getDescription());
+					}
 					instanceGenerator.generateInstances(this.constraints);
 
 					// Initialize Code Generation
@@ -298,7 +308,6 @@ public class AltConfigWizard extends Wizard {
 			waitingDialog.setVisible(false);
 		}
 
-		waitingDialog.setVisible(false);
 		return ret;
 	}
 

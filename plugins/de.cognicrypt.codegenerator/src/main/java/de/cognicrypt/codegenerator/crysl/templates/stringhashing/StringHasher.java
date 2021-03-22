@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,18 +16,10 @@ import java.util.Base64;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
-/**
- * The Class StringHasher.
- */
+
 public class StringHasher {
 
-	/**
-	 * Converts the message form string to bytes and creates the hash from it with MessageDigest.
-	 *
-	 * @param msg the msg
-	 * @return the java.lang. string
-	 * @throws GeneralSecurityException the general security exception
-	 */
+	
 	public static java.lang.String createHash(java.lang.String msg) throws GeneralSecurityException {
 		byte[] plainBytes = msg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;
@@ -35,13 +27,6 @@ public class StringHasher {
 		return Base64.getEncoder().encodeToString(out);
 	}
 
-	/**
-	 * Verify hash.
-	 *
-	 * @param compareeHash the comparee hash
-	 * @param newMsg the new msg
-	 * @return true, if successful
-	 */
 	public static boolean verifyHash(java.lang.String compareHash, java.lang.String newMsg) {
 		byte[] plainBytes = newMsg.getBytes(StandardCharsets.UTF_8);
 		byte[] out = null;

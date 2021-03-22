@@ -22,7 +22,7 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor provides a hybrid string encryption.
+ * The Class SecureEncryptor provides hybrid string encryption.
  */
 public class SecureEncryptor {
 

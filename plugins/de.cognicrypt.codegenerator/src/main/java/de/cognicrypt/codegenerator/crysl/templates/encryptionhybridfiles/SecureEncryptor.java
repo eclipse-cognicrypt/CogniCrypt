@@ -20,7 +20,7 @@ import javax.crypto.Cipher;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 /**
- * The Class SecureEncryptor for a hybrid encryption of file data.
+ * The Class SecureEncryptor provides hybrid file encryption.
  */
 public class SecureEncryptor {
 	

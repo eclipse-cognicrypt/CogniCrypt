@@ -18,7 +18,7 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor provides a hybrid encryption of bytes.
+ * The Class SecureEncryptor provides hybrid encryption.
  */
 public class SecureEncryptor {
 	

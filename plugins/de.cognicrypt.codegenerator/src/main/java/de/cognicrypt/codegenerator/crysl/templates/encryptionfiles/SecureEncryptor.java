@@ -19,7 +19,7 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor for encrypting a file.
+ * The Class SecureEncryptor for symmetric file encrypting .
  */
 public class SecureEncryptor {
 

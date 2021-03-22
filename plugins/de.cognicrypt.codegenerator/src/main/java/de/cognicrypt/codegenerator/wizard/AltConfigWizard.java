@@ -268,7 +268,7 @@ public class AltConfigWizard extends Wizard {
 					codeGenerator.getDeveloperProject().refresh();
 
 					resetAnswers();
-					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile));
+					chosenConfig = new CrySLConfiguration(resFileOSPath, ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile));
 					break;
 				case XSL:
 					this.constraints = (this.constraints != null) ? this.constraints : new HashMap<>();

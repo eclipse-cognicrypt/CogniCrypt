@@ -18,7 +18,7 @@ import java.util.Base64;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
-/** * This Class provides secure way to sign a message.
+/** * This Class provides secure way to sign and verify a message.
 
  */
 public final class SecureSigner {
@@ -59,15 +59,15 @@ public final class SecureSigner {
 	}
 
 	/**
-	 * Decodes the message to bytes and verifies the signature.
+	 * Decodes the message to bytes (with Base64) and verifies if the message is from an authenticated person using the public part of key pair.
 	 *
-	 * @param msg the String message that will be decoded with Base64.
+	 * @param msg the String message (it will be decoded with Base64) to verify its signature.
 	 * @param keyPair to retrieve public key.
-	 * @return true, if signature is verified.
+	 * @return true, if the message signature is verified.
 	 * @throws NoSuchAlgorithmException This exception is thrown when the proper cryptographic algorithm is not provided.
 	 * @throws InvalidKeyException This exception is thrown in case of invalid Keys (invalid encoding, wrong length, uninitialized, etc).
-	 * @throws SignatureException general signature exception.
-	 * @throws GeneralSecurityException the general security exception.
+	 * @throws SignatureException This exception is thrown if the signature object is not initialized properly, if this signature algorithm is unable to process the input data provided.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
 	 */
 	public static boolean verify(java.lang.String msg, java.security.KeyPair keyPair) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
 		boolean res = false;

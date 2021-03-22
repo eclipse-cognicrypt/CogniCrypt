@@ -15,7 +15,7 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor encryption.
+ * The Class SecureEncryptor for simple symmetric encryption.
  */
 public class SecureEncryptor {
 	

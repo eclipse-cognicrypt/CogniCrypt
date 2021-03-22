@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -17,7 +17,7 @@ import javax.crypto.Cipher;
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 /**
- * The Class SecureEncryptor.
+ * The Class SecureEncryptor provides encryption with secret key, no password required.
  */
 public class SecureEncryptor {
 

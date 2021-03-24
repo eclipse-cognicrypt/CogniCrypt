@@ -221,6 +221,7 @@ public class Utils {
 	public static File getResourceFromWithin(final String inputPath) {
 		return getResourceFromWithin(inputPath, Activator.PLUGIN_ID);
 	}
+	
 
 	/***
 	 * This method returns absolute path of a project-relative path.
@@ -294,7 +295,7 @@ public class Utils {
 				subTypes = Class.forName(typeOne).isAssignableFrom(Class.forName(typeTwo));
 			}
 			catch (ClassNotFoundException e) {
-				Activator.getDefault().logError(e);
+				// It's fine if above throws a ClassNotFoundException
 			}
 		}
 		return subTypes;

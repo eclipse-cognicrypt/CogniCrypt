@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:de.cognicrypt.core.menu">
+                  <command
+                        commandId="de.cognicrypt.task.integrator.runtaskintegrator"
+                        icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-extension.png"
+                        label="Run CogniCrypt Task Integrator"
+                        style="push">
+                  </command>
+               </menuContribution>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.commands">
+               <command
+                     defaultHandler="de.cognicrypt.integrator.task.actions.RunTaskIntegratorHandler"
+                     id="de.cognicrypt.task.integrator.runtaskintegrator"
+                     name="RunTaskIntegrator">
+               </command>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="toolbar:org.eclipse.ui.main.toolbar">
+                  <toolbar
+                        id="de.cognicrypt.toolbar"
+                        label="CogniCrypt">
+                     <command
+                           commandId="de.cognicrypt.task.integrator.runtaskintegrator"
+                           icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt-extension.png"
+                           label="RunTaskIntegratorToolBar"
+                           style="push"
+                           tooltip="Integrate Cryptographic Task">
+                     </command>
+                  </toolbar>
+               </menuContribution>
+            </extension>
+</plugin>

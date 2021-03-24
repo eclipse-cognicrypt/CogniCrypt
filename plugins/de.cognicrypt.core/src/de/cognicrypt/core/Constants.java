@@ -307,8 +307,10 @@ public class Constants {
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library";
 	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE = "Location of the Help file";
 	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "Location of the Clafer file";
+	public static final String WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE = "Location of the Crysl Template file";
 	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "Location of the XSL file";
 	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Location of the JSON file";
+	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Location of the PNG file";
 	public static final String WIDGET_DATA_LOCATION_OF_HELP_FILE = "Location of the Help file";
 	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
@@ -471,11 +473,14 @@ public class Constants {
 	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
 	public static final String CFR_BIN_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModelBin" + innerFileSeparator;
 	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
+	public static final String IMAGE_FILE_DIRECTORY_PATH = rsrcPath + "images" + innerFileSeparator;
 	public static final String XML_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String pluginXmlFile = "plugin.xml";
 	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
 	public static final String HELP_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
 	public static final String CFR_EXTENSION = ".cfr";
+	public static final String JAVA_EXTENSION = ".java";
+	public static final String PNG_EXTENSION = ".png";
 	public static final String CFR_BIN_EXTENSION = ".dat";
 	public static final String JS_EXTENSION = ".js";
 	public static final String JAR_EXTENSION = ".jar";
@@ -523,7 +528,7 @@ public class Constants {
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
-	public static final String FORBIDDEN_METHOD_MARKER_TYPE = "de.cognicrypt.staticanalyzer.forbiddenMethodMarker";
+	public static final String FORBIDDEN_METHOD_MARKER_TYPE = "de.cognicrypt.staticanalyzer.forbiddenMethodErrorMarker";
 	public static final String IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker";
 	public static final String PREDICATE_CONTRADICTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker";
 	public static final String REQUIRED_PREDICATE_MARKER_TYPE = "de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker";
@@ -538,7 +543,12 @@ public class Constants {
 	public static final String SHOW_SECURE_OBJECTS = "de.cognicrypt.staticanalyzer.secureObjects";
 	public static final String CALL_GRAPH_SELECTION = "de.cognicrypt.staticanalyzer.callgraphSelection";
 	public static final String SELECT_CUSTOM_RULES = "de.cognicrypt.staticanalyzer.selectCustomRules";
+
 	public static final String SUPPRESS_LEGACYCLIENT_ERRORS = "de.cognicrypt.staticanalyzer.suppressConstraintErrors";
+
+	public static final String ANALYZED_PROJECT_DIR_RULES = "de.cognicrypt.staticanalyzer.analyzedProjectRootDirRules";
+	public static final String LOCAL_RULES_DIRECTORY = "de.cognicrypt.staticanalyzer.localRulesLocation";
+
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";

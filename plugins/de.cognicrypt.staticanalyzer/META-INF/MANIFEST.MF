@@ -23,5 +23,9 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  resources/json-simple.jar
 Automatic-Module-Name: de.cognicrypt.staticanalyzer
+
 Import-Package: org.eclipse.ui.texteditor,
  org.json.simple
+
+Export-Package: de.cognicrypt.staticanalyzer.sootbridge
+

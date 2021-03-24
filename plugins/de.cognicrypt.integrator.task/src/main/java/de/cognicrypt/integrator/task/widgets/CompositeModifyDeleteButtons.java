@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.MessageBox;
 import de.cognicrypt.codegenerator.question.Question;
-import de.cognicrypt.integrator.task.models.ClaferModel;
 import de.cognicrypt.integrator.task.wizard.QuestionDialog;
 
 public class CompositeModifyDeleteButtons extends Composite {
@@ -68,8 +67,7 @@ public class CompositeModifyDeleteButtons extends Composite {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
 				final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getListOfAllQuestions();
-				final ClaferModel claferModel = ((CompositeToHoldGranularUIElements) btnModify.getParent().getParent().getParent().getParent()).getClaferModel();
-				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, claferModel, listOfAllQuestions);
+				final QuestionDialog qstnDialog = new QuestionDialog(parent.getShell(), questionParam, listOfAllQuestions);
 				final int response = qstnDialog.open();
 				if (response == Window.OK) {
 					final Question modifiedQuestion = qstnDialog.getQuestionDetails();

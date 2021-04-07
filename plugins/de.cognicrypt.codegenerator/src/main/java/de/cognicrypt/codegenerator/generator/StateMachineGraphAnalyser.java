@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import crypto.rules.StateMachineGraph;
-import crypto.rules.StateNode;
 import crypto.rules.TransitionEdge;
 import de.cognicrypt.utils.CrySLUtils;
 
@@ -30,9 +29,9 @@ import de.cognicrypt.utils.CrySLUtils;
  */
 public class StateMachineGraphAnalyser {
 
-	private StateMachineGraph stateMachine;
-	private ArrayList<String> usedTransitions = new ArrayList<String>();
-	private ArrayList<List<TransitionEdge>> allTransitions;
+	protected StateMachineGraph stateMachine;
+	protected ArrayList<String> usedTransitions = new ArrayList<String>();
+	protected ArrayList<List<TransitionEdge>> allTransitions;
 
 	public StateMachineGraphAnalyser(StateMachineGraph stateMachine) {
 		this.stateMachine = stateMachine;
@@ -42,23 +41,20 @@ public class StateMachineGraphAnalyser {
 	// Current solution: Take every loop once.
 	// This solution does not distinguish between the two operates
 	// + and * of the crysl language
-	public ArrayList<List<TransitionEdge>> getTransitions() throws Exception {
+	public ArrayList<List<TransitionEdge>> getTransitions() {
 		allTransitions = new ArrayList<List<TransitionEdge>>();
 
 		//Collection<StateNode> nodes = stateMachine.getNodes();
 		List<TransitionEdge> edges = stateMachine.getEdges();
 		//Collection<StateNode> acceptingNodes = stateMachine.getAcceptingStates();
 
-		TransitionEdge initialTransition = stateMachine.getInitialTransition();
-		StateNode initialState = initialTransition.getLeft();
+		List<TransitionEdge> initialTransitions = stateMachine.getInitialTransitions();
+		for (TransitionEdge initialTransition : initialTransitions) {
 
-		if (!initialState.getInit()) {
-			throw new Exception("No initial state found for state machine!");
+			List<TransitionEdge> transitions = new ArrayList<TransitionEdge>();
+
+			visitNode(edges, initialTransition, transitions);
 		}
-
-		List<TransitionEdge> transitions = new ArrayList<TransitionEdge>();
-
-		visitNode(edges, initialTransition, transitions);
 
 		return allTransitions;
 	}

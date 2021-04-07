@@ -1,56 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
-<plugin>
-<extension point="org.eclipse.ui.preferencePages">
- 	<page id="CogniCryptPreferencePage"
- 		name="CogniCrypt"
-    		class="de.cognicrypt.core.properties.CogniCryptPreferencePage">
-    		<keywordReference id="de.cognicrypt.core.keyword_CogniCrypt"/>
-   	</page>
-   	
-</extension>
-      <extension
-		point="org.eclipse.ui.keywords">
-		<keyword
-			id="de.cognicrypt.core.keyword_CogniCrypt"
-			label="CogniCrypt"/>
-	</extension>
- 
-  <extension
-      id="CogniCrypt"
-      point="org.eclipse.core.runtime.products">
-   <product
-         application="org.eclipse.ui.ide.workbench"
-         name="CogniCrypt">
-   </product>
-</extension> 
 
-<extension
-                  point="org.eclipse.ui.menus">
-               <menuContribution
-                     allPopups="false"
-                     locationURI="popup:org.eclipse.ui.popup.any">
-                  <menu
-                        icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png "
-                        id="de.cognicrypt.core.menu"
-                        label="CogniCrypt">
-                     <visibleWhen
-                           checkEnabled="true">
-                        <with
-                              variable="activeMenuSelection">
-                           <iterate
-                                 ifEmpty="false"
-                                 operator="or">
-                              <adapt
-                                    type="org.eclipse.core.resources.IProject">
-                                 <instanceof
-                                       value="org.eclipse.core.resources.IProject">
-                                 </instanceof>
-                              </adapt>
-                           </iterate>
-                        </with>
-                     </visibleWhen>
-                  </menu>
-               </menuContribution>
-            </extension>
+<plugin> 
+  <extension point="org.eclipse.ui.preferencePages"> 
+    <page id="CogniCryptPreferencePage" name="CogniCrypt" class="de.cognicrypt.core.properties.CogniCryptPreferencePage"> 
+      <keywordReference id="de.cognicrypt.core.keyword_CogniCrypt"/> 
+    </page> 
+  </extension>  
+  <extension point="org.eclipse.ui.keywords"> 
+    <keyword id="de.cognicrypt.core.keyword_CogniCrypt" label="CogniCrypt"/> 
+  </extension>  
+  <extension id="CogniCrypt" point="org.eclipse.core.runtime.products"> 
+    <product application="org.eclipse.ui.ide.workbench" name="CogniCrypt"/> 
+  </extension>  
+  <extension point="org.eclipse.ui.menus"> 
+    <menuContribution allPopups="false" locationURI="popup:org.eclipse.ui.popup.any"> 
+      <menu icon="platform:/plugin/de.cognicrypt.core/icons/cognicrypt.png " id="de.cognicrypt.core.menu" label="CogniCrypt"> 
+        <visibleWhen checkEnabled="true"> 
+          <with variable="activeMenuSelection"> 
+            <iterate ifEmpty="false" operator="or"> 
+              <adapt type="org.eclipse.core.resources.IProject"> 
+                <instanceof value="org.eclipse.core.resources.IProject"/> 
+              </adapt> 
+            </iterate> 
+          </with> 
+        </visibleWhen> 
+      </menu> 
+    </menuContribution> 
+  </extension> 
 </plugin>

@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.models.ClaferModel;
 import de.cognicrypt.integrator.task.wizard.AddDependenciesDialog;
 import de.cognicrypt.integrator.task.wizard.LinkAnswerDialog;
 
@@ -69,50 +68,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 		grpQuestionDetails.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 4));
 		grpQuestionDetails.setLayout(new GridLayout(4, false));
 
-		if (!linkAnswerPage) {
-			final Button addDependencies = new Button(this, SWT.NONE);
-			final GridData gdAddDependencies = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
-			addDependencies.setLayoutData(gdAddDependencies);
-			addDependencies.setText("Link Variability construct and Link code");
-			addDependencies.setToolTipText("Click to Link variability construct and variables to use in code");
-			// Only visible for "pageForHighLevelQuestions" page
-			addDependencies.setVisible(!linkAnswerPage);
 
-			addDependencies.addSelectionListener(new SelectionAdapter() {
-
-				@Override
-				public void widgetSelected(final SelectionEvent e) {
-					final ClaferModel claferModel = ((CompositeToHoldGranularUIElements) addDependencies.getParent().getParent().getParent()).getClaferModel();
-					final AddDependenciesDialog addDependenciesDialog = new AddDependenciesDialog(parent.getShell(), CompositeGranularUIForHighLevelQuestions.this.question, claferModel);
-					addDependenciesDialog.open();
-				}
-			});
-		}
-
-		if (linkAnswerPage) {
-			final Button linkQstn = new Button(this, SWT.WRAP);
-			final GridData gdLinkQstn = new GridData(SWT.LEFT, SWT.FILL, false, false, 1, 3);
-			linkQstn.setLayoutData(gdLinkQstn);
-
-			linkQstn.setText("Link Answer to other questions");
-
-			// Visible only for the "pageForLinkAnswers" page
-			linkQstn.setVisible(linkAnswerPage);
-
-			// opens the LinkAnswerDialog
-			linkQstn.addSelectionListener(new SelectionAdapter() {
-
-				@Override
-				public void widgetSelected(final SelectionEvent e) {
-
-					// retrieves the list of all questions
-					final ArrayList<Question> listOfAllQuestions = ((CompositeToHoldGranularUIElements) linkQstn.getParent().getParent().getParent()).getListOfAllQuestions();
-					final LinkAnswerDialog linkAnsDialog = new LinkAnswerDialog(parent.getShell(), CompositeGranularUIForHighLevelQuestions.this.question, listOfAllQuestions);
-					linkAnsDialog.open();
-
-				}
-			});
-		}
 
 		grpQuestionDetails.setText("Question details");
 
@@ -162,7 +118,7 @@ public class CompositeGranularUIForHighLevelQuestions extends Composite {
 			lblAnswers.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 			lblAnswers.setText("Answers:");
 
-			final CompositeToHoldSmallerUIElements compositeForAnswers = new CompositeToHoldSmallerUIElements(grpQuestionDetails, SWT.None, null, false, null);
+			final CompositeToHoldSmallerUIElements compositeForAnswers = new CompositeToHoldSmallerUIElements(grpQuestionDetails, SWT.None, null, false);
 			final GridData gdCompositeForAnswers = new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1);
 			gdCompositeForAnswers.heightHint = 100;
 			compositeForAnswers.setLayoutData(gdCompositeForAnswers);

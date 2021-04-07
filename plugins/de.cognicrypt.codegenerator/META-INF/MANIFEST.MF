@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.junit,
  de.cognicrypt.core;bundle-version="1.0.0",
+ de.cognicrypt.staticanalyzer;bundle-version="1.0.0",
  org.eclipse.ui.ide,
  com.google.gson,
  org.eclipse.ui.workbench.texteditor,
@@ -29,7 +30,8 @@ Bundle-ClassPath: lib/claferchocoig.jar,
  src/main/resources/,
  src/main/java/,
  lib/dom4j-2.0.0.jar,
- lib/saxon9he.jar
+ lib/saxon9he.jar,
+ lib/test.jar
 Automatic-Module-Name: de.cognicrypt.codegenerator
 Bundle-Vendor: TU Darmstadt, Paderborn University
 Export-Package: de.cognicrypt.codegenerator,

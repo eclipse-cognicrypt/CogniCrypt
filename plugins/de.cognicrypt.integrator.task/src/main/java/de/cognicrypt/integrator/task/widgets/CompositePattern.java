@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import de.cognicrypt.integrator.task.UIConstants;
-import de.cognicrypt.integrator.task.models.ClaferModel;
 
 public class CompositePattern extends Composite {
 
@@ -50,9 +49,6 @@ public class CompositePattern extends Composite {
 		this.decorationName = new ControlDecoration(lblName, SWT.TOP | SWT.RIGHT);
 	}
 
-	public ClaferModel getResultModel() {
-		return new ClaferModel();
-	}
 
 	/**
 	 * validate the contents of the composite and return the success

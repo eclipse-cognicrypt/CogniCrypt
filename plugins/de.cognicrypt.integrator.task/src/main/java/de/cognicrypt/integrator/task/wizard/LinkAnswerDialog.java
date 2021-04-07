@@ -80,7 +80,7 @@ public class LinkAnswerDialog extends Dialog {
 
 			// Scroll composite containing the needed widgets for linking the answers to other questions
 
-			final CompositeToHoldSmallerUIElements scrollCompositeForAnswers = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, false, null);
+			final CompositeToHoldSmallerUIElements scrollCompositeForAnswers = new CompositeToHoldSmallerUIElements(container, SWT.NONE, null, false);
 			final GridData gd_LinkAns = new GridData(SWT.LEFT, SWT.CENTER, true, false, 2, 1);
 			gd_LinkAns.heightHint = 200;
 			gd_LinkAns.widthHint = 700;

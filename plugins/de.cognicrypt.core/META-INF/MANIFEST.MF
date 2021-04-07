@@ -134,6 +134,8 @@ Export-Package: boomerang;
    com.google.common.collect,
    sync.pds.solver,
    wpds.impl",
+ com.google.common.base,
+ com.google.common.collect,
  crypto;
   uses:="ideal,
    crypto.rules,

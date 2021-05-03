@@ -72,7 +72,7 @@ public class SecureSigner {
 		boolean res = false;
 		byte[] msgBytes = Base64.getDecoder().decode(msg);
 		java.security.PublicKey pubKey = keyPair.getPublic();
-		CrySLCodeGenerator.getInstance().includeClass("java.security.Signature").addParameter(pubKey, "pub").addParameter(msgBytes, "sign").addParameter(res, "out").generate();
+		CrySLCodeGenerator.getInstance().includeClass("java.security.Signature").addParameter(pubKey, "pub").addParameter(msgBytes, "sign").addParameter(res, "verified").generate();
 		return res;
 	}
 

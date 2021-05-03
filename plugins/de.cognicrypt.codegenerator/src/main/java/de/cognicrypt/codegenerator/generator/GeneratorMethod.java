@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.jdt.core.dom.Javadoc;
+
 public class GeneratorMethod {
 
 	private String modifier;
@@ -31,6 +33,7 @@ public class GeneratorMethod {
 	private StringBuilder killStatements;
 	private int templateVariables;
 	private List<CodeGenCrySLRule> cryslRules;
+	private String javaDoc = "";
 
 	public GeneratorMethod() {
 		body = new StringBuilder();
@@ -130,7 +133,7 @@ public class GeneratorMethod {
 	}
 
 	public String toString() {
-		String signature = modifier + " " + returnType + " " + name + "(";
+		String signature = javaDoc + modifier + " " + returnType + " " + name + "(";
 		StringBuilder method = new StringBuilder(signature);
 		for (int i = 0; i < parameters.size(); i++) {
 			Entry<String, String> parAtI = parameters.get(i);
@@ -189,6 +192,10 @@ public class GeneratorMethod {
 
 	public List<Entry<String, String>> getPostCGVars() {
 		return postCGVars;
+	}
+	
+	public void addJavaDoc(Javadoc javadoc) {
+		this.javaDoc = javadoc.toString() + "\n";
 	}
 
 }

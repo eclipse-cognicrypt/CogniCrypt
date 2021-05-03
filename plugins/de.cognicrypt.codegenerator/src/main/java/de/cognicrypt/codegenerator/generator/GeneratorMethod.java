@@ -133,7 +133,7 @@ public class GeneratorMethod {
 	}
 
 	public String toString() {
-		String signature = javaDoc + modifier + " " + returnType + " " + name + "(";
+		String signature = modifier + " " + returnType + " " + name + "(";
 		StringBuilder method = new StringBuilder(signature);
 		for (int i = 0; i < parameters.size(); i++) {
 			Entry<String, String> parAtI = parameters.get(i);
@@ -160,10 +160,11 @@ public class GeneratorMethod {
 		method.append(body.toString().replaceAll(",\\s+\\)", ")"));
 		method.append("\n}");
 		if (killStatements != null) {
-			return method.toString().replace("return ", killStatements.toString() + "\n return ");
+			return javaDoc + method.toString().replace("return ", killStatements.toString() + "\n return ");
 		} else {
-			return method.toString();
+			return method.insert(0, javaDoc).toString();
 		}
+
 	}
 
 	public void clearBody() {

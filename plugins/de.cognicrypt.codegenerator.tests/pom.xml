@@ -10,7 +10,6 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<groupId>de.cognicrypt</groupId>
 	<artifactId>de.cognicrypt.codegenerator.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 	<dependencies>

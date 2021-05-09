@@ -69,46 +69,49 @@ public class TestUtils {
 	 * 
 	 * @param projectName The name of the Java project
 	 * @return The newly created Java project
-	 * @throws CoreException
 	 */
-	public static IJavaProject createJavaProject(final String projectName) throws CoreException {
+	public static IJavaProject createJavaProject(final String projectName) {
+		IJavaProject javaProject = null;
+		try {
+			final IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+			deleteProject(workSpaceRoot.getProject(projectName));
 
-		final IWorkspaceRoot workSpaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		deleteProject(workSpaceRoot.getProject(projectName));
+			final IProject project = workSpaceRoot.getProject(projectName);
+			project.create(null);
+			project.open(null);
 
-		final IProject project = workSpaceRoot.getProject(projectName);
-		project.create(null);
-		project.open(null);
+			final IProjectDescription description = project.getDescription();
+			description.setNatureIds(new String[] {JavaCore.NATURE_ID});
+			project.setDescription(description, null);
 
-		final IProjectDescription description = project.getDescription();
-		description.setNatureIds(new String[] {JavaCore.NATURE_ID});
-		project.setDescription(description, null);
+			javaProject = JavaCore.create(project);
 
-		final IJavaProject javaProject = JavaCore.create(project);
+			final IFolder binFolder = project.getFolder("bin");
+			binFolder.create(false, true, null);
+			javaProject.setOutputLocation(binFolder.getFullPath(), null);
 
-		final IFolder binFolder = project.getFolder("bin");
-		binFolder.create(false, true, null);
-		javaProject.setOutputLocation(binFolder.getFullPath(), null);
+			final List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+			final IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
+			final LibraryLocation[] locations = JavaRuntime.getLibraryLocations(vmInstall);
+			for (final LibraryLocation element : locations) {
+				entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
+			}
+			// add libs to project class path
+			javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
 
-		final List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
-		final IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
-		final LibraryLocation[] locations = JavaRuntime.getLibraryLocations(vmInstall);
-		for (final LibraryLocation element : locations) {
-			entries.add(JavaCore.newLibraryEntry(element.getSystemLibraryPath(), null, null));
+			final IFolder sourceFolder = project.getFolder("src");
+			sourceFolder.create(false, true, null);
+
+			final IPackageFragmentRoot packageRoot = javaProject.getPackageFragmentRoot(sourceFolder);
+			final IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
+			final IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
+			System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
+			newEntries[oldEntries.length] = JavaCore.newSourceEntry(packageRoot.getPath());
+			javaProject.setRawClasspath(newEntries, null);
+		} catch (CoreException e) {
+			Activator.getDefault().logError(e);
 		}
-		// add libs to project class path
-		javaProject.setRawClasspath(entries.toArray(new IClasspathEntry[entries.size()]), null);
-
-		final IFolder sourceFolder = project.getFolder("src");
-		sourceFolder.create(false, true, null);
-
-		final IPackageFragmentRoot packageRoot = javaProject.getPackageFragmentRoot(sourceFolder);
-		final IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
-		final IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
-		System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-		newEntries[oldEntries.length] = JavaCore.newSourceEntry(packageRoot.getPath());
-		javaProject.setRawClasspath(newEntries, null);
-
+		
 		return javaProject;
 	}
 
@@ -119,27 +122,37 @@ public class TestUtils {
 	 * @param packageName The package name
 	 * @param className The name of the new Java class
 	 * @return The resource with the generated Java class in it
-	 * @throws JavaModelException
 	 */
-	public static IResource generateJavaClassInJavaProject(final IJavaProject project, final String packageName, final String className) throws JavaModelException {
-
-		final IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
-		final String source = "public class " + className + " {\n\n}\n";
-		final StringBuffer buffer = new StringBuffer();
-		buffer.append("package " + pack.getElementName() + ";\r\n\r\n");
-		buffer.append(source);
-		ICompilationUnit unit = pack.createCompilationUnit(className + ".java", buffer.toString(), false, null);
-		return unit.getUnderlyingResource();
+	public static IResource generateJavaClassInJavaProject(final IJavaProject project, final String packageName, final String className) {
+		IResource unitResource = null;
+		try {
+			final IPackageFragment pack = project.getPackageFragmentRoot(project.getProject().getFolder("src")).createPackageFragment(packageName, false, null);
+			final String source = "public class " + className + " {\n\n}\n";
+			final StringBuffer buffer = new StringBuffer();
+			buffer.append("package " + pack.getElementName() + ";\r\n\r\n");
+			buffer.append(source);
+			ICompilationUnit unit = pack.createCompilationUnit(className + ".java", buffer.toString(), false, null);
+			unitResource = unit.getUnderlyingResource();
+		} catch (JavaModelException e) {
+			Activator.getDefault().logError(e);
+		}
+		
+		return unitResource;
 	}
 
 	/**
 	 * This method deletes a Java project from the workspace or hard drive
 	 * 
 	 * @param project Java project that will be deleted
-	 * @throws CoreException
 	 */
-	public static void deleteProject(final IProject project) throws CoreException {
-		project.delete(true, true, null);
+	public static void deleteProject(final IProject project) {
+		try {
+			project.delete(true, true, null);
+		}
+		
+		catch (CoreException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 
 	/**
@@ -155,6 +168,7 @@ public class TestUtils {
 				return t;
 			}
 		}
+		
 		throw new NoSuchElementException(name);
 	}
 
@@ -244,20 +258,26 @@ public class TestUtils {
 	 * @param developerProject The project
 	 * @return The configuration for a given task
 	 */
-	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject)
-			throws CoreException, IOException {
-		File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
-		String projectRelDir =
-				Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
-		String pathToTemplateFile = projectRelDir + templateFile.getName();
-		String resFileOSPath = targetFile.getProject().getLocation().toOSString() + pathToTemplateFile;
+	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject) {
+		CrySLConfiguration chosenConfig = null;
+		try {
+			File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
+			String projectRelDir =
+					Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
+			String pathToTemplateFile = projectRelDir + templateFile.getName();
+			String resFileOSPath = targetFile.getProject().getLocation().toOSString() + pathToTemplateFile;
 
-		Files.createDirectories(Paths.get(targetFile.getProject().getLocation().toOSString() + projectRelDir));
-		Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
-		developerProject.refresh();
+			Files.createDirectories(Paths.get(targetFile.getProject().getLocation().toOSString() + projectRelDir));
+			Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
+			developerProject.refresh();
 
-		GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile);
-		CrySLConfiguration chosenConfig = new CrySLConfiguration("", genClass);
+			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile);
+			chosenConfig = new CrySLConfiguration("", genClass);
+			return chosenConfig;
+		} catch(CoreException | IOException e) {
+			Activator.getDefault().logError(e);
+		}
+		
 		return chosenConfig;
 	}
 
@@ -267,13 +287,15 @@ public class TestUtils {
 	 * @param project The project
 	 * @param packageName The name of the package
 	 * @param cu The compilation unit
-	 * @throws CoreException
 	 */
-	public static void openJavaFileInWorkspace(final DeveloperProject project, final String packageName, final ICompilationUnit cu) throws CoreException {
-
-		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		final IFile openFile = project.getIFile(getFilePathInProject(project, packageName, cu));
-		IDE.openEditor(page, openFile);
+	public static void openJavaFileInWorkspace(final DeveloperProject project, final String packageName, final ICompilationUnit cu) {
+		try {
+			final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			final IFile openFile = project.getIFile(getFilePathInProject(project, packageName, cu));
+			IDE.openEditor(page, openFile);
+		} catch(CoreException e) {
+			Activator.getDefault().logError(e);
+		}
 	}
 
 	/**
@@ -283,17 +305,22 @@ public class TestUtils {
 	 * @param packageName The name of the package
 	 * @param cuName The name of the compilation unit
 	 * @return The compilation unit
-	 * @throws CoreException
 	 */
-	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName, final String cuName) throws CoreException {
-		final IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
-		for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
-			if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
+	public static ICompilationUnit getICompilationUnit(final DeveloperProject project, final String packageName, final String cuName) {
+		ICompilationUnit unit = null;
+		try {
+			IPackageFragment packageFragment = project.getPackagesOfProject(packageName);
+			for (int i = 0; i < packageFragment.getCompilationUnits().length; i++) {
+				if (packageFragment.getCompilationUnits()[i].getElementName().equals(cuName)) {
 
-				return packageFragment.getCompilationUnits()[i];
+					return packageFragment.getCompilationUnits()[i];
+				}
 			}
+		} catch(CoreException e) {
+			Activator.getDefault().logError(e);
 		}
-		return null;
+		
+		return unit;
 	}
 
 	/**
@@ -324,15 +351,15 @@ public class TestUtils {
 	 * @return The converted file contents into a byte array
 	 */
 	public static byte[] fileToByteArray(final DeveloperProject project, final String packageName, final ICompilationUnit cu) {
-		File f;
+		byte[] fBytes = null;
 		try {
-			f = new File(getFilePathInProject(project, packageName, cu));
-			return Files.readAllBytes(Paths.get(f.getPath()));
+			File f = new File(getFilePathInProject(project, packageName, cu));
+			fBytes = Files.readAllBytes(Paths.get(f.getPath()));
 		}
 		catch (CoreException | IOException e) {
 			Activator.getDefault().logError(e, Constants.ERROR_CANNOT_FILE_TO_BYTEARRAY);
 		}
-		return null;
+		return fBytes;
 	}
 
 	/**
@@ -354,10 +381,17 @@ public class TestUtils {
 	 * 
 	 * @param unit The unit
 	 * @return The number of methods in a given unit
-	 * @throws JavaModelException
 	 */
-	public static int countMethods(ICompilationUnit unit) throws JavaModelException {
-		return unit.getAllTypes()[0].getMethods().length;
+	public static int countMethods(ICompilationUnit unit) {
+		int methodCount = -1;
+		try {
+			IMethod[] methods = unit.getAllTypes()[0].getMethods();
+			methodCount = methods.length;
+		} catch(JavaModelException e) {
+			Activator.getDefault().logError(e);
+		}
+		
+		return methodCount;
 	}
 
 	/**
@@ -366,16 +400,20 @@ public class TestUtils {
 	 * @param unit The unit
 	 * @param method The method
 	 * @return The number of statements in a given method
-	 * @throws JavaModelException
 	 */
-	public static int countStatements(ICompilationUnit unit, String method) throws JavaModelException {
-		for (IMethod meth : unit.getAllTypes()[0].getMethods()) {
-			if (method.equals(meth.getElementName())) {
-				return meth.getSource().split(";").length - 1;
+	public static int countStatements(ICompilationUnit unit, String method) {
+		int statementCount = -1;
+		try {
+			for (IMethod meth : unit.getAllTypes()[0].getMethods()) {
+				if (method.equals(meth.getElementName())) {
+					statementCount = meth.getSource().split(";").length - 1;
+				}
 			}
+		} catch(JavaModelException e) {
+			Activator.getDefault().logError(e);
 		}
 
-		return -1;
+		return statementCount;
 	}
 
 	/**

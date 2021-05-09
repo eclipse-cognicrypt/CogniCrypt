@@ -331,7 +331,7 @@ public class CrySLCodeGenTest {
 	}
 
 	@Test
-	public void generatedigSign() {
+	public void generateDigSign() {
 		String template = "digitalsignatures";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_DigSign");

@@ -6,10 +6,7 @@
 package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertTrue;
-import java.util.logging.Logger;
 import org.eclipse.jdt.core.IJavaProject;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
@@ -25,48 +22,29 @@ import de.cognicrypt.utils.DeveloperProject;
  */
 public class XSLCodeGenTest {
 
-	Logger log = Logger.getLogger(XSLCodeGenTest.class.getName());
-	IJavaProject testJavaProject;
-	CodeGenerator generatorSECCOM;
-	CodeGenerator generatorSecMPComp;
-	Task SECCOMTask;
-	Task secMPCompTask;
-	Configuration configSecCom;
-	Configuration configSecMPComp;
-	DeveloperProject developerProject;
-	static int counter = 0;
-
-	@Before
-	public void setUp() {
-		XSLCodeGenTest.counter++;
-		this.testJavaProject = TestUtils.createJavaProject("TestProject_" + counter);
-
-		this.SECCOMTask = TestUtils.getTask("SecureCommunication");
-		this.generatorSECCOM = new XSLBasedGenerator(this.testJavaProject.getProject(), this.SECCOMTask.getCodeTemplate());
-
-		this.secMPCompTask = TestUtils.getTask("SECMUPACOMP");
-		this.generatorSecMPComp = new XSLBasedGenerator(this.testJavaProject.getProject(), this.secMPCompTask.getCodeTemplate());
-
-		this.developerProject = this.generatorSECCOM.getDeveloperProject();
-	}
-
 	@Test
 	public void SECMUPACOMPDefault() {
-		this.configSecMPComp = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.secMPCompTask);
-		final boolean secMPCompCheck = this.generatorSecMPComp.generateCodeTemplates(this.configSecMPComp, this.secMPCompTask.getAdditionalResources());
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SECMUPACOMP");
+		Task secMPCompTask = TestUtils.getTask("SECMUPACOMP");
+		CodeGenerator generatorSecMPComp = new XSLBasedGenerator(testJavaProject.getProject(), secMPCompTask.getCodeTemplate());
+		DeveloperProject developerProject = generatorSecMPComp.getDeveloperProject();
+		Configuration configSecMPComp = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, secMPCompTask);
+		boolean secMPCompCheck = generatorSecMPComp.generateCodeTemplates(configSecMPComp, secMPCompTask.getAdditionalResources());
 		assertTrue(secMPCompCheck);
+		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 
 	@Test
 	public void SECComDefault() {
-		this.configSecCom = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.SECCOMTask);
-		final boolean secComCheck = this.generatorSECCOM.generateCodeTemplates(this.configSecCom, this.SECCOMTask.getAdditionalResources());
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SECCom");
+		Task SECCOMTask = TestUtils.getTask("SecureCommunication");
+		CodeGenerator generatorSECCOM = new XSLBasedGenerator(testJavaProject.getProject(), SECCOMTask.getCodeTemplate());
+		DeveloperProject developerProject = generatorSECCOM.getDeveloperProject();
+		
+		Configuration configSecCom = TestUtils.createXSLConfigurationForCodeGeneration(developerProject, SECCOMTask);
+		boolean secComCheck = generatorSECCOM.generateCodeTemplates(configSecCom, SECCOMTask.getAdditionalResources());
 		assertTrue(secComCheck);
-	}
-	
-	@After
-	public void tearDown() {
-		TestUtils.deleteProject(this.testJavaProject.getProject());
+		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 
 }

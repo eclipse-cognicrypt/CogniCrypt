@@ -9,7 +9,8 @@
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
-
+	
+	<groupId>de.cognicrypt</groupId>
 	<artifactId>de.cognicrypt.codegenerator.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 	<dependencies>
@@ -54,7 +55,6 @@
 					<version>${tycho-version}</version>
 					<configuration>
 						<useUIHarness>true</useUIHarness>
-						<trimStackTrace>false</trimStackTrace>
 					</configuration>
 				</plugin>
 

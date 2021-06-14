@@ -16,6 +16,7 @@ public class CrySLCodeGenerator implements RuleContext, BeforeRuleContext {
 
 	private RuleGenConfig last = null;
 	private List<RuleGenConfig> ruleConfigs;
+	private String customMain;
 
 	private CrySLCodeGenerator() {}
 
@@ -44,5 +45,9 @@ public class CrySLCodeGenerator implements RuleContext, BeforeRuleContext {
 			ruleConfigs.add(last);
 			last = null;
 		}
+	}
+	public CrySLCodeGenerator setCustomMain(String customMain) {
+		this.customMain = customMain;
+		return this;
 	}
 }

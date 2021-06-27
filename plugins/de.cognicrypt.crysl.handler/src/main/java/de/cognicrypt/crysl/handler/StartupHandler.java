@@ -98,8 +98,11 @@ public class StartupHandler implements IStartup {
 					&& (delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.CHANGED)) {
 				IProject project = (IProject) deltaResource;
 				try {
-					if (!CrySLBuilderUtils.hasCrySLBuilder(project) && CrySLBuilderUtils.hasCrySLFiles(project)) {
-						CrySLBuilderUtils.addCrySLBuilderToProject(project);
+					if(project.isOpen()) 
+					{
+						if (!CrySLBuilderUtils.hasCrySLBuilder(project) && CrySLBuilderUtils.hasCrySLFiles(project)) {
+							CrySLBuilderUtils.addCrySLBuilderToProject(project);
+						}
 					}
 				}
 				catch (CoreException e) {

@@ -19,11 +19,11 @@ import java.util.Set;
 
 public class GeneratorClass {
 
-	private String packageName;
-	private Set<String> imports;
-	private String modifier;
-	private String className;
-	private List<GeneratorMethod> methods;
+	protected String packageName;
+	protected Set<String> imports;
+	protected String modifier;
+	protected String className;
+	protected List<GeneratorMethod> methods;
 	private File associatedFile;
 
 	public GeneratorClass() {
@@ -122,5 +122,4 @@ public class GeneratorClass {
 		classContent.append("}");
 		return classContent.toString();
 	}
-
 }

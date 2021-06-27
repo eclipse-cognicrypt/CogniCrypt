@@ -294,7 +294,7 @@ public abstract class CodeGenerator {
 	 * @throws IOException
 	 * @throws CoreException
 	 */
-	protected boolean addAddtionalFile(final File fileToBeAdded) throws IOException, CoreException {
+	public boolean addAddtionalFile(final File fileToBeAdded) throws IOException, CoreException {
 		final IFolder libFolder = this.project.getFolder(Constants.pathsForLibrariesInDevProject);
 		if (!libFolder.exists()) {
 			libFolder.create(true, true, null);

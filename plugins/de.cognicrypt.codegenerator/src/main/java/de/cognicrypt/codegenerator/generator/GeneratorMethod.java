@@ -18,15 +18,17 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.cognicrypt.utils.Utils;
+
 public class GeneratorMethod {
 
-	private String modifier;
-	private String returnType;
-	private String name;
+	protected String modifier;
+	protected String returnType;
+	protected String name;
 	private List<Entry<String, String>> parameters;
-	private Set<String> exceptions;
-	private StringBuilder body;
-	private List<Entry<String, String>> variableDeclarations;
+	protected Set<String> exceptions;
+	protected StringBuilder body;
+	protected List<Entry<String, String>> variableDeclarations;
 	private List<Entry<String, String>> postCGVars;
 	private StringBuilder killStatements;
 	private int templateVariables;
@@ -190,5 +192,8 @@ public class GeneratorMethod {
 	public List<Entry<String, String>> getPostCGVars() {
 		return postCGVars;
 	}
-
+	
+	public StringBuilder getKillStatements() {
+		return killStatements;
+	}
 }

@@ -48,7 +48,7 @@ public class StateMachineGraphAnalyser {
 		List<TransitionEdge> edges = stateMachine.getEdges();
 		//Collection<StateNode> acceptingNodes = stateMachine.getAcceptingStates();
 
-		List<TransitionEdge> initialTransitions = stateMachine.getInitialTransitions();
+		List<TransitionEdge> initialTransitions = (List<TransitionEdge>) stateMachine.getInitialTransition();
 		for (TransitionEdge initialTransition : initialTransitions) {
 
 			List<TransitionEdge> transitions = new ArrayList<TransitionEdge>();

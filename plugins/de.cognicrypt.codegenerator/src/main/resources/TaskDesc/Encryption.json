@@ -1,6 +1,7 @@
 [{
   "id": "0",
-  "content": [{
+  "content": [
+	 {
       "id": "0",
       "element": "radio",
       "questionText": "Which method of communication would you prefer to use for key exchange 2?",
@@ -45,11 +46,26 @@
         {
           "value": "Other/Do not know",
            "option": "",
-          "nextID": "-1",
           "defaultAnswer": true
         }
       ]
-    }
+     },
+     {
+     "id": "2",
+     "element": "radio",
+     "questionText": "Which type of encryption do you prefer?",
+     "answers": [{
+          "value": "Symmetric Encryption",
+          "option": "",
+		  "defaultAnswer": true
+        },
+        {
+          "value": "Authenticated Encryption",
+          "option": "auth",
+		  "nextID": "-1"
+        }
+      ]
+     }
   ],
   "nextID": "-1"
 }]

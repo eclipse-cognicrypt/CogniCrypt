@@ -2,7 +2,7 @@
 <feature
       id="de.cognicrypt.staticanalyzer.feature"
       label="CogniCrypt Crypto-API Misuse Detector"
-      version="1.0.0"
+      version="1.0.1"
       provider-name="Technical University Darmstadt; Paderborn University">
 
    <description url="https://cognicrypt.de">
@@ -107,7 +107,7 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
       <import plugin="org.eclipse.jface.text" version="3.11.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.common"/>
       <import plugin="org.eclipse.m2e.maven.runtime"/>
-      <import plugin="de.cognicrypt.core" version="1.0.0" match="perfect"/>
+      <import plugin="de.cognicrypt.core" version="1.0.1" match="perfect"/>
       <import plugin="com.google.guava"/>
    </requires>
 
@@ -115,7 +115,7 @@ Except as expressly stated in Sections 2(a) and 2(b) above, Recipient receives n
          id="de.cognicrypt.staticanalyzer"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.1"
          unpack="false"/>
 
 </feature>

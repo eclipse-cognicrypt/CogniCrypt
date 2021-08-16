@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/de.cognicrypt.codegenerator.feature_1.0.0.jar" id="de.cognicrypt.codegenerator.feature" version="1.0.0">
+   <feature url="features/de.cognicrypt.codegenerator.feature_1.0.1.jar" id="de.cognicrypt.codegenerator.feature" version="1.0.1">
       <category name="de.cognicrypt.catergory"/>
    </feature>
-   <feature url="features/de.cognicrypt.staticanalyzer.feature_1.0.0.jar" id="de.cognicrypt.staticanalyzer.feature" version="1.0.0">
+   <feature url="features/de.cognicrypt.staticanalyzer.feature_1.0.1.jar" id="de.cognicrypt.staticanalyzer.feature" version="1.0.1">
       <category name="de.cognicrypt.catergory"/>
    </feature>
-   <feature url="features/de.cognicrypt.cryslhandler.feature_1.0.0.jar" id="de.cognicrypt.cryslhandler.feature" version="1.0.0">
+   <feature url="features/de.cognicrypt.cryslhandler.feature_1.0.1.jar" id="de.cognicrypt.cryslhandler.feature" version="1.0.1">
       <category name="de.cognicrypt.catergory"/>
    </feature>
    <feature url="features/de.darmstadt.tu.crossing.CrySL.feature_2.0.0.jar" id="de.darmstadt.tu.crossing.CrySL.feature" version="2.0.0">
       <category name="de.darmstadt.tu.crysl"/>
    </feature>
-   <feature url="features/de.cognicrypt.core.feature_1.0.0.jar" id="de.cognicrypt.core.feature" version="1.0.0">
+   <feature url="features/de.cognicrypt.core.feature_1.0.1.jar" id="de.cognicrypt.core.feature" version="1.0.1">
       <category name="de.cognicrypt.catergory"/>
    </feature>
    <category-def name="de.cognicrypt.catergory" label="CogniCrypt"/>

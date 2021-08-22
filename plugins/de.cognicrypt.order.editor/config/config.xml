@@ -1,0 +1,404 @@
+<?xml version="1.0"?><folders><cryslFile>	<rule>AlgorithmParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\AlgorithmParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CertPathTrustManagerParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\CertPathTrustManagerParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Cipher.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\Cipher.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CipherInputStream.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\CipherInputStream.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CipherOutputStream.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\CipherOutputStream.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Cookie.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\Cookie.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DHGenParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\DHGenParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DHParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\DHParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DigestInputStream.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\DigestInputStream.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DigestOutputStream.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\DigestOutputStream.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DSAGenParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\DSAGenParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DSAParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\DSAParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>GCMParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\GCMParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HMACParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\HMACParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>IvParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\IvParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Key.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\Key.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyGenerator.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\KeyGenerator.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyManagerFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\KeyManagerFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyPair.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\KeyPair.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyPairGenerator.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\KeyPairGenerator.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyStore.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\KeyStore.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyStoreBuilderParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\KeyStoreBuilderParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Mac.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\Mac.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>MessageDigest.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\MessageDigest.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PBEKeySpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\PBEKeySpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PBEParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\PBEParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PKIXBuilderParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\PKIXBuilderParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PKIXParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\PKIXParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSAKeyGenParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\RSAKeyGenParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecretKey.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\SecretKey.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecretKeyFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\SecretKeyFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecretKeySpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\SecretKeySpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecureRandom.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\SecureRandom.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Signature.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\Signature.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SSLContext.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\SSLContext.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SSLEngine.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\SSLEngine.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SSLParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\SSLParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>TrustAnchor.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\TrustAnchor.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>TrustManagerFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\JavaCryptographicArchitecture\src\TrustManagerFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AEADParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\AEADParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AESEngine.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\AESEngine.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AsymmetricCipherKeyPair.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\AsymmetricCipherKeyPair.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>BufferedBlockCipher.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\BufferedBlockCipher.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CBCBlockCipher.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\CBCBlockCipher.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECDomainParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECDomainParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECElGamalDecryptor.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECElGamalDecryptor.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECElGamalEncryptor.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECElGamalEncryptor.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECFixedTransform.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECFixedTransform.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECKeyGenerationParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECKeyGenerationParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECKeyPairGenerator.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECKeyPairGenerator.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECKeyParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECKeyParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECNewPublicKeyTransform.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECNewPublicKeyTransform.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECNewRandomnessTransform.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECNewRandomnessTransform.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECPair.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECPair.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECPrivateKeyParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECPrivateKeyParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ECPublicKeyParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ECPublicKeyParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>GCMBlockCipher.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\GCMBlockCipher.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HMac.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\HMac.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyParameter.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\KeyParameter.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PaddedBufferedBlockCipher.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\PaddedBufferedBlockCipher.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ParametersWithIV.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ParametersWithIV.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>ParametersWithRandom.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\ParametersWithRandom.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSADigestSigner.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\RSADigestSigner.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSAEngine.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\RSAEngine.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSAKeyGenerationParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\RSAKeyGenerationParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSAKeyPairGenerator.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\RSAKeyPairGenerator.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSAKeyParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\RSAKeyParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSAPrivateCrtKeyParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\RSAPrivateCrtKeyParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecureRandom.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\SecureRandom.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SHA256Digest.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle\src\SHA256Digest.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AlgorithmParameterGenerator.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\AlgorithmParameterGenerator.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AlgorithmParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\AlgorithmParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CertificateFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\CertificateFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CertPathTrustManagerParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\CertPathTrustManagerParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Cipher.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\Cipher.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CipherInputStream.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\CipherInputStream.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>CipherOutputStream.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\CipherOutputStream.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DHGenParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\DHGenParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DHParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\DHParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DSAGenParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\DSAGenParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DSAParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\DSAParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>GCMParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\GCMParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HMACParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\HMACParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>IvParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\IvParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Key.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\Key.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyAgreement.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyAgreement.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyGenerator.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyGenerator.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyManagerFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyManagerFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyPair.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyPair.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyPairGenerator.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyPairGenerator.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyStore.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyStore.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyStoreBuilderParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\KeyStoreBuilderParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Mac.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\Mac.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>MessageDigest.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\MessageDigest.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PBEKeySpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\PBEKeySpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PBEParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\PBEParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PKIXBuilderParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\PKIXBuilderParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PKIXParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\PKIXParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>RSAKeyGenParameterSpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\RSAKeyGenParameterSpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecretKey.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\SecretKey.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecretKeyFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\SecretKeyFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecretKeySpec.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\SecretKeySpec.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SecureRandom.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\SecureRandom.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>Signature.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\Signature.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SSLContext.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\SSLContext.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SSLEngine.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\SSLEngine.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SSLParameters.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\SSLParameters.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>TrustAnchor.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\TrustAnchor.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>TrustManagerFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\BouncyCastle-JCA\src\TrustManagerFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AeadFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\AeadFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AeadKeyTemplates.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\AeadKeyTemplates.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>AeadPrimitive.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\AeadPrimitive.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DeterministicAead.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\DeterministicAead.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DeterministicAeadFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\DeterministicAeadFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>DeterministicAeadKeyTemplates.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\DeterministicAeadKeyTemplates.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HybridDecrypt.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\HybridDecrypt.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HybridDecryptFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\HybridDecryptFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HybridEncrypt.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\HybridEncrypt.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HybridEncryptFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\HybridEncryptFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>HybridKeyTemplates.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\HybridKeyTemplates.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeysetHandle.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\KeysetHandle.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>KeyTemplate.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\KeyTemplate.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>MacFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\MacFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>MacKeyTemplates.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\MacKeyTemplates.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>MacPrimitive.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\MacPrimitive.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PublicKeySign.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\PublicKeySign.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PublicKeySignFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\PublicKeySignFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PublicKeyVerify.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\PublicKeyVerify.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>PublicKeyVerifyFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\PublicKeyVerifyFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>SignatureKeyTemplates.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\SignatureKeyTemplates.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>StreamingAead.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\StreamingAead.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>StreamingAeadFactory.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\StreamingAeadFactory.crysl</path>
+</cryslFile>
+<cryslFile>	<rule>StreamingAeadKeyTemplates.crysl</rule>
+	<path>C:\Users\T440s\git\Crypto-API-Rules\Tink\src\StreamingAeadKeyTemplates.crysl</path>
+</cryslFile>
+
+</folders>

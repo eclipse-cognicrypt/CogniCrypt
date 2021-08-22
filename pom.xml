@@ -95,6 +95,7 @@
     <module>plugins/de.cognicrypt.staticanalyzer/</module>
 	<module>plugins/de.cognicrypt.integrator.task/</module>
 	<module>plugins/de.cognicrypt.integrator.primitive/</module>
+	<module>plugins/de.cognicrypt.order.editor/</module>
 	<module>features/de.cognicrypt.core.feature/</module>
     <module>features/de.cognicrypt.codegenerator.feature/</module>
     <module>features/de.cognicrypt.cryslhandler.feature/</module>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package
+			uri = "http://www.cognicrypt.de/order/editor/Statemachine"
+			class = "de.cognicrypt.order.editor.statemachine.StatemachinePackage"
+			genModel = "model/generated/Statemachine.genmodel" />
+	</extension>
+	<extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="popup:de.cognicrypt.core.menu">
+                  <command
+                        commandId="de.cognicrypt.order.editor.runordereditor"
+                        icon="icons/icon_order_editor.png"
+                        label="Run CogniCrypt Order Editor"
+                        style="push">
+                  </command>
+               </menuContribution>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.commands">
+               <command
+                     defaultHandler="de.cognicrypt.order.editor.actions.RunOrderEditorHandler"
+                     id="de.cognicrypt.order.editor.runordereditor"
+                     name="RunOrderEditor">
+               </command>
+            </extension>
+            <extension
+                  point="org.eclipse.ui.menus">
+               <menuContribution
+                     allPopups="false"
+                     locationURI="toolbar:org.eclipse.ui.main.toolbar">
+                  <toolbar
+                        id="de.cognicrypt.toolbar"
+                        label="CogniCrypt">
+                     <command
+                           commandId="de.cognicrypt.order.editor.runordereditor"
+                           icon="icons/icon_order_editor.png"
+                           label="RunOrderEditorToolBar"
+                           style="push"
+                           tooltip="Open Visual Order Editor">
+                     </command>
+                  </toolbar>
+               </menuContribution>
+            </extension>
+</plugin>
+

@@ -1,16 +1,19 @@
 package de.cognicrypt.staticanalyzer.utilities;
 
+import java.io.File;
+
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.TableItem;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
 public class Ruleset {
-	private String url;
+	private String urlOrPath;
 	private String folderName;
 	private CCombo versions;
 	private String selectedVersion = "";
 	private boolean isChecked = false;
+	private boolean isLocalRuleset = false;
 	private TableItem rulesRow;
 	
 	public Ruleset(Preferences subPrefs) throws BackingStoreException  {
@@ -27,7 +30,7 @@ public class Ruleset {
 					this.folderName = subPrefs.get(key, "");
 					break;
 				case "Url":
-					this.url = subPrefs.get(key, "");
+					this.urlOrPath = subPrefs.get(key, "");
 					break;
 				default:
 					break;
@@ -36,22 +39,22 @@ public class Ruleset {
 	}
 
 	public Ruleset(String url) {
-		this.folderName = url.substring(url.lastIndexOf('/') + 1);
-		this.url = url;
+		this.folderName = url.substring(url.lastIndexOf(File.pathSeparator) + 1);
+		this.urlOrPath = url;
 	}
 
 	public Ruleset(String url, boolean checked) {
-		this.folderName = url.substring(url.lastIndexOf('/') + 1);
-		this.url = url;
+		this.folderName = url.substring(url.lastIndexOf(File.pathSeparator) + 1);
+		this.urlOrPath = url;
 		this.isChecked = checked;
 	}
 
-	public String getUrl() {
-		return url;
+	public String getUrlOrPath() {
+		return urlOrPath;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	public void setUrlOrPath(String url) {
+		this.urlOrPath = url;
 	}
 
 	public String getFolderName() {
@@ -92,6 +95,14 @@ public class Ruleset {
 
 	public void setRulesRow(TableItem rulesRow) {
 		this.rulesRow = rulesRow;
+	}
+
+	public boolean isLocalRuleset() {
+		return isLocalRuleset;
+	}
+
+	public void setLocalRuleset(boolean isLocalRuleset) {
+		this.isLocalRuleset = isLocalRuleset;
 	}
 }
 

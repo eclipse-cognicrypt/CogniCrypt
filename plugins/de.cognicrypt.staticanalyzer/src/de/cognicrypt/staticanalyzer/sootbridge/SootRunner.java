@@ -112,18 +112,18 @@ public class SootRunner {
 				}
 			}
 			
-			if( !Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY).isEmpty() && 
-					Files.exists(Paths.get(Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY))) ) {
-				Activator.getDefault().logInfo("Loading rules from the selected local directory.");
-				String rulesPath = Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY);
-				List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);
-				for(File file : files) {
-					CrySLRule rule = r.readRule(file);
-					if(!rules.contains(rule)) {
-						rules.add(rule);
-					}
-				}
-			}
+//			if( !Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY).isEmpty() && 
+//					Files.exists(Paths.get(Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY))) ) {
+//				Activator.getDefault().logInfo("Loading rules from the selected local directory.");
+//				String rulesPath = Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY);
+//				List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);
+//				for(File file : files) {
+//					CrySLRule rule = r.readRule(file);
+//					if(!rules.contains(rule)) {
+//						rules.add(rule);
+//					}
+//				}
+//			}
 			
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
 				Activator.getDefault().logInfo("Loading rules from the detected provider.");				
@@ -153,13 +153,25 @@ public class SootRunner {
 					}
 					Ruleset loadedRuleset = new Ruleset(prefs.node(currentNode));
 					if (loadedRuleset.isChecked()) {
-						rules.addAll(Files.find(
-								Paths.get(new File(Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + File.separator + loadedRuleset.getSelectedVersion()).getPath()),
-								Integer.MAX_VALUE, (file, attr) -> {
-									return file.toString().endsWith(RuleFormat.SOURCE.toString()) && !readRules.contains(file.getFileName().toString());
-								}).map(path -> {
-									return r.readRule(path.toFile());
-								}).collect(Collectors.toList()));
+						if (loadedRuleset.isLocalRuleset()) {
+							String rulesPath = loadedRuleset.getUrlOrPath();
+							List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);
+							for(File file : files) {
+								CrySLRule rule = r.readRule(file);
+								if(!rules.contains(rule)) {
+									rules.add(rule);
+								}
+							}
+						}
+						else {
+							rules.addAll(Files.find(
+									Paths.get(new File(Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + File.separator + loadedRuleset.getSelectedVersion()).getPath()),
+									Integer.MAX_VALUE, (file, attr) -> {
+										return file.toString().endsWith(RuleFormat.SOURCE.toString()) && !readRules.contains(file.getFileName().toString());
+									}).map(path -> {
+										return r.readRule(path.toFile());
+									}).collect(Collectors.toList()));
+						}
 					}
 				}
 			}

@@ -2,32 +2,24 @@ package de.cognicrypt.order.editor.parser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.URIConverter;
-import org.eclipse.emf.ecore.resource.URIHandler;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.xtext.common.types.access.impl.ClasspathTypeProvider;
 import org.eclipse.xtext.resource.SaveOptions;
@@ -40,18 +32,21 @@ import com.google.inject.Injector;
 import de.cognicrypt.order.editor.Activator;
 import de.cognicrypt.order.editor.Constants;
 import de.cognicrypt.order.editor.config.CryslFile;
+import de.cognicrypt.order.editor.statemachine.Statemachine;
+import de.cognicrypt.order.editor.statemachine.StatemachineFactory;
+import de.cognicrypt.order.editor.statemachine.StatemachinePackage;
 import de.darmstadt.tu.crossing.CrySLStandaloneSetup;
-import de.darmstadt.tu.crossing.StatemachineStandaloneSetup;
+import de.cognicrypt.order.editor.StatemachineStandaloneSetup;
 import de.darmstadt.tu.crossing.crySL.Domainmodel;
 import de.darmstadt.tu.crossing.crySL.Expression;
 import de.darmstadt.tu.crossing.crySL.SuperType;
-import de.darmstadt.tu.crossing.statemachine.StateMachineGraph;
-import de.darmstadt.tu.crossing.statemachine.StateMachineGraphBuilder;
-import de.darmstadt.tu.crossing.statemachine.StateNode;
-import de.darmstadt.tu.crossing.statemachine.Statemachine;
-import de.darmstadt.tu.crossing.statemachine.StatemachineFactory;
-import de.darmstadt.tu.crossing.statemachine.StatemachinePackage;
-import de.darmstadt.tu.crossing.statemachine.TransitionEdge;
+import de.cognicrypt.order.editor.statemachine.Event;
+import de.cognicrypt.order.editor.statemachine.State;
+import de.cognicrypt.order.editor.statemachine.Transition;
+import de.cognicrypt.order.editor.statemachine.StateMachineGraph;
+import de.cognicrypt.order.editor.statemachine.StateMachineGraphBuilder;
+import de.cognicrypt.order.editor.statemachine.StateNode;
+import de.cognicrypt.order.editor.statemachine.TransitionEdge;
 
 public class StatemachineParser {
 
@@ -75,10 +70,11 @@ public class StatemachineParser {
     	StateMachineGraph smgb = new StateMachineGraphBuilder(order).buildSMG();
     	Set<StateNode> stateNodes = smgb.getNodes();
     	java.util.List<TransitionEdge> transitionEdges = smgb.getEdges();
-    	java.util.List<de.darmstadt.tu.crossing.crySL.Event> myTransitionEvents = new ArrayList<de.darmstadt.tu.crossing.crySL.Event>(); // only for labels as they do not provide info what is source and target	
+    	java.util.List<de.darmstadt.tu.crossing.crySL.Event> myTransitionEvents = new ArrayList<de.darmstadt.tu.crossing.crySL.Event>(); // only for labels as they do not provide info what is source and target
+    	//java.util.List<Event> myTransitionEvents = new ArrayList<Event>(); // only for labels as they do not provide info what is source and target
     	    	
     	for(TransitionEdge e : transitionEdges) {
-    		myTransitionEvents.add(e.getLabel());
+    		myTransitionEvents.add((de.darmstadt.tu.crossing.crySL.Event) e.getLabel());
     	}		
 		
 		StatemachineStandaloneSetup.doSetup(); 
@@ -97,19 +93,20 @@ public class StatemachineParser {
 		
 		Statemachine statemachine = StatemachineFactory.eINSTANCE.createStatemachine();
 
-		de.darmstadt.tu.crossing.statemachine.State state = null;
-		de.darmstadt.tu.crossing.statemachine.Event event = null;
-		de.darmstadt.tu.crossing.statemachine.Transition transition = null;
-		HashMap<StateNode, de.darmstadt.tu.crossing.statemachine.State> stateNodeMap = new HashMap<StateNode, de.darmstadt.tu.crossing.statemachine.State>();
+		State state = null;
+		Event event = null;
+		//de.darmstadt.tu.crossing.statemachine.Transition transition = null;
+		Transition transition = null;
+		HashMap<StateNode, State> stateNodeMap = new HashMap<StateNode, State>();
 		
 		SuperType ev = null;
 		int counter = 0;
 		
 		//process stateNodes separately, still unsorted
 		for(StateNode s: stateNodes) {
-			state = StatemachineFactory.eINSTANCE.createState();
+			state = (State) StatemachineFactory.eINSTANCE.createState();
 			state.setName("s" + s.getName());
-			statemachine.getStates().add(state);
+			statemachine.getStates().add((de.cognicrypt.order.editor.statemachine.State) state);
 			counter++;
 			stateNodeMap.put(s, state);
 		}
@@ -118,7 +115,7 @@ public class StatemachineParser {
 		for(int i = 0; i < transitionEdges.size(); i++) {
 			if(transitionEdges.get(i).getLabel() instanceof SuperType) {
 	    		ev = (SuperType) transitionEdges.get(i).getLabel();
-		    	event = StatemachineFactory.eINSTANCE.createEvent();
+		    	event = (Event) StatemachineFactory.eINSTANCE.createEvent();
 		    	// check for duplicate events to avoid same naming for different edges (causes serialization error)
 		    	if(sameEvent(transitionEdges, transitionEdges.get(i))) {
 		    		event.setName(((SuperType) ev).getName() + i);
@@ -128,7 +125,7 @@ public class StatemachineParser {
 		    		event.setName(((SuperType) ev).getName());
 		    		event.setCode(((SuperType) ev).getName());
 		    	}
-		    	statemachine.getEvents().add(event);
+		    	statemachine.getEvents().add((de.cognicrypt.order.editor.statemachine.Event) event);
 	    	}
 			
 			transition = StatemachineFactory.eINSTANCE.createTransition();

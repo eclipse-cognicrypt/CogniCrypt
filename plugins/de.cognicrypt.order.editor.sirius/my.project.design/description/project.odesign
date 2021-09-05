@@ -14,7 +14,7 @@
         <edgeMappings name="TransitionEdge" semanticCandidatesExpression="feature:transitions" sourceMapping="//@ownedViewpoints[name='order']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']" targetMapping="//@ownedViewpoints[name='order']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']" targetFinderExpression="feature:endState" sourceFinderExpression="feature:fromState" domainClass="statemachine::Transition" useDomainElement="true">
           <style sizeComputationExpression="2">
             <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
-            <centerLabelStyleDescription labelSize="12" showIcon="false">
+            <centerLabelStyleDescription labelSize="12" showIcon="false" labelExpression="aql:self.event->collect(myEvent | myEvent.name)->first()">
               <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             </centerLabelStyleDescription>
           </style>

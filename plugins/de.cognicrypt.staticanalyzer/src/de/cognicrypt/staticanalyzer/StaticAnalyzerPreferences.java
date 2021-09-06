@@ -313,18 +313,18 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		dialog.create();
 		if (dialog.open() == Window.OK) {
 			if (ifExists(dialog.getRulesetUrl())) {
-				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "Ruleset was not added because it is a duplicate!");
+				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "Ruleset was not added because it is a duplicate.");
 				return;
 			} else {
 				if (ArtifactUtils.downloadRulesets(dialog.getRulesetUrl())) {
 					Activator.getDefault().logInfo("Rulesets updated.");
-					MessageDialog.openInformation(window.getShell(), "Download Successful", "Successful download of the ruleset through the specified URL!");
+					MessageDialog.openInformation(window.getShell(), "Download Successful", "Successful download of the ruleset through the specified URL.");
 					Ruleset newRuleset = new Ruleset(dialog.getRulesetUrl());
 					modifyRulesTable(newRuleset);
 					listOfRulesets.add(newRuleset);
 				}
 				else {
-					MessageDialog.openError(window.getShell(), "Download Error", "Failed download of the ruleset through the specified URL!");
+					MessageDialog.openError(window.getShell(), "Download Error", "Failed download of the ruleset through the specified URL.");
 				}
 			}
 		}
@@ -346,12 +346,12 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		dialog.create();
 		if (dialog.open() == Window.OK) {
 			if (ifExists(dialog.getRulesetPath())) {
-				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "Ruleset was not added because it is a duplicate!");
+				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "Ruleset was not added because it is a duplicate.");
 				return;
 			} else {
 				if (Files.exists(Paths.get(dialog.getRulesetPath()))) {
 					Activator.getDefault().logInfo("Rulesets updated.");
-					MessageDialog.openInformation(window.getShell(), "Loading Successful", "Successful load of the ruleset through the specified path!");
+					MessageDialog.openInformation(window.getShell(), "Loading Successful", "Successful load of the ruleset through the specified path.");
 					Ruleset newRuleset = new Ruleset(dialog.getRulesetPath());
 					newRuleset.setSelectedVersion("0.1");
 					newRuleset.setFolderName("LOCAL: "+newRuleset.getFolderName());
@@ -359,7 +359,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 					listOfRulesets.add(newRuleset);
 				}
 				else {
-					MessageDialog.openError(window.getShell(), "Loading Error", "Failed load of the ruleset through the specified path!");
+					MessageDialog.openError(window.getShell(), "Loading Error", "Failed load of the ruleset through the specified path.");
 				}
 			}
 		}

@@ -153,7 +153,7 @@ public class SootRunner {
 					}
 					Ruleset loadedRuleset = new Ruleset(prefs.node(currentNode));
 					if (loadedRuleset.isChecked()) {
-						if (loadedRuleset.isLocalRuleset()) {
+						if (loadedRuleset.getFolderName().startsWith("LOCAL")) {
 							String rulesPath = loadedRuleset.getUrlOrPath();
 							List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);
 							for(File file : files) {

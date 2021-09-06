@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -74,6 +75,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Combo typestate;
 
 	private List<Ruleset> listOfRulesets = new ArrayList<Ruleset>();
+	private List<String> defaultRulesets = Arrays.asList("BouncyCastle", "BouncyCastle-JCA", "JavaCryptographicArchitecture", "Tink");
 
 	@Override
 	public void compileBasicPreferences(Composite parent) {
@@ -215,11 +217,11 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 * @param newRuleset The new rule set which is added to the table
 	 */
 	private void modifyRulesTable(Ruleset newRuleset) {
-		if(newRuleset.isLocalRuleset()) {
+		if(newRuleset.getFolderName().startsWith("LOCAL")) {
 			newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
 			String[] rulesetVersions = {newRuleset.getSelectedVersion()};
 			newRuleset.getVersions().setItems(rulesetVersions);
-			newRuleset.setSelectedVersion(newRuleset.getVersions().getItem(newRuleset.getVersions().getItemCount() - 1));
+			newRuleset.setSelectedVersion("0.1");
 			newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
 			createRulesTableRow(newRuleset);
 		}
@@ -381,8 +383,8 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 					Activator.getDefault().logInfo("Rulesets updated.");
 					MessageDialog.openInformation(window.getShell(), "Loading Successful", "Successful load of the ruleset through the specified path!");
 					Ruleset newRuleset = new Ruleset(dialog.getRulesetPath());
-					newRuleset.setLocalRuleset(true);
 					newRuleset.setSelectedVersion("0.1");
+					newRuleset.setFolderName("LOCAL: "+newRuleset.getFolderName());
 					modifyRulesTable(newRuleset);
 					listOfRulesets.add(newRuleset);
 				}
@@ -504,6 +506,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
 
+		if(removeNonDefaultRulesets()) {
+			createRulesTable();
+		}
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
 			Ruleset ruleset = (Ruleset) itr.next();
 			ruleset.getVersions().select(ruleset.getVersions().getItemCount() - 1);
@@ -522,6 +527,30 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		typestate.select(preferences.getDefaultInt(Constants.TYPESTATE_ERROR_MARKER_TYPE));
 		neverType.select(preferences.getDefaultInt(Constants.NEVER_TYPEOF_MARKER_TYPE));
 		reqPred.select(preferences.getDefaultInt(Constants.REQUIRED_PREDICATE_MARKER_TYPE));
+	}
+	
+	/***
+	 * This method removes all rulesets that are not default from the {@link #rulePreferences} field
+	 * and retains only the default ones of JCA, BC-JCA, BC, and Tink. It also returns a boolean of
+	 * whether any non default ruleset was removed.
+	 */
+	private boolean removeNonDefaultRulesets() {
+		boolean areNonDefaultRulesets = true;
+		try {
+			String[] listOfNodes = rulePreferences.childrenNames();
+			if (new HashSet<>(defaultRulesets).equals(new HashSet<>(Arrays.asList(listOfNodes)))) {
+				areNonDefaultRulesets = false;
+			}
+			for (String currentNode : listOfNodes) {
+				if(!defaultRulesets.contains(currentNode)) {
+					Preferences subPref = rulePreferences.node(currentNode);
+					subPref.removeNode();
+				}
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+		return areNonDefaultRulesets;
 	}
 
 	/**

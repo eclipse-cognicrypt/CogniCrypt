@@ -13,7 +13,6 @@ public class Ruleset {
 	private CCombo versions;
 	private String selectedVersion = "";
 	private boolean isChecked = false;
-	private boolean isLocalRuleset = false;
 	private TableItem rulesRow;
 	
 	public Ruleset(Preferences subPrefs) throws BackingStoreException  {
@@ -97,12 +96,5 @@ public class Ruleset {
 		this.rulesRow = rulesRow;
 	}
 
-	public boolean isLocalRuleset() {
-		return isLocalRuleset;
-	}
-
-	public void setLocalRuleset(boolean isLocalRuleset) {
-		this.isLocalRuleset = isLocalRuleset;
-	}
 }
 

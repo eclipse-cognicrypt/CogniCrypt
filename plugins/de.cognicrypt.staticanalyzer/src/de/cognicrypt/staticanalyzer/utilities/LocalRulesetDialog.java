@@ -3,10 +3,14 @@ package de.cognicrypt.staticanalyzer.utilities;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -50,6 +54,25 @@ public class LocalRulesetDialog extends TitleAreaDialog {
         dataRulesetUrl.horizontalAlignment = GridData.FILL;
         txtRulesetPath = new Text(container, SWT.BORDER);
         txtRulesetPath.setLayoutData(dataRulesetUrl);
+        
+        Button selectLocalRulesButton = new Button(container, SWT.PUSH);
+		selectLocalRulesButton.setText("Browse local rules directory");
+		selectLocalRulesButton.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				DirectoryDialog dlg = new DirectoryDialog(container.getShell());
+				// Set the initial filter path according
+				// to anything they've selected or typed in
+				dlg.setFilterPath(txtRulesetPath.getText());
+				// Calling open() will open and run the dialog.
+				// It will return the selected directory, or
+				// null if user cancels
+				String dir = dlg.open();
+				if (dir != null) {
+					// Set the text box to the new selection
+					txtRulesetPath.setText(dir);
+				}
+			}
+	    });
     }
     
     @Override

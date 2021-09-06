@@ -23,18 +23,15 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.prefs.BackingStoreException;
@@ -62,9 +59,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button addNewLocalRulesetButton;
 	private Button selectCustomRulesCheckBox;
 	private Button analyzedProjectRootDirRules;
-	
-//	private Text localRulesLocation;
-//	private Button selectLocalRulesButton;
 
 	private Combo CGSelection;
 	private Combo forbidden;
@@ -92,7 +86,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	}
 
 	private void initializeBasicValues() {
-//		localRulesLocation.setText(preferences.getString(Constants.LOCAL_RULES_DIRECTORY));
 		automatedAnalysisCheckBox.setSelection(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
 		providerDetectionCheckBox.setSelection(preferences.getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
@@ -295,29 +288,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 			}
 		});
 		
-//		localRulesLocation = new Text(staticAnalysisGroup, SWT.BORDER);
-//	    GridData data = new GridData(GridData.FILL_HORIZONTAL);
-//	    data.horizontalSpan = 4;
-//	    localRulesLocation.setLayoutData(data);
-//		selectLocalRulesButton = new Button(staticAnalysisGroup, SWT.PUSH);
-//		selectLocalRulesButton.setText("Browse local rules directory");
-//		selectLocalRulesButton.addSelectionListener(new SelectionAdapter() {
-//			public void widgetSelected(SelectionEvent event) {
-//				DirectoryDialog dlg = new DirectoryDialog(staticAnalysisGroup.getShell());
-//				// Set the initial filter path according
-//				// to anything they've selected or typed in
-//				dlg.setFilterPath(localRulesLocation.getText());
-//				// Calling open() will open and run the dialog.
-//				// It will return the selected directory, or
-//				// null if user cancels
-//				String dir = dlg.open();
-//				if (dir != null) {
-//					// Set the text box to the new selection
-//					localRulesLocation.setText(dir);
-//				}
-//			}
-//	    });
-		
 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		selectCustomRulesCheckBox.setText("Select Custom Rules");
 		
@@ -498,7 +468,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	public void setDefaultValues() {
-//		localRulesLocation.setText(preferences.getDefaultString(Constants.LOCAL_RULES_DIRECTORY));
 		selectCustomRulesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SELECT_CUSTOM_RULES));
 		analyzedProjectRootDirRules.setSelection(preferences.getDefaultBoolean(Constants.ANALYZED_PROJECT_DIR_RULES));
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
@@ -559,7 +528,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	protected void storeValues() {
-//		preferences.setValue(Constants.LOCAL_RULES_DIRECTORY, localRulesLocation.getText());
 		preferences.setValue(Constants.SELECT_CUSTOM_RULES, selectCustomRulesCheckBox.getSelection());
 		preferences.setValue(Constants.ANALYZED_PROJECT_DIR_RULES, analyzedProjectRootDirRules.getSelection());
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());

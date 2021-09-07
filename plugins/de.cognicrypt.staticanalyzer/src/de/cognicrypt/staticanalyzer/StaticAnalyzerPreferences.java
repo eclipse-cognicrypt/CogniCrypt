@@ -307,6 +307,10 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		analyseDependenciesCheckBox.setText("Include Dependencies into Project Analysis");
 	}
 
+	/**
+	 * This method opens the dialog box that gives the option of adding a remote ruleset
+	 * to the table of rulesets. The user just needs to supply a valid URL.
+	 */
 	protected void addNewRemoteRuleset() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		RemoteRulesetDialog dialog = new RemoteRulesetDialog(window.getShell());
@@ -330,16 +334,26 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		}
 	}
 	
-	private boolean ifExists(String url) {
+	/**
+	 * This method checks whether a given ruleset already exists in the ruleset table
+	 * 
+	 * @param pathOrURL A directory path or a URL
+	 * @return If the ruleset of the supplied path or URL already exists in the ruleset table
+	 */
+	private boolean ifExists(String pathOrURL) {
 		List<Ruleset> existingRulesets = getRulesetsFromPrefs();
 		for (Ruleset ruleset : existingRulesets) {
-			if (ruleset.getUrlOrPath().equals(url)) {
+			if (ruleset.getUrlOrPath().equals(pathOrURL)) {
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	/**
+	 * This method opens the dialog box that gives the option of adding a local ruleset
+	 * to the table of rulesets. The user can supply a valid path or simply browse it.
+	 */
 	protected void addNewLocalRuleset() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 		LocalRulesetDialog dialog = new LocalRulesetDialog(window.getShell());

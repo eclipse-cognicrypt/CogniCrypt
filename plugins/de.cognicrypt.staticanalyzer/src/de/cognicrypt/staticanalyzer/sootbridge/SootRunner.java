@@ -89,6 +89,13 @@ public class SootRunner {
 		};
 	}
 
+	/**
+	 * This method returns all available rules as a list of {@link CrySLRule} objects
+	 * 
+	 * @param project The project that is being analyzed
+	 * @param icfg The control-flow graph representing the source code that is being analyzed
+	 * @return A list of {@link CrySLRule} objects
+	 */
 	public static List<CrySLRule> getRules(IProject project, ObservableICFG<Unit, SootMethod> icfg) {
 
 		List<CrySLRule> rules = Lists.newArrayList();
@@ -98,6 +105,9 @@ public class SootRunner {
 			CrySLParser r = new CrySLParser(project);
 			List<String> bannedRulesets = Lists.newArrayList();
 			
+			/**
+			 * If true, it loads all the available rules from the analyzed project's directory
+			 */
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.ANALYZED_PROJECT_DIR_RULES)) {
 				Activator.getDefault().logInfo("Loading rules from the analyzed project's directory.");				
 				IPath location = project.getLocation();
@@ -112,6 +122,10 @@ public class SootRunner {
 				}
 			}
 			
+			/**
+			 * If true, it loads all respective provider-related rules for a detected provider in
+			 * the analyzed code
+			 */
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
 				Activator.getDefault().logInfo("Loading rules from the detected provider.");				
 				ProviderDetection providerDetection = new ProviderDetection();
@@ -131,6 +145,10 @@ public class SootRunner {
 				}
 			}
 
+			/**
+			 * It loads all rules from the list of the chosen rulesets in the preference page.
+			 * Besides the default rulesets, it also loads local ones if the user has added any.
+			 */
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 			try {
 				String[] listOfNodes = prefs.childrenNames();
@@ -166,6 +184,11 @@ public class SootRunner {
 				Activator.getDefault().logError(e);
 			}
 			
+			/**
+			 * If true, it loads all rulesets that are located in the "resources/CrySLRules/Custom"
+			 * of "de.congivrypt.core" module. The directory contains the rulesets from all the default
+			 * rulesets that we have.
+			 */
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {
 				Activator.getDefault().logInfo("Loading custom rules from the resources folder in core plugin.");
 				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,

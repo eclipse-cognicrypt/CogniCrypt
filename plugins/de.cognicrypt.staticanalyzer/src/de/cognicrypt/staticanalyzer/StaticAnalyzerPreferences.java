@@ -214,7 +214,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 			newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
 			String[] rulesetVersions = {newRuleset.getSelectedVersion()};
 			newRuleset.getVersions().setItems(rulesetVersions);
-			newRuleset.setSelectedVersion("0.1");
 			newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
 			createRulesTableRow(newRuleset);
 		}
@@ -367,7 +366,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 					Activator.getDefault().logInfo("Rulesets updated.");
 					MessageDialog.openInformation(window.getShell(), "Loading Successful", "Successful load of the ruleset through the specified path.");
 					Ruleset newRuleset = new Ruleset(dialog.getRulesetPath());
-					newRuleset.setSelectedVersion("0.1");
 					newRuleset.setFolderName("LOCAL: "+newRuleset.getFolderName());
 					modifyRulesTable(newRuleset);
 					listOfRulesets.add(newRuleset);

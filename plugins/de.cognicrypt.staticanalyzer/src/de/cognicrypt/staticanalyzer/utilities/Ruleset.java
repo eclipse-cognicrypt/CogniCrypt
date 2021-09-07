@@ -38,12 +38,12 @@ public class Ruleset {
 	}
 
 	public Ruleset(String url) {
-		this.folderName = url.substring(url.lastIndexOf(File.pathSeparator) + 1);
+		this.folderName = url.substring(url.lastIndexOf(File.separator) + 1);
 		this.urlOrPath = url;
 	}
 
 	public Ruleset(String url, boolean checked) {
-		this.folderName = url.substring(url.lastIndexOf(File.pathSeparator) + 1);
+		this.folderName = url.substring(url.lastIndexOf(File.separator) + 1);
 		this.urlOrPath = url;
 		this.isChecked = checked;
 	}

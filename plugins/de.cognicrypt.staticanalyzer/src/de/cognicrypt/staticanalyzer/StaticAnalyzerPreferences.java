@@ -56,7 +56,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button analyseDependenciesCheckBox;
 
 	private Button suppressLegacyClientErrorsCheckBox;
-	private CheckboxTableViewer table;
 
 	private Button addNewRulesetButton;
 	private Button selectCustomRulesCheckBox;

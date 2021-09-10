@@ -1,4 +1,4 @@
-package my.project.design;
+package de.cognicrypt.order.editor;
 
 import org.eclipse.emf.ecore.EObject;
 

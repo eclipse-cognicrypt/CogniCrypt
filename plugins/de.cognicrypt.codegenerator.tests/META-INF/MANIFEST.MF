@@ -5,7 +5,8 @@ Bundle-SymbolicName: de.cognicrypt.codegenerator.tests;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: de.cognicrypt.codegenerator;bundle-version="1.0.0"
 Require-Bundle: org.eclipse.jdt.launching,
- de.cognicrypt.core
+ de.cognicrypt.core,
+ org.slf4j.api;bundle-version="1.7.30"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: lib/claferchocoig.jar,src/
 Export-Package: de.cognicrypt.codegenerator

@@ -44,6 +44,7 @@ public class CodeGenOthersTest {
 		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
 				"Output.java");
 		assertNotNull(outputClass); // check if Output.java is created
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 
 	
@@ -83,6 +84,7 @@ public class CodeGenOthersTest {
 		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
 				"Output.java");
 		assertNotNull(outputClass);	// check if Output.java is created
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 
 //	 /**

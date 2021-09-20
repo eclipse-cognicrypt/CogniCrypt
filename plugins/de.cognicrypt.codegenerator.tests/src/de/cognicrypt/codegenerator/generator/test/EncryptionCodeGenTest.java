@@ -58,7 +58,7 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationEncryption() throws CoreException, IOException {
 		this.configEnc = TestUtils.createCrySLConfiguration("encryption", testClassUnit.getResource(), generatorEnc,
-				this.developerProject);
+				this.developerProject, "Encryption");
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
 				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
@@ -67,7 +67,7 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationEncryptionHybrid() throws CoreException, IOException {
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybrid", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
+				generatorEnc, this.developerProject, "Encryption");
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
 				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
@@ -76,7 +76,7 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationEncryptionFiles() throws CoreException, IOException {
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionfiles", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
+				generatorEnc, this.developerProject, "Encryption");
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
 				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
@@ -85,7 +85,7 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationEncryptionHybridFiles() throws CoreException, IOException {
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybridfiles", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
+				generatorEnc, this.developerProject, "Encryption");
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
 				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
@@ -94,7 +94,7 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationEncryptionHybridStrings() throws CoreException, IOException {
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybridstrings", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
+				generatorEnc, this.developerProject, "Encryption");
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
 				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
@@ -103,7 +103,7 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationEncryptionStrings() throws CoreException, IOException {
 		this.configEnc = TestUtils.createCrySLConfiguration("encryptionstrings", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
+				generatorEnc, this.developerProject, "Encryption");
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
 				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);
@@ -112,7 +112,7 @@ public class EncryptionCodeGenTest {
 	@Test
 	public void testCodeGenerationSecretKeyEncryption() throws CoreException, IOException {
 		this.configEnc = TestUtils.createCrySLConfiguration("secretkeyencryption", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
+				generatorEnc, this.developerProject, "Encryption");
 		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
 				this.encTask.getAdditionalResources());
 		assertTrue(encCheck);

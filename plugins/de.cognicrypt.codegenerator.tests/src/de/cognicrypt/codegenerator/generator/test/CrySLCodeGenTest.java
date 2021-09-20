@@ -33,12 +33,13 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generateSymEnc() {
+		String taskName = "Encryption";
 		String template = "secretkeyencryption";
 		try {
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(TestUtils.createJavaProject("TestProject_SYMENC"), "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -68,13 +69,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generatePBEnc() {
+		String taskName = "Encryption";
 		String template = "encryption";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_PBEENC");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -104,13 +106,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generatePBEncFiles() {
+		String taskName = "Encryption";
 		String template = "encryptionfiles";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_PBEENCFILES");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -140,13 +143,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generatePBEncStrings() {
+		String taskName = "Encryption";
 		String template = "encryptionstrings";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_PBEENCSTRINGS");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -176,13 +180,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generateHybridEnc() {
+		String taskName = "Encryption";
 		String template = "encryptionhybrid";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENC");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -213,13 +218,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generateHybridEncFiles() {
+		String taskName = "Encryption";
 		String template = "encryptionhybridfiles";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCFILES");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -251,13 +257,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generateHybridEncStrings() {
+		String taskName = "Encryption";
 		String template = "encryptionhybridstrings";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCSTRINGS");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -289,13 +296,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generateSecPwd() {
+		String taskName = "SecurePassword";
 		String template = "securePassword";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SecPwd");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -323,13 +331,14 @@ public class CrySLCodeGenTest {
 
 	@Test
 	public void generatedigSign() {
+		String taskName = "DigitalSignatures";
 		String template = "digitalsignatures";
 		try {
 			IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_DigSign");
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);
@@ -364,7 +373,7 @@ public class CrySLCodeGenTest {
 			IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, "testPackage", "Test");
 			CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 			DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
+			CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, null);
 
 			boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 			assertTrue(encCheck);

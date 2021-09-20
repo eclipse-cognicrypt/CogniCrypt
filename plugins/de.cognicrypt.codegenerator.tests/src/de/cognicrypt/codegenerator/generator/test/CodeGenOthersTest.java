@@ -15,7 +15,7 @@ import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.utils.DeveloperProject;
 
 public class CodeGenOthersTest { 
-
+	String taskName = "Encryption";
 //	/**
 //	 * Scenario: user doesn't select a specific class or package.
 //	 * Expected behavior: CC generates its own package with the necessary classes
@@ -31,7 +31,7 @@ public class CodeGenOthersTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, generatedProject.getResource(),
-				codeGenerator, developerProject);
+				codeGenerator, developerProject, taskName);
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 
@@ -68,7 +68,7 @@ public class CodeGenOthersTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedPackage.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, generatedPackage.getResource(),
-				codeGenerator, developerProject);
+				codeGenerator, developerProject, taskName);
 
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");

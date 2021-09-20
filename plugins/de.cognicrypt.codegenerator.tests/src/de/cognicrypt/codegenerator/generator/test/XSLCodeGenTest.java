@@ -6,6 +6,8 @@
 package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 import java.util.logging.Logger;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -65,14 +67,14 @@ public class XSLCodeGenTest {
 	}
 
 	@Test
-	public void SECMUPACOMPDefault() {
+	public void SECMUPACOMPDefault() throws IOException {
 		this.configSecMPComp = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.secMPCompTask);
 		final boolean secMPCompCheck = this.generatorSecMPComp.generateCodeTemplates(this.configSecMPComp, this.secMPCompTask.getAdditionalResources());
 		assertTrue(secMPCompCheck);
 	}
 
 	@Test
-	public void SECComDefault() {
+	public void SECComDefault() throws IOException {
 		this.configSecCom = TestUtils.createXSLConfigurationForCodeGeneration(this.developerProject, this.SECCOMTask);
 		final boolean secComCheck = this.generatorSECCOM.generateCodeTemplates(this.configSecCom, this.SECCOMTask.getAdditionalResources());
 		assertTrue(secComCheck);

@@ -56,7 +56,7 @@ public class SecurePasswordCodeGenTest {
 		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
 
 		this.configSecPassword = TestUtils.createCrySLConfiguration("securepassword", testClassUnit.getResource(),
-				generatorSecPassword, this.developerProject);
+				generatorSecPassword, this.developerProject, "SecurePasswrod");
 		final boolean encCheck = this.generatorSecPassword.generateCodeTemplates(this.configSecPassword,
 				this.secPasswordTask.getAdditionalResources());
 		assertTrue(encCheck);

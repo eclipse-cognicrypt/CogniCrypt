@@ -55,7 +55,7 @@ public class DigitalSignaturesCodeGenTest {
 		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
 
 		this.configDigSignature = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(),
-				generatorDigSignature, this.developerProject);
+				generatorDigSignature, this.developerProject, "DigitalSignature");
 		final boolean encCheck = this.generatorDigSignature.generateCodeTemplates(this.configDigSignature,
 				this.digSignatureTask.getAdditionalResources());
 		assertTrue(encCheck);

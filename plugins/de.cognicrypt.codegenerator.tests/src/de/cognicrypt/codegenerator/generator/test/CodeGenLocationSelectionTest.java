@@ -45,6 +45,7 @@ public class CodeGenLocationSelectionTest {
 		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
 				"Output.java");
 		assertNotNull(outputClass); // check if Output.java is created
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 
 	/**
@@ -86,6 +87,7 @@ public class CodeGenLocationSelectionTest {
 		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
 				"Output.java");
 		assertNotNull(outputClass); // check if Output.java is created
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 
 	/**
@@ -120,5 +122,6 @@ public class CodeGenLocationSelectionTest {
 		ICompilationUnit outputClass = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName,
 				"Output.java");
 		assertNull(outputClass); // check if Output.java is not created
+		TestUtils.deleteProject(generatedProject.getProject());
 	}
 }

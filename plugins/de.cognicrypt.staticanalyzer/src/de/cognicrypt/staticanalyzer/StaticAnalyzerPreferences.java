@@ -181,6 +181,13 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		rulesURL.getColumn().setWidth(200);
 
 		listOfRulesets = getRulesetsFromPrefs();
+		
+		//remove BC-JCA provider ruleset from ruleset's table to not have conflict with JCA ruleset
+		for (Ruleset ruleset : listOfRulesets) {
+			if (ruleset.getFolderName().equals("BouncyCastle-JCA")) {
+				listOfRulesets.remove(ruleset);
+			}
+		}
 
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
 			Ruleset ruleset = (Ruleset) itr.next();

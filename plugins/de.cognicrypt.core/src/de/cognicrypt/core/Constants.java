@@ -528,7 +528,7 @@ public class Constants {
 
 	// Marker types
 	public static final String CC_MARKER_TYPE = "de.cognicrypt.staticanalyzer.ccMarker";
-	public static final String FORBIDDEN_METHOD_MARKER_TYPE = "de.cognicrypt.staticanalyzer.forbiddenMethodMarker";
+	public static final String FORBIDDEN_METHOD_MARKER_TYPE = "de.cognicrypt.staticanalyzer.forbiddenMethodErrorMarker";
 	public static final String IMPRECISE_VALUE_EXTRACTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.impreciseValueExtractionErrorMarker";
 	public static final String PREDICATE_CONTRADICTION_MARKER_TYPE = "de.cognicrypt.staticanalyzer.predicateContradictionErrorMarker";
 	public static final String REQUIRED_PREDICATE_MARKER_TYPE = "de.cognicrypt.staticanalyzer.requiredPredicateErrorMarker";
@@ -602,7 +602,7 @@ public class Constants {
  	//Preference page rules table Constants
  	public static final String TABLE_HEADER_RULES = "Rules";
  	public static final String TABLE_HEADER_VERSION = "Version";
- 	public static final String TABLE_HEADER_URL = "URL";
+ 	public static final String TABLE_HEADER_URL = "URL/Path";
  	
  	public static final Double MIN_JCA_RULE_VERSION = 1.4;
  	public static final Double MIN_BC_RULE_VERSION = 0.7;

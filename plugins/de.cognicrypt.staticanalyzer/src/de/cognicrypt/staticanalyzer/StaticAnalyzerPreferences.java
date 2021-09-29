@@ -5,8 +5,11 @@
 
 package de.cognicrypt.staticanalyzer;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -20,26 +23,24 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.properties.PreferenceListener;
-import de.cognicrypt.staticanalyzer.utilities.AddNewRulesetDialog;
+import de.cognicrypt.staticanalyzer.utilities.RemoteRulesetDialog;
 import de.cognicrypt.staticanalyzer.utilities.ArtifactUtils;
+import de.cognicrypt.staticanalyzer.utilities.LocalRulesetDialog;
 import de.cognicrypt.staticanalyzer.utilities.Ruleset;
 import de.cognicrypt.utils.CrySLUtils;
 import de.cognicrypt.utils.UIUtils;
@@ -54,12 +55,10 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Button providerDetectionCheckBox;
 	private Button secureObjectsCheckBox;
 	private Button analyseDependenciesCheckBox;
-	private Button addNewRulesetButton;
+	private Button addNewRemoteRulesetButton;
+	private Button addNewLocalRulesetButton;
 	private Button selectCustomRulesCheckBox;
 	private Button analyzedProjectRootDirRules;
-	
-	private Text localRulesLocation;
-	private Button selectLocalRulesButton;
 
 	private Combo CGSelection;
 	private Combo forbidden;
@@ -70,6 +69,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private Combo typestate;
 
 	private List<Ruleset> listOfRulesets = new ArrayList<Ruleset>();
+	private List<String> defaultRulesets = Arrays.asList("BouncyCastle", "BouncyCastle-JCA", "JavaCryptographicArchitecture", "Tink");
 
 	@Override
 	public void compileBasicPreferences(Composite parent) {
@@ -86,7 +86,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	}
 
 	private void initializeBasicValues() {
-		localRulesLocation.setText(preferences.getString(Constants.LOCAL_RULES_DIRECTORY));
 		automatedAnalysisCheckBox.setSelection(preferences.getBoolean(Constants.AUTOMATED_ANALYSIS));
 		providerDetectionCheckBox.setSelection(preferences.getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS));
 		secureObjectsCheckBox.setSelection(preferences.getBoolean(Constants.SHOW_SECURE_OBJECTS));
@@ -119,7 +118,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		rulesRow.setText(0, ruleset.getFolderName());
 		editor.grabHorizontal = true;
 		editor.setEditor(ruleset.getVersions(), rulesRow, 1);
-		rulesRow.setText(2, ruleset.getUrl());
+		rulesRow.setText(2, ruleset.getUrlOrPath());
 		rulesRow.setChecked(ruleset.isChecked());
 		ruleset.setRulesRow(rulesRow);
 	}
@@ -151,7 +150,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 							loadedRuleset.setSelectedVersion(subPref.get(key, ""));
 							break;
 						case "Url":
-							loadedRuleset.setUrl(subPref.get(key, ""));
+							loadedRuleset.setUrlOrPath(subPref.get(key, ""));
 							break;
 						default:
 							break;
@@ -172,15 +171,22 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private void createRulesTable() {
 		TableViewerColumn rulesColumn = new TableViewerColumn(table, SWT.FILL);
 		TableViewerColumn versionsColumn = new TableViewerColumn(table, SWT.FILL);
-		TableViewerColumn rulesURL = new TableViewerColumn(table, SWT.FILL);
+		TableViewerColumn rulesURLOrPath = new TableViewerColumn(table, SWT.FILL);
 		rulesColumn.getColumn().setText(Constants.TABLE_HEADER_RULES);
 		versionsColumn.getColumn().setText(Constants.TABLE_HEADER_VERSION);
-		rulesURL.getColumn().setText(Constants.TABLE_HEADER_URL);
+		rulesURLOrPath.getColumn().setText(Constants.TABLE_HEADER_URL);
 		rulesColumn.getColumn().setWidth(200);
 		versionsColumn.getColumn().setWidth(100);
-		rulesURL.getColumn().setWidth(200);
+		rulesURLOrPath.getColumn().setWidth(200);
 
 		listOfRulesets = getRulesetsFromPrefs();
+		
+		//remove BC-JCA provider ruleset from ruleset's table to not have conflict with JCA ruleset
+		for (Ruleset ruleset : listOfRulesets) {
+			if (ruleset.getFolderName().equals("BouncyCastle-JCA")) {
+				listOfRulesets.remove(ruleset);
+			}
+		}
 
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
 			Ruleset ruleset = (Ruleset) itr.next();
@@ -194,11 +200,11 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 				ruleset.getVersions().select(ruleset.getVersions().indexOf(ruleset.getSelectedVersion()));
 			}
 			createRulesTableRow(ruleset);
+			
 			ruleset.getVersions().addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					super.widgetSelected(e);
-
 					ruleset.setSelectedVersion(ruleset.getVersions().getItem(ruleset.getVersions().getSelectionIndex()));
 				}
 			});
@@ -211,11 +217,21 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 * @param newRuleset The new rule set which is added to the table
 	 */
 	private void modifyRulesTable(Ruleset newRuleset) {
-		newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
-		newRuleset.getVersions().setItems(CrySLUtils.getRuleVersions(newRuleset.getFolderName()));
-		newRuleset.setSelectedVersion(newRuleset.getVersions().getItem(newRuleset.getVersions().getItemCount() - 1));
-		newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
-		createRulesTableRow(newRuleset);
+		if(newRuleset.getFolderName().startsWith("LOCAL")) {
+			newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
+			String[] rulesetVersions = {newRuleset.getSelectedVersion()};
+			newRuleset.getVersions().setItems(rulesetVersions);
+			newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
+			createRulesTableRow(newRuleset);
+		}
+		else {
+			newRuleset.setVersions(new CCombo(table.getTable(), SWT.NONE));
+			newRuleset.getVersions().setItems(CrySLUtils.getRuleVersions(newRuleset.getFolderName()));
+			newRuleset.setSelectedVersion(newRuleset.getVersions().getItem(newRuleset.getVersions().getItemCount() - 1));
+			newRuleset.getVersions().select(newRuleset.getVersions().getItemCount() - 1);
+			createRulesTableRow(newRuleset);
+		}
+		
 		newRuleset.getVersions().addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -258,38 +274,25 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 			}
 		});
 		
-		addNewRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
-		addNewRulesetButton.setText("Add Ruleset");
-		addNewRulesetButton.addListener(SWT.Selection, new Listener() {
+		addNewRemoteRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
+		addNewRemoteRulesetButton.setText("Add Remote Ruleset");
+		addNewRemoteRulesetButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
 			public void handleEvent(Event e) {
-				addNewRuleset();
+				addNewRemoteRuleset();
 			}
 		});
 		
-		localRulesLocation = new Text(staticAnalysisGroup, SWT.BORDER);
-	    GridData data = new GridData(GridData.FILL_HORIZONTAL);
-	    data.horizontalSpan = 4;
-	    localRulesLocation.setLayoutData(data);
-		selectLocalRulesButton = new Button(staticAnalysisGroup, SWT.PUSH);
-		selectLocalRulesButton.setText("Browse local rules directory");
-		selectLocalRulesButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				DirectoryDialog dlg = new DirectoryDialog(staticAnalysisGroup.getShell());
-				// Set the initial filter path according
-				// to anything they've selected or typed in
-				dlg.setFilterPath(localRulesLocation.getText());
-				// Calling open() will open and run the dialog.
-				// It will return the selected directory, or
-				// null if user cancels
-				String dir = dlg.open();
-				if (dir != null) {
-					// Set the text box to the new selection
-					localRulesLocation.setText(dir);
-				}
+		addNewLocalRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
+		addNewLocalRulesetButton.setText("Add Local Ruleset");
+		addNewLocalRulesetButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				addNewLocalRuleset();
 			}
-	    });
+		});
 		
 		selectCustomRulesCheckBox = new Button(staticAnalysisGroup, SWT.CHECK);
 		selectCustomRulesCheckBox.setText("Select Custom Rules");
@@ -310,33 +313,75 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		analyseDependenciesCheckBox.setText("Include Dependencies into Project Analysis");
 	}
 
-	protected void addNewRuleset() {
+	/**
+	 * This method opens the dialog box that gives the option of adding a remote ruleset
+	 * to the table of rulesets. The user just needs to supply a valid URL.
+	 */
+	protected void addNewRemoteRuleset() {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		AddNewRulesetDialog dialog = new AddNewRulesetDialog(window.getShell());
+		RemoteRulesetDialog dialog = new RemoteRulesetDialog(window.getShell());
 		dialog.create();
 		if (dialog.open() == Window.OK) {
 			if (ifExists(dialog.getRulesetUrl())) {
-				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "You are trying to add an existing ruleset!");
+				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "Ruleset was not added because it is a duplicate.");
 				return;
 			} else {
 				if (ArtifactUtils.downloadRulesets(dialog.getRulesetUrl())) {
 					Activator.getDefault().logInfo("Rulesets updated.");
+					MessageDialog.openInformation(window.getShell(), "Download Successful", "Successful download of the ruleset through the specified URL.");
+					Ruleset newRuleset = new Ruleset(dialog.getRulesetUrl());
+					modifyRulesTable(newRuleset);
+					listOfRulesets.add(newRuleset);
 				}
-				Ruleset newRuleset = new Ruleset(dialog.getRulesetUrl());
-				modifyRulesTable(newRuleset);
-				listOfRulesets.add(newRuleset);
+				else {
+					MessageDialog.openError(window.getShell(), "Download Error", "Failed download of the ruleset through the specified URL.");
+				}
 			}
 		}
 	}
-
-	boolean ifExists(String url) {
+	
+	/**
+	 * This method checks whether a given ruleset already exists in the ruleset table
+	 * 
+	 * @param pathOrURL A directory path or a URL
+	 * @return If the ruleset of the supplied path or URL already exists in the ruleset table
+	 */
+	private boolean ifExists(String pathOrURL) {
 		List<Ruleset> existingRulesets = getRulesetsFromPrefs();
 		for (Ruleset ruleset : existingRulesets) {
-			if (ruleset.getUrl().equals(url)) {
+			if (ruleset.getUrlOrPath().equals(pathOrURL)) {
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * This method opens the dialog box that gives the option of adding a local ruleset
+	 * to the table of rulesets. The user can supply a valid path or simply browse it.
+	 */
+	protected void addNewLocalRuleset() {
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		LocalRulesetDialog dialog = new LocalRulesetDialog(window.getShell());
+		dialog.create();
+		if (dialog.open() == Window.OK) {
+			if (ifExists(dialog.getRulesetPath())) {
+				MessageDialog.openError(window.getShell(), "Duplicate Ruleset", "Ruleset was not added because it is a duplicate.");
+				return;
+			} else {
+				if (Files.exists(Paths.get(dialog.getRulesetPath()))) {
+					Activator.getDefault().logInfo("Rulesets updated.");
+					MessageDialog.openInformation(window.getShell(), "Loading Successful", "Successful load of the ruleset through the specified path.");
+					Ruleset newRuleset = new Ruleset(dialog.getRulesetPath());
+					newRuleset.setFolderName("LOCAL: "+newRuleset.getFolderName());
+					modifyRulesTable(newRuleset);
+					listOfRulesets.add(newRuleset);
+				}
+				else {
+					MessageDialog.openError(window.getShell(), "Loading Error", "Failed load of the ruleset through the specified path.");
+				}
+			}
+		}
 	}
 
 	private void initializeAdvancedValues() {
@@ -442,7 +487,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	public void setDefaultValues() {
-		localRulesLocation.setText(preferences.getDefaultString(Constants.LOCAL_RULES_DIRECTORY));
 		selectCustomRulesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SELECT_CUSTOM_RULES));
 		analyzedProjectRootDirRules.setSelection(preferences.getDefaultBoolean(Constants.ANALYZED_PROJECT_DIR_RULES));
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
@@ -450,6 +494,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
 
+		if(removeNonDefaultRulesets()) {
+			createRulesTable();
+		}
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
 			Ruleset ruleset = (Ruleset) itr.next();
 			ruleset.getVersions().select(ruleset.getVersions().getItemCount() - 1);
@@ -469,6 +516,30 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		neverType.select(preferences.getDefaultInt(Constants.NEVER_TYPEOF_MARKER_TYPE));
 		reqPred.select(preferences.getDefaultInt(Constants.REQUIRED_PREDICATE_MARKER_TYPE));
 	}
+	
+	/***
+	 * This method removes all rulesets that are not default from the {@link #rulePreferences} field
+	 * and retains only the default ones of JCA, BC-JCA, BC, and Tink. It also returns a boolean of
+	 * whether any non default ruleset was removed.
+	 */
+	private boolean removeNonDefaultRulesets() {
+		boolean areNonDefaultRulesets = true;
+		try {
+			String[] listOfNodes = rulePreferences.childrenNames();
+			if (new HashSet<>(defaultRulesets).equals(new HashSet<>(Arrays.asList(listOfNodes)))) {
+				areNonDefaultRulesets = false;
+			}
+			for (String currentNode : listOfNodes) {
+				if(!defaultRulesets.contains(currentNode)) {
+					Preferences subPref = rulePreferences.node(currentNode);
+					subPref.removeNode();
+				}
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+		return areNonDefaultRulesets;
+	}
 
 	/**
 	 * This method assign the selected values for each of the preference page options and is invoked when 'Apply'
@@ -476,7 +547,6 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	protected void storeValues() {
-		preferences.setValue(Constants.LOCAL_RULES_DIRECTORY, localRulesLocation.getText());
 		preferences.setValue(Constants.SELECT_CUSTOM_RULES, selectCustomRulesCheckBox.getSelection());
 		preferences.setValue(Constants.ANALYZED_PROJECT_DIR_RULES, analyzedProjectRootDirRules.getSelection());
 		preferences.setValue(Constants.AUTOMATED_ANALYSIS, automatedAnalysisCheckBox.getSelection());
@@ -498,7 +568,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 			subPref.putBoolean("CheckboxState", ruleset.isChecked());
 			subPref.put("FolderName", ruleset.getFolderName());
 			subPref.put("SelectedVersion", ruleset.getSelectedVersion());
-			subPref.put("Url", ruleset.getUrl());
+			subPref.put("Url", ruleset.getUrlOrPath());
 		}
 	}
 

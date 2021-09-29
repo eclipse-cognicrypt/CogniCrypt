@@ -602,7 +602,7 @@ public class Constants {
  	//Preference page rules table Constants
  	public static final String TABLE_HEADER_RULES = "Rules";
  	public static final String TABLE_HEADER_VERSION = "Version";
- 	public static final String TABLE_HEADER_URL = "URL";
+ 	public static final String TABLE_HEADER_URL = "URL/Path";
  	
  	public static final Double MIN_JCA_RULE_VERSION = 1.4;
  	public static final Double MIN_BC_RULE_VERSION = 0.7;

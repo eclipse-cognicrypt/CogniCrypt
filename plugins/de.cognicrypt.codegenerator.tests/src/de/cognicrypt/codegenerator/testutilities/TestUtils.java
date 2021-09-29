@@ -258,22 +258,26 @@ public class TestUtils {
 	 * @param developerProject The project
 	 * @return The configuration for a given task
 	 */
-  
-	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject)
-			throws CoreException, IOException {
-		File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
-		String projectRelDir =
-				Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
-		String pathToTemplateFile = projectRelDir + templateFile.getName();
-		String resFileOSPath = targetFile.getProject().getLocation().toOSString() + pathToTemplateFile;
+	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject) {
+		CrySLConfiguration chosenConfig = null;
+		try {
+			File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
+			String projectRelDir =
+					Constants.outerFileSeparator + codeGenerator.getDeveloperProject().getSourcePath() + Constants.outerFileSeparator + Constants.PackageName + Constants.outerFileSeparator;
+			String pathToTemplateFile = projectRelDir + templateFile.getName();
+			String resFileOSPath = targetFile.getProject().getLocation().toOSString() + pathToTemplateFile;
 
-		Files.createDirectories(Paths.get(targetFile.getProject().getLocation().toOSString() + projectRelDir));
-		Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
-		developerProject.refresh();
+			Files.createDirectories(Paths.get(targetFile.getProject().getLocation().toOSString() + projectRelDir));
+			Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
+			developerProject.refresh();
 
-		GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
-		CrySLConfiguration chosenConfig = new CrySLConfiguration("", genClass);
-
+			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
+			chosenConfig = new CrySLConfiguration("", genClass);
+			return chosenConfig;
+		} catch(CoreException | IOException e) {
+			Activator.getDefault().logError(e);
+		}
+		
 		return chosenConfig;
 	}
 

@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -706,6 +707,7 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	}
 
 	private Group createNote(final Composite parent, final Question question, boolean visible) {
+		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
 		final Group notePanel = new Group(parent, SWT.NONE);
 		notePanel.setText("Note:");
 		final GridLayout gridLayout = new GridLayout();
@@ -722,7 +724,12 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		note.setLayoutData(new GridData(GridData.FILL_BOTH));
 		String noteText = question.getNote();
 		if (noteText.contains("$$$")) {
-			noteText = noteText.split("\\$\\$\\$")[1];
+			String[] noteText1 = noteText.split("\\$\\$\\$");
+			noteText = noteText1[1];
+
+			if (!prefStore.getBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS)) {
+				noteText = noteText + noteText1[2];
+			}
 		}
 		note.setText(noteText);
 		note.pack();

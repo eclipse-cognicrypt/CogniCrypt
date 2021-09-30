@@ -270,8 +270,11 @@ public class TestUtils {
 
 			Files.createDirectories(Paths.get(targetFile.getProject().getLocation().toOSString() + projectRelDir));
 			Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
+
 			developerProject.refresh();
-			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile);
+
+			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
+
 			chosenConfig = new CrySLConfiguration("", genClass);
 			return chosenConfig;
 		} catch(CoreException | IOException e) {

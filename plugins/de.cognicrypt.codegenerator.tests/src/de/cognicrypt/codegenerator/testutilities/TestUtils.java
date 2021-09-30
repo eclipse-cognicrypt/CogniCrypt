@@ -271,7 +271,7 @@ public class TestUtils {
 			Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
 			developerProject.refresh();
 
-			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile);
+			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
 			chosenConfig = new CrySLConfiguration("", genClass);
 			return chosenConfig;
 		} catch(CoreException | IOException e) {

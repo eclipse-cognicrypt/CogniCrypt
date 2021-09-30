@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,8 +16,23 @@ import javax.xml.bind.DatatypeConverter;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
+/**
+ * The Class PasswordHasher hashes a given password and verifies the password.
+ */
 public class PasswordHasher {
 
+	/**
+	 * Creates hashed password with SHA512 and a random salt, then converts
+	 * the salt and hashed password to string and puts them both into one
+	 * string and returns it. 
+	 * 
+	 *
+	 * @param pwd the password to be hashed.
+	 * @return the salt and hashed password in a string with a colon in between.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
+	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
+	 */
 	public static java.lang.String createPWHash(char[] pwd) throws GeneralSecurityException {
 		byte[] salt = new byte[32];
 		byte[] pwdHashBytes = null;
@@ -30,6 +45,15 @@ public class PasswordHasher {
 		return pwdHash;
 	}
 
+	/**
+	 * Breaks the input hashed password into two parts, salt and hash. Verifies if the input password generates the same hash using the same hash algorithm and the salt.
+	 * @param pwd the password.
+	 * @param pwdhash the hashed password with its salt.
+	 * @return true, if the hashed input password is the equal to input hashed password.
+	 * @throws GeneralSecurityException This exception is thrown if a security-related exception happens that extends this general exception.
+	 * @throws NoSuchAlgorithmException This exception is thrown if no Provider supports a SecretKeyFactorySpi or SecureRadnomSpi implementation for the specified algorithms.
+	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
+	 */
 	public static boolean verifyPWHash(char[] pwd, java.lang.String pwdhash) throws GeneralSecurityException {
 		java.lang.String[] parts = pwdhash.split(":");
 		byte[] salt = fromBase64(parts[0]);
@@ -43,6 +67,13 @@ public class PasswordHasher {
 		return areEqual;
 	}
 
+	/**
+	 * This method shows the equality of two bytes.
+	 *
+	 * @param a the first value.
+	 * @param b the second value.
+	 * @return true, if the two bytes are equal.
+	 */
 	private static boolean slowEquals(byte[] a, byte[] b) {
 		int diff = a.length ^ b.length;
 		for (int i = 0; i < a.length && i < b.length; i++) {
@@ -51,6 +82,12 @@ public class PasswordHasher {
 		return diff == 0;
 	}
 
+	/**
+	 * Converts an array of bytes into a string.
+	 *
+	 * @param array of bytes.
+	 * @return a string.
+	 */
 	private static java.lang.String toBase64(byte[] array) {
 		return DatatypeConverter.printBase64Binary(array);
 	}

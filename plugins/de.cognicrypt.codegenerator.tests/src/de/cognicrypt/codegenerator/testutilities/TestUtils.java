@@ -236,8 +236,9 @@ public class TestUtils {
 	 * @param developerProject The project
 	 * @param t The task for what the configuration is created for
 	 * @return The configuration for a given task
+	 * @throws IOException 
 	 */
-	public static Configuration createXSLConfigurationForCodeGeneration(final DeveloperProject developerProject, final Task t) {
+	public static Configuration createXSLConfigurationForCodeGeneration(final DeveloperProject developerProject, final Task t) throws IOException {
 
 		final InstanceGenerator instGen = new InstanceGenerator(Utils.getResourceFromWithin(t.getModelFile(), de.cognicrypt.codegenerator.Activator.PLUGIN_ID).getAbsolutePath(),
 				"c0_" + t.getName(), t.getTaskDescription());
@@ -245,7 +246,7 @@ public class TestUtils {
 		final HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
 		final List<InstanceClafer> instList = instGen.generateInstances(constraints);
 		final InstanceClafer inst = instList.get(0);
-		final Configuration ret = new XSLConfiguration(inst, constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile);
+		final Configuration ret = new XSLConfiguration(inst, constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile, t.getName());
 		return ret;
 	}
 
@@ -258,7 +259,7 @@ public class TestUtils {
 	 * @param developerProject The project
 	 * @return The configuration for a given task
 	 */
-	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject) {
+	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject, String selectedTask) {
 		CrySLConfiguration chosenConfig = null;
 		try {
 			File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
@@ -272,7 +273,7 @@ public class TestUtils {
 			developerProject.refresh();
 
 			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
-			chosenConfig = new CrySLConfiguration("", genClass);
+			chosenConfig = new CrySLConfiguration("", genClass, selectedTask);
 			return chosenConfig;
 		} catch(CoreException | IOException e) {
 			Activator.getDefault().logError(e);

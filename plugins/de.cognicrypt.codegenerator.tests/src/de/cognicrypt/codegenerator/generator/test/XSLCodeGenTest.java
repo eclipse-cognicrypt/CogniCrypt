@@ -6,6 +6,9 @@
 package de.cognicrypt.codegenerator.generator.test;
 
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
+
 import org.eclipse.jdt.core.IJavaProject;
 import org.junit.Test;
 
@@ -23,7 +26,7 @@ import de.cognicrypt.utils.DeveloperProject;
 public class XSLCodeGenTest {
 
 	@Test
-	public void SECMUPACOMPDefault() {
+	public void SECMUPACOMPDefault() throws IOException {
 		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SECMUPACOMP");
 		Task secMPCompTask = TestUtils.getTask("SECMUPACOMP");
 		CodeGenerator generatorSecMPComp = new XSLBasedGenerator(testJavaProject.getProject(), secMPCompTask.getCodeTemplate());
@@ -35,7 +38,7 @@ public class XSLCodeGenTest {
 	}
 
 	@Test
-	public void SECComDefault() {
+	public void SECComDefault() throws IOException {
 		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SECCom");
 		Task SECCOMTask = TestUtils.getTask("SecureCommunication");
 		CodeGenerator generatorSECCOM = new XSLBasedGenerator(testJavaProject.getProject(), SECCOMTask.getCodeTemplate());

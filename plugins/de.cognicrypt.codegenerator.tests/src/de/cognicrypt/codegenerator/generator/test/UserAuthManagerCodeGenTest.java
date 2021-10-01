@@ -32,6 +32,7 @@ public class UserAuthManagerCodeGenTest {
 	private DeveloperProject developerProject;
 	private IResource targetFile;
 	private ICompilationUnit testClassUnit;
+	private String taskName = "UserAuthorityManager";
 
 	@After
 	public void tearDown() throws CoreException {
@@ -40,14 +41,14 @@ public class UserAuthManagerCodeGenTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.testJavaProject = TestUtils.createJavaProject(Constants.PROJECT_NAME);
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME,
-				Constants.CLASS_NAME);
+		this.testJavaProject = TestUtils.createJavaProject(CodeGenTestConstants.PROJECT_NAME);
+		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, CodeGenTestConstants.PACKAGE_NAME,
+				CodeGenTestConstants.CLASS_NAME);
 		this.authManagerTask = TestUtils.getTask("UserAuthorityManager");
 		this.generatorAuthManager = new CrySLBasedCodeGenerator(targetFile);
 		this.developerProject = this.generatorAuthManager.getDeveloperProject();
-		this.testClassUnit = TestUtils.getICompilationUnit(this.developerProject, Constants.PACKAGE_NAME,
-				Constants.JAVA_CLASS_NAME);
+		this.testClassUnit = TestUtils.getICompilationUnit(this.developerProject, CodeGenTestConstants.PACKAGE_NAME,
+				CodeGenTestConstants.JAVA_CLASS_NAME);
 		TestUtils.openJavaFileInWorkspace(this.developerProject, "testPackage", this.testClassUnit);
 
 	}
@@ -63,7 +64,7 @@ public class UserAuthManagerCodeGenTest {
 	@Test
 	public void testCodeGenerationUserAuthentication() throws IOException, CoreException {
 		this.configAuthManager = TestUtils.createCrySLConfiguration("userauthoritymanagerauth", testClassUnit.getResource(),
-				generatorAuthManager, this.developerProject);
+				generatorAuthManager, this.developerProject, taskName);
 		final boolean encCheck = this.generatorAuthManager.generateCodeTemplates(this.configAuthManager,
 				this.authManagerTask.getAdditionalResources());
 
@@ -80,7 +81,7 @@ public class UserAuthManagerCodeGenTest {
 	@Test
 	public void testCodeGenerationPassGenerator() throws CoreException, IOException {
 		this.configAuthManager = TestUtils.createCrySLConfiguration("userauthoritymanagerpassgen", testClassUnit.getResource(),
-				generatorAuthManager, this.developerProject);
+				generatorAuthManager, this.developerProject, taskName);
 		final boolean encCheck = this.generatorAuthManager.generateCodeTemplates(this.configAuthManager,
 				this.authManagerTask.getAdditionalResources());
 

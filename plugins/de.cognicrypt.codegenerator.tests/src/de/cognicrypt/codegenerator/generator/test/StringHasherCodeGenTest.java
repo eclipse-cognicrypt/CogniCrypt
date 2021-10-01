@@ -17,20 +17,16 @@ import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 
-/**
- * @author Shahrzad Asghari
- */
-public class DigitalSignaturesCodeGenTest {
+public class StringHasherCodeGenTest {
 	
 	@Test
-	public void testCodeGenerationDigSignatures() {
-		String template = "digitalsignatures";
-		String taskName = "DigitalSignatures";
-		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_DigSign");
+	public void testCodeGenerationStringHashing() {
+		String template = "stringhashing";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_StrHash");
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, taskName);
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, null);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
@@ -39,12 +35,11 @@ public class DigitalSignaturesCodeGenTest {
 		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
 		assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureSigner.java");
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "StringHasher.java");
 		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
-		assertEquals(3, TestUtils.countMethods(encClassUnit));
-		assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
-		assertEquals(8, TestUtils.countStatements(encClassUnit, "sign"));
-		// assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
+		assertEquals(2, TestUtils.countMethods(encClassUnit));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "createHash"));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "verifyHash"));
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 	

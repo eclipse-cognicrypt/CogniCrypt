@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.jdt.core.dom.Javadoc;
+
 public class GeneratorMethod {
 
 	private String modifier;
@@ -31,6 +33,7 @@ public class GeneratorMethod {
 	private StringBuilder killStatements;
 	private int templateVariables;
 	private List<CodeGenCrySLRule> cryslRules;
+	private String javaDoc = "";
 
 	public GeneratorMethod() {
 		body = new StringBuilder();
@@ -157,10 +160,11 @@ public class GeneratorMethod {
 		method.append(body.toString().replaceAll(",\\s+\\)", ")"));
 		method.append("\n}");
 		if (killStatements != null) {
-			return method.toString().replace("return ", killStatements.toString() + "\n return ");
+			return javaDoc + method.toString().replace("return ", killStatements.toString() + "\n return ");
 		} else {
-			return method.toString();
+			return method.insert(0, javaDoc).toString();
 		}
+
 	}
 
 	public void clearBody() {
@@ -189,6 +193,10 @@ public class GeneratorMethod {
 
 	public List<Entry<String, String>> getPostCGVars() {
 		return postCGVars;
+	}
+	
+	public void addJavaDoc(Javadoc javadoc) {
+		this.javaDoc = javadoc.toString() + "\n";
 	}
 
 }

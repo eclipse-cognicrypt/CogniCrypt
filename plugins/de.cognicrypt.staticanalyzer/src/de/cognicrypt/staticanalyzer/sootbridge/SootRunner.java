@@ -89,6 +89,13 @@ public class SootRunner {
 		};
 	}
 
+	/**
+	 * This method returns all available rules as a list of {@link CrySLRule} objects
+	 * 
+	 * @param project The project that is being analyzed
+	 * @param icfg The control-flow graph representing the source code that is being analyzed
+	 * @return A list of {@link CrySLRule} objects
+	 */
 	public static List<CrySLRule> getRules(IProject project, ObservableICFG<Unit, SootMethod> icfg) {
 
 		List<CrySLRule> rules = Lists.newArrayList();
@@ -98,6 +105,9 @@ public class SootRunner {
 			CrySLParser r = new CrySLParser(project);
 			List<String> bannedRulesets = Lists.newArrayList();
 			
+			/**
+			 * If true, it loads all the available rules from the analyzed project's directory
+			 */
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.ANALYZED_PROJECT_DIR_RULES)) {
 				Activator.getDefault().logInfo("Loading rules from the analyzed project's directory.");				
 				IPath location = project.getLocation();
@@ -112,19 +122,10 @@ public class SootRunner {
 				}
 			}
 			
-			if( !Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY).isEmpty() && 
-					Files.exists(Paths.get(Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY))) ) {
-				Activator.getDefault().logInfo("Loading rules from the selected local directory.");
-				String rulesPath = Activator.getDefault().getPreferenceStore().getString(Constants.LOCAL_RULES_DIRECTORY);
-				List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);
-				for(File file : files) {
-					CrySLRule rule = r.readRule(file);
-					if(!rules.contains(rule)) {
-						rules.add(rule);
-					}
-				}
-			}
-			
+			/**
+			 * If true, it loads all respective provider-related rules for a detected provider in
+			 * the analyzed code
+			 */
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.PROVIDER_DETECTION_ANALYSIS)) {
 				Activator.getDefault().logInfo("Loading rules from the detected provider.");				
 				ProviderDetection providerDetection = new ProviderDetection();
@@ -138,12 +139,17 @@ public class SootRunner {
 						rules.add(r.readRule(providerRule));
 					}
 					
+					// If detected provider is BC-JCA, then loading of JCA ruleset is skipped in next code section in order to avoid conflicts between two rulesets
 					if (detectedProvider == "BouncyCastle-JCA") {
 						 bannedRulesets.add("JavaCryptographicArchitecture");
 					}
 				}
 			}
 
+			/**
+			 * It loads all rules from the list of the chosen rulesets in the preference page.
+			 * Besides the default rulesets, it also loads local ones if the user has added any.
+			 */
 			Preferences prefs = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 			try {
 				String[] listOfNodes = prefs.childrenNames();
@@ -153,13 +159,25 @@ public class SootRunner {
 					}
 					Ruleset loadedRuleset = new Ruleset(prefs.node(currentNode));
 					if (loadedRuleset.isChecked()) {
-						rules.addAll(Files.find(
-								Paths.get(new File(Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + File.separator + loadedRuleset.getSelectedVersion()).getPath()),
-								Integer.MAX_VALUE, (file, attr) -> {
-									return file.toString().endsWith(RuleFormat.SOURCE.toString()) && !readRules.contains(file.getFileName().toString());
-								}).map(path -> {
-									return r.readRule(path.toFile());
-								}).collect(Collectors.toList()));
+						if (loadedRuleset.getFolderName().startsWith("LOCAL")) {
+							String rulesPath = loadedRuleset.getUrlOrPath();
+							List<File> files = (List<File>) FileUtils.listFiles(new File(rulesPath), new String[] { "crysl" }, true);
+							for(File file : files) {
+								CrySLRule rule = r.readRule(file);
+								if(!rules.contains(rule)) {
+									rules.add(rule);
+								}
+							}
+						}
+						else {
+							rules.addAll(Files.find(
+									Paths.get(new File(Constants.ECLIPSE_RULES_DIR + File.separator + loadedRuleset.getFolderName() + File.separator + loadedRuleset.getSelectedVersion()).getPath()),
+									Integer.MAX_VALUE, (file, attr) -> {
+										return file.toString().endsWith(RuleFormat.SOURCE.toString()) && !readRules.contains(file.getFileName().toString());
+									}).map(path -> {
+										return r.readRule(path.toFile());
+									}).collect(Collectors.toList()));
+						}
 					}
 				}
 			}
@@ -167,6 +185,11 @@ public class SootRunner {
 				Activator.getDefault().logError(e);
 			}
 			
+			/**
+			 * If true, it loads all rulesets that are located in the "resources/CrySLRules/Custom"
+			 * of "de.congivrypt.core" module. The directory contains the rulesets from all the default
+			 * rulesets that we have.
+			 */
 			if (Activator.getDefault().getPreferenceStore().getBoolean(Constants.SELECT_CUSTOM_RULES)) {
 				Activator.getDefault().logInfo("Loading custom rules from the resources folder in core plugin.");
 				rules.addAll(Files.find(Paths.get(Utils.getResourceFromWithin(Constants.RELATIVE_CUSTOM_RULES_DIR).getPath()), Integer.MAX_VALUE,

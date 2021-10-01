@@ -10,6 +10,9 @@
 
 package de.cognicrypt.codegenerator.generator;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -29,6 +32,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +41,7 @@ import org.eclipse.core.resources.IResource;
 import de.cognicrypt.staticanalyzer.sootbridge.SootRunner;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -45,6 +51,7 @@ import org.eclipse.jdt.core.dom.Block;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
+import org.eclipse.jdt.core.dom.Javadoc;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.SimpleName;
@@ -1217,18 +1224,48 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 		}
 	}
+	// read file content (this case, template) into a string
+	public static String readFileToString(String filePath) throws IOException {
+		StringBuilder fileData = new StringBuilder(1000);
+		final FileReader in = new FileReader(filePath);
+		BufferedReader reader = new BufferedReader(in);
 
-	public GeneratorClass setUpTemplateClass(String pathToTemplateFile) {
+		char[] buf = new char[10];
+		int numRead = 0;
+		while ((numRead = reader.read(buf)) != -1) {
+			String readData = String.valueOf(buf, 0, numRead);
+			fileData.append(readData);
+			buf = new char[1024];
+		}
+
+		reader.close();
+		return fileData.toString();
+	}
+	
+	public GeneratorClass setUpTemplateClass(String pathToTemplateFile, File templateFile) throws IOException {
 		ASTParser parser = ASTParser.newParser(AST.JLS11);
-		parser.setSource((ICompilationUnit) JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile)));
+		final IJavaElement create = JavaCore.create(getDeveloperProject().getFile(pathToTemplateFile));
+		String converted = readFileToString(templateFile.toString());
+		parser.setSource((ICompilationUnit) create);
 		parser.setResolveBindings(true);
 		parser.setBindingsRecovery(true);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 		final Map<Integer, Integer> methLims = new HashMap<>();
-
+		
+		//retrieve header
+	    Pattern pattern = Pattern.compile("/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/");
+	    Matcher matcher = pattern.matcher(converted);
+	    matcher.find();
+	    String header =  matcher.group();
+	    //retrieve javaDoc
+		String classJavaDoc = (String) cu.getCommentList().get(1).toString();
+		
 		GeneratorClass templateClass = new GeneratorClass();
-
+		
+		templateClass.addHeader(header);
+		templateClass.addClassJavaDoc(classJavaDoc);
+		
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 
 			GeneratorMethod curMethod = null;
@@ -1332,7 +1369,12 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 				curMethod.setName(node.getName().getFullyQualifiedName());
 				curMethod.setReturnType(node.getReturnType2().toString());
 				curMethod.setModifier("public");
-
+				
+				final Javadoc javadoc = node.getJavadoc();
+				if (javadoc != null) {
+					curMethod.addJavaDoc(javadoc);
+				}
+				
 				for (Statement s : (List<Statement>) node.getBody().statements()) {
 					curMethod.addStatementToBody(s.toString());
 				}

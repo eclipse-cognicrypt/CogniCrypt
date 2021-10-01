@@ -6,6 +6,11 @@
 package de.cognicrypt.staticanalyzer.results;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -68,6 +73,10 @@ import soot.jimple.internal.JimpleLocalBox;
 import soot.tagkit.AbstractHost;
 import typestate.TransitionFunction;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 /**
  * This listener is notified of any misuses the analysis finds. It also reports the results of the analysis to the Statistics View
  *
@@ -118,8 +127,15 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 	@Override
 	public void reportError(final AbstractError error) {
 		IResource sourceFile = null;
+		IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
 		if (this.depOnly) {
 			return;
+		}
+		if (error instanceof ConstraintError) {
+			ConstraintError conError = (ConstraintError) error;
+			if (prefStore.getBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS) && conError.getBrokenConstraint().toString().equals(Constants.desiredProtocol) && isLegacyClient()) {
+				return;
+			}
 		}
 		final String errorMessage = error.toErrorMarkerString();
 		final Statement errorLocation = error.getErrorLocation();
@@ -230,7 +246,27 @@ public class ResultsCCUIListener extends CrySLAnalysisListener {
 		}
 
 	}
+	
+	@SuppressWarnings("unchecked")
+	public Boolean isLegacyClient() {
+		final String path = this.currentProject.getLocation().toOSString() + Constants.innerFileSeparator + Constants.SECURE_COMMUNICATION + Constants.JSON_EXTENSION;
+		JSONParser parser = new JSONParser();
+		try {
+			if (Files.exists(Paths.get(path))) {
 
+					Object obj = parser.parse(new InputStreamReader(new FileInputStream(path)));
+					JSONObject jsonObject = (JSONObject) obj;
+
+					if (jsonObject.containsKey(Constants.clientQuestion) && jsonObject.get(Constants.clientQuestion).equals(Constants.clientAnswer)) {
+						return true;
+					}
+			}
+		} catch (ParseException | IOException e2) {
+			 Activator.getDefault().logError(e2);
+		}
+		return false;
+	}
+	
 	// It only works when the secure object checkbox in preference page is checked
 	@Override
 	public void onSecureObjectFound(final IAnalysisSeed secureObject) {

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:statemachine="http://www.cognicrypt.de/order/editor/Statemachine" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style">
+  <viewpoint:DAnalysis uid="_qLETgCRVEeywmoX1YtJHrw" selectedViews="_2o00sCRVEeywmoX1YtJHrw" version="14.5.1.202106111100">
+    <semanticResources>file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/model/generated/Statemachine.ecore</semanticResources>
+    <semanticResources>file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine</semanticResources>
+    <ownedViews xmi:type="viewpoint:DView" uid="_2o00sCRVEeywmoX1YtJHrw">
+      <viewpoint xmi:type="description:Viewpoint" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']"/>
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_DfK1ACRWEeywmoX1YtJHrw" name="algoparam" repPath="#_DeuwICRWEeywmoX1YtJHrw" changeId="53e4fb69-bd2f-4db4-bbb9-5ce0777a813b">
+        <description xmi:type="description_1:DiagramDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']"/>
+        <target xmi:type="statemachine:Statemachine" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#/"/>
+      </ownedRepresentationDescriptors>
+    </ownedViews>
+  </viewpoint:DAnalysis>
+  <diagram:DSemanticDiagram uid="_DeuwICRWEeywmoX1YtJHrw">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_DfryYCRWEeywmoX1YtJHrw" source="GMF_DIAGRAMS">
+      <data xmi:type="notation:Diagram" xmi:id="_DfryYSRWEeywmoX1YtJHrw" type="Sirius" element="_DeuwICRWEeywmoX1YtJHrw" measurementUnit="Pixel">
+        <children xmi:type="notation:Node" xmi:id="_DiVdwCRWEeywmoX1YtJHrw" type="2001" element="_Df08UCRWEeywmoX1YtJHrw">
+          <children xmi:type="notation:Node" xmi:id="_DifOwCRWEeywmoX1YtJHrw" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_DifOwSRWEeywmoX1YtJHrw" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DisqICRWEeywmoX1YtJHrw" type="3016" element="_Df-tUCRWEeywmoX1YtJHrw">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_DisqISRWEeywmoX1YtJHrw" fontName="Segoe UI"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DisqIiRWEeywmoX1YtJHrw"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_DiVdwSRWEeywmoX1YtJHrw" fontName="Segoe UI" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DiVdwiRWEeywmoX1YtJHrw" width="71" height="71"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_DijgMCRWEeywmoX1YtJHrw" type="2001" element="_DgIeUSRWEeywmoX1YtJHrw">
+          <children xmi:type="notation:Node" xmi:id="_DijgMyRWEeywmoX1YtJHrw" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_DijgNCRWEeywmoX1YtJHrw" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DisqIyRWEeywmoX1YtJHrw" type="3016" element="_DgIeUiRWEeywmoX1YtJHrw">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_DisqJCRWEeywmoX1YtJHrw" fontName="Segoe UI"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DisqJSRWEeywmoX1YtJHrw"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_DijgMSRWEeywmoX1YtJHrw" fontName="Segoe UI" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DijgMiRWEeywmoX1YtJHrw" x="29" y="133" width="71" height="71"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_DijgNSRWEeywmoX1YtJHrw" type="2001" element="_DgIeVCRWEeywmoX1YtJHrw">
+          <children xmi:type="notation:Node" xmi:id="_DijgOCRWEeywmoX1YtJHrw" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_DijgOSRWEeywmoX1YtJHrw" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DisqJiRWEeywmoX1YtJHrw" type="3016" element="_DgIeVSRWEeywmoX1YtJHrw">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_DisqJyRWEeywmoX1YtJHrw" fontName="Segoe UI"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DisqKCRWEeywmoX1YtJHrw"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_DijgNiRWEeywmoX1YtJHrw" fontName="Segoe UI" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DijgNyRWEeywmoX1YtJHrw" y="182" width="30" height="30"/>
+        </children>
+        <children xmi:type="notation:Node" xmi:id="_DijgOiRWEeywmoX1YtJHrw" type="2001" element="_DgIeVyRWEeywmoX1YtJHrw">
+          <children xmi:type="notation:Node" xmi:id="_DijgPSRWEeywmoX1YtJHrw" type="5002">
+            <layoutConstraint xmi:type="notation:Location" xmi:id="_DijgPiRWEeywmoX1YtJHrw" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DisqKSRWEeywmoX1YtJHrw" type="3016" element="_DgIeWCRWEeywmoX1YtJHrw">
+            <styles xmi:type="notation:ShapeStyle" xmi:id="_DisqKiRWEeywmoX1YtJHrw" fontName="Segoe UI"/>
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DisqKyRWEeywmoX1YtJHrw"/>
+          </children>
+          <styles xmi:type="notation:ShapeStyle" xmi:id="_DijgOyRWEeywmoX1YtJHrw" fontName="Segoe UI" fontHeight="12"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DijgPCRWEeywmoX1YtJHrw" y="273" width="57" height="50"/>
+        </children>
+        <styles xmi:type="notation:DiagramStyle" xmi:id="_DfryYiRWEeywmoX1YtJHrw"/>
+        <edges xmi:type="notation:Edge" xmi:id="_Di2bICRWEeywmoX1YtJHrw" type="4001" element="_DgRoQCRWEeywmoX1YtJHrw" source="_DijgOiRWEeywmoX1YtJHrw" target="_DijgNSRWEeywmoX1YtJHrw">
+          <children xmi:type="notation:Node" xmi:id="_Di2bJCRWEeywmoX1YtJHrw" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Di2bJSRWEeywmoX1YtJHrw" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_Di2bJiRWEeywmoX1YtJHrw" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Di2bJyRWEeywmoX1YtJHrw" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_Di_lECRWEeywmoX1YtJHrw" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Di_lESRWEeywmoX1YtJHrw" y="10"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_Di2bISRWEeywmoX1YtJHrw"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_Di2bIiRWEeywmoX1YtJHrw" fontName="Segoe UI" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_Di2bIyRWEeywmoX1YtJHrw" points="[0, 0, 0, 60]$[0, -60, 0, 0]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_DjJWECRWEeywmoX1YtJHrw" id="(0.2631578947368421,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_DjJWESRWEeywmoX1YtJHrw" id="(0.5,1.0)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_DjJWEiRWEeywmoX1YtJHrw" type="4001" element="_DiMT0CRWEeywmoX1YtJHrw" source="_DijgNSRWEeywmoX1YtJHrw" target="_DijgMCRWEeywmoX1YtJHrw">
+          <children xmi:type="notation:Node" xmi:id="_DjJWFiRWEeywmoX1YtJHrw" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DjJWFyRWEeywmoX1YtJHrw" x="-8" y="-6"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DjJWGCRWEeywmoX1YtJHrw" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DjJWGSRWEeywmoX1YtJHrw" x="9" y="5"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DjJWGiRWEeywmoX1YtJHrw" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DjJWGyRWEeywmoX1YtJHrw" x="9" y="5"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_DjJWEyRWEeywmoX1YtJHrw"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_DjJWFCRWEeywmoX1YtJHrw" fontName="Segoe UI" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_DjJWFSRWEeywmoX1YtJHrw" points="[0, 0, -29, 19]$[14, -10, -15, 9]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_DjJWHCRWEeywmoX1YtJHrw" id="(0.5,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_DjJWHSRWEeywmoX1YtJHrw" id="(0.2112676056338028,0.4225352112676056)"/>
+        </edges>
+        <edges xmi:type="notation:Edge" xmi:id="_DjJWHiRWEeywmoX1YtJHrw" type="4001" element="_DiMT1SRWEeywmoX1YtJHrw" source="_DijgMCRWEeywmoX1YtJHrw" target="_DiVdwCRWEeywmoX1YtJHrw">
+          <children xmi:type="notation:Node" xmi:id="_DjJWIiRWEeywmoX1YtJHrw" type="6001">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DjJWIyRWEeywmoX1YtJHrw" x="3" y="-10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DjJWJCRWEeywmoX1YtJHrw" type="6002">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DjJWJSRWEeywmoX1YtJHrw" x="-2" y="10"/>
+          </children>
+          <children xmi:type="notation:Node" xmi:id="_DjJWJiRWEeywmoX1YtJHrw" type="6003">
+            <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DjJWJyRWEeywmoX1YtJHrw" x="-2" y="9"/>
+          </children>
+          <styles xmi:type="notation:ConnectorStyle" xmi:id="_DjJWHyRWEeywmoX1YtJHrw"/>
+          <styles xmi:type="notation:FontStyle" xmi:id="_DjJWICRWEeywmoX1YtJHrw" fontName="Segoe UI" fontHeight="12"/>
+          <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_DjJWISRWEeywmoX1YtJHrw" points="[0, 0, 29, 103]$[-18, -62, 11, 41]"/>
+          <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_DjJWKCRWEeywmoX1YtJHrw" id="(0.2112676056338028,0.0)"/>
+          <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_DjJWKSRWEeywmoX1YtJHrw" id="(0.2112676056338028,0.4225352112676056)"/>
+        </edges>
+      </data>
+    </ownedAnnotationEntries>
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_DiMT2iRWEeywmoX1YtJHrw" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_DiMT2yRWEeywmoX1YtJHrw"/>
+    </ownedAnnotationEntries>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_Df08UCRWEeywmoX1YtJHrw" name="s2" incomingEdges="_DiMT1SRWEeywmoX1YtJHrw" width="3" height="3" resizeKind="NSEW">
+      <target xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.0"/>
+      <semanticElements xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.0"/>
+      <ownedStyle xmi:type="diagram:Ellipse" uid="_Df-tUCRWEeywmoX1YtJHrw" labelSize="12" borderSize="5" borderSizeComputationExpression="service:changeBorderFinalNode()" labelPosition="node" color="138,226,52">
+        <description xmi:type="style:EllipseNodeDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_DgIeUSRWEeywmoX1YtJHrw" name="s1" outgoingEdges="_DiMT1SRWEeywmoX1YtJHrw" incomingEdges="_DiMT0CRWEeywmoX1YtJHrw" width="3" height="3" resizeKind="NSEW">
+      <target xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.1"/>
+      <semanticElements xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.1"/>
+      <arrangeConstraints>KEEP_LOCATION</arrangeConstraints>
+      <arrangeConstraints>KEEP_SIZE</arrangeConstraints>
+      <arrangeConstraints>KEEP_RATIO</arrangeConstraints>
+      <ownedStyle xmi:type="diagram:Ellipse" uid="_DgIeUiRWEeywmoX1YtJHrw" labelSize="12" borderSize="5" borderSizeComputationExpression="service:changeBorderFinalNode()" labelPosition="node" color="138,226,52">
+        <description xmi:type="style:EllipseNodeDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_DgIeVCRWEeywmoX1YtJHrw" name="s0" outgoingEdges="_DiMT0CRWEeywmoX1YtJHrw" incomingEdges="_DgRoQCRWEeywmoX1YtJHrw" width="3" height="3" resizeKind="NSEW">
+      <target xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.2"/>
+      <semanticElements xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.2"/>
+      <ownedStyle xmi:type="diagram:Ellipse" uid="_DgIeVSRWEeywmoX1YtJHrw" labelSize="12" borderSize="1" borderSizeComputationExpression="service:changeBorderFinalNode()" labelPosition="node" color="138,226,52">
+        <description xmi:type="style:EllipseNodeDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DNode" uid="_DgIeVyRWEeywmoX1YtJHrw" name="sinit" outgoingEdges="_DgRoQCRWEeywmoX1YtJHrw" width="3" height="3" resizeKind="NSEW">
+      <target xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.3"/>
+      <semanticElements xmi:type="statemachine:State" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@states.3"/>
+      <ownedStyle xmi:type="diagram:Ellipse" uid="_DgIeWCRWEeywmoX1YtJHrw" labelSize="12" borderSize="1" borderSizeComputationExpression="service:changeBorderFinalNode()" labelPosition="node" color="138,226,52">
+        <description xmi:type="style:EllipseNodeDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']/@style"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:NodeMapping" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_DgRoQCRWEeywmoX1YtJHrw" name="Gets" sourceNode="_DgIeVyRWEeywmoX1YtJHrw" targetNode="_DgIeVCRWEeywmoX1YtJHrw">
+      <target xmi:type="statemachine:Transition" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@transitions.0"/>
+      <semanticElements xmi:type="statemachine:Transition" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@transitions.0"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_DgRoQSRWEeywmoX1YtJHrw" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_DgRoQiRWEeywmoX1YtJHrw" labelSize="12"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_DiMT0CRWEeywmoX1YtJHrw" name="Inits" sourceNode="_DgIeVCRWEeywmoX1YtJHrw" targetNode="_DgIeUSRWEeywmoX1YtJHrw">
+      <target xmi:type="statemachine:Transition" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@transitions.1"/>
+      <semanticElements xmi:type="statemachine:Transition" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@transitions.1"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_DiMT0SRWEeywmoX1YtJHrw" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_DiMT0iRWEeywmoX1YtJHrw" labelSize="12"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']"/>
+    </ownedDiagramElements>
+    <ownedDiagramElements xmi:type="diagram:DEdge" uid="_DiMT1SRWEeywmoX1YtJHrw" name="Encoded" sourceNode="_DgIeUSRWEeywmoX1YtJHrw" targetNode="_Df08UCRWEeywmoX1YtJHrw">
+      <target xmi:type="statemachine:Transition" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@transitions.2"/>
+      <semanticElements xmi:type="statemachine:Transition" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#//@transitions.2"/>
+      <ownedStyle xmi:type="diagram:EdgeStyle" uid="_DiMT1iRWEeywmoX1YtJHrw" size="2">
+        <description xmi:type="style:EdgeStyleDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']/@style"/>
+        <centerLabelStyle xmi:type="diagram:CenterLabelStyle" uid="_DiMT1yRWEeywmoX1YtJHrw" labelSize="12"/>
+      </ownedStyle>
+      <actualMapping xmi:type="description_1:EdgeMapping" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']"/>
+    </ownedDiagramElements>
+    <description xmi:type="description_1:DiagramDescription" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" uid="_De36ECRWEeywmoX1YtJHrw"/>
+    <activatedLayers xmi:type="description_1:Layer" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer"/>
+    <target xmi:type="statemachine:Statemachine" href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine#/"/>
+  </diagram:DSemanticDiagram>
+</xmi:XMI>

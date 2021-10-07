@@ -8,7 +8,6 @@ Statemachine :
 		events+=Event+
 	'end')?
 	states+=State*
-	finalstates+=FinalState*
 	transitions+=Transition*
 ;
 
@@ -17,13 +16,8 @@ Event:
 ;
 
 State:
-	'state' name=ID (isFinal?='true'|'false')
+	'state' name=ID
 		transitions+=Transition*
-	'end'
-;
-
-FinalState:
-	'finalstate' name=ID
 	'end'
 ;
 
@@ -32,6 +26,4 @@ Transition:
 	fromState=[State] ',' event=[Event] ',' endState=[State]
 	'end'
 ;
-
-
 	

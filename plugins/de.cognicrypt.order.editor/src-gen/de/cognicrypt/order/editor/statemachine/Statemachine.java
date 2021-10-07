@@ -18,7 +18,6 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.Statemachine#getEvents <em>Events</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.Statemachine#getStates <em>States</em>}</li>
- *   <li>{@link de.cognicrypt.order.editor.statemachine.Statemachine#getFinalstates <em>Finalstates</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.Statemachine#getTransitions <em>Transitions</em>}</li>
  * </ul>
  *
@@ -51,18 +50,6 @@ public interface Statemachine extends EObject
    * @generated
    */
   EList<State> getStates();
-
-  /**
-   * Returns the value of the '<em><b>Finalstates</b></em>' containment reference list.
-   * The list contents are of type {@link de.cognicrypt.order.editor.statemachine.FinalState}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Finalstates</em>' containment reference list.
-   * @see de.cognicrypt.order.editor.statemachine.StatemachinePackage#getStatemachine_Finalstates()
-   * @model containment="true"
-   * @generated
-   */
-  EList<FinalState> getFinalstates();
 
   /**
    * Returns the value of the '<em><b>Transitions</b></em>' containment reference list.

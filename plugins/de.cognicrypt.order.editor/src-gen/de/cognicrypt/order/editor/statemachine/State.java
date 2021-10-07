@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.State#getName <em>Name</em>}</li>
+ *   <li>{@link de.cognicrypt.order.editor.statemachine.State#isIsFinal <em>Is Final</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.State#getTransitions <em>Transitions</em>}</li>
  * </ul>
  *
@@ -47,6 +48,28 @@ public interface State extends EObject
    * @generated
    */
   void setName(String value);
+
+  /**
+   * Returns the value of the '<em><b>Is Final</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Is Final</em>' attribute.
+   * @see #setIsFinal(boolean)
+   * @see de.cognicrypt.order.editor.statemachine.StatemachinePackage#getState_IsFinal()
+   * @model
+   * @generated
+   */
+  boolean isIsFinal();
+
+  /**
+   * Sets the value of the '{@link de.cognicrypt.order.editor.statemachine.State#isIsFinal <em>Is Final</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Is Final</em>' attribute.
+   * @see #isIsFinal()
+   * @generated
+   */
+  void setIsFinal(boolean value);
 
   /**
    * Returns the value of the '<em><b>Transitions</b></em>' containment reference list.

@@ -13,13 +13,13 @@ Workflow {
 				baseName = "de.cognicrypt.order.editor"
 				rootPath = rootPath
 				runtimeTest = {
-					enabled = true
+					enabled = false
 				}
 				eclipsePlugin = {
-					enabled = true
+					enabled = false
 				}
 				eclipsePluginTest = {
-					enabled = true
+					enabled = false
 				}
 				createEclipseMetaData = true
 			}

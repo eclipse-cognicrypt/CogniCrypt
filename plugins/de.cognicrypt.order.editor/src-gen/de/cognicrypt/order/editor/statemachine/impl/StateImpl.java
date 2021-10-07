@@ -32,6 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * </p>
  * <ul>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StateImpl#getName <em>Name</em>}</li>
+ *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StateImpl#isIsFinal <em>Is Final</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StateImpl#getTransitions <em>Transitions</em>}</li>
  * </ul>
  *
@@ -58,6 +59,26 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #isIsFinal() <em>Is Final</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isIsFinal()
+   * @generated
+   * @ordered
+   */
+  protected static final boolean IS_FINAL_EDEFAULT = false;
+
+  /**
+   * The cached value of the '{@link #isIsFinal() <em>Is Final</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #isIsFinal()
+   * @generated
+   * @ordered
+   */
+  protected boolean isFinal = IS_FINAL_EDEFAULT;
 
   /**
    * The cached value of the '{@link #getTransitions() <em>Transitions</em>}' containment reference list.
@@ -121,6 +142,31 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State
    * @generated
    */
   @Override
+  public boolean isIsFinal()
+  {
+    return isFinal;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public void setIsFinal(boolean newIsFinal)
+  {
+    boolean oldIsFinal = isFinal;
+    isFinal = newIsFinal;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, StatemachinePackage.STATE__IS_FINAL, oldIsFinal, isFinal));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public EList<Transition> getTransitions()
   {
     if (transitions == null)
@@ -158,6 +204,8 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State
     {
       case StatemachinePackage.STATE__NAME:
         return getName();
+      case StatemachinePackage.STATE__IS_FINAL:
+        return isIsFinal();
       case StatemachinePackage.STATE__TRANSITIONS:
         return getTransitions();
     }
@@ -177,6 +225,9 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State
     {
       case StatemachinePackage.STATE__NAME:
         setName((String)newValue);
+        return;
+      case StatemachinePackage.STATE__IS_FINAL:
+        setIsFinal((Boolean)newValue);
         return;
       case StatemachinePackage.STATE__TRANSITIONS:
         getTransitions().clear();
@@ -199,6 +250,9 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State
       case StatemachinePackage.STATE__NAME:
         setName(NAME_EDEFAULT);
         return;
+      case StatemachinePackage.STATE__IS_FINAL:
+        setIsFinal(IS_FINAL_EDEFAULT);
+        return;
       case StatemachinePackage.STATE__TRANSITIONS:
         getTransitions().clear();
         return;
@@ -218,6 +272,8 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State
     {
       case StatemachinePackage.STATE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case StatemachinePackage.STATE__IS_FINAL:
+        return isFinal != IS_FINAL_EDEFAULT;
       case StatemachinePackage.STATE__TRANSITIONS:
         return transitions != null && !transitions.isEmpty();
     }
@@ -237,6 +293,8 @@ public class StateImpl extends MinimalEObjectImpl.Container implements State
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (name: ");
     result.append(name);
+    result.append(", isFinal: ");
+    result.append(isFinal);
     result.append(')');
     return result.toString();
   }

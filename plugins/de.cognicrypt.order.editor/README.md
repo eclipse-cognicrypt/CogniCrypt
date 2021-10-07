@@ -1,6 +1,6 @@
 # CrySL Visual Order Editor
 
-The Order Editor displays the usage pattern of the class as defined in the Order expression of its CrySL rule as a state machine.
+The Order Editotr displays the usage pattern of the class as defined in the Order expression of its CrySL rule as a state machine.
 
 ## Set up
 

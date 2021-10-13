@@ -14,7 +14,6 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,15 +24,19 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.PlatformUI;
@@ -46,8 +49,9 @@ import de.cognicrypt.core.Constants;
 
 public class TaskSelectionPage extends WizardPage {
 
-	private Composite container;
-	private Task selectedTask = null;
+	private TaskItemComposite selectedTaskItem = null;
+	private Composite listOfTaskItems; // Row Layout Composite that holds task items composite
+	private List<TaskItemComposite> taskItems = new ArrayList<TaskItemComposite>(); // ArrayList of all tasks item composite
 
 	public TaskSelectionPage() {
 		super(Constants.SELECT_TASK);
@@ -58,74 +62,41 @@ public class TaskSelectionPage extends WizardPage {
 
 	@Override
 	public void createControl(final Composite parent) {
-		final List<Task> tasks = TaskJSONReader.getTasks();
 
+		// Make the content able to scroll
 		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		this.container = new Composite(sc, SWT.NONE);
-		this.container.setBounds(10, 10, 450, 200);
-
-		//To display the Help view after clicking the help icon
+		// To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.TaskSelectionHelp");
 
-		final GridLayout gl = new GridLayout(2, false);
-		gl.verticalSpacing = -6;
-		this.container.setLayout(gl);
-
-		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
-		new Label(this.container, SWT.NONE);
-		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
-		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, tasks.size() + 1);
-		gd_selectProjectLabel.heightHint = 200;
-		gd_selectProjectLabel.widthHint = 600;
-		useCaseDescriptionLabel.setLayoutData(gd_selectProjectLabel);
-		Font a = useCaseDescriptionLabel.getFont();
-		useCaseDescriptionLabel.setFont(new Font(useCaseDescriptionLabel.getDisplay(), new FontData(a.getFontData()[0].getName(), 12, SWT.None)));
-
-		final List<Button> buttons = new ArrayList<Button>();
-		final List<Image> unclickedImages = new ArrayList<Image>();
-		new Label(this.container, SWT.NONE);
-		for (Task ccTask : tasks) {
-			final Image taskImage = loadImage(ccTask.getImage());
-			unclickedImages.add(taskImage);
-
-			final Button taskButton = createImageButton(this.container, taskImage, ccTask.getDescription());
-			buttons.add(taskButton);
+		// listOfTaskItems will hold the selection items for all tasks
+		// it is attached in the ScrolledComposite
+		this.listOfTaskItems = new Composite(sc, SWT.NONE);
+		this.listOfTaskItems.setBounds(10, 10, 400, 200);
+		
+		// Task items are displayed as a list in the listOfTaskItems
+		final RowLayout rl = new RowLayout(SWT.VERTICAL);
+		this.listOfTaskItems.setLayout(rl);
+		
+		// add tasks items to listOfTaskItems
+		for (Task ccTask: TaskJSONReader.getTasks()) {
+			taskItems.add(new TaskItemComposite(this.listOfTaskItems, ccTask));
 		}
-		buttons.stream().forEach(e -> e.addListener(SWT.Selection, new SelectionButtonListener(buttons, unclickedImages, tasks, useCaseDescriptionLabel)));
-		buttons.get(0).notifyListeners(SWT.Selection, new Event());
-
-		setControl(this.container);
-		new Label(this.container, SWT.NONE);
-		new Label(this.container, SWT.NONE);
-
-		sc.setContent(this.container);
+		
+		sc.setContent(this.listOfTaskItems);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-		sc.setMinSize(this.container.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.setMinSize(this.listOfTaskItems.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
-	}
-
-	public Task getSelectedTask() {
-		return this.selectedTask;
 	}
 
 	@Override
 	public void setVisible(final boolean visible) {
 		super.setVisible(visible);
 		if (visible) {
-			this.container.setFocus();
+			this.listOfTaskItems.setFocus();
 		}
-	}
-
-	private Button createImageButton(final Composite container, final Image startImage, String taskName) {
-		final Button imageButton = new Button(container, SWT.WRAP | SWT.TOGGLE);
-		final Rectangle bounds = startImage.getBounds();
-		imageButton.setSize(bounds.width, bounds.height);
-		imageButton.setImage(startImage);
-		imageButton.setToolTipText(taskName);
-		return imageButton;
 	}
 
 	private Image loadImage(final String image) {
@@ -150,42 +121,121 @@ public class TaskSelectionPage extends WizardPage {
 		}
 
 		return null;
+		
+	}
+	
+	/**
+	 * A single choice selection on all task items. When calling this method, only one task item will be selected.
+	 */
+	public void selectTaskItem(TaskItemComposite taskItem) {
+		// unselect other task items
+		for(TaskItemComposite notSelectedTaskItem: this.taskItems) {
+			if(notSelectedTaskItem != taskItem) {
+				notSelectedTaskItem.unselect();
+			}
+		}
+		taskItem.select();
+		TaskSelectionPage.this.selectedTaskItem = taskItem;
+		
+		setPageComplete(true); // next button on wizard is now clickable
+	}
+	
+	public Task getSelectedTask() {
+		return this.selectedTaskItem.getTask();
+	}
+	
+	
+	/**
+	 * This class will append a row with a image button, title and description for a task.
+	 * If any Element in this Composite is pressed, a ItemClickListener is triggered.
+	 * @param listOfTaskItems is the list, where to add the item
+	 * @param task to add in the row
+	 */
+	class TaskItemComposite extends Composite {
+		
+		private Task task;
+		private Button button;
+
+		TaskItemComposite(final Composite listOfTaskItems, Task task) {
+			
+			// listOfTaskItems with 2 columns
+			super(listOfTaskItems, SWT.FILL);
+			this.setLayout(new GridLayout(2, false));
+			
+			// First column gets a button with the image
+			this.button = new Button(this, SWT.TOGGLE);
+			this.button.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+			final Image taskImage = loadImage(task.getImage());
+			if(taskImage == null) {
+				throw new IllegalArgumentException("Missing Image for Task: " + task.getName());
+			}
+			final Rectangle bounds = taskImage.getBounds();
+			this.button.setSize(bounds.width, bounds.height);
+			this.button.setImage(taskImage);
+			
+			// Second column gets group with title and description
+			final Group descr = new Group(this, SWT.FILL);
+			descr.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+			descr.setLayout(new RowLayout(SWT.VERTICAL));
+			
+			// title
+			final Label title = new Label(descr, SWT.WRAP);
+			title.setText(task.getDescription());
+			final Font boldFont = new Font( title.getDisplay(), new FontData( "Arial", 12, SWT.BOLD ) );
+			title.setFont(boldFont);
+			
+			// description
+			final Label taskdescr = new Label(descr, SWT.WRAP);
+			final Color taskdescrColor = new Color(taskdescr.getDisplay(), 100, 100, 100);
+			final Font largeFont = new Font( descr.getDisplay(), new FontData( "Arial", 14, SWT.NONE ) );
+			taskdescr.setFont(largeFont);
+			taskdescr.setForeground(taskdescrColor);
+			RowData rd_taskdescr = new RowData();
+			rd_taskdescr.width = 400;
+			taskdescr.setLayoutData(rd_taskdescr);
+			taskdescr.setText(task.getTaskDescription());
+			taskdescr.pack();
+			
+			this.task = task;
+			
+			// click listener to all elements
+			// TODO: one Listener for the whole Composite would be nice
+			ItemClickListener listener = new ItemClickListener(this);
+			this.addListener(SWT.MouseUp, listener);
+			this.button.addListener(SWT.MouseUp, listener);
+			descr.addListener(SWT.MouseUp, listener);
+			title.addListener(SWT.MouseUp, listener);
+			taskdescr.addListener(SWT.MouseUp, listener);
+		}
+		
+		public void select() {
+			this.button.setSelection(true);
+		}
+		
+		public void unselect() {
+			this.button.setSelection(false);
+		}
+		
+		public Task getTask() {
+			return this.task;
+		}
+		
 	}
 
-	class SelectionButtonListener implements Listener {
+	/**
+	 * This class listens to clicks on task item components.
+	 */
+	class ItemClickListener implements Listener {
 
-		private final List<Button> buttons;
-		private final List<Image> buttonImages;
-		private final List<Task> tasks;
+		private final TaskItemComposite taskItem;
 
-		private final Label targetLabel;
-
-		public SelectionButtonListener(final List<Button> buttons, final List<Image> buttonImages, final List<Task> tasks, final Label targetLabel) {
-			if (buttons.size() != buttonImages.size() || buttons.size() != tasks.size()) {
-				throw new IllegalArgumentException("All arrays are required to have the same length." + "If not it indicates an incomplete setup for buttons and their images");
-			}
-
-			this.buttons = buttons;
-			this.buttonImages = buttonImages;
-			this.tasks = tasks;
-			this.targetLabel = targetLabel;
+		public ItemClickListener(TaskItemComposite taskItem) {
+			this.taskItem = taskItem;
 		}
 
 		@Override
-		public void handleEvent(final Event event) {
-			final Button eventButton = (Button) event.widget;
-			for (int i = 0; i < this.buttons.size(); i++) {
-				final Button curIterationButton = this.buttons.get(i);
-				if (eventButton.equals(curIterationButton)) {
-					TaskSelectionPage.this.selectedTask = this.tasks.get(i);
-					curIterationButton.setSelection(true);
-					this.targetLabel.setText(TaskSelectionPage.this.selectedTask.getTaskDescription());
-					setPageComplete(true);
-				} else {
-					curIterationButton.setSelection(false);
-					curIterationButton.setImage(this.buttonImages.get(i));
-				}
-			}
+		public void handleEvent(Event event) {
+			selectTaskItem(this.taskItem);
 		}
 	}
 }

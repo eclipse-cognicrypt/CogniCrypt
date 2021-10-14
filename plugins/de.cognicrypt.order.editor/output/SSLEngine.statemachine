@@ -1,0 +1,1 @@
+events Con ec1 ep2 ep3 ec4 end state s2 true end state s1 false end state s0 false end state sinit false end state s3 false end transition t0 sinit , Con , s0 end transition t1 s0 , ec1 , s1 end transition t2 s1 , ep2 , s2 end transition t3 s0 , ep3 , s3 end transition t4 s3 , ec4 , s2 end

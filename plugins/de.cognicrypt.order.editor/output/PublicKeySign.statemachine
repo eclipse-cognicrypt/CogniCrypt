@@ -1,0 +1,1 @@
+events sign_evt0 sign_evt1 end state s0 true end state sinit false end transition t0 sinit , sign_evt0 , s0 end transition t1 sinit , sign_evt1 , sinit end

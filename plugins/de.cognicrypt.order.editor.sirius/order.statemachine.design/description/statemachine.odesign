@@ -4,7 +4,7 @@
     <ownedRepresentations xsi:type="description_1:DiagramDescription" name="OrderDiagram" domainClass="statemachine::Statemachine" enablePopupBars="true">
       <metamodel href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/model/generated/Statemachine.ecore#/"/>
       <defaultLayer name="Default">
-        <nodeMappings name="StateNode" semanticCandidatesExpression="feature:states" domainClass="statemachine::State">
+        <nodeMappings name="StateNode" labelDirectEdit="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='editLabel']" semanticCandidatesExpression="feature:states" domainClass="statemachine::State">
           <style xsi:type="style:EllipseNodeDescription" borderSizeComputationExpression="service:changeBorderFinalNode()" labelSize="12" labelPosition="node" resizeKind="NSEW">
             <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
@@ -20,7 +20,7 @@
           </style>
         </edgeMappings>
         <toolSections name="Tools">
-          <ownedTools xsi:type="tool:NodeCreationDescription" name="createState" nodeMappings="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']">
+          <ownedTools xsi:type="tool:NodeCreationDescription" name="createState" forceRefresh="true" nodeMappings="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']">
             <variable name="container"/>
             <viewVariable name="containerView"/>
             <initialOperation>
@@ -37,16 +37,22 @@
             <sourceViewVariable name="sourceView"/>
             <targetViewVariable name="targetView"/>
             <initialOperation>
-              <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="var:source">
-                <subModelOperations xsi:type="tool_1:ChangeContext" browseExpression="var:target">
-                  <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::Transition" referenceName="transitions" variableName="transitions">
-                    <subModelOperations xsi:type="tool_1:SetValue" featureName="fromState" valueExpression="var:source"/>
-                    <subModelOperations xsi:type="tool_1:SetValue" featureName="endState" valueExpression="var:target"/>
-                    <subModelOperations xsi:type="tool_1:SetValue" featureName="name"/>
-                    <subModelOperations xsi:type="tool_1:SetValue" featureName="event"/>
+              <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="[source.eContainer()/]">
+                <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::Transition" referenceName="transitions">
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="fromState" valueExpression="var:source"/>
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="endState" valueExpression="var:target"/>
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="service:nameService()"/>
+                  <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::Event" referenceName="event" variableName="">
+                    <subModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="service:createEventName()"/>
                   </subModelOperations>
                 </subModelOperations>
               </firstModelOperations>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="tool:DirectEditLabel" name="editLabel">
+            <mask mask="{0}"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::State" referenceName="name"/>
             </initialOperation>
           </ownedTools>
         </toolSections>

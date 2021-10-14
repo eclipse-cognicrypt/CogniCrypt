@@ -1,0 +1,1 @@
+events Cons init process2 process3 doFinal end state s2 false end state s1 false end state s0 false end state sinit false end state s3 true end transition t0 sinit , Cons , s0 end transition t1 s0 , init , s1 end transition t2 s1 , process2 , s2 end transition t3 s2 , process3 , s2 end transition t4 s2 , doFinal , s3 end

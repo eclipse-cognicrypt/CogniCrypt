@@ -4,7 +4,6 @@
 package de.cognicrypt.order.editor.statemachine.impl;
 
 import de.cognicrypt.order.editor.statemachine.Event;
-import de.cognicrypt.order.editor.statemachine.FinalState;
 import de.cognicrypt.order.editor.statemachine.State;
 import de.cognicrypt.order.editor.statemachine.Statemachine;
 import de.cognicrypt.order.editor.statemachine.StatemachineFactory;
@@ -46,13 +45,6 @@ public class StatemachinePackageImpl extends EPackageImpl implements Statemachin
    * @generated
    */
   private EClass stateEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass finalStateEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -163,20 +155,9 @@ public class StatemachinePackageImpl extends EPackageImpl implements Statemachin
    * @generated
    */
   @Override
-  public EReference getStatemachine_Finalstates()
-  {
-    return (EReference)statemachineEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EReference getStatemachine_Transitions()
   {
-    return (EReference)statemachineEClass.getEStructuralFeatures().get(3);
+    return (EReference)statemachineEClass.getEStructuralFeatures().get(2);
   }
 
   /**
@@ -199,17 +180,6 @@ public class StatemachinePackageImpl extends EPackageImpl implements Statemachin
   public EAttribute getEvent_Name()
   {
     return (EAttribute)eventEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getEvent_Code()
-  {
-    return (EAttribute)eventEClass.getEStructuralFeatures().get(1);
   }
 
   /**
@@ -254,28 +224,6 @@ public class StatemachinePackageImpl extends EPackageImpl implements Statemachin
   public EReference getState_Transitions()
   {
     return (EReference)stateEClass.getEStructuralFeatures().get(2);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EClass getFinalState()
-  {
-    return finalStateEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public EAttribute getFinalState_Name()
-  {
-    return (EAttribute)finalStateEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -367,20 +315,15 @@ public class StatemachinePackageImpl extends EPackageImpl implements Statemachin
     statemachineEClass = createEClass(STATEMACHINE);
     createEReference(statemachineEClass, STATEMACHINE__EVENTS);
     createEReference(statemachineEClass, STATEMACHINE__STATES);
-    createEReference(statemachineEClass, STATEMACHINE__FINALSTATES);
     createEReference(statemachineEClass, STATEMACHINE__TRANSITIONS);
 
     eventEClass = createEClass(EVENT);
     createEAttribute(eventEClass, EVENT__NAME);
-    createEAttribute(eventEClass, EVENT__CODE);
 
     stateEClass = createEClass(STATE);
     createEAttribute(stateEClass, STATE__NAME);
     createEAttribute(stateEClass, STATE__IS_FINAL);
     createEReference(stateEClass, STATE__TRANSITIONS);
-
-    finalStateEClass = createEClass(FINAL_STATE);
-    createEAttribute(finalStateEClass, FINAL_STATE__NAME);
 
     transitionEClass = createEClass(TRANSITION);
     createEAttribute(transitionEClass, TRANSITION__NAME);
@@ -423,20 +366,15 @@ public class StatemachinePackageImpl extends EPackageImpl implements Statemachin
     initEClass(statemachineEClass, Statemachine.class, "Statemachine", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getStatemachine_Events(), this.getEvent(), null, "events", null, 0, -1, Statemachine.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getStatemachine_States(), this.getState(), null, "states", null, 0, -1, Statemachine.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getStatemachine_Finalstates(), this.getFinalState(), null, "finalstates", null, 0, -1, Statemachine.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getStatemachine_Transitions(), this.getTransition(), null, "transitions", null, 0, -1, Statemachine.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(eventEClass, Event.class, "Event", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getEvent_Name(), ecorePackage.getEString(), "name", null, 0, 1, Event.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getEvent_Code(), ecorePackage.getEString(), "code", null, 0, 1, Event.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(stateEClass, State.class, "State", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getState_Name(), ecorePackage.getEString(), "name", null, 0, 1, State.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getState_IsFinal(), ecorePackage.getEBoolean(), "isFinal", null, 0, 1, State.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getState_Transitions(), this.getTransition(), null, "transitions", null, 0, -1, State.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(finalStateEClass, FinalState.class, "FinalState", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getFinalState_Name(), ecorePackage.getEString(), "name", null, 0, 1, FinalState.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(transitionEClass, Transition.class, "Transition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getTransition_Name(), ecorePackage.getEString(), "name", null, 0, 1, Transition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

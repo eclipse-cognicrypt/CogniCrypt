@@ -4,7 +4,6 @@
 package de.cognicrypt.order.editor.statemachine.impl;
 
 import de.cognicrypt.order.editor.statemachine.Event;
-import de.cognicrypt.order.editor.statemachine.FinalState;
 import de.cognicrypt.order.editor.statemachine.State;
 import de.cognicrypt.order.editor.statemachine.Statemachine;
 import de.cognicrypt.order.editor.statemachine.StatemachinePackage;
@@ -34,7 +33,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StatemachineImpl#getEvents <em>Events</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StatemachineImpl#getStates <em>States</em>}</li>
- *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StatemachineImpl#getFinalstates <em>Finalstates</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StatemachineImpl#getTransitions <em>Transitions</em>}</li>
  * </ul>
  *
@@ -61,16 +59,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
    * @ordered
    */
   protected EList<State> states;
-
-  /**
-   * The cached value of the '{@link #getFinalstates() <em>Finalstates</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getFinalstates()
-   * @generated
-   * @ordered
-   */
-  protected EList<FinalState> finalstates;
 
   /**
    * The cached value of the '{@link #getTransitions() <em>Transitions</em>}' containment reference list.
@@ -139,21 +127,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
    * @generated
    */
   @Override
-  public EList<FinalState> getFinalstates()
-  {
-    if (finalstates == null)
-    {
-      finalstates = new EObjectContainmentEList<FinalState>(FinalState.class, this, StatemachinePackage.STATEMACHINE__FINALSTATES);
-    }
-    return finalstates;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EList<Transition> getTransitions()
   {
     if (transitions == null)
@@ -177,8 +150,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
         return ((InternalEList<?>)getEvents()).basicRemove(otherEnd, msgs);
       case StatemachinePackage.STATEMACHINE__STATES:
         return ((InternalEList<?>)getStates()).basicRemove(otherEnd, msgs);
-      case StatemachinePackage.STATEMACHINE__FINALSTATES:
-        return ((InternalEList<?>)getFinalstates()).basicRemove(otherEnd, msgs);
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:
         return ((InternalEList<?>)getTransitions()).basicRemove(otherEnd, msgs);
     }
@@ -199,8 +170,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
         return getEvents();
       case StatemachinePackage.STATEMACHINE__STATES:
         return getStates();
-      case StatemachinePackage.STATEMACHINE__FINALSTATES:
-        return getFinalstates();
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:
         return getTransitions();
     }
@@ -226,10 +195,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
         getStates().clear();
         getStates().addAll((Collection<? extends State>)newValue);
         return;
-      case StatemachinePackage.STATEMACHINE__FINALSTATES:
-        getFinalstates().clear();
-        getFinalstates().addAll((Collection<? extends FinalState>)newValue);
-        return;
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:
         getTransitions().clear();
         getTransitions().addAll((Collection<? extends Transition>)newValue);
@@ -254,9 +219,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
       case StatemachinePackage.STATEMACHINE__STATES:
         getStates().clear();
         return;
-      case StatemachinePackage.STATEMACHINE__FINALSTATES:
-        getFinalstates().clear();
-        return;
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:
         getTransitions().clear();
         return;
@@ -278,8 +240,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
         return events != null && !events.isEmpty();
       case StatemachinePackage.STATEMACHINE__STATES:
         return states != null && !states.isEmpty();
-      case StatemachinePackage.STATEMACHINE__FINALSTATES:
-        return finalstates != null && !finalstates.isEmpty();
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:
         return transitions != null && !transitions.isEmpty();
     }

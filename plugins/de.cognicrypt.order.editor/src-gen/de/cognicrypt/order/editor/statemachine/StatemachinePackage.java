@@ -86,22 +86,13 @@ public interface StatemachinePackage extends EPackage
   int STATEMACHINE__STATES = 1;
 
   /**
-   * The feature id for the '<em><b>Finalstates</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int STATEMACHINE__FINALSTATES = 2;
-
-  /**
    * The feature id for the '<em><b>Transitions</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int STATEMACHINE__TRANSITIONS = 3;
+  int STATEMACHINE__TRANSITIONS = 2;
 
   /**
    * The number of structural features of the '<em>Statemachine</em>' class.
@@ -110,7 +101,7 @@ public interface StatemachinePackage extends EPackage
    * @generated
    * @ordered
    */
-  int STATEMACHINE_FEATURE_COUNT = 4;
+  int STATEMACHINE_FEATURE_COUNT = 3;
 
   /**
    * The meta object id for the '{@link de.cognicrypt.order.editor.statemachine.impl.EventImpl <em>Event</em>}' class.
@@ -132,22 +123,13 @@ public interface StatemachinePackage extends EPackage
   int EVENT__NAME = 0;
 
   /**
-   * The feature id for the '<em><b>Code</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int EVENT__CODE = 1;
-
-  /**
    * The number of structural features of the '<em>Event</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int EVENT_FEATURE_COUNT = 2;
+  int EVENT_FEATURE_COUNT = 1;
 
   /**
    * The meta object id for the '{@link de.cognicrypt.order.editor.statemachine.impl.StateImpl <em>State</em>}' class.
@@ -196,34 +178,6 @@ public interface StatemachinePackage extends EPackage
   int STATE_FEATURE_COUNT = 3;
 
   /**
-   * The meta object id for the '{@link de.cognicrypt.order.editor.statemachine.impl.FinalStateImpl <em>Final State</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see de.cognicrypt.order.editor.statemachine.impl.FinalStateImpl
-   * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getFinalState()
-   * @generated
-   */
-  int FINAL_STATE = 3;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FINAL_STATE__NAME = 0;
-
-  /**
-   * The number of structural features of the '<em>Final State</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int FINAL_STATE_FEATURE_COUNT = 1;
-
-  /**
    * The meta object id for the '{@link de.cognicrypt.order.editor.statemachine.impl.TransitionImpl <em>Transition</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -231,7 +185,7 @@ public interface StatemachinePackage extends EPackage
    * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getTransition()
    * @generated
    */
-  int TRANSITION = 4;
+  int TRANSITION = 3;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -312,17 +266,6 @@ public interface StatemachinePackage extends EPackage
   EReference getStatemachine_States();
 
   /**
-   * Returns the meta object for the containment reference list '{@link de.cognicrypt.order.editor.statemachine.Statemachine#getFinalstates <em>Finalstates</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Finalstates</em>'.
-   * @see de.cognicrypt.order.editor.statemachine.Statemachine#getFinalstates()
-   * @see #getStatemachine()
-   * @generated
-   */
-  EReference getStatemachine_Finalstates();
-
-  /**
    * Returns the meta object for the containment reference list '{@link de.cognicrypt.order.editor.statemachine.Statemachine#getTransitions <em>Transitions</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -353,17 +296,6 @@ public interface StatemachinePackage extends EPackage
    * @generated
    */
   EAttribute getEvent_Name();
-
-  /**
-   * Returns the meta object for the attribute '{@link de.cognicrypt.order.editor.statemachine.Event#getCode <em>Code</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Code</em>'.
-   * @see de.cognicrypt.order.editor.statemachine.Event#getCode()
-   * @see #getEvent()
-   * @generated
-   */
-  EAttribute getEvent_Code();
 
   /**
    * Returns the meta object for class '{@link de.cognicrypt.order.editor.statemachine.State <em>State</em>}'.
@@ -407,27 +339,6 @@ public interface StatemachinePackage extends EPackage
    * @generated
    */
   EReference getState_Transitions();
-
-  /**
-   * Returns the meta object for class '{@link de.cognicrypt.order.editor.statemachine.FinalState <em>Final State</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Final State</em>'.
-   * @see de.cognicrypt.order.editor.statemachine.FinalState
-   * @generated
-   */
-  EClass getFinalState();
-
-  /**
-   * Returns the meta object for the attribute '{@link de.cognicrypt.order.editor.statemachine.FinalState#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see de.cognicrypt.order.editor.statemachine.FinalState#getName()
-   * @see #getFinalState()
-   * @generated
-   */
-  EAttribute getFinalState_Name();
 
   /**
    * Returns the meta object for class '{@link de.cognicrypt.order.editor.statemachine.Transition <em>Transition</em>}'.
@@ -533,14 +444,6 @@ public interface StatemachinePackage extends EPackage
     EReference STATEMACHINE__STATES = eINSTANCE.getStatemachine_States();
 
     /**
-     * The meta object literal for the '<em><b>Finalstates</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference STATEMACHINE__FINALSTATES = eINSTANCE.getStatemachine_Finalstates();
-
-    /**
      * The meta object literal for the '<em><b>Transitions</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -565,14 +468,6 @@ public interface StatemachinePackage extends EPackage
      * @generated
      */
     EAttribute EVENT__NAME = eINSTANCE.getEvent_Name();
-
-    /**
-     * The meta object literal for the '<em><b>Code</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute EVENT__CODE = eINSTANCE.getEvent_Code();
 
     /**
      * The meta object literal for the '{@link de.cognicrypt.order.editor.statemachine.impl.StateImpl <em>State</em>}' class.
@@ -607,24 +502,6 @@ public interface StatemachinePackage extends EPackage
      * @generated
      */
     EReference STATE__TRANSITIONS = eINSTANCE.getState_Transitions();
-
-    /**
-     * The meta object literal for the '{@link de.cognicrypt.order.editor.statemachine.impl.FinalStateImpl <em>Final State</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see de.cognicrypt.order.editor.statemachine.impl.FinalStateImpl
-     * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getFinalState()
-     * @generated
-     */
-    EClass FINAL_STATE = eINSTANCE.getFinalState();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute FINAL_STATE__NAME = eINSTANCE.getFinalState_Name();
 
     /**
      * The meta object literal for the '{@link de.cognicrypt.order.editor.statemachine.impl.TransitionImpl <em>Transition</em>}' class.

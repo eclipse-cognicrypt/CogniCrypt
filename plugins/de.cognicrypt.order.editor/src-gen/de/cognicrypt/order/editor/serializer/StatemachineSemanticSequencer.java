@@ -6,7 +6,6 @@ package de.cognicrypt.order.editor.serializer;
 import com.google.inject.Inject;
 import de.cognicrypt.order.editor.services.StatemachineGrammarAccess;
 import de.cognicrypt.order.editor.statemachine.Event;
-import de.cognicrypt.order.editor.statemachine.FinalState;
 import de.cognicrypt.order.editor.statemachine.State;
 import de.cognicrypt.order.editor.statemachine.Statemachine;
 import de.cognicrypt.order.editor.statemachine.StatemachinePackage;
@@ -50,9 +49,6 @@ public class StatemachineSemanticSequencer extends XtypeSemanticSequencer {
 			switch (semanticObject.eClass().getClassifierID()) {
 			case StatemachinePackage.EVENT:
 				sequence_Event(context, (Event) semanticObject); 
-				return; 
-			case StatemachinePackage.FINAL_STATE:
-				sequence_FinalState(context, (FinalState) semanticObject); 
 				return; 
 			case StatemachinePackage.STATE:
 				sequence_State(context, (State) semanticObject); 
@@ -133,36 +129,15 @@ public class StatemachineSemanticSequencer extends XtypeSemanticSequencer {
 	 *     Event returns Event
 	 *
 	 * Constraint:
-	 *     (name=ID code=ID)
+	 *     name=ID
 	 */
 	protected void sequence_Event(ISerializationContext context, Event semanticObject) {
 		if (errorAcceptor != null) {
 			if (transientValues.isValueTransient(semanticObject, StatemachinePackage.Literals.EVENT__NAME) == ValueTransient.YES)
 				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, StatemachinePackage.Literals.EVENT__NAME));
-			if (transientValues.isValueTransient(semanticObject, StatemachinePackage.Literals.EVENT__CODE) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, StatemachinePackage.Literals.EVENT__CODE));
 		}
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getEventAccess().getNameIDTerminalRuleCall_0_0(), semanticObject.getName());
-		feeder.accept(grammarAccess.getEventAccess().getCodeIDTerminalRuleCall_1_0(), semanticObject.getCode());
-		feeder.finish();
-	}
-	
-	
-	/**
-	 * Contexts:
-	 *     FinalState returns FinalState
-	 *
-	 * Constraint:
-	 *     name=ID
-	 */
-	protected void sequence_FinalState(ISerializationContext context, FinalState semanticObject) {
-		if (errorAcceptor != null) {
-			if (transientValues.isValueTransient(semanticObject, StatemachinePackage.Literals.FINAL_STATE__NAME) == ValueTransient.YES)
-				errorAcceptor.accept(diagnosticProvider.createFeatureValueMissing(semanticObject, StatemachinePackage.Literals.FINAL_STATE__NAME));
-		}
-		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
-		feeder.accept(grammarAccess.getFinalStateAccess().getNameIDTerminalRuleCall_1_0(), semanticObject.getName());
+		feeder.accept(grammarAccess.getEventAccess().getNameIDTerminalRuleCall_0(), semanticObject.getName());
 		feeder.finish();
 	}
 	
@@ -184,7 +159,7 @@ public class StatemachineSemanticSequencer extends XtypeSemanticSequencer {
 	 *     Statemachine returns Statemachine
 	 *
 	 * Constraint:
-	 *     (events+=Event* states+=State* finalstates+=FinalState* transitions+=Transition*)
+	 *     (events+=Event* states+=State* transitions+=Transition*)
 	 */
 	protected void sequence_Statemachine(ISerializationContext context, Statemachine semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);

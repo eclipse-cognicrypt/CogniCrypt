@@ -1,0 +1,1 @@
+events ge0 ge1 end state s0 true end state sinit true end transition t0 sinit , ge0 , s0 end transition t1 s0 , ge1 , s0 end

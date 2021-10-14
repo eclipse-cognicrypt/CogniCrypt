@@ -9,20 +9,15 @@
     <genClasses ecoreClass="Statemachine.ecore#//Statemachine">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Statemachine/events"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Statemachine/states"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Statemachine/finalstates"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Statemachine/transitions"/>
     </genClasses>
     <genClasses ecoreClass="Statemachine.ecore#//Event">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//Event/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//Event/code"/>
     </genClasses>
     <genClasses ecoreClass="Statemachine.ecore#//State">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//State/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//State/isFinal"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//State/transitions"/>
-    </genClasses>
-    <genClasses ecoreClass="Statemachine.ecore#//FinalState">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//FinalState/name"/>
     </genClasses>
     <genClasses ecoreClass="Statemachine.ecore#//Transition">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//Transition/name"/>

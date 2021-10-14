@@ -134,28 +134,9 @@ ruleStatemachine returns [EObject current=null]
 		(
 			(
 				{
-					newCompositeNode(grammarAccess.getStatemachineAccess().getFinalstatesFinalStateParserRuleCall_3_0());
+					newCompositeNode(grammarAccess.getStatemachineAccess().getTransitionsTransitionParserRuleCall_3_0());
 				}
-				lv_finalstates_5_0=ruleFinalState
-				{
-					if ($current==null) {
-						$current = createModelElementForParent(grammarAccess.getStatemachineRule());
-					}
-					add(
-						$current,
-						"finalstates",
-						lv_finalstates_5_0,
-						"de.cognicrypt.order.editor.Statemachine.FinalState");
-					afterParserOrEnumRuleCall();
-				}
-			)
-		)*
-		(
-			(
-				{
-					newCompositeNode(grammarAccess.getStatemachineAccess().getTransitionsTransitionParserRuleCall_4_0());
-				}
-				lv_transitions_6_0=ruleTransition
+				lv_transitions_5_0=ruleTransition
 				{
 					if ($current==null) {
 						$current = createModelElementForParent(grammarAccess.getStatemachineRule());
@@ -163,7 +144,7 @@ ruleStatemachine returns [EObject current=null]
 					add(
 						$current,
 						"transitions",
-						lv_transitions_6_0,
+						lv_transitions_5_0,
 						"de.cognicrypt.order.editor.Statemachine.Transition");
 					afterParserOrEnumRuleCall();
 				}
@@ -189,40 +170,20 @@ ruleEvent returns [EObject current=null]
 }:
 	(
 		(
-			(
-				lv_name_0_0=RULE_ID
-				{
-					newLeafNode(lv_name_0_0, grammarAccess.getEventAccess().getNameIDTerminalRuleCall_0_0());
+			lv_name_0_0=RULE_ID
+			{
+				newLeafNode(lv_name_0_0, grammarAccess.getEventAccess().getNameIDTerminalRuleCall_0());
+			}
+			{
+				if ($current==null) {
+					$current = createModelElement(grammarAccess.getEventRule());
 				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getEventRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"name",
-						lv_name_0_0,
-						"org.eclipse.xtext.xbase.Xtype.ID");
-				}
-			)
-		)
-		(
-			(
-				lv_code_1_0=RULE_ID
-				{
-					newLeafNode(lv_code_1_0, grammarAccess.getEventAccess().getCodeIDTerminalRuleCall_1_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getEventRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"code",
-						lv_code_1_0,
-						"org.eclipse.xtext.xbase.Xtype.ID");
-				}
-			)
+				setWithLastConsumed(
+					$current,
+					"name",
+					lv_name_0_0,
+					"org.eclipse.xtext.xbase.Xtype.ID");
+			}
 		)
 	)
 ;
@@ -308,51 +269,6 @@ ruleState returns [EObject current=null]
 		otherlv_5='end'
 		{
 			newLeafNode(otherlv_5, grammarAccess.getStateAccess().getEndKeyword_4());
-		}
-	)
-;
-
-// Entry rule entryRuleFinalState
-entryRuleFinalState returns [EObject current=null]:
-	{ newCompositeNode(grammarAccess.getFinalStateRule()); }
-	iv_ruleFinalState=ruleFinalState
-	{ $current=$iv_ruleFinalState.current; }
-	EOF;
-
-// Rule FinalState
-ruleFinalState returns [EObject current=null]
-@init {
-	enterRule();
-}
-@after {
-	leaveRule();
-}:
-	(
-		otherlv_0='finalstate'
-		{
-			newLeafNode(otherlv_0, grammarAccess.getFinalStateAccess().getFinalstateKeyword_0());
-		}
-		(
-			(
-				lv_name_1_0=RULE_ID
-				{
-					newLeafNode(lv_name_1_0, grammarAccess.getFinalStateAccess().getNameIDTerminalRuleCall_1_0());
-				}
-				{
-					if ($current==null) {
-						$current = createModelElement(grammarAccess.getFinalStateRule());
-					}
-					setWithLastConsumed(
-						$current,
-						"name",
-						lv_name_1_0,
-						"org.eclipse.xtext.xbase.Xtype.ID");
-				}
-			)
-		)
-		otherlv_2='end'
-		{
-			newLeafNode(otherlv_2, grammarAccess.getFinalStateAccess().getEndKeyword_2());
 		}
 	)
 ;

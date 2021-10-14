@@ -15,7 +15,6 @@ import org.eclipse.emf.ecore.EObject;
  * </p>
  * <ul>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.Event#getName <em>Name</em>}</li>
- *   <li>{@link de.cognicrypt.order.editor.statemachine.Event#getCode <em>Code</em>}</li>
  * </ul>
  *
  * @see de.cognicrypt.order.editor.statemachine.StatemachinePackage#getEvent()
@@ -45,27 +44,5 @@ public interface Event extends EObject
    * @generated
    */
   void setName(String value);
-
-  /**
-   * Returns the value of the '<em><b>Code</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Code</em>' attribute.
-   * @see #setCode(String)
-   * @see de.cognicrypt.order.editor.statemachine.StatemachinePackage#getEvent_Code()
-   * @model
-   * @generated
-   */
-  String getCode();
-
-  /**
-   * Sets the value of the '{@link de.cognicrypt.order.editor.statemachine.Event#getCode <em>Code</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Code</em>' attribute.
-   * @see #getCode()
-   * @generated
-   */
-  void setCode(String value);
 
 } // Event

@@ -1,0 +1,1 @@
+events Gets Gens end state s1 true end state s0 false end state sinit false end transition t0 sinit , Gets , s0 end transition t1 s0 , Gens , s1 end

@@ -22,7 +22,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * </p>
  * <ul>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.EventImpl#getName <em>Name</em>}</li>
- *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.EventImpl#getCode <em>Code</em>}</li>
  * </ul>
  *
  * @generated
@@ -48,26 +47,6 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
-
-  /**
-   * The default value of the '{@link #getCode() <em>Code</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCode()
-   * @generated
-   * @ordered
-   */
-  protected static final String CODE_EDEFAULT = null;
-
-  /**
-   * The cached value of the '{@link #getCode() <em>Code</em>}' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getCode()
-   * @generated
-   * @ordered
-   */
-  protected String code = CODE_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -121,39 +100,12 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
    * @generated
    */
   @Override
-  public String getCode()
-  {
-    return code;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public void setCode(String newCode)
-  {
-    String oldCode = code;
-    code = newCode;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, StatemachinePackage.EVENT__CODE, oldCode, code));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
     {
       case StatemachinePackage.EVENT__NAME:
         return getName();
-      case StatemachinePackage.EVENT__CODE:
-        return getCode();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -170,9 +122,6 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
     {
       case StatemachinePackage.EVENT__NAME:
         setName((String)newValue);
-        return;
-      case StatemachinePackage.EVENT__CODE:
-        setCode((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -191,9 +140,6 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
       case StatemachinePackage.EVENT__NAME:
         setName(NAME_EDEFAULT);
         return;
-      case StatemachinePackage.EVENT__CODE:
-        setCode(CODE_EDEFAULT);
-        return;
     }
     super.eUnset(featureID);
   }
@@ -210,8 +156,6 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
     {
       case StatemachinePackage.EVENT__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case StatemachinePackage.EVENT__CODE:
-        return CODE_EDEFAULT == null ? code != null : !CODE_EDEFAULT.equals(code);
     }
     return super.eIsSet(featureID);
   }
@@ -229,8 +173,6 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event
     StringBuilder result = new StringBuilder(super.toString());
     result.append(" (name: ");
     result.append(name);
-    result.append(", code: ");
-    result.append(code);
     result.append(')');
     return result.toString();
   }

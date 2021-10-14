@@ -1,0 +1,1 @@
+events Cons end state s0 true end state sinit false end transition t0 sinit , Cons , s0 end

@@ -1,0 +1,1 @@
+events Ins Seeds Ends2 Ends3 Ends4 end state s2 true end state s1 true end state s0 true end state sinit false end transition t0 sinit , Ins , s0 end transition t1 s0 , Seeds , s1 end transition t2 s1 , Ends2 , s2 end transition t3 s2 , Ends3 , s2 end transition t4 s0 , Ends4 , s2 end

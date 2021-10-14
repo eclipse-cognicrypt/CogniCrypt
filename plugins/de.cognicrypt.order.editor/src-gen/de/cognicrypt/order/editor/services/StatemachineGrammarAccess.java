@@ -35,10 +35,8 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 		private final Keyword cEndKeyword_1_2 = (Keyword)cGroup_1.eContents().get(2);
 		private final Assignment cStatesAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cStatesStateParserRuleCall_2_0 = (RuleCall)cStatesAssignment_2.eContents().get(0);
-		private final Assignment cFinalstatesAssignment_3 = (Assignment)cGroup.eContents().get(3);
-		private final RuleCall cFinalstatesFinalStateParserRuleCall_3_0 = (RuleCall)cFinalstatesAssignment_3.eContents().get(0);
-		private final Assignment cTransitionsAssignment_4 = (Assignment)cGroup.eContents().get(4);
-		private final RuleCall cTransitionsTransitionParserRuleCall_4_0 = (RuleCall)cTransitionsAssignment_4.eContents().get(0);
+		private final Assignment cTransitionsAssignment_3 = (Assignment)cGroup.eContents().get(3);
+		private final RuleCall cTransitionsTransitionParserRuleCall_3_0 = (RuleCall)cTransitionsAssignment_3.eContents().get(0);
 		
 		//Statemachine :
 		//    {Statemachine}
@@ -46,7 +44,6 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 		//        events+=Event+
 		//    'end')?
 		//    states+=State*
-		//    finalstates+=FinalState*
 		//    transitions+=Transition*
 		//;
 		@Override public ParserRule getRule() { return rule; }
@@ -56,7 +53,6 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 		//    events+=Event+
 		//'end')?
 		//states+=State*
-		//finalstates+=FinalState*
 		//transitions+=Transition*
 		public Group getGroup() { return cGroup; }
 		
@@ -86,45 +82,27 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 		//State
 		public RuleCall getStatesStateParserRuleCall_2_0() { return cStatesStateParserRuleCall_2_0; }
 		
-		//finalstates+=FinalState*
-		public Assignment getFinalstatesAssignment_3() { return cFinalstatesAssignment_3; }
-		
-		//FinalState
-		public RuleCall getFinalstatesFinalStateParserRuleCall_3_0() { return cFinalstatesFinalStateParserRuleCall_3_0; }
-		
 		//transitions+=Transition*
-		public Assignment getTransitionsAssignment_4() { return cTransitionsAssignment_4; }
+		public Assignment getTransitionsAssignment_3() { return cTransitionsAssignment_3; }
 		
 		//Transition
-		public RuleCall getTransitionsTransitionParserRuleCall_4_0() { return cTransitionsTransitionParserRuleCall_4_0; }
+		public RuleCall getTransitionsTransitionParserRuleCall_3_0() { return cTransitionsTransitionParserRuleCall_3_0; }
 	}
 	public class EventElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.cognicrypt.order.editor.Statemachine.Event");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cNameAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final RuleCall cNameIDTerminalRuleCall_0_0 = (RuleCall)cNameAssignment_0.eContents().get(0);
-		private final Assignment cCodeAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cCodeIDTerminalRuleCall_1_0 = (RuleCall)cCodeAssignment_1.eContents().get(0);
+		private final Assignment cNameAssignment = (Assignment)rule.eContents().get(1);
+		private final RuleCall cNameIDTerminalRuleCall_0 = (RuleCall)cNameAssignment.eContents().get(0);
 		
 		//Event:
-		//    name=ID code=ID
+		//    name=ID
 		//;
 		@Override public ParserRule getRule() { return rule; }
 		
-		//name=ID code=ID
-		public Group getGroup() { return cGroup; }
-		
 		//name=ID
-		public Assignment getNameAssignment_0() { return cNameAssignment_0; }
+		public Assignment getNameAssignment() { return cNameAssignment; }
 		
 		//ID
-		public RuleCall getNameIDTerminalRuleCall_0_0() { return cNameIDTerminalRuleCall_0_0; }
-		
-		//code=ID
-		public Assignment getCodeAssignment_1() { return cCodeAssignment_1; }
-		
-		//ID
-		public RuleCall getCodeIDTerminalRuleCall_1_0() { return cCodeIDTerminalRuleCall_1_0; }
+		public RuleCall getNameIDTerminalRuleCall_0() { return cNameIDTerminalRuleCall_0; }
 	}
 	public class StateElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.cognicrypt.order.editor.Statemachine.State");
@@ -181,36 +159,6 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 		
 		//'end'
 		public Keyword getEndKeyword_4() { return cEndKeyword_4; }
-	}
-	public class FinalStateElements extends AbstractParserRuleElementFinder {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.cognicrypt.order.editor.Statemachine.FinalState");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Keyword cFinalstateKeyword_0 = (Keyword)cGroup.eContents().get(0);
-		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
-		private final RuleCall cNameIDTerminalRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
-		private final Keyword cEndKeyword_2 = (Keyword)cGroup.eContents().get(2);
-		
-		//FinalState:
-		//    'finalstate' name=ID
-		//    'end'
-		//;
-		@Override public ParserRule getRule() { return rule; }
-		
-		//'finalstate' name=ID
-		//'end'
-		public Group getGroup() { return cGroup; }
-		
-		//'finalstate'
-		public Keyword getFinalstateKeyword_0() { return cFinalstateKeyword_0; }
-		
-		//name=ID
-		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
-		
-		//ID
-		public RuleCall getNameIDTerminalRuleCall_1_0() { return cNameIDTerminalRuleCall_1_0; }
-		
-		//'end'
-		public Keyword getEndKeyword_2() { return cEndKeyword_2; }
 	}
 	public class TransitionElements extends AbstractParserRuleElementFinder {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "de.cognicrypt.order.editor.Statemachine.Transition");
@@ -293,7 +241,6 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 	private final StatemachineElements pStatemachine;
 	private final EventElements pEvent;
 	private final StateElements pState;
-	private final FinalStateElements pFinalState;
 	private final TransitionElements pTransition;
 	
 	private final Grammar grammar;
@@ -308,7 +255,6 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 		this.pStatemachine = new StatemachineElements();
 		this.pEvent = new EventElements();
 		this.pState = new StateElements();
-		this.pFinalState = new FinalStateElements();
 		this.pTransition = new TransitionElements();
 	}
 	
@@ -345,7 +291,6 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 	//        events+=Event+
 	//    'end')?
 	//    states+=State*
-	//    finalstates+=FinalState*
 	//    transitions+=Transition*
 	//;
 	public StatemachineElements getStatemachineAccess() {
@@ -357,7 +302,7 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 	}
 	
 	//Event:
-	//    name=ID code=ID
+	//    name=ID
 	//;
 	public EventElements getEventAccess() {
 		return pEvent;
@@ -378,18 +323,6 @@ public class StatemachineGrammarAccess extends AbstractElementFinder.AbstractGra
 	
 	public ParserRule getStateRule() {
 		return getStateAccess().getRule();
-	}
-	
-	//FinalState:
-	//    'finalstate' name=ID
-	//    'end'
-	//;
-	public FinalStateElements getFinalStateAccess() {
-		return pFinalState;
-	}
-	
-	public ParserRule getFinalStateRule() {
-		return getFinalStateAccess().getRule();
 	}
 	
 	//Transition:

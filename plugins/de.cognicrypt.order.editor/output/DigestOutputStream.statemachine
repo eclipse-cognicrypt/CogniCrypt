@@ -1,0 +1,1 @@
+events c Writes1 Writes2 end state s1 true end state s0 false end state sinit false end transition t0 sinit , c , s0 end transition t1 s0 , Writes1 , s1 end transition t2 s1 , Writes2 , s1 end

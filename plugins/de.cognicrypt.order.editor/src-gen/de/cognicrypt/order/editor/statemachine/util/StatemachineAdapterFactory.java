@@ -91,11 +91,6 @@ public class StatemachineAdapterFactory extends AdapterFactoryImpl
         return createStateAdapter();
       }
       @Override
-      public Adapter caseFinalState(FinalState object)
-      {
-        return createFinalStateAdapter();
-      }
-      @Override
       public Adapter caseTransition(Transition object)
       {
         return createTransitionAdapter();
@@ -163,21 +158,6 @@ public class StatemachineAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createStateAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link de.cognicrypt.order.editor.statemachine.FinalState <em>Final State</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see de.cognicrypt.order.editor.statemachine.FinalState
-   * @generated
-   */
-  public Adapter createFinalStateAdapter()
   {
     return null;
   }

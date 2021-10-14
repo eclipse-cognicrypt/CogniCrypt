@@ -42,7 +42,6 @@ import de.darmstadt.tu.crossing.crySL.Expression;
 import de.darmstadt.tu.crossing.crySL.SuperType;
 import de.cognicrypt.order.editor.statemachine.Event;
 import de.cognicrypt.order.editor.statemachine.State;
-import de.cognicrypt.order.editor.statemachine.FinalState;
 import de.cognicrypt.order.editor.statemachine.Transition;
 import de.cognicrypt.order.editor.statemachine.StateMachineGraph;
 import de.cognicrypt.order.editor.statemachine.StateMachineGraphBuilder;
@@ -95,12 +94,10 @@ public class StatemachineParser {
 		Statemachine statemachine = StatemachineFactory.eINSTANCE.createStatemachine();
 
 		State state = null;
-		FinalState finalstate = null;
 		Event event = null;
 		//de.darmstadt.tu.crossing.statemachine.Transition transition = null;
 		Transition transition = null;
 		HashMap<StateNode, State> stateNodeMap = new HashMap<StateNode, State>();
-		HashMap<StateNode, FinalState> finalstateNodeMap = new HashMap<StateNode, FinalState>();
 		
 		SuperType ev = null;
 		int counter = 0;
@@ -118,14 +115,6 @@ public class StatemachineParser {
 			statemachine.getStates().add((de.cognicrypt.order.editor.statemachine.State) state);
 			counter++;
 			stateNodeMap.put(s, state);
-			
-			if(s.getAccepting().equals(true)) {				
-				finalstate = (FinalState) StatemachineFactory.eINSTANCE.createFinalState();
-				finalstate.setName("f" + s.getName());
-				//do not actually want to add a new node, but change the border of the current stateNode
-				statemachine.getFinalstates().add(finalstate);
-				finalstateNodeMap.put(s, finalstate);
-			}
 		}
 		
 		//process transition edges for states and transitions
@@ -136,11 +125,9 @@ public class StatemachineParser {
 		    	// check for duplicate events to avoid same naming for different edges (causes serialization error)
 		    	if(sameEvent(transitionEdges, transitionEdges.get(i))) {
 		    		event.setName(((SuperType) ev).getName() + i);
-		    		event.setCode(((SuperType) ev).getName() + i);
 				}
 		    	else {
 		    		event.setName(((SuperType) ev).getName());
-		    		event.setCode(((SuperType) ev).getName());
 		    	}
 		    	statemachine.getEvents().add((de.cognicrypt.order.editor.statemachine.Event) event);
 	    	}

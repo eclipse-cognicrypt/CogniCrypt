@@ -36,7 +36,7 @@ public class DefaultRulePreferences {
 		 			subPref.putBoolean("CheckboxState", ruleset.isChecked());
 		 			subPref.put("FolderName", ruleset.getFolderName());
 		 			subPref.put("SelectedVersion", ruleset.getSelectedVersion());
-		 			subPref.put("Url", ruleset.getUrl());
+		 			subPref.put("Url", ruleset.getUrlOrPath());
 		 		}
 			}
 		} catch (BackingStoreException e) {

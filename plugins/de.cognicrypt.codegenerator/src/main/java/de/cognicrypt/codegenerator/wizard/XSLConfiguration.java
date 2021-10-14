@@ -33,8 +33,8 @@ public class XSLConfiguration extends Configuration {
 
 	final private InstanceClafer instance;
 
-	public XSLConfiguration(InstanceClafer instance, Map<Question, Answer> constraints, String pathOnDisk) {
-		super(constraints, pathOnDisk);
+	public XSLConfiguration(InstanceClafer instance, Map<Question, Answer> constraints, String pathOnDisk, String taskName) throws IOException {
+		super(constraints, pathOnDisk, taskName);
 		this.instance = instance;
 	}
 

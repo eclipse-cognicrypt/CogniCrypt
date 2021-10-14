@@ -11,21 +11,21 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-public class AddNewRulesetDialog extends TitleAreaDialog {
+public class RemoteRulesetDialog extends TitleAreaDialog {
 
     private Text txtRulesetUrl;
 
     private String rulesetUrl;
 
-    public AddNewRulesetDialog(Shell parentShell) {
+    public RemoteRulesetDialog(Shell parentShell) {
         super(parentShell);
     }
 
     @Override
     public void create() {
         super.create();
-        setTitle("Add new ruleset");
-        setMessage("Please enter the URL of the ruleset", IMessageProvider.INFORMATION);
+        setTitle("Add new remote ruleset");
+        setMessage("Please enter the URL of the remote ruleset", IMessageProvider.INFORMATION);
     }
 
     @Override

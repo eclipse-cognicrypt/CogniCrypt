@@ -546,6 +546,7 @@ public class Constants {
 	public static final String ANALYZED_PROJECT_DIR_RULES = "de.cognicrypt.staticanalyzer.analyzedProjectRootDirRules";
 	public static final String LOCAL_RULES_DIRECTORY = "de.cognicrypt.staticanalyzer.localRulesLocation";
 	
+	public static final String SUPPRESS_LEGACYCLIENT_ERRORS = "de.cognicrypt.staticanalyzer.suppressConstraintErrors";
 	public static final String ANALYSE_DEPENDENCIES = "de.cognicrypt.staticanalyzer.dependencyAnalysis";
 
 	public static final String PERSIST_CONFIG = "de.cognicrypt.codegenerator.persistConfig";
@@ -602,7 +603,7 @@ public class Constants {
  	//Preference page rules table Constants
  	public static final String TABLE_HEADER_RULES = "Rules";
  	public static final String TABLE_HEADER_VERSION = "Version";
- 	public static final String TABLE_HEADER_URL = "URL";
+ 	public static final String TABLE_HEADER_URL = "URL/Path";
  	
  	public static final Double MIN_JCA_RULE_VERSION = 1.4;
  	public static final Double MIN_BC_RULE_VERSION = 0.7;
@@ -624,4 +625,12 @@ public class Constants {
 	public static final String codeTemplateFolder =
 			"src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "java" + Constants.innerFileSeparator + "de" + Constants.innerFileSeparator + "cognicrypt"
 					+ Constants.innerFileSeparator + "codegenerator" + Constants.innerFileSeparator + "crysl" + Constants.innerFileSeparator + "templates" + Constants.innerFileSeparator;
+	
+	//name of tasks
+	public final static String SECURE_COMMUNICATION = "SecureCommunication";
+
+	//suppressLegacyClient
+	public final static String clientQuestion = "Which clients should the server at least support?";
+	public final static String clientAnswer = "Legacy Clients (since 2001)";
+	public final static String desiredProtocol = "VC:protocol - TLSv1.2,";
 }

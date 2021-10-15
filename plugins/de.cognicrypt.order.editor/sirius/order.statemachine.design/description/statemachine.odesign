@@ -2,7 +2,7 @@
 <description:Group xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:tool="http://www.eclipse.org/sirius/diagram/description/tool/1.1.0" xmlns:tool_1="http://www.eclipse.org/sirius/description/tool/1.1.0" name="statemachine" version="12.0.0.2017041100">
   <ownedViewpoints name="orderViewpoint">
     <ownedRepresentations xsi:type="description_1:DiagramDescription" name="OrderDiagram" domainClass="statemachine::Statemachine" enablePopupBars="true">
-      <metamodel href="file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/model/generated/Statemachine.ecore#/"/>
+      <metamodel href="http://www.cognicrypt.de/order/editor/Statemachine#/"/>
       <defaultLayer name="Default">
         <nodeMappings name="StateNode" labelDirectEdit="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='editLabel']" semanticCandidatesExpression="feature:states" domainClass="statemachine::State">
           <style xsi:type="style:EllipseNodeDescription" borderSizeComputationExpression="service:changeBorderFinalNode()" labelSize="12" labelPosition="node" resizeKind="NSEW">

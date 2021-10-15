@@ -1,1 +1,0 @@
-events Gets Inits dp GenSecret end state s2 false end state s1 false end state s0 false end state sinit false end state s3 true end transition t0 sinit , Gets , s0 end transition t1 s0 , Inits , s1 end transition t2 s1 , dp , s2 end transition t3 s2 , GenSecret , s3 end

@@ -1,1 +1,0 @@
-events verify_evt0 verify_evt1 end state s0 true end state sinit false end transition t0 sinit , verify_evt0 , s0 end transition t1 sinit , verify_evt1 , sinit end

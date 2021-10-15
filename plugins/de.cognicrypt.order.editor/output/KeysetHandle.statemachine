@@ -1,1 +1,0 @@
-events gen_evt read_evt gen_public_evt export_evt3 export_evt4 end state s2 true end state s1 true end state s0 true end state sinit false end transition t0 sinit , gen_evt , s0 end transition t1 sinit , read_evt , s0 end transition t2 s0 , gen_public_evt , s1 end transition t3 s1 , export_evt3 , s2 end transition t4 s0 , export_evt4 , s2 end

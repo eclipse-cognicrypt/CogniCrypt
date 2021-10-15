@@ -1,1 +1,0 @@
-events Gets Init gtm end state s2 true end state s1 true end state s0 false end state sinit false end transition t0 sinit , Gets , s0 end transition t1 s0 , Init , s1 end transition t2 s1 , gtm , s2 end

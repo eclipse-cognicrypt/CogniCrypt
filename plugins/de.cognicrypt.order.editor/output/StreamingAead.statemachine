@@ -1,1 +1,0 @@
-events create_writable_channel_evt create_readable_channel_evt end state s0 true end state sinit false end transition t0 sinit , create_writable_channel_evt , s0 end transition t1 sinit , create_readable_channel_evt , s0 end

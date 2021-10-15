@@ -1,1 +1,0 @@
-events Cons Updates1 Updates2 Finals Updates4 end state s2 true end state s1 false end state s0 true end state sinit false end transition t0 sinit , Cons , s0 end transition t1 s0 , Updates1 , s1 end transition t2 s1 , Updates2 , s1 end transition t3 s1 , Finals , s2 end transition t4 s2 , Updates4 , s1 end

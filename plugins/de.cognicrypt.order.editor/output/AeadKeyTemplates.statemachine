@@ -1,1 +1,0 @@
-events CreateKeyTemplates0 CreateKeyTemplates1 end state s0 true end state sinit false end transition t0 sinit , CreateKeyTemplates0 , s0 end transition t1 sinit , CreateKeyTemplates1 , sinit end

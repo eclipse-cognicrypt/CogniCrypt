@@ -1,1 +1,0 @@
-events Constructs Writes1 Writes2 c end state s2 true end state s1 false end state s0 false end state sinit false end transition t0 sinit , Constructs , s0 end transition t1 s0 , Writes1 , s1 end transition t2 s1 , Writes2 , s1 end transition t3 s1 , c , s2 end

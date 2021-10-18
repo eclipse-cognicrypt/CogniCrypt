@@ -27,6 +27,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -35,6 +36,7 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -52,7 +54,7 @@ public class TaskSelectionPage extends WizardPage {
 	private TaskItemComposite selectedTaskItem = null;
 	private Composite listOfTaskItems; // Row Layout Composite that holds task items composite
 	private List<TaskItemComposite> taskItems = new ArrayList<TaskItemComposite>(); // ArrayList of all tasks item composite
-
+	
 	public TaskSelectionPage() {
 		super(Constants.SELECT_TASK);
 		setTitle(Constants.TASK_LIST);
@@ -77,6 +79,8 @@ public class TaskSelectionPage extends WizardPage {
 		
 		// Task items are displayed as a list in the listOfTaskItems
 		final RowLayout rl = new RowLayout(SWT.VERTICAL);
+		rl.spacing = 5;
+		rl.justify = true;
 		this.listOfTaskItems.setLayout(rl);
 		
 		// add tasks items to listOfTaskItems
@@ -158,12 +162,14 @@ public class TaskSelectionPage extends WizardPage {
 
 		TaskItemComposite(final Composite listOfTaskItems, Task task) {
 			
-			// listOfTaskItems with 2 columns
+			// listOfTaskItems is filled with a Group, which has a two row grid layout.
 			super(listOfTaskItems, SWT.FILL);
-			this.setLayout(new GridLayout(2, false));
+			this.setLayout(new GridLayout(1, false));
+			final Group group = new Group(this, SWT.FILL | SWT.SHADOW_ETCHED_OUT);
+			group.setLayout(new GridLayout(2, false));
 			
-			// First column gets a button with the image
-			this.button = new Button(this, SWT.TOGGLE);
+			// First column gets a radio button with the image
+			this.button = new Button(group, SWT.TOGGLE | SWT.RADIO);
 			this.button.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 			final Image taskImage = loadImage(task.getImage());
 			if(taskImage == null) {
@@ -174,7 +180,7 @@ public class TaskSelectionPage extends WizardPage {
 			this.button.setImage(taskImage);
 			
 			// Second column gets group with title and description
-			final Group descr = new Group(this, SWT.FILL);
+			final Composite descr = new Composite(group, SWT.FILL);
 			descr.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 			descr.setLayout(new RowLayout(SWT.VERTICAL));
 			
@@ -186,10 +192,10 @@ public class TaskSelectionPage extends WizardPage {
 			
 			// description
 			final Label taskdescr = new Label(descr, SWT.WRAP);
-			final Color taskdescrColor = new Color(taskdescr.getDisplay(), 100, 100, 100);
 			final Font largeFont = new Font( descr.getDisplay(), new FontData( "Arial", 14, SWT.NONE ) );
 			taskdescr.setFont(largeFont);
-			taskdescr.setForeground(taskdescrColor);
+			final Color gray = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
+			taskdescr.setForeground(gray);
 			RowData rd_taskdescr = new RowData();
 			rd_taskdescr.width = 400;
 			taskdescr.setLayoutData(rd_taskdescr);

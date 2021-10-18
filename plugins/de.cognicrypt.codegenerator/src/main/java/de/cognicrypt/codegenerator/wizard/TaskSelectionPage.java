@@ -24,10 +24,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -79,8 +80,6 @@ public class TaskSelectionPage extends WizardPage {
 		
 		// Task items are displayed as a list in the listOfTaskItems
 		final RowLayout rl = new RowLayout(SWT.VERTICAL);
-		rl.spacing = 5;
-		rl.justify = true;
 		this.listOfTaskItems.setLayout(rl);
 		
 		// add tasks items to listOfTaskItems
@@ -91,8 +90,9 @@ public class TaskSelectionPage extends WizardPage {
 		sc.setContent(this.listOfTaskItems);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
+		sc.setAlwaysShowScrollBars(true);
 		sc.setMinSize(this.listOfTaskItems.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		setControl(sc);
+		this.setControl(sc);
 	}
 
 	@Override
@@ -165,6 +165,7 @@ public class TaskSelectionPage extends WizardPage {
 			// listOfTaskItems is filled with a Group, which has a two row grid layout.
 			super(listOfTaskItems, SWT.FILL);
 			this.setLayout(new GridLayout(1, false));
+			//this.setLayoutData(new RowData(SWT.FILL, SWT.DEFAULT));
 			final Group group = new Group(this, SWT.FILL | SWT.SHADOW_ETCHED_OUT);
 			group.setLayout(new GridLayout(2, false));
 			
@@ -194,6 +195,7 @@ public class TaskSelectionPage extends WizardPage {
 			final Label taskdescr = new Label(descr, SWT.WRAP);
 			final Font largeFont = new Font( descr.getDisplay(), new FontData( "Arial", 14, SWT.NONE ) );
 			taskdescr.setFont(largeFont);
+			
 			final Color gray = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
 			taskdescr.setForeground(gray);
 			RowData rd_taskdescr = new RowData();
@@ -212,6 +214,19 @@ public class TaskSelectionPage extends WizardPage {
 			descr.addListener(SWT.MouseUp, listener);
 			title.addListener(SWT.MouseUp, listener);
 			taskdescr.addListener(SWT.MouseUp, listener);
+			
+			// add dispose listener (best practice: https://www.eclipse.org/articles/swt-design-2/swt-design-2.html)
+			this.addDisposeListener(new DisposeListener() {
+				
+				@Override
+				public void widgetDisposed(DisposeEvent event) {
+					boldFont.dispose();
+					largeFont.dispose();
+					taskImage.dispose();
+				}
+			});
+			
+			
 		}
 		
 		public void select() {

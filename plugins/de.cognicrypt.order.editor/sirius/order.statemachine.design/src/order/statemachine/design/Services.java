@@ -1,10 +1,6 @@
 package order.statemachine.design;
 
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-
-import de.cognicrypt.order.editor.statemachine.Event;
 import de.cognicrypt.order.editor.statemachine.State;
 
 /**
@@ -32,5 +28,4 @@ public class Services {
     	
     	return 1;
     }
-
 }

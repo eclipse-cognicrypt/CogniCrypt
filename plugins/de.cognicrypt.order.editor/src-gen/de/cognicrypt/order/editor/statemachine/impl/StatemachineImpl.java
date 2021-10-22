@@ -3,7 +3,6 @@
  */
 package de.cognicrypt.order.editor.statemachine.impl;
 
-import de.cognicrypt.order.editor.statemachine.Event;
 import de.cognicrypt.order.editor.statemachine.State;
 import de.cognicrypt.order.editor.statemachine.Statemachine;
 import de.cognicrypt.order.editor.statemachine.StatemachinePackage;
@@ -31,7 +30,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StatemachineImpl#getEvents <em>Events</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StatemachineImpl#getStates <em>States</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.impl.StatemachineImpl#getTransitions <em>Transitions</em>}</li>
  * </ul>
@@ -40,16 +38,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  */
 public class StatemachineImpl extends MinimalEObjectImpl.Container implements Statemachine
 {
-  /**
-   * The cached value of the '{@link #getEvents() <em>Events</em>}' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getEvents()
-   * @generated
-   * @ordered
-   */
-  protected EList<Event> events;
-
   /**
    * The cached value of the '{@link #getStates() <em>States</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -97,21 +85,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
    * @generated
    */
   @Override
-  public EList<Event> getEvents()
-  {
-    if (events == null)
-    {
-      events = new EObjectContainmentEList<Event>(Event.class, this, StatemachinePackage.STATEMACHINE__EVENTS);
-    }
-    return events;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
   public EList<State> getStates()
   {
     if (states == null)
@@ -146,8 +119,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
   {
     switch (featureID)
     {
-      case StatemachinePackage.STATEMACHINE__EVENTS:
-        return ((InternalEList<?>)getEvents()).basicRemove(otherEnd, msgs);
       case StatemachinePackage.STATEMACHINE__STATES:
         return ((InternalEList<?>)getStates()).basicRemove(otherEnd, msgs);
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:
@@ -166,8 +137,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
   {
     switch (featureID)
     {
-      case StatemachinePackage.STATEMACHINE__EVENTS:
-        return getEvents();
       case StatemachinePackage.STATEMACHINE__STATES:
         return getStates();
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:
@@ -187,10 +156,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
   {
     switch (featureID)
     {
-      case StatemachinePackage.STATEMACHINE__EVENTS:
-        getEvents().clear();
-        getEvents().addAll((Collection<? extends Event>)newValue);
-        return;
       case StatemachinePackage.STATEMACHINE__STATES:
         getStates().clear();
         getStates().addAll((Collection<? extends State>)newValue);
@@ -213,9 +178,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
   {
     switch (featureID)
     {
-      case StatemachinePackage.STATEMACHINE__EVENTS:
-        getEvents().clear();
-        return;
       case StatemachinePackage.STATEMACHINE__STATES:
         getStates().clear();
         return;
@@ -236,8 +198,6 @@ public class StatemachineImpl extends MinimalEObjectImpl.Container implements St
   {
     switch (featureID)
     {
-      case StatemachinePackage.STATEMACHINE__EVENTS:
-        return events != null && !events.isEmpty();
       case StatemachinePackage.STATEMACHINE__STATES:
         return states != null && !states.isEmpty();
       case StatemachinePackage.STATEMACHINE__TRANSITIONS:

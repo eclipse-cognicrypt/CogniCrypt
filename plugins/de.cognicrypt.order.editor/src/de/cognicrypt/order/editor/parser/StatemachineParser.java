@@ -129,7 +129,6 @@ public class StatemachineParser {
 		    	else {
 		    		event.setName(((SuperType) ev).getName());
 		    	}
-		    	statemachine.getEvents().add((de.cognicrypt.order.editor.statemachine.Event) event);
 	    	}
 			
 			transition = StatemachineFactory.eINSTANCE.createTransition();

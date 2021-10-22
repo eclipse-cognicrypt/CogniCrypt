@@ -1,1 +1,0 @@
-events Mode0 Mode1 end state s0 true end state sinit true end transition t0 sinit , Mode0 , s0 end transition t1 s0 , Mode1 , s0 end

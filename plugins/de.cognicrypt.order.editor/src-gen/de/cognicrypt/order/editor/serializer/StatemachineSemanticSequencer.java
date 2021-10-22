@@ -159,7 +159,7 @@ public class StatemachineSemanticSequencer extends XtypeSemanticSequencer {
 	 *     Statemachine returns Statemachine
 	 *
 	 * Constraint:
-	 *     (events+=Event* states+=State* transitions+=Transition*)
+	 *     (states+=State* transitions+=Transition*)
 	 */
 	protected void sequence_Statemachine(ISerializationContext context, Statemachine semanticObject) {
 		genericSequencer.createSequence(context, semanticObject);
@@ -171,7 +171,7 @@ public class StatemachineSemanticSequencer extends XtypeSemanticSequencer {
 	 *     Transition returns Transition
 	 *
 	 * Constraint:
-	 *     (name=ID fromState=[State|ID] event=[Event|ID] endState=[State|ID])
+	 *     (name=ID fromState=[State|ID] event=Event endState=[State|ID])
 	 */
 	protected void sequence_Transition(ISerializationContext context, Transition semanticObject) {
 		if (errorAcceptor != null) {
@@ -187,7 +187,7 @@ public class StatemachineSemanticSequencer extends XtypeSemanticSequencer {
 		SequenceFeeder feeder = createSequencerFeeder(context, semanticObject);
 		feeder.accept(grammarAccess.getTransitionAccess().getNameIDTerminalRuleCall_1_0(), semanticObject.getName());
 		feeder.accept(grammarAccess.getTransitionAccess().getFromStateStateIDTerminalRuleCall_2_0_1(), semanticObject.eGet(StatemachinePackage.Literals.TRANSITION__FROM_STATE, false));
-		feeder.accept(grammarAccess.getTransitionAccess().getEventEventIDTerminalRuleCall_4_0_1(), semanticObject.eGet(StatemachinePackage.Literals.TRANSITION__EVENT, false));
+		feeder.accept(grammarAccess.getTransitionAccess().getEventEventParserRuleCall_4_0(), semanticObject.getEvent());
 		feeder.accept(grammarAccess.getTransitionAccess().getEndStateStateIDTerminalRuleCall_6_0_1(), semanticObject.eGet(StatemachinePackage.Literals.TRANSITION__END_STATE, false));
 		feeder.finish();
 	}

@@ -81,11 +81,6 @@ public class StatemachineAdapterFactory extends AdapterFactoryImpl
         return createStatemachineAdapter();
       }
       @Override
-      public Adapter caseEvent(Event object)
-      {
-        return createEventAdapter();
-      }
-      @Override
       public Adapter caseState(State object)
       {
         return createStateAdapter();
@@ -94,6 +89,11 @@ public class StatemachineAdapterFactory extends AdapterFactoryImpl
       public Adapter caseTransition(Transition object)
       {
         return createTransitionAdapter();
+      }
+      @Override
+      public Adapter caseEvent(Event object)
+      {
+        return createEventAdapter();
       }
       @Override
       public Adapter defaultCase(EObject object)
@@ -133,21 +133,6 @@ public class StatemachineAdapterFactory extends AdapterFactoryImpl
   }
 
   /**
-   * Creates a new adapter for an object of class '{@link de.cognicrypt.order.editor.statemachine.Event <em>Event</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see de.cognicrypt.order.editor.statemachine.Event
-   * @generated
-   */
-  public Adapter createEventAdapter()
-  {
-    return null;
-  }
-
-  /**
    * Creates a new adapter for an object of class '{@link de.cognicrypt.order.editor.statemachine.State <em>State</em>}'.
    * <!-- begin-user-doc -->
    * This default implementation returns null so that we can easily ignore cases;
@@ -173,6 +158,21 @@ public class StatemachineAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createTransitionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link de.cognicrypt.order.editor.statemachine.Event <em>Event</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see de.cognicrypt.order.editor.statemachine.Event
+   * @generated
+   */
+  public Adapter createEventAdapter()
   {
     return null;
   }

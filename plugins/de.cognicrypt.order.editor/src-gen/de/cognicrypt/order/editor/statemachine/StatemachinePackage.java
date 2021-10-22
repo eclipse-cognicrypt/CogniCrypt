@@ -68,22 +68,13 @@ public interface StatemachinePackage extends EPackage
   int STATEMACHINE = 0;
 
   /**
-   * The feature id for the '<em><b>Events</b></em>' containment reference list.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int STATEMACHINE__EVENTS = 0;
-
-  /**
    * The feature id for the '<em><b>States</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int STATEMACHINE__STATES = 1;
+  int STATEMACHINE__STATES = 0;
 
   /**
    * The feature id for the '<em><b>Transitions</b></em>' containment reference list.
@@ -92,7 +83,7 @@ public interface StatemachinePackage extends EPackage
    * @generated
    * @ordered
    */
-  int STATEMACHINE__TRANSITIONS = 2;
+  int STATEMACHINE__TRANSITIONS = 1;
 
   /**
    * The number of structural features of the '<em>Statemachine</em>' class.
@@ -101,35 +92,7 @@ public interface StatemachinePackage extends EPackage
    * @generated
    * @ordered
    */
-  int STATEMACHINE_FEATURE_COUNT = 3;
-
-  /**
-   * The meta object id for the '{@link de.cognicrypt.order.editor.statemachine.impl.EventImpl <em>Event</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see de.cognicrypt.order.editor.statemachine.impl.EventImpl
-   * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getEvent()
-   * @generated
-   */
-  int EVENT = 1;
-
-  /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int EVENT__NAME = 0;
-
-  /**
-   * The number of structural features of the '<em>Event</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int EVENT_FEATURE_COUNT = 1;
+  int STATEMACHINE_FEATURE_COUNT = 2;
 
   /**
    * The meta object id for the '{@link de.cognicrypt.order.editor.statemachine.impl.StateImpl <em>State</em>}' class.
@@ -139,7 +102,7 @@ public interface StatemachinePackage extends EPackage
    * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getState()
    * @generated
    */
-  int STATE = 2;
+  int STATE = 1;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -185,7 +148,7 @@ public interface StatemachinePackage extends EPackage
    * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getTransition()
    * @generated
    */
-  int TRANSITION = 3;
+  int TRANSITION = 2;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -206,7 +169,7 @@ public interface StatemachinePackage extends EPackage
   int TRANSITION__FROM_STATE = 1;
 
   /**
-   * The feature id for the '<em><b>Event</b></em>' reference.
+   * The feature id for the '<em><b>Event</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -232,6 +195,34 @@ public interface StatemachinePackage extends EPackage
    */
   int TRANSITION_FEATURE_COUNT = 4;
 
+  /**
+   * The meta object id for the '{@link de.cognicrypt.order.editor.statemachine.impl.EventImpl <em>Event</em>}' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see de.cognicrypt.order.editor.statemachine.impl.EventImpl
+   * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getEvent()
+   * @generated
+   */
+  int EVENT = 3;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EVENT__NAME = 0;
+
+  /**
+   * The number of structural features of the '<em>Event</em>' class.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int EVENT_FEATURE_COUNT = 1;
+
 
   /**
    * Returns the meta object for class '{@link de.cognicrypt.order.editor.statemachine.Statemachine <em>Statemachine</em>}'.
@@ -242,17 +233,6 @@ public interface StatemachinePackage extends EPackage
    * @generated
    */
   EClass getStatemachine();
-
-  /**
-   * Returns the meta object for the containment reference list '{@link de.cognicrypt.order.editor.statemachine.Statemachine#getEvents <em>Events</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Events</em>'.
-   * @see de.cognicrypt.order.editor.statemachine.Statemachine#getEvents()
-   * @see #getStatemachine()
-   * @generated
-   */
-  EReference getStatemachine_Events();
 
   /**
    * Returns the meta object for the containment reference list '{@link de.cognicrypt.order.editor.statemachine.Statemachine#getStates <em>States</em>}'.
@@ -275,27 +255,6 @@ public interface StatemachinePackage extends EPackage
    * @generated
    */
   EReference getStatemachine_Transitions();
-
-  /**
-   * Returns the meta object for class '{@link de.cognicrypt.order.editor.statemachine.Event <em>Event</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Event</em>'.
-   * @see de.cognicrypt.order.editor.statemachine.Event
-   * @generated
-   */
-  EClass getEvent();
-
-  /**
-   * Returns the meta object for the attribute '{@link de.cognicrypt.order.editor.statemachine.Event#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see de.cognicrypt.order.editor.statemachine.Event#getName()
-   * @see #getEvent()
-   * @generated
-   */
-  EAttribute getEvent_Name();
 
   /**
    * Returns the meta object for class '{@link de.cognicrypt.order.editor.statemachine.State <em>State</em>}'.
@@ -373,10 +332,10 @@ public interface StatemachinePackage extends EPackage
   EReference getTransition_FromState();
 
   /**
-   * Returns the meta object for the reference '{@link de.cognicrypt.order.editor.statemachine.Transition#getEvent <em>Event</em>}'.
+   * Returns the meta object for the containment reference '{@link de.cognicrypt.order.editor.statemachine.Transition#getEvent <em>Event</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Event</em>'.
+   * @return the meta object for the containment reference '<em>Event</em>'.
    * @see de.cognicrypt.order.editor.statemachine.Transition#getEvent()
    * @see #getTransition()
    * @generated
@@ -393,6 +352,27 @@ public interface StatemachinePackage extends EPackage
    * @generated
    */
   EReference getTransition_EndState();
+
+  /**
+   * Returns the meta object for class '{@link de.cognicrypt.order.editor.statemachine.Event <em>Event</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for class '<em>Event</em>'.
+   * @see de.cognicrypt.order.editor.statemachine.Event
+   * @generated
+   */
+  EClass getEvent();
+
+  /**
+   * Returns the meta object for the attribute '{@link de.cognicrypt.order.editor.statemachine.Event#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see de.cognicrypt.order.editor.statemachine.Event#getName()
+   * @see #getEvent()
+   * @generated
+   */
+  EAttribute getEvent_Name();
 
   /**
    * Returns the factory that creates the instances of the model.
@@ -428,14 +408,6 @@ public interface StatemachinePackage extends EPackage
     EClass STATEMACHINE = eINSTANCE.getStatemachine();
 
     /**
-     * The meta object literal for the '<em><b>Events</b></em>' containment reference list feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference STATEMACHINE__EVENTS = eINSTANCE.getStatemachine_Events();
-
-    /**
      * The meta object literal for the '<em><b>States</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -450,24 +422,6 @@ public interface StatemachinePackage extends EPackage
      * @generated
      */
     EReference STATEMACHINE__TRANSITIONS = eINSTANCE.getStatemachine_Transitions();
-
-    /**
-     * The meta object literal for the '{@link de.cognicrypt.order.editor.statemachine.impl.EventImpl <em>Event</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see de.cognicrypt.order.editor.statemachine.impl.EventImpl
-     * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getEvent()
-     * @generated
-     */
-    EClass EVENT = eINSTANCE.getEvent();
-
-    /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute EVENT__NAME = eINSTANCE.getEvent_Name();
 
     /**
      * The meta object literal for the '{@link de.cognicrypt.order.editor.statemachine.impl.StateImpl <em>State</em>}' class.
@@ -530,7 +484,7 @@ public interface StatemachinePackage extends EPackage
     EReference TRANSITION__FROM_STATE = eINSTANCE.getTransition_FromState();
 
     /**
-     * The meta object literal for the '<em><b>Event</b></em>' reference feature.
+     * The meta object literal for the '<em><b>Event</b></em>' containment reference feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -544,6 +498,24 @@ public interface StatemachinePackage extends EPackage
      * @generated
      */
     EReference TRANSITION__END_STATE = eINSTANCE.getTransition_EndState();
+
+    /**
+     * The meta object literal for the '{@link de.cognicrypt.order.editor.statemachine.impl.EventImpl <em>Event</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see de.cognicrypt.order.editor.statemachine.impl.EventImpl
+     * @see de.cognicrypt.order.editor.statemachine.impl.StatemachinePackageImpl#getEvent()
+     * @generated
+     */
+    EClass EVENT = eINSTANCE.getEvent();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute EVENT__NAME = eINSTANCE.getEvent_Name();
 
   }
 

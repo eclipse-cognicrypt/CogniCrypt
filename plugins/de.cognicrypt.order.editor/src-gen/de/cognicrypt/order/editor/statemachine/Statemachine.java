@@ -16,7 +16,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link de.cognicrypt.order.editor.statemachine.Statemachine#getEvents <em>Events</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.Statemachine#getStates <em>States</em>}</li>
  *   <li>{@link de.cognicrypt.order.editor.statemachine.Statemachine#getTransitions <em>Transitions</em>}</li>
  * </ul>
@@ -27,18 +26,6 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface Statemachine extends EObject
 {
-  /**
-   * Returns the value of the '<em><b>Events</b></em>' containment reference list.
-   * The list contents are of type {@link de.cognicrypt.order.editor.statemachine.Event}.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Events</em>' containment reference list.
-   * @see de.cognicrypt.order.editor.statemachine.StatemachinePackage#getStatemachine_Events()
-   * @model containment="true"
-   * @generated
-   */
-  EList<Event> getEvents();
-
   /**
    * Returns the value of the '<em><b>States</b></em>' containment reference list.
    * The list contents are of type {@link de.cognicrypt.order.editor.statemachine.State}.

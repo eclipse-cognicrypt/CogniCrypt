@@ -66,9 +66,9 @@ public class StatemachineFactoryImpl extends EFactoryImpl implements Statemachin
     switch (eClass.getClassifierID())
     {
       case StatemachinePackage.STATEMACHINE: return createStatemachine();
-      case StatemachinePackage.EVENT: return createEvent();
       case StatemachinePackage.STATE: return createState();
       case StatemachinePackage.TRANSITION: return createTransition();
+      case StatemachinePackage.EVENT: return createEvent();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
     }
@@ -84,18 +84,6 @@ public class StatemachineFactoryImpl extends EFactoryImpl implements Statemachin
   {
     StatemachineImpl statemachine = new StatemachineImpl();
     return statemachine;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  @Override
-  public Event createEvent()
-  {
-    EventImpl event = new EventImpl();
-    return event;
   }
 
   /**
@@ -120,6 +108,18 @@ public class StatemachineFactoryImpl extends EFactoryImpl implements Statemachin
   {
     TransitionImpl transition = new TransitionImpl();
     return transition;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public Event createEvent()
+  {
+    EventImpl event = new EventImpl();
+    return event;
   }
 
   /**

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<viewpoint:DAnalysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description" uid="_dP5YoDJuEeyBL9huIKbiGA" selectedViews="_vW72gDJuEeyBL9huIKbiGA" version="14.5.1.202106111100">
+<viewpoint:DAnalysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description" uid="_EJCZ8DMTEeyrD-xFC25nbg" selectedViews="_IJ6OYDMTEeyrD-xFC25nbg" version="14.5.1.202106111100">
   <semanticResources>file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/model/generated/Statemachine.ecore</semanticResources>
-  <semanticResources>file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AEADParameters.statemachine</semanticResources>
-  <ownedViews xmi:type="viewpoint:DView" uid="_vW72gDJuEeyBL9huIKbiGA">
+  <semanticResources>file:/C:/Users/T440s/git/CogniCrypt/plugins/de.cognicrypt.order.editor/output/AlgorithmParameters.statemachine</semanticResources>
+  <ownedViews xmi:type="viewpoint:DView" uid="_IJ6OYDMTEeyrD-xFC25nbg">
     <viewpoint xmi:type="description:Viewpoint" href="platform:/resource/order.statemachine.design/description/statemachine.odesign#//@ownedViewpoints[name='orderViewpoint']"/>
   </ownedViews>
 </viewpoint:DAnalysis>

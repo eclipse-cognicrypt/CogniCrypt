@@ -9,6 +9,7 @@ import de.cognicrypt.order.editor.statemachine.StatemachinePackage;
 import de.cognicrypt.order.editor.statemachine.Transition;
 
 import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -65,7 +66,7 @@ public class TransitionImpl extends MinimalEObjectImpl.Container implements Tran
   protected State fromState;
 
   /**
-   * The cached value of the '{@link #getEvent() <em>Event</em>}' reference.
+   * The cached value of the '{@link #getEvent() <em>Event</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @see #getEvent()
@@ -183,16 +184,6 @@ public class TransitionImpl extends MinimalEObjectImpl.Container implements Tran
   @Override
   public Event getEvent()
   {
-    if (event != null && event.eIsProxy())
-    {
-      InternalEObject oldEvent = (InternalEObject)event;
-      event = (Event)eResolveProxy(oldEvent);
-      if (event != oldEvent)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, StatemachinePackage.TRANSITION__EVENT, oldEvent, event));
-      }
-    }
     return event;
   }
 
@@ -201,9 +192,16 @@ public class TransitionImpl extends MinimalEObjectImpl.Container implements Tran
    * <!-- end-user-doc -->
    * @generated
    */
-  public Event basicGetEvent()
+  public NotificationChain basicSetEvent(Event newEvent, NotificationChain msgs)
   {
-    return event;
+    Event oldEvent = event;
+    event = newEvent;
+    if (eNotificationRequired())
+    {
+      ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, StatemachinePackage.TRANSITION__EVENT, oldEvent, newEvent);
+      if (msgs == null) msgs = notification; else msgs.add(notification);
+    }
+    return msgs;
   }
 
   /**
@@ -214,10 +212,18 @@ public class TransitionImpl extends MinimalEObjectImpl.Container implements Tran
   @Override
   public void setEvent(Event newEvent)
   {
-    Event oldEvent = event;
-    event = newEvent;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, StatemachinePackage.TRANSITION__EVENT, oldEvent, event));
+    if (newEvent != event)
+    {
+      NotificationChain msgs = null;
+      if (event != null)
+        msgs = ((InternalEObject)event).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - StatemachinePackage.TRANSITION__EVENT, null, msgs);
+      if (newEvent != null)
+        msgs = ((InternalEObject)newEvent).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - StatemachinePackage.TRANSITION__EVENT, null, msgs);
+      msgs = basicSetEvent(newEvent, msgs);
+      if (msgs != null) msgs.dispatch();
+    }
+    else if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, StatemachinePackage.TRANSITION__EVENT, newEvent, newEvent));
   }
 
   /**
@@ -271,6 +277,22 @@ public class TransitionImpl extends MinimalEObjectImpl.Container implements Tran
    * @generated
    */
   @Override
+  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  {
+    switch (featureID)
+    {
+      case StatemachinePackage.TRANSITION__EVENT:
+        return basicSetEvent(null, msgs);
+    }
+    return super.eInverseRemove(otherEnd, featureID, msgs);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
     switch (featureID)
@@ -281,8 +303,7 @@ public class TransitionImpl extends MinimalEObjectImpl.Container implements Tran
         if (resolve) return getFromState();
         return basicGetFromState();
       case StatemachinePackage.TRANSITION__EVENT:
-        if (resolve) return getEvent();
-        return basicGetEvent();
+        return getEvent();
       case StatemachinePackage.TRANSITION__END_STATE:
         if (resolve) return getEndState();
         return basicGetEndState();

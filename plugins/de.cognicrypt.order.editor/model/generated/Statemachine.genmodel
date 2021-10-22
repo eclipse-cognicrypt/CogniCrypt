@@ -7,12 +7,8 @@
   <genPackages prefix="Statemachine" basePackage="de.cognicrypt.order.editor" disposableProviderFactory="true"
       fileExtensions="statemachine" ecorePackage="Statemachine.ecore#/">
     <genClasses ecoreClass="Statemachine.ecore#//Statemachine">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Statemachine/events"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Statemachine/states"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Statemachine/transitions"/>
-    </genClasses>
-    <genClasses ecoreClass="Statemachine.ecore#//Event">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//Event/name"/>
     </genClasses>
     <genClasses ecoreClass="Statemachine.ecore#//State">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//State/name"/>
@@ -22,8 +18,11 @@
     <genClasses ecoreClass="Statemachine.ecore#//Transition">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//Transition/name"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Transition/fromState"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Transition/event"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Transition/event"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Statemachine.ecore#//Transition/endState"/>
+    </genClasses>
+    <genClasses ecoreClass="Statemachine.ecore#//Event">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Statemachine.ecore#//Event/name"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

@@ -80,13 +80,6 @@ public class StatemachineSwitch<T> extends Switch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
-      case StatemachinePackage.EVENT:
-      {
-        Event event = (Event)theEObject;
-        T result = caseEvent(event);
-        if (result == null) result = defaultCase(theEObject);
-        return result;
-      }
       case StatemachinePackage.STATE:
       {
         State state = (State)theEObject;
@@ -98,6 +91,13 @@ public class StatemachineSwitch<T> extends Switch<T>
       {
         Transition transition = (Transition)theEObject;
         T result = caseTransition(transition);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
+      case StatemachinePackage.EVENT:
+      {
+        Event event = (Event)theEObject;
+        T result = caseEvent(event);
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
@@ -117,22 +117,6 @@ public class StatemachineSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseStatemachine(Statemachine object)
-  {
-    return null;
-  }
-
-  /**
-   * Returns the result of interpreting the object as an instance of '<em>Event</em>'.
-   * <!-- begin-user-doc -->
-   * This implementation returns null;
-   * returning a non-null result will terminate the switch.
-   * <!-- end-user-doc -->
-   * @param object the target of the switch.
-   * @return the result of interpreting the object as an instance of '<em>Event</em>'.
-   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-   * @generated
-   */
-  public T caseEvent(Event object)
   {
     return null;
   }
@@ -165,6 +149,22 @@ public class StatemachineSwitch<T> extends Switch<T>
    * @generated
    */
   public T caseTransition(Transition object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Event</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Event</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseEvent(Event object)
   {
     return null;
   }

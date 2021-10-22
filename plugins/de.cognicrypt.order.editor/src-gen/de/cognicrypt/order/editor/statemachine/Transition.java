@@ -71,22 +71,22 @@ public interface Transition extends EObject
   void setFromState(State value);
 
   /**
-   * Returns the value of the '<em><b>Event</b></em>' reference.
+   * Returns the value of the '<em><b>Event</b></em>' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Event</em>' reference.
+   * @return the value of the '<em>Event</em>' containment reference.
    * @see #setEvent(Event)
    * @see de.cognicrypt.order.editor.statemachine.StatemachinePackage#getTransition_Event()
-   * @model
+   * @model containment="true"
    * @generated
    */
   Event getEvent();
 
   /**
-   * Sets the value of the '{@link de.cognicrypt.order.editor.statemachine.Transition#getEvent <em>Event</em>}' reference.
+   * Sets the value of the '{@link de.cognicrypt.order.editor.statemachine.Transition#getEvent <em>Event</em>}' containment reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Event</em>' reference.
+   * @param value the new value of the '<em>Event</em>' containment reference.
    * @see #getEvent()
    * @generated
    */

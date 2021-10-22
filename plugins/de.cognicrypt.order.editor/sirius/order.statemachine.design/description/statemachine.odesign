@@ -5,7 +5,7 @@
       <metamodel href="http://www.cognicrypt.de/order/editor/Statemachine#/"/>
       <defaultLayer name="Default">
         <nodeMappings name="StateNode" labelDirectEdit="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='editLabel']" semanticCandidatesExpression="feature:states" domainClass="statemachine::State">
-          <style xsi:type="style:EllipseNodeDescription" borderSizeComputationExpression="service:changeBorderFinalNode()" labelSize="12" labelPosition="node" resizeKind="NSEW">
+          <style xsi:type="style:EllipseNodeDescription" borderSizeComputationExpression="service:changeBorderFinalNode()" labelSize="12" showIcon="false" labelPosition="node" resizeKind="NSEW">
             <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
             <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='green']"/>
@@ -35,6 +35,24 @@
             <mask mask="{0}"/>
             <initialOperation>
               <firstModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::State" referenceName="name"/>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="tool:EdgeCreationDescription" name="setEvent" edgeMappings="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']">
+            <sourceVariable name="source"/>
+            <targetVariable name="target"/>
+            <sourceViewVariable name="sourceView"/>
+            <targetViewVariable name="targetView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="[source.eContainer()/]">
+                <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::Transition" referenceName="transitions">
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="fromState" valueExpression="var:source"/>
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="endState" valueExpression="var:target"/>
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="aql:'t'"/>
+                  <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::Event" referenceName="event" variableName="event">
+                    <subModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="aql:'newEvent'"/>
+                  </subModelOperations>
+                </subModelOperations>
+              </firstModelOperations>
             </initialOperation>
           </ownedTools>
         </toolSections>

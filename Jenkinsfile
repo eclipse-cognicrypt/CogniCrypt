@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean package -X -e'
+                sh 'mvn -U clean package -X -e'
             }
         }
         stage('Publish Snapshot'){

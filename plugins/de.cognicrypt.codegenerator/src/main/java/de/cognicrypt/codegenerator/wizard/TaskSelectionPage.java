@@ -33,8 +33,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -67,8 +65,8 @@ public class TaskSelectionPage extends WizardPage {
 	public void createControl(final Composite parent) {
 
 		// Make the content able to scroll
-		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
-		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
+		sc.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
 
 		// To display the Help view after clicking the help icon
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(sc, "de.cognicrypt.codegenerator.TaskSelectionHelp");
@@ -76,11 +74,11 @@ public class TaskSelectionPage extends WizardPage {
 		// listOfTaskItems will hold the selection items for all tasks
 		// it is attached in the ScrolledComposite
 		this.listOfTaskItems = new Composite(sc, SWT.NONE);
-		this.listOfTaskItems.setBounds(10, 10, 400, 200);
 		
 		// Task items are displayed as a list in the listOfTaskItems
-		final RowLayout rl = new RowLayout(SWT.VERTICAL);
+		final GridLayout rl = new GridLayout(1, false);
 		this.listOfTaskItems.setLayout(rl);
+		this.listOfTaskItems.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
 		
 		// add tasks items to listOfTaskItems
 		for (Task ccTask: TaskJSONReader.getTasks()) {
@@ -91,7 +89,9 @@ public class TaskSelectionPage extends WizardPage {
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
 		sc.setAlwaysShowScrollBars(true);
-		sc.setMinSize(this.listOfTaskItems.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.addListener( SWT.Resize, event -> {
+			 sc.setMinSize(this.listOfTaskItems.computeSize( getShell().getClientArea().width - sc.getVerticalBar().getSize().x, SWT.DEFAULT));
+			} );
 		this.setControl(sc);
 	}
 
@@ -163,15 +163,16 @@ public class TaskSelectionPage extends WizardPage {
 		TaskItemComposite(final Composite listOfTaskItems, Task task) {
 			
 			// listOfTaskItems is filled with a Group, which has a two row grid layout.
-			super(listOfTaskItems, SWT.FILL);
+			super(listOfTaskItems, SWT.NONE);
 			this.setLayout(new GridLayout(1, false));
-			//this.setLayoutData(new RowData(SWT.FILL, SWT.DEFAULT));
-			final Group group = new Group(this, SWT.FILL | SWT.SHADOW_ETCHED_OUT);
+			this.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+			final Group group = new Group(this, SWT.SHADOW_ETCHED_OUT);
 			group.setLayout(new GridLayout(2, false));
+			group.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
 			
 			// First column gets a radio button with the image
 			this.button = new Button(group, SWT.TOGGLE | SWT.RADIO);
-			this.button.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+			this.button.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, false, false));
 			final Image taskImage = loadImage(task.getImage());
 			if(taskImage == null) {
 				throw new IllegalArgumentException("Missing Image for Task: " + task.getName());
@@ -181,9 +182,9 @@ public class TaskSelectionPage extends WizardPage {
 			this.button.setImage(taskImage);
 			
 			// Second column gets group with title and description
-			final Composite descr = new Composite(group, SWT.FILL);
-			descr.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-			descr.setLayout(new RowLayout(SWT.VERTICAL));
+			final Composite descr = new Composite(group, SWT.NONE);
+			descr.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false));
+			descr.setLayout(new GridLayout(1, false));
 			
 			// title
 			final Label title = new Label(descr, SWT.WRAP);
@@ -198,10 +199,8 @@ public class TaskSelectionPage extends WizardPage {
 			
 			final Color gray = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
 			taskdescr.setForeground(gray);
-			RowData rd_taskdescr = new RowData();
-			rd_taskdescr.width = 400;
-			taskdescr.setLayoutData(rd_taskdescr);
 			taskdescr.setText(task.getTaskDescription());
+			taskdescr.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			taskdescr.pack();
 			
 			this.task = task;

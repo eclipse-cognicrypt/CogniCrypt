@@ -1,0 +1,126 @@
+name: CogniCrypt build
+
+on: [push, pull_request]
+
+jobs:
+
+  # Builds the project in Windows
+  windows-build:
+    # Runs on Windows
+    runs-on: windows-latest
+    name: Project build in Windows
+    steps:
+      # Downloads CogniCrypt repository
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      # Sets up Java version
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-package: jdk
+          java-version: '8'
+      # Sets up Maven version
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.6.3
+      # Checks Java version
+      - name: Check Java version
+        run: java -version
+      # Checks Maven version
+      - name: Check Maven version
+        run: mvn -version
+      # Restores Maven dependecies
+      - name: Restore local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      # Compiles, tests, and packages the CogniCrypt project
+      - name: Compile, test, and package the project
+        run: mvn -B clean install -DskipTests=true -U
+  
+  
+  
+  # Builds the project in Ubuntu
+  ubuntu-build:
+    # Runs on Ubuntu
+    runs-on: ubuntu-latest
+    name: Project build in Ubuntu
+    steps:
+      # Downloads CogniCrypt repository
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      # Sets up Java version
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-package: jdk
+          java-version: '8'
+      # Sets up Maven version
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.6.3
+      # Checks Java version
+      - name: Check Java version
+        run: java -version
+      # Checks Maven version
+      - name: Check Maven version
+        run: mvn -version
+      # Restores Maven dependecies
+      - name: Restore local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      # Compiles, tests, and packages the CogniCrypt project
+      - name: Compile, test, and package the project
+        run: mvn -B clean install -DskipTests=true -U
+  
+  
+  
+  # Builds the project in macOS
+  macos-build:
+    # Runs on macOS
+    runs-on: macos-latest
+    name: Project build in macOS
+    steps:
+      # Downloads CogniCrypt repository
+      - name: Checkout source code
+        uses: actions/checkout@v2
+      # Sets up Java version
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-package: jdk
+          java-version: '8'
+      # Sets up Maven version
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.6.3
+      # Checks Java version
+      - name: Check Java version
+        run: java -version
+      # Checks Maven version
+      - name: Check Maven version
+        run: mvn -version
+      # Restores Maven dependecies
+      - name: Restore local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      # Compiles, tests, and packages the CogniCrypt project
+      - name: Compile, test, and package the project
+        run: mvn -B clean install -DskipTests=true -U

@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'apache-maven-latest'
+        maven 'Maven 3.6.3'
         jdk 'oracle-jdk8-latest'
     }
 

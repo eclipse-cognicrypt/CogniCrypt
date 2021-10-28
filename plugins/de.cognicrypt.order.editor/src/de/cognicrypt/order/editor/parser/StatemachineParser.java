@@ -70,8 +70,7 @@ public class StatemachineParser {
     	StateMachineGraph smgb = new StateMachineGraphBuilder(order).buildSMG();
     	Set<StateNode> stateNodes = smgb.getNodes();
     	java.util.List<TransitionEdge> transitionEdges = smgb.getEdges();
-    	java.util.List<de.darmstadt.tu.crossing.crySL.Event> myTransitionEvents = new ArrayList<de.darmstadt.tu.crossing.crySL.Event>(); // only for labels as they do not provide info what is source and target
-    	//java.util.List<Event> myTransitionEvents = new ArrayList<Event>(); // only for labels as they do not provide info what is source and target
+    	java.util.List<de.darmstadt.tu.crossing.crySL.Event> myTransitionEvents = new ArrayList<de.darmstadt.tu.crossing.crySL.Event>();
     	    	
     	for(TransitionEdge e : transitionEdges) {
     		myTransitionEvents.add((de.darmstadt.tu.crossing.crySL.Event) e.getLabel());

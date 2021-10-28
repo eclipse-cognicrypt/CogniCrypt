@@ -34,7 +34,7 @@
           <ownedTools xsi:type="tool:DirectEditLabel" name="editLabel">
             <mask mask="{0}"/>
             <initialOperation>
-              <firstModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::State" referenceName="name"/>
+              <firstModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="var:0"/>
             </initialOperation>
           </ownedTools>
           <ownedTools xsi:type="tool:EdgeCreationDescription" name="setEvent" edgeMappings="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']">

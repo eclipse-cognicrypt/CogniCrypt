@@ -124,3 +124,13 @@ jobs:
       # Compiles, tests, and packages the CogniCrypt project
       - name: Compile, test, and package the project
         run: mvn -B clean install -DskipTests=true -U
+        
+
+# REFERENCES
+
+# The following link is a short guide for learning GitHub Actions:
+# https://docs.github.com/en/actions/learn-github-actions
+
+# We are using Gitub-hosted runners or servers that build our project.
+# Up-to-date details about runners and their versions can be found under:
+# https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners

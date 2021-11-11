@@ -2,6 +2,10 @@
 
 The Order Editor displays the usage pattern of the class as defined in the Order expression of its CrySL rule as a state machine.
 
+More detailed documentation on the use of this feature can be found in the document 
+"CogniCrypt\plugins\de.cognicrypt.order.editor\doc\CrySL Visual Order Editor – User Manual.pdf". 
+  
+
 ## Set up
 
 * Clone the project, open Eclipse.

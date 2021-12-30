@@ -15,16 +15,25 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+
 import de.cognicrypt.codegenerator.generator.GeneratorClass;
+import de.cognicrypt.utils.DeveloperProject;
 
 public class CrySLConfiguration extends Configuration {
 
 	private final GeneratorClass template;
-
+/*
 	public CrySLConfiguration(String pathOnDisk, GeneratorClass templateClass, String selectedTask) throws IOException {
 		super(new HashMap<>(), pathOnDisk, selectedTask);
 		this.template = templateClass;
 	}
+	*/
+	public CrySLConfiguration(String pathOnDisk, GeneratorClass templateClass, String selectedTask, DeveloperProject developerProject) throws IOException {
+		super(new HashMap<>(), pathOnDisk, selectedTask, developerProject);
+		this.template = templateClass;
+	}
+
 
 	@Override
 	public File persistConf() throws IOException {

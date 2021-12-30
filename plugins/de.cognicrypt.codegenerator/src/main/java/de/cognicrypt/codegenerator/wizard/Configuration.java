@@ -19,11 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.io.XMLWriter;
+import org.eclipse.core.runtime.CoreException;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.FileUtils;
 import de.cognicrypt.utils.Utils;
 
@@ -40,19 +42,54 @@ public abstract class Configuration {
 	final protected String pathOnDisk;
 	protected Answer answr;
 	final protected String taskName;
+	protected DeveloperProject developerProject;
 
 	@SuppressWarnings("unchecked")
-	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName) {
+	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName, DeveloperProject developerProject) {
+		this.developerProject = null;
 		this.answr = new Answer();
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;
+		this.developerProject = developerProject;
+		String path = "";
+		path = developerProject.getProjectPath();
 		
 		this.taskName = taskName;
-
+		
 		JSONObject obj = new JSONObject();
+		
 		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
-		String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
+		//String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
 
+		File file = new File(path + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION);  
+        try {
+			file.createNewFile();
+	        FileWriter fileWriter = new FileWriter(file);
+	        fileWriter.write(obj.toJSONString());  
+	        fileWriter.flush();  
+	        fileWriter.close();
+		} catch (IOException e) {
+			Activator.getDefault().logError(e);
+		}  
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName ) {
+		this.answr = new Answer();
+		this.pathOnDisk = pathOnDisk;
+		this.options = (Map<Question, Answer>) constraints;
+
+		String path = "";
+
+		
+		this.taskName = taskName;
+		
+		JSONObject obj = new JSONObject();
+		
+		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
+		//String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
+/*
 		File file = new File(jsonPath);  
         try {
 			file.createNewFile();
@@ -63,6 +100,7 @@ public abstract class Configuration {
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);
 		}  
+		*/
 	}
 
 	/**

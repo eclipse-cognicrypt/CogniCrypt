@@ -14,6 +14,10 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.Base64;
 
+/**
+ * The Class StringHasher hashes a given String and verifies the hash.
+ */
+
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
 public class StringHasher {

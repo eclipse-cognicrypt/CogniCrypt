@@ -35,7 +35,7 @@ public class SecureEncryptor {
 	 * @throws InvalidKeySpecException This exception is thrown when key specifications are invalid.
 	 */
 	
-	public javax.crypto.SecretKey getenerateKey(char[] pwd) {
+	public javax.crypto.SecretKey generateKey(char[] pwd) {
 		byte[] salt = new byte[32];
 		javax.crypto.SecretKey encryptionKey = null;
 		int keysize = 128;

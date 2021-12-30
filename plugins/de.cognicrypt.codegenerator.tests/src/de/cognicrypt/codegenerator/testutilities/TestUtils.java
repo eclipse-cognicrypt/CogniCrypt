@@ -273,7 +273,7 @@ public class TestUtils {
 			developerProject.refresh();
 
 			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
-			chosenConfig = new CrySLConfiguration("", genClass, selectedTask);
+			chosenConfig = new CrySLConfiguration("", genClass, selectedTask, developerProject);
 			return chosenConfig;
 		} catch(CoreException | IOException e) {
 			Activator.getDefault().logError(e);

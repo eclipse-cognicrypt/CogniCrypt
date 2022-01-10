@@ -134,13 +134,14 @@ public class TwoTimesCogniCryptRunTest {
 		
 		TestUtils.deleteProject(generatedProject.getProject());
 	}
-
+	
 	/**
 	 * Scenario: User runs CogniCrypt two times and selects a previous generated
 	 * "logic" class.
 	 * 
 	 * @throws Exception
 	 */
+	/*
 	@Test
 	public void runCCTwoTimesLogicClassSelection() throws Exception {
 		// task template
@@ -191,4 +192,5 @@ public class TwoTimesCogniCryptRunTest {
 		
 		TestUtils.deleteProject(generatedProject.getProject());
 	}
+	*/
 }

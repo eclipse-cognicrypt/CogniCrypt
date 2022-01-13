@@ -1,7 +1,6 @@
 /********************************************************************************
  * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
  * 
-
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -19,11 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.dom4j.io.XMLWriter;
+import org.eclipse.core.runtime.CoreException;
 
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.DeveloperProject;
 import de.cognicrypt.utils.FileUtils;
 import de.cognicrypt.utils.Utils;
 
@@ -38,22 +39,26 @@ public abstract class Configuration {
 
 	final protected Map<Question, Answer> options;
 	final protected String pathOnDisk;
-	protected Answer answr;
-	final protected String taskName;
+	protected String taskName;
+	protected DeveloperProject developerProject;
 
 	@SuppressWarnings("unchecked")
-	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName) {
-		this.answr = new Answer();
+	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName, DeveloperProject developerProject) {
+//		this.developerProject = null;
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;
+		this.developerProject = developerProject;
+		String path = "";
+		path = developerProject.getProjectPath();
 		
 		this.taskName = taskName;
-
+		
 		JSONObject obj = new JSONObject();
+		
 		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
-		String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
+		//String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
 
-		File file = new File(jsonPath);  
+		File file = new File(path + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION);  
         try {
 			file.createNewFile();
 	        FileWriter fileWriter = new FileWriter(file);
@@ -63,6 +68,17 @@ public abstract class Configuration {
 		} catch (IOException e) {
 			Activator.getDefault().logError(e);
 		}  
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Configuration(Map<?, ?> constraints, String pathOnDisk) {
+		this.pathOnDisk = pathOnDisk;
+		this.options = (Map<Question, Answer>) constraints;
+		
+		JSONObject obj = new JSONObject();
+		
+		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
 	}
 
 	/**

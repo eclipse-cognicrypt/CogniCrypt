@@ -17,7 +17,6 @@ import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.utils.DeveloperProject;
 
 public class CodeGenLocationSelectionTest {
-	String taskName = "Encryption";
 	
 	/**
 	 * Scenario: user doesn't select a specific class or package.
@@ -36,7 +35,7 @@ public class CodeGenLocationSelectionTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, generatedProject.getResource(),
-				codeGenerator, developerProject, taskName);
+				codeGenerator, developerProject);
 		
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -76,7 +75,7 @@ public class CodeGenLocationSelectionTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedPackage.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, generatedPackage.getResource(),
-				codeGenerator, developerProject, taskName);
+				codeGenerator, developerProject);
 
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -114,7 +113,7 @@ public class CodeGenLocationSelectionTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator,
-				developerProject, taskName);
+				developerProject);
 		
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");

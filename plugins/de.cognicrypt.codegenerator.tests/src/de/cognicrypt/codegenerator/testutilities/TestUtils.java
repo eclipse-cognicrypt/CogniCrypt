@@ -246,7 +246,7 @@ public class TestUtils {
 		final HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
 		final List<InstanceClafer> instList = instGen.generateInstances(constraints);
 		final InstanceClafer inst = instList.get(0);
-		final Configuration ret = new XSLConfiguration(inst, constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile, t.getName());
+		final Configuration ret = new XSLConfiguration(inst, constraints, developerProject.getProjectPath() + Constants.innerFileSeparator + Constants.pathToClaferInstanceFile, t.getName(), developerProject);
 		return ret;
 	}
 
@@ -259,7 +259,7 @@ public class TestUtils {
 	 * @param developerProject The project
 	 * @return The configuration for a given task
 	 */
-	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject, String selectedTask) {
+	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject) {
 		CrySLConfiguration chosenConfig = null;
 		try {
 			File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
@@ -273,7 +273,7 @@ public class TestUtils {
 			developerProject.refresh();
 
 			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
-			chosenConfig = new CrySLConfiguration("", genClass, selectedTask);
+			chosenConfig = new CrySLConfiguration("", genClass);
 			return chosenConfig;
 		} catch(CoreException | IOException e) {
 			Activator.getDefault().logError(e);

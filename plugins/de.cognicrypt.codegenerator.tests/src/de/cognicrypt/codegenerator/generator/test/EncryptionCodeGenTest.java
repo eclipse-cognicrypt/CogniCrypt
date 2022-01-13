@@ -29,7 +29,7 @@ public class EncryptionCodeGenTest {
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, "Encryption");
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
@@ -54,7 +54,7 @@ public class EncryptionCodeGenTest {
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, "Encryption");
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
@@ -81,7 +81,7 @@ public class EncryptionCodeGenTest {
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, "Encryption");
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
@@ -93,7 +93,7 @@ public class EncryptionCodeGenTest {
 		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 		assertEquals(3, TestUtils.countMethods(encClassUnit));
-		assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+		assertEquals(12, TestUtils.countStatements(encClassUnit, "generateKey"));
 		assertEquals(15, TestUtils.countStatements(encClassUnit, "encrypt"));
 		assertEquals(13, TestUtils.countStatements(encClassUnit, "decrypt"));
 		TestUtils.deleteProject(testJavaProject.getProject());
@@ -106,7 +106,7 @@ public class EncryptionCodeGenTest {
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, "Encryption");
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
@@ -133,7 +133,7 @@ public class EncryptionCodeGenTest {
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, "Encryption");
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
@@ -145,7 +145,7 @@ public class EncryptionCodeGenTest {
 		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
 		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
 		assertEquals(3, TestUtils.countMethods(encClassUnit));
-		assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+		assertEquals(12, TestUtils.countStatements(encClassUnit, "generateKey"));
 		assertEquals(14, TestUtils.countStatements(encClassUnit, "encrypt"));
 		assertEquals(12, TestUtils.countStatements(encClassUnit, "decrypt"));
 		TestUtils.deleteProject(testJavaProject.getProject());
@@ -158,7 +158,7 @@ public class EncryptionCodeGenTest {
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, "Encryption");
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
@@ -185,7 +185,7 @@ public class EncryptionCodeGenTest {
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
-		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, "Encryption");
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject);
 
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);

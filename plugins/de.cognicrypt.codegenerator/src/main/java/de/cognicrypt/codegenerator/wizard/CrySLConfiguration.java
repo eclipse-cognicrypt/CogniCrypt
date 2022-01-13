@@ -16,13 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.cognicrypt.codegenerator.generator.GeneratorClass;
+import de.cognicrypt.utils.DeveloperProject;
 
 public class CrySLConfiguration extends Configuration {
 
 	private final GeneratorClass template;
 
-	public CrySLConfiguration(String pathOnDisk, GeneratorClass templateClass, String selectedTask) throws IOException {
-		super(new HashMap<>(), pathOnDisk, selectedTask);
+	public CrySLConfiguration(String pathOnDisk, GeneratorClass templateClass) throws IOException {
+		super(new HashMap<>(), pathOnDisk);
 		this.template = templateClass;
 	}
 

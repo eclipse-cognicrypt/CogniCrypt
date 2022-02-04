@@ -2,14 +2,14 @@ pipeline {
     agent any
 
     tools {
-        maven 'apache-maven-latest'
+        maven 'apache-maven-3.6.3'
         jdk 'oracle-jdk8-latest'
     }
 
     stages {
         stage('Build') {
             steps {
-                sh 'mvn clean package -X -e'
+                sh 'mvn clean install -X -e'
             }
         }
         stage('Publish Snapshot'){

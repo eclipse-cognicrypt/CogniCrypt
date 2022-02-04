@@ -259,7 +259,7 @@ public class TestUtils {
 	 * @param developerProject The project
 	 * @return The configuration for a given task
 	 */
-	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject) {
+	public static CrySLConfiguration createCrySLConfiguration(String template, IResource targetFile, CodeGenerator codeGenerator, DeveloperProject developerProject, final Task t) {
 		CrySLConfiguration chosenConfig = null;
 		try {
 			File templateFile = CodeGenUtils.getResourceFromWithin(Constants.codeTemplateFolder + template).listFiles()[0];
@@ -271,9 +271,11 @@ public class TestUtils {
 			Files.createDirectories(Paths.get(targetFile.getProject().getLocation().toOSString() + projectRelDir));
 			Files.copy(templateFile.toPath(), Paths.get(resFileOSPath), StandardCopyOption.REPLACE_EXISTING);
 			developerProject.refresh();
-
+			
+			final HashMap<Question, Answer> constraints = TestUtils.setDefaultConstraintsForTask(t);
+			
 			GeneratorClass genClass = ((CrySLBasedCodeGenerator) codeGenerator).setUpTemplateClass(pathToTemplateFile, templateFile);
-			chosenConfig = new CrySLConfiguration("", genClass);
+			chosenConfig = new CrySLConfiguration("", genClass, constraints, t.getName(), developerProject);
 			return chosenConfig;
 		} catch(CoreException | IOException e) {
 			Activator.getDefault().logError(e);

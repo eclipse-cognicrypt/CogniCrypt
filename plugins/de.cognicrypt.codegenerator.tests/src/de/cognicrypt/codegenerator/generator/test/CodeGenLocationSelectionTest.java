@@ -12,11 +12,13 @@ import org.junit.Test;
 
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
+import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.utils.DeveloperProject;
 
 public class CodeGenLocationSelectionTest {
+	
 	
 	/**
 	 * Scenario: user doesn't select a specific class or package.
@@ -25,7 +27,9 @@ public class CodeGenLocationSelectionTest {
 	 */
 	@Test
 	public void noSpecificSelection() throws Exception {
-		// task
+		//task
+		Task EncTask = TestUtils.getTask("Encryption");
+		// template
 		String template = "secretkeyencryption";
 		
 		// create Java project without any package or class
@@ -35,7 +39,7 @@ public class CodeGenLocationSelectionTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, generatedProject.getResource(),
-				codeGenerator, developerProject);
+				codeGenerator, developerProject, EncTask);
 		
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -62,6 +66,8 @@ public class CodeGenLocationSelectionTest {
 	@Test
 	public void packageSelection() throws Exception {
 		// task
+		Task EncTask = TestUtils.getTask("Encryption");
+		// template
 		String template = "secretkeyencryption";
 
 		// package name
@@ -75,7 +81,7 @@ public class CodeGenLocationSelectionTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedPackage.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, generatedPackage.getResource(),
-				codeGenerator, developerProject);
+				codeGenerator, developerProject, EncTask);
 
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -102,6 +108,8 @@ public class CodeGenLocationSelectionTest {
 	@Test
 	public void ownClassSelection() throws Exception {
 		// task
+		Task EncTask = TestUtils.getTask("Encryption");
+		// template
 		String template = "secretkeyencryption";
 
 		// create java project with a test class
@@ -113,7 +121,7 @@ public class CodeGenLocationSelectionTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator,
-				developerProject);
+				developerProject, EncTask);
 		
 		// run code generation
 		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");

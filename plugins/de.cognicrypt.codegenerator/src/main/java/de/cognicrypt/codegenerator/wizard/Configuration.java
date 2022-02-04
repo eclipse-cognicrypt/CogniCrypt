@@ -39,25 +39,24 @@ public abstract class Configuration {
 
 	final protected Map<Question, Answer> options;
 	final protected String pathOnDisk;
-	protected String taskName;
+	protected String taskName;	// this is to make the JSON file of question and answers
 	protected DeveloperProject developerProject;
 
 	@SuppressWarnings("unchecked")
 	public Configuration(Map<?, ?> constraints, String pathOnDisk, String taskName, DeveloperProject developerProject) {
-//		this.developerProject = null;
+
 		this.pathOnDisk = pathOnDisk;
 		this.options = (Map<Question, Answer>) constraints;
 		this.developerProject = developerProject;
+		this.taskName = taskName;
+		
 		String path = "";
 		path = developerProject.getProjectPath();
-		
-		this.taskName = taskName;
 		
 		JSONObject obj = new JSONObject();
 		
 		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
-		//String jsonPath = Utils.getCurrentProject().getLocation().toOSString() + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION;
-
+		// this file contains the question and answers of the task user chose and picked in codegen wizard
 		File file = new File(path + Constants.innerFileSeparator + taskName + Constants.JSON_EXTENSION);  
         try {
 			file.createNewFile();
@@ -69,16 +68,6 @@ public abstract class Configuration {
 			Activator.getDefault().logError(e);
 		}  
 		
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Configuration(Map<?, ?> constraints, String pathOnDisk) {
-		this.pathOnDisk = pathOnDisk;
-		this.options = (Map<Question, Answer>) constraints;
-		
-		JSONObject obj = new JSONObject();
-		
-		this.options.forEach((question,answer) ->obj.put(question.getQuestionText(), answer.getValue()));
 	}
 
 	/**

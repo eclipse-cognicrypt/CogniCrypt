@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
+import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
 import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.core.Constants;
@@ -38,6 +39,9 @@ public class TwoTimesCogniCryptRunTest {
 	 */
 	@Test
 	public void runCCTwoTimesNoSpecificSelection() throws Exception {
+		// task
+		Task EncTask = TestUtils.getTask("Encryption");
+		Task SecPassTask = TestUtils.getTask("SecurePassword");
 		// task template
 		String templateSecEnc = "secretkeyencryption";
 		String templateSecPwd = "securepassword";
@@ -49,7 +53,7 @@ public class TwoTimesCogniCryptRunTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
-				generatedProject.getResource(), codeGenerator, developerProject, "Encryption");
+				generatedProject.getResource(), codeGenerator, developerProject, EncTask);
 
 		// first generation run
 		boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -57,7 +61,7 @@ public class TwoTimesCogniCryptRunTest {
 
 		// setup for second generation
 		chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, generatedProject.getResource(), codeGenerator,
-				developerProject, "SecurePassword");
+				developerProject, SecPassTask);
 
 		// second generation run
 		boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -87,7 +91,10 @@ public class TwoTimesCogniCryptRunTest {
 	 */
 	@Test
 	public void runCCTwoTimesOutputClassSelection() throws Exception {
-		// task template
+		// task
+		Task EncTask = TestUtils.getTask("Encryption");
+		Task SecPassTask = TestUtils.getTask("SecurePassword");
+		// task
 		String templateSecEnc = "secretkeyencryption";
 		String templateSecPwd = "securepassword";
 
@@ -98,7 +105,7 @@ public class TwoTimesCogniCryptRunTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
-				generatedProject.getResource(), codeGenerator, developerProject, "Encryption");
+				generatedProject.getResource(), codeGenerator, developerProject, EncTask);
 
 		// first generation run
 		boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -116,7 +123,7 @@ public class TwoTimesCogniCryptRunTest {
 		codeGenerator = new CrySLBasedCodeGenerator(outputClass.getResource());
 		developerProject = codeGenerator.getDeveloperProject();
 		chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, outputClass.getResource(), codeGenerator,
-				developerProject, "SecurePassword");
+				developerProject, SecPassTask);
 
 		// second generation run
 		boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -143,6 +150,9 @@ public class TwoTimesCogniCryptRunTest {
 	 */
 	@Test
 	public void runCCTwoTimesLogicClassSelection() throws Exception {
+		// task
+		Task EncTask = TestUtils.getTask("Encryption");
+		Task SecPassTask = TestUtils.getTask("SecurePassword");
 		// task template
 		String templateSecEnc = "secretkeyencryption";
 		String templateSecPwd = "securepassword";
@@ -154,7 +164,7 @@ public class TwoTimesCogniCryptRunTest {
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(generatedProject.getResource());
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
 		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(templateSecEnc,
-				generatedProject.getResource(), codeGenerator, developerProject, "Encryption");
+				generatedProject.getResource(), codeGenerator, developerProject, EncTask);
 
 		// first generation run
 		boolean secEncCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
@@ -172,7 +182,7 @@ public class TwoTimesCogniCryptRunTest {
 		codeGenerator = new CrySLBasedCodeGenerator(encClass.getResource());
 		developerProject = codeGenerator.getDeveloperProject();
 		chosenConfig = TestUtils.createCrySLConfiguration(templateSecPwd, encClass.getResource(), codeGenerator,
-				developerProject, "SecurePassword");
+				developerProject, SecPassTask);
 
 		// second generation run
 		boolean secPwdCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");

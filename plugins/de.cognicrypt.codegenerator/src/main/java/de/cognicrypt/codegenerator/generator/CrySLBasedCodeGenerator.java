@@ -1255,6 +1255,7 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	    matcher.find();
 	    String header =  matcher.group();
 	    //retrieve javaDoc
+//	    List cl = cu.getCommentList();
 		String classJavaDoc = (String) cu.getCommentList().get(1).toString();
 		
 		GeneratorClass templateClass = new GeneratorClass();

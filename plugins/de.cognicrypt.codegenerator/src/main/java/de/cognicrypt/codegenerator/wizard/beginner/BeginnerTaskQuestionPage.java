@@ -24,6 +24,7 @@ import java.util.Map.Entry;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -33,13 +34,19 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -158,16 +165,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 	@Override
 	public void createControl(final Composite parent) {
 
-		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		final ScrolledComposite sc = new ScrolledComposite(parent, SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		this.container = new Composite(sc, SWT.NONE);
-		//		this.container.setBounds(10, 10, 450, 200);
-		// Updated the number of columns to order the questions vertically.
 		final GridLayout layout = new GridLayout(1, false);
-
-		// To display the Help view after clicking the help icon
 		this.container.setLayout(layout);
+		this.container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
 		// If legacy JSON files are in effect.
 		if (this.page == null) {
 			createQuestionControl(this.container, this.quest);
@@ -180,29 +185,33 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			//setting focus to the first field on the page
 			this.container.getChildren()[0].setFocus();
 		}
+		
 		sc.setContent(this.container);
 		sc.setExpandHorizontal(true);
 		sc.setExpandVertical(true);
-		sc.setMinSize(sc.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		sc.setSize(sc.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		setControl(sc);
 	}
 
 	private void createQuestionControl(final Composite parent, final Question question) {
 
 		final List<Answer> answers = question.getAnswers();
-		final Composite container = getPanel(parent);
-		final Label label = new Label(container, SWT.TOP | SWT.FILL | SWT.WRAP);
-		final GridData gd_question = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
-		gd_question.widthHint = 750;
-		label.setLayoutData(gd_question);
-		label.setText(question.getQuestionText());
+		
+		// create group
+		final Group container = new Group(parent, SWT.NONE);
+		container.setLayout(new GridLayout(1, false));
+		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-		final Composite answerPanel = new Composite(parent, SWT.NONE);
-		final GridLayout answerLayout = new GridLayout();
-		answerLayout.numColumns = 4;
-		answerLayout.verticalSpacing = 15;
-		answerLayout.horizontalSpacing = 15;
-		answerPanel.setLayout(answerLayout);
+		// add questions title to the group
+		final Label label = createHeadline(container, question.getQuestionText());
+		
+		// add answer panel to the group
+		final Composite answerPanel = new Composite(container, SWT.NONE);
+		final GridLayout rl = new GridLayout(1, false);
+		rl.marginLeft = 0;
+		answerPanel.setLayout(rl);
+		answerPanel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+	
 
 		int noOfAnswers = answers.size();
 		switch (question.getElement()) {
@@ -216,10 +225,9 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 					BeginnerTaskQuestionPage.this.selectionMap.put(question, (Answer) selection.getFirstElement());
 					question.setEnteredAnswer((Answer) selection.getFirstElement());
 				});
-				new Label(parent, SWT.NONE);
 				//added description for questions
 				if (!question.getNote().isEmpty()) {
-					createNote(parent, question, true);
+					createNote(answerPanel, question, true);
 				}
 				this.finish = true;
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish);
@@ -231,19 +239,14 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 			case radio:
 				final String radioNote = question.getNote();
-				Group radioNoteControl = null;
+				Composite radioNoteControl = null;
 				if (!radioNote.isEmpty()) {
-					radioNoteControl = createNote(container, question, !(radioNote.contains("$$$")));
+					radioNoteControl = createNote(answerPanel, question, !(radioNote.contains("$$$")));
 				}
 				final Button[] radioButtons = new Button[noOfAnswers];
-				boolean shouldBreak = noOfAnswers % 4 == 1;
 				for (int i = 0; i < noOfAnswers; i++) {
-					final int count = i;
-					if (shouldBreak && i + 2 == noOfAnswers) {
-						new Label(answerPanel, SWT.NULL);
-					}
-
-					final Group finalRadioNote = radioNoteControl;
+					
+					final Composite finalRadioNote = radioNoteControl;
 					final String ans = answers.get(i).getValue();
 					radioButtons[i] = new Button(answerPanel, SWT.RADIO);
 					radioButtons[i].setText(ans);
@@ -279,18 +282,18 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				BeginnerTaskQuestionPage.this.setPageComplete(this.finish = true);
 				break;
 			case checkbox:
-				Group checkboxNoteControl = null;
+				Composite checkboxNoteControl = null;
 				final String checkboxNoteText = question.getNote();
 				//added description for questions
 				if (!checkboxNoteText.isEmpty()) {
-					checkboxNoteControl = createNote(container, question, !checkboxNoteText.contains("$$$"));
+					checkboxNoteControl = createNote(answerPanel, question, !checkboxNoteText.contains("$$$"));
 				}
 				final List<Button> cbs = new ArrayList<Button>();
 				final List<Button> exclusiveCbs = new ArrayList<Button>(noOfAnswers);
 
 				for (int i = 0; i < noOfAnswers; i++) {
 					final int count = i;
-					final Group finalCheckBoxControl = checkboxNoteControl;
+					final Composite finalCheckBoxControl = checkboxNoteControl;
 					final Answer a = answers.get(i);
 					final Button curCheckbox = new Button(answerPanel, SWT.CHECK);
 					curCheckbox.setText(a.getValue());
@@ -357,9 +360,8 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 				break;
 
 			case rbtextgroup:
-				final Composite rbbtnControl = new Composite(parent, SWT.NONE);
-				final GridData rbbtnControlData = new GridData(GridData.FILL, GridData.FILL, false, false);
-				rbbtnControl.setLayoutData(rbbtnControlData);
+				final Composite rbbtnControl = new Composite(answerPanel, SWT.NONE);
+				rbbtnControl.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 				rbbtnControl.setLayout(new GridLayout(3, false));
 
 				final Map<Button, List<Control>> rbgroups = new HashMap<Button, List<Control>>();
@@ -705,34 +707,48 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 		}
 	}
 
-	private Group createNote(final Composite parent, final Question question, boolean visible) {
-		final Group notePanel = new Group(parent, SWT.NONE);
-		notePanel.setText("Note:");
-		final GridLayout gridLayout = new GridLayout();
-		notePanel.setLayout(gridLayout);
-		final GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, false);
-		gridData.horizontalSpan = 1;
-		notePanel.setLayoutData(gridData);
-		final Font boldFont = new Font(notePanel.getDisplay(), new FontData(Constants.ARIAL, 10, SWT.BOLD));
-		notePanel.setFont(boldFont);
-		notePanel.pack();
-		setControl(parent);
+	private Composite createNote(final Composite parent, final Question question, boolean visible) {
+		final IPreferenceStore prefStore = Activator.getDefault().getPreferenceStore();
+		final Composite notePanel = new Composite(parent, SWT.BORDER);
+		notePanel.setLayout(new GridLayout(1, false));
+		notePanel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		final Label headline = createHeadline(notePanel, "Note:");
+		setControl(notePanel);
 
-		Text note = new Text(notePanel, SWT.MULTI | SWT.WRAP);
-		note.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
 		String noteText = question.getNote();
 		if (noteText.contains("$$$")) {
-			noteText = noteText.split("\\$\\$\\$")[1];
+			String[] noteText1 = noteText.split("\\$\\$\\$");
+			noteText = noteText1[1];
+
+			if (!prefStore.getBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS)) {
+				noteText = noteText + noteText1[2];
+			}
 		}
+		
+		final Label note = new Label(notePanel, SWT.WRAP);
 		note.setText(noteText);
-		note.pack();
-		note.setBounds(10, 20, 585, 60);
-		note.setSize(note.computeSize(585, SWT.DEFAULT));
-		setControl(notePanel);
-		note.setEditable(false);
-		note.setEnabled(true);
-		notePanel.setVisible(visible);
+		final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.widthHint = 1; //otherwise the wizard window will extend in width
+		note.setLayoutData(gd);
+		
+		final Color gray = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
+		headline.setForeground(gray);
+		note.setForeground(gray);
+		
 		return notePanel;
+	}
+	
+	public Label createHeadline(final Composite parent, String text) {
+		final Label label = new Label(parent, SWT.WRAP);
+		final GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.widthHint = 1; //otherwise the wizard window will extend in width
+		label.setLayoutData(gd);
+		label.setText(text);
+		final Font boldFont = new Font(Display.getCurrent(), new FontData( "Arial", 12, SWT.BOLD ));
+		label.setFont(boldFont);
+		boldFont.dispose();
+		return label;
 	}
 
 	@Override
@@ -791,18 +807,6 @@ public class BeginnerTaskQuestionPage extends WizardPage {
 			}
 		}
 		return this.page.getNextID();
-	}
-
-	private Composite getPanel(final Composite parent) {
-		final Composite titledPanel = new Composite(parent, SWT.NONE);
-		final Font boldFont = new Font(titledPanel.getDisplay(), new FontData("Arial", 9, SWT.BOLD));
-		titledPanel.setFont(boldFont);
-		final GridLayout layout2 = new GridLayout();
-
-		layout2.numColumns = 1;
-		titledPanel.setLayout(layout2);
-
-		return titledPanel;
 	}
 
 	public synchronized HashMap<Question, Answer> getSelection() {

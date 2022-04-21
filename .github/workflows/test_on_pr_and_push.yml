@@ -44,5 +44,5 @@ jobs:
             ${{ runner.os }}-maven-
       # Compiles, tests, and packages the CogniCrypt project
       - name: Compile, test, and package the project
-        run: mvn clean install
+        run: mvn clean install -X -e
 

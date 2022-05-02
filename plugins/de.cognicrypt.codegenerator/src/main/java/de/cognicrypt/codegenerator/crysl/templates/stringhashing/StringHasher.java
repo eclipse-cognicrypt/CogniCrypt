@@ -16,6 +16,9 @@ import java.util.Base64;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
+/**
+ * The Class StringHasher hashes a given String and verifies the hash.
+ */
 public class StringHasher {
 
 	public static java.lang.String createHash(java.lang.String msg) throws GeneralSecurityException {

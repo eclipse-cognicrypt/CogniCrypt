@@ -171,8 +171,15 @@ public abstract class CodeGenerator {
 				}
 			}
 		}
-
-		final int imports = docContent.startsWith("package") ? docContent.indexOf("\n") : 0;
+		int imports = 0;
+		//if the file starts with package then the imports should be on the line after that
+		if (docContent.startsWith("package")) {
+			imports = docContent.indexOf("\n");
+		
+		}if(docContent.startsWith("/*") && docContent.contains("package")) { //if the file starts with the header comment, then the imports should be added after header and package name
+			int temp = docContent.indexOf("package");
+			imports = docContent.indexOf("\n", temp);
+		}
 		final String[] callsForGenClasses = getCallsForGenClasses(temporaryOutputFile);
 		currentlyOpenDocument.replace(cursorPos, 0, callsForGenClasses[1]);
 		currentlyOpenDocument.replace(imports, 0, callsForGenClasses[0] + Constants.lineSeparator);

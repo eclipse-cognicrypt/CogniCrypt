@@ -32,7 +32,8 @@ public class UserAuthManagerCodeGenTest {
 	private DeveloperProject developerProject;
 	private IResource targetFile;
 	private ICompilationUnit testClassUnit;
-	private String taskName = "UserAuthorityManager";
+//	private String taskName = "UserAuthorityManager";
+	Task taskName = TestUtils.getTask("UserAuthorityManager");
 
 	@After
 	public void tearDown() throws CoreException {

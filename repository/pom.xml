@@ -59,6 +59,7 @@
 							<goal>generate-repository-facade</goal>
 						</goals>
 						<configuration>
+							<skipBuildInfo>true</skipBuildInfo>
 							<associateSites>
 								<associateSite>http://download.eclipse.org/cognicrypt/stable</associateSite>
 								<associateSite>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</associateSite>

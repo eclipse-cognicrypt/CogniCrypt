@@ -7,7 +7,12 @@
 
 package de.cognicrypt.core;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -58,6 +63,7 @@ public class Constants {
 	public static final String MavenNatureID = "org.eclipse.m2e.core.maven2Nature";
 
 	public static final String rsrcPath = "src" + Constants.innerFileSeparator + "main" + Constants.innerFileSeparator + "resources" + Constants.innerFileSeparator;
+	public static final String localrsrcPath = "res" + Constants.innerFileSeparator;
 	public static final String providerPath = Constants.rsrcPath + "AdditionalResources" + Constants.innerFileSeparator + "Provider";
 
 	// JSON task file
@@ -181,13 +187,6 @@ public class Constants {
 	public static final String ERROR_MESSAGE_NO_PROJECT = "There is no Java project in your workspace. Please create one and restart CogniCrypt.";
 	public static final String ERROR_MESSAGE_NO_ADDITIONAL_RES_DIRECTORY = "No directory for additional resources found.";
 	public static final String ERROR_MESSAGE_NO_FILE = "No file found";
-	public static final String ERROR = "ERROR: ";
-	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
-	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file. Please choose a valid one.";
-	public static final String ERROR_MESSAGE_DUPLICATE_TASK_NAME = "A task with this name already exists.";
-	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
-	public static final String ERROR_MESSAGE_BLANK_TASK_NAME = "The Task name cannot be empty. Please enter a valid name for the Task.";
-	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
 	
 	public static final String ERROR_CANNOT_FIND_NODE = "The requested node could not be found";
 	public static final String ERROR_CANNOT_FILE_TO_BYTEARRAY = "Error occured when passing a Java file into a byte array.";
@@ -269,226 +268,140 @@ public class Constants {
 	public static final String PASSWORD = "Password";
 	public static final String PORT_NUMBER = "Port number";
 	public static final String IP_ADDRESS = "Ip address";
+	
 	// Flags for default project selection
 	public static boolean WizardActionFromContextMenuFlag = false;
 
-	// Constants for the Task Integrator Wizard.
-	// Page constants
+	// Task Integrator Wizard	
+	public static final String PLUGIN_ID = "de.cognicrypt.integrator.task";
+	
+	public static final String PAGE_TASK_INFORMATION = "pageForTaskInformation";
+	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "New task";
+	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Provide the basic details about the task and add templates.";
 
-	public static final String PAGE_NAME_FOR_MODE_OF_WIZARD = "pageForChoiceOfModeOfWizard";
-	public static final String PAGE_TITLE_FOR_MODE_OF_WIZARD = "Please select the mode for the wizard";
-	public static final String PAGE_DESCRIPTION_FOR_MODE_OF_WIZARD = "Here you can update the basic details of the task, and the mode in which the wizard will run.";
-
-	public static final String PAGE_NAME_FOR_CLAFER_FILE_CREATION = "pageForClaferFileCreation";
-	public static final String PAGE_TITLE_FOR_CLAFER_FILE_CREATION = "Add the variablity modelling here";
-	public static final String PAGE_DESCRIPTION_FOR_CLAFER_FILE_CREATION = "Here you can add features to the variability model here.";
-
-	public static final String PAGE_NAME_FOR_XSL_FILE_CREATION = "pageForXSLFileCreation";
-	public static final String PAGE_TITLE_FOR_XSL_FILE_CREATION = "Add data for the code generation";
-	public static final String PAGE_DESCRIPTION_FOR_XSL_FILE_CREATION = "Here you can details for the code generation.";
-
+	public static final String TASK_DESCRIPTION_MESSAGE = "Describe the task";
+	public static final String TEMPLATES = "Templates";
+	
+	public static final String ICON_DESCRIPTION = "Select PNG file that contains the task icon";
+	public static final String DEFAULT_ICON_PATH = "icons/task-default-icon.png";
+	
+	public static final String GUIDED_MODE_DESCRIPTION = "Guided Mode";
+	public static final String JSON_DESCRIPTION = "Select JSON file that contains the high-level questions";
+	
+	public static final String ZIP_DESCRIPTION = "Select ZIP file that contains the task information";
+	
 	public static final String PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS = "pageForHighLevelQuestions";
-	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Add the high level questions and their dependencies here";
+	public static final String PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS = "Questions catalog";
 	public static final String PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS =
-			"Here you can add the questions that will be asked to the end user, and the dependencies to the " + "variability modelling and the code generation.";
+			"Add questions and possible answers with their associated templates for the code generation wizard";
 
-	public static final String PAGE_NAME_FOR_LINK_ANSWERS = "pageForLinkAnswers";
-	public static final String PAGE_TITLE_FOR_LINK_ANSWERS = "Select the question that needs to be linked to another question";
-	public static final String PAGE_DESCIPTION_FOR_LINK_ANSWERS =
-			"Here you can configure which question should be displayed next upon selection of a particular answer of the current question" + "by clicking the Link Answer button.";
+	public static final String QUESTION_LABEL = "Question";
+	public static final String DELTETE_BTN_TOOLTIP = "Click to delete the question";
+	
+	public static final String REMOVE_QUESTION = "Remove Question";
+	public static final String DELETE_CONFIRMATION = "Are you sure that you want to remove this question?";
+	
+	public static final String QUESTION_DESCRIPTION = "Describe the question";
+	public static final String ANSWERS_LABEL = "Answers";
+	
+	public static final String ADD_ANSWER_TOOLTIP = "Click to add an answer";
+	
+	public static final String TASK_SUCCESFULLY_IMPORTED = "Task succesfully imported";
+	
+	// Buttons
+	public static final String ADD_QUESTION = "Add Question";
+	public static final String ADD_ANSWER = "Add Answer";
+	public static final String GENERATE_BUTTON = "Generate";
+	
+	// Images
+	public static final Image DEC_INFORMATION = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage();
+	public static final Image DEC_ERROR = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_ERROR).getImage();
+	public static final Image DEC_REQUIRED = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_REQUIRED).getImage();
+	public static final Image DEC_WARNING = FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_WARNING).getImage();
+		
+	// define custom Code Generation Template/Resource Directory
+	public final static String RELATIVE_CogniCrypt_RESOURCE_DIR = "resources/CogniCrypt";
+	public final static String ECLIPSE_CogniCrypt_RESOURCE_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_CogniCrypt_RESOURCE_DIR;
+	public final static String RELATIVE_LOC_TEMP_DIR = RELATIVE_CogniCrypt_RESOURCE_DIR + "/templates";
+	public final static String ECLIPSE_LOC_TEMP_DIR = Platform.getInstallLocation().getURL().getPath() + RELATIVE_LOC_TEMP_DIR;
+	public final static String ECLIPSE_LOC_RES_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/res";
+	public final static String ECLIPSE_LOC_ADDRES_DIR = ECLIPSE_LOC_RES_DIR + "/AdditionalResources";
+	public final static String ECLIPSE_LOC_CLA_DIR = ECLIPSE_LOC_RES_DIR + "/ClaferModel";
+	public final static String ECLIPSE_LOC_IMG_DIR = ECLIPSE_LOC_RES_DIR + "/images";
+	public final static String ECLIPSE_LOC_TASKDESC_DIR = ECLIPSE_LOC_RES_DIR + "/TaskDesc";
+	public final static String ECLIPSE_LOC_TASKS_DIR = ECLIPSE_LOC_RES_DIR + "/Tasks";
+	public final static String ECLIPSE_LOC_XSL_DIR = ECLIPSE_LOC_TASKS_DIR + "/XSLTemplates";
+	public final static String ECLIPSE_LOC_EXPORT_DIR = ECLIPSE_CogniCrypt_RESOURCE_DIR + "/ExportableTasks";
+	
+	public final static String customjsonTaskFile = ECLIPSE_LOC_TASKS_DIR + "/tasks.json";
 
-	// Widget constants
-	// Labels
-	public static final String LABEL_BROWSE_BUTTON = "Browse";
+	public static final String IMPORT_SUCCESSFUL = "The task has been succesfully imported and can be used after restarting Eclipse.";
+	public static final String EXPORT_SUCCESSFUL = "The task has been succesfully generated. You can use it after restarting Eclipse. An exportable ZIP File for this task has been copied to:" + ECLIPSE_LOC_EXPORT_DIR;
+
+	public static final String DEFAULT_ANSWER = "Default Answer";
+	public static final String DEFAULT_ANSWER_TOOLTIP = "The answer that will be automatically selected when question appears for the first time";
+	
+	// Warning
+	public static final String WARNING_TEMPLATE_NOT_USED_TITLE = "Unused Template";
+	public static final String WARNING_TEMPLATE_NOT_USED = "A template was added but is not used. Do you want to generate the task anyway?";
+	
+	// Errors
+	public static final String ERROR = "ERROR: ";
+	public static final String ERROR_MESSAGE_BLANK_FILE_NAME = "Please choose a valid file.";
+	public static final String ERROR_MESSAGE_UNABLE_TO_READ_FILE = "There is a problem with the selected file.";
+	public static final String MESSAGE_REQUIRED_FIELD = "This is a required field.";
+	public static final String ERROR_CANNOT_REMOVE_PACKAGE = "The package could not be removed.";
+	public static final String ERROR_BLANK_TEMPLATE_LIST = "The template list cannot be empty. Please add a template.";
+	public static final String ERROR_SINGLE_TEMPLATE_ID = "The template's identifier does not match the task name and can therefor not be used to generate a single template task. Please add another template.";
+	public static final String ERROR_MESSAGE_BLANK_QUESTION_NAME = "The question name cannot be empty. Please enter a valid name for the question.";
+	public static final String ERROR_BLANK_ANSWERS_LIST = "The answers list cannot be empty. Please add an answer.";
+	public static final String ERROR_EMPTY_ANSWER_TEXT = "The text of an answer cannot be empty.";
+	
+	public static final String ERROR_TASK_ALREADY_INTEGRATED = "The chosen template's associated task has already been integrated.";
+	public static final String ERROR_DIFFERENT_TASK_NAME = "The chosen template's file name does not match the task name of previously added templates and can therefor not be added.";
+	public static final String ERROR_FILE_NOT_FOUND = "The chosen template file could not be found.";
+	public static final String ERROR_NO_PACKAGE = "The chosen template's source code contains no package and can therefor not be added.";
+	
+	public static final String ERROR_TEMPLATE_IS_USED_IN_ANSWER = "The chosen template is used in an answer and can therefor not be removed.";
+	
+	public static final String ERROR_MULTIPLE_QUESTIONS_NOT_SUPPORTED = "Multiple questions are currently not supported.";
+	
+	public static final String ERROR_PROBLEMS_WITH_ZIP = "Problems with the provided ZIP (Most likly has a wrong stucture).";
+	public static final String ERROR_PROBLEMS_WITH_FILES = "Problems with the provided files.";
+	public static final String ERROR_ICON_FILE_NOT_FOUND = "ZIP invalid (Icon File not found) \n"; 
+	public static final String ERROR_JSON_FILE_NOT_FOUND = "ZIP invalid (Question JSON File not found) \n";
+	public static final String ERROR_TEMPLATE_FILE_NOT_FOUND = "ZIP invalid (Template Files not found) \n";
+	
+	public static final String ERROR_FILE_COPY = "There was a problem copying file ";
+	public static final String ERROR_UNKNOWN_FILE_TYPE = "Unknown file type.";
+	public static final String ERROR_TASK_UPDATE = "There was a problem updating the task file.\n";
+	public static final String ERROR_DIRECTORY_CREATION = "Failed to create directory ";
+	public static final String ERROR_ENTRY_OUTSIDE_TARGETDIR = "Entry is outside of the target dir: ";
+	
+	// Labels	
+	public static final String LABEL_BROWSE_BUTTON = "Choose File";
+	public static final String QUESTION = "Question";	
+	public static final String DESCRIBE_QUESTION = "Description";
 	// Dimensions
 	public static final int UI_WIDGET_HEIGHT_NORMAL = 29;
 	// Constants for the composites
 	public static final String WIDGET_DATA_NAME_OF_THE_TASK = "NameOfTheTask";
-	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_TASK = "Location of the Library";
-	public static final String WIDGET_DATA_LIBRARY_LOCATION_OF_THE_HELP_FILE = "Location of the Help file";
-	public static final String WIDGET_DATA_LOCATION_OF_CLAFER_FILE = "Location of the Clafer file";
-	public static final String WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE = "Location of the Crysl Template file";
-	public static final String WIDGET_DATA_LOCATION_OF_XSL_FILE = "Location of the XSL file";
-	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Location of the JSON file";
-	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Location of the PNG file";
-	public static final String WIDGET_DATA_LOCATION_OF_HELP_FILE = "Location of the Help file";
-	public static final String WIDGET_DATA_IS_CUSTOM_LIBRARY_REQUIRED = "isCustomLibraryRequired";
+	public static final String WIDGET_DATA_LOCATION_OF_CRYSLTEMPLATE_FILE = "Select code template";
+	public static final String WIDGET_DATA_LOCATION_OF_JSON_FILE = "Questions";
+	public static final String WIDGET_DATA_LOCATION_OF_PNG_FILE = "Icon";
 	public static final String WIDGET_DATA_IS_GUIDED_MODE_CHOSEN = "isGuidedModeChosen";
-	public static final String WIDGET_DATA_IS_GUIDED_MODE_FORCED = "isGuidedModeForced";
-
-	// Constants for the drop down for the library type on the mode selection page
-	public static final String WIDGET_CONTENT_EXISTING_LIBRARY = "No custom Library";
-	public static final String WIDGET_CONTENT_CUSTOM_LIBRARY = "Custom Library";
-
-	// Constants for the drop down for the xsl tag on the xsl code page
-	public static final String XSL_VARIABLE_TAG = "xslVariable";
-	public static final String XSL_SELECT_TAG = "select";
-	public static final String XSL_IF_TAG = "if";
-	public static final String XSL_RESULT_DOCUMENT = "result-document";
-	public static final String XSL_APPLY_TEMPLATES = "apply-templates";
-	public static final String XSL_CHOOSE_TAG = "choose";
-	public static final String XSL_WHEN_TAG = "when";
-	public static final String XSL_OTHERWISE_TAG = "otherwise";
-
-	// Default bounds for the composites
-	public static final Point DEFAULT_SIZE_FOR_TI_WIZARD = new Point(1050, 600);
-	public static final Rectangle RECTANGLE_FOR_COMPOSITES = new Rectangle(0, 0, 887, 500 - 10 - 10); // 897 - 10
-	public static final Rectangle RECTANGLE_FOR_FIRST_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 10, 100, 29); // 1000 - 83 - 10 -10
-	public static final Rectangle RECTANGLE_FOR_SECOND_BUTTON_FOR_NON_MODE_SELECTION_PAGES = new Rectangle(897, 49, 100, 29); // 1000 - 83 - 10 -10
-	// public static final Rectangle RECTANGLE_FOR_GRANULAR_CLAFER_UI_ELEMENT = new
-	// Rectangle(10, 10, 744, 280);
-	public static final int WIDTH_FOR_GRANULAR_CLAFER_UI_ELEMENT = 744;
-	public static final int HEIGHT_FOR_GRANULAR_CLAFER_UI_ELEMENT = 280;
-
-	public static final int SINGLE_LINE_TEXT_BOX_LIMIT = 256;
-	public static final int MULTI_LINE_TEXT_BOX_LIMIT = 2560;
-
-	// Form data for CompositeGranularUIForClaferFeature
-	public static final int RIGHT_VALUE_FOR_GRANULAR_CLAFER_UI_SUB_ELEMENT = 736;
+	public static final String WIDGET_DATA_LOCATION_OF_IMPORT_FILE = "Import File";
 
 	public static final int PADDING_BETWEEN_GRANULAR_UI_ELEMENTS = 10;
-	public static final int PADDING_BETWEEN_SMALLER_UI_ELEMENTS = 3;
-
-	public static final int WIDTH_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 409;
-	public static final int HEIGHT_FOR_CLAFER_FEATURE_PROPERTY_UI_ELEMENT = 37;
-
-	// TypeOfTargetDataForSmallUIElements int values. Add the type of data that
-	// needs to be shown on the composite here.
-	public static final int FEATURE_PROPERTY = 0;
-	public static final int FEATURE_CONSTRAINT = 1;
-
-	// source for the contents of this enum : https://www.w3.org/TR/xslt20/
-	public static enum XSLTags {
-		XSL_VARIABLE_TAG("Variable", "<xsl:variable>", "</xsl:variable>", new String[] {"name", "select", "as"
-		/*
-		 * , "static", "visibility"
-		 */
-		}), XSL_VALUE_OF_TAG("Value of", "<xsl:value-of/>", "", new String[] {"select", "separator", "disable-output-escaping"}), XSL_IF_TAG("If", "<xsl:if>", "</xsl:if>",
-				new String[] {"test"}), XSL_RESULT_DOCUMENT("Result Document", "<xsl:result-document>", "</xsl:result-document>",
-						new String[] {"href", "format", "validation", "type", "method", "byte-order-mark", "cdata-section-elements", "doctype-public", "doctype-system", "encoding",
-								"escape-uri-attributes", "include-content-type", "indent", "media-type", "normalization-form", "omit-xml-declaration", "standalone", "undeclare-prefixes",
-								"use-character-maps", "output-version"
-						/*
-						 * , "allow-duplicate-names", "build-tree", "html-version", "item-separator", "json-node-output-method", "parameter-document", "suppress-indentation",
-						 */
-						}), XSL_APPLY_TEMPLATES("Apply Templates", "<xsl:apply-templates />", "", new String[] {"select", "mode"}), XSL_CHOOSE_TAG("Choose", "<xsl:choose>", "</xsl:choose>",
-								new String[] {}), XSL_WHEN_TAG("When", "<xsl:when>", "</xsl:when>",
-										new String[] {"test"}), XSL_OTHERWISE_TAG("Otherwise", "<xsl:otherwise>", "</xsl:otherwise>", new String[] {});
-
-		private final String XSLTagFaceName;
-		private final String XSLBeginTag;
-		private final String XSLEndTag;
-		private final String[] XSLAttributes;
-
-		/**
-		 * @param XSLTagFaceNameParam
-		 * @param XSLBeginTagParam
-		 * @param XSLEndTagParam
-		 */
-		private XSLTags(final String XSLTagFaceNameParam, final String XSLBeginTagParam, final String XSLEndTagParam, final String[] XSLAttributesParam) {
-			this.XSLTagFaceName = XSLTagFaceNameParam;
-			this.XSLBeginTag = XSLBeginTagParam;
-			this.XSLEndTag = XSLEndTagParam;
-			this.XSLAttributes = XSLAttributesParam;
-		}
-
-		/**
-		 * @return the xSLTagFaceName
-		 */
-		public String getXSLTagFaceName() {
-			return this.XSLTagFaceName;
-		}
-
-		/**
-		 * @return the xSLBeginTag
-		 */
-		public String getXSLBeginTag() {
-			return this.XSLBeginTag;
-		}
-
-		/**
-		 * @return the xSLEndTag
-		 */
-		public String getXSLEndTag() {
-			return this.XSLEndTag;
-		}
-
-		/**
-		 * @return the xSLAttributes
-		 */
-		public String[] getXSLAttributes() {
-			return this.XSLAttributes;
-		}
-
-	}
-
-	public static enum FeatureConstraintRelationship {
-		EQUAL("="), NOTEQUAL("!="), LESSTHAN("<"), GREATERTHAN(">"), LESSTHANEQUALTO("<="), GREATERTHANEQUALTO(">="), AND("and"), OR("or");
-
-		private final String operatorValue;
-
-		FeatureConstraintRelationship(final String operatorValue) {
-			this.operatorValue = operatorValue;
-		}
-
-		/**
-		 * @return the operatorValue
-		 */
-		public String getOperatorValue() {
-			return this.operatorValue;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 *
-		 * @see java.lang.Enum#toString() Just return the operator value instead of the name.
-		 */
-		@Override
-		public String toString() {
-			return this.operatorValue;
-		}
-
-	}
-
-	public static enum FeatureType {
-		CONCRETE, ABSTRACT;
-
-		/*
-		 * Although "concrete" is never used in the actual cfr file, "abstract" is used. Hence the toString() returns lower case.
-		 */
-		@Override
-		public String toString() {
-			return name().toLowerCase();
-		}
-
-	}
-
-	public static final String SLASH = "/";
-	public static final String ATTRIBUTE_BEGIN = "[@";
-	public static final String ATTRIBUTE_END = "=\'\']";
-	public static final String DOT = ".";
 
 	// for the file utils for the task integrator.
-	public static final String JAR_FILE_DIRECTORY_PATH = rsrcPath + "AdditionalResources" + innerFileSeparator;
-	public static final String CFR_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModel" + innerFileSeparator;
-	public static final String CFR_BIN_FILE_DIRECTORY_PATH = rsrcPath + "ClaferModelBin" + innerFileSeparator;
-	public static final String JSON_FILE_DIRECTORY_PATH = rsrcPath + "TaskDesc" + innerFileSeparator;
-	public static final String IMAGE_FILE_DIRECTORY_PATH = rsrcPath + "images" + innerFileSeparator;
-	public static final String XML_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
-	public static final String pluginXmlFile = "plugin.xml";
-	public static final String XSL_FILE_DIRECTORY_PATH = rsrcPath + "XSLTemplates" + innerFileSeparator;
-	public static final String HELP_FILE_DIRECTORY_PATH = rsrcPath + "Help" + innerFileSeparator;
-	public static final String CFR_EXTENSION = ".cfr";
+	public static final String LOCAL_JSON_FILE_DIRECTORY_PATH = localrsrcPath + "TaskDesc" + innerFileSeparator;
 	public static final String JAVA_EXTENSION = ".java";
 	public static final String PNG_EXTENSION = ".png";
-	public static final String CFR_BIN_EXTENSION = ".dat";
-	public static final String JS_EXTENSION = ".js";
-	public static final String JAR_EXTENSION = ".jar";
 	public static final String JSON_EXTENSION = ".json";
 	public static final String XML_EXTENSION = ".xml";
-	public static final String XSL_EXTENSION = ".xsl";
-	public static final String PLUGIN_XML_FILE = innerFileSeparator + "plugin.xml";
-
+	public static final String ZIP_EXTENSION = ".zip";
+	
 	public static final String DEFAULT_FEATURE_SET_FILE = "DefaultFeatureSet";
 
 	public static final String PREDICATEENSURER_GROUPID = "de.upb.cognicrypt.predicateensurer";
@@ -506,10 +419,6 @@ public class Constants {
 	public static final String MVN_SKIPTESTS_COMMAND = "-DskipTests=true";
 	public static final String MVN_ECLIPSE_COMMAND = "eclipse:eclipse";
 
-	// for the list of items to be included inside the combo of the questionTab
-	public static final String dropDown = "Drop down";
-	public static final String textBox = "Text box";
-	public static final String radioButton = "Radio button";
 
 	// for creating SuppressWarnings.xml
 	public static final String SUPPRESSWARNING_FILE = "SuppressWarnings" + XML_EXTENSION;
@@ -594,7 +503,7 @@ public class Constants {
 	public static final String cryslEditorID = "de.darmstadt.tu.crossing.CrySL";
 	public static final String HEALTHY = "Secure";
 	public static final String UNHEALTHY = "Insecure";
-
+	
 	// define the max java version before which plugin works.
 	public static final String CC_JAVA_VERSION = "1.8";
 	

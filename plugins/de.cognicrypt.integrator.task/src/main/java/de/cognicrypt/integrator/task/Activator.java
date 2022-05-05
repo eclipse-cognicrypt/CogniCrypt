@@ -15,21 +15,18 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import de.cognicrypt.core.Constants;
+
 /**
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "de.cognicrypt.integrator.task"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = Constants.PLUGIN_ID;
 
 	// The shared instance
 	private static Activator plugin;
-
-	/**
-	 * The constructor
-	 */
-	public Activator() {}
 
 	@Override
 	public void start(BundleContext context) throws Exception {
@@ -57,7 +54,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public void logError(final Exception ex) {
-		logError(ex, ex.getMessage());
+		log(IStatus.ERROR, ex.getMessage(), ex);
 	}
 
 	public void logError(final Exception ex, final String message) {

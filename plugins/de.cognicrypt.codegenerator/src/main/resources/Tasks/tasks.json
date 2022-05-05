@@ -38,17 +38,5 @@
     "image": "mpc",
     "codeGen": "XSL",
     "isSelected": false
-  },
-  {
-    "name": "TestCryslTask",
-    "description": "TestCryslTask",
-    "taskDescription": "description of task",
-    "image": "TestCryslTask",
-    "codeGen": "CrySL",
-    "additionalResources": "",
-    "questionsJSONFile": "src/main/resources/TaskDesc/TestCryslTask.json",
-    "modelFile": "",
-    "codeTemplate": "src/main/resources/XSLTemplates/TestCryslTask.xsl",
-    "isSelected": false
   }
 ]

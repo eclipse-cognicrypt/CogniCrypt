@@ -1,0 +1,30 @@
+[
+  {
+    "id": 0,
+    "content": [
+      {
+        "id": 0,
+        "element": "combo",
+        "questionText": "",
+        "answers": [
+          {
+            "value": "",
+            "defaultAnswer": true,
+            "option": "String",
+            "nextID": -2
+          },
+          {
+            "value": "",
+            "option": "Int",
+            "nextID": -2
+          }
+        ],
+        "note": "",
+        "tooltip": "",
+        "message": ""
+      }
+    ],
+    "nextID": -1,
+    "helpID": ""
+  }
+]

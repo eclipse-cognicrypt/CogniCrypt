@@ -73,7 +73,7 @@ public class TaskSelectionPage extends WizardPage {
 		gl.verticalSpacing = -6;
 		this.container.setLayout(gl);
 
-		new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
+		//new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1);
 		new Label(this.container, SWT.NONE);
 		final Label useCaseDescriptionLabel = new Label(this.container, SWT.WRAP);
 		final GridData gd_selectProjectLabel = new GridData(SWT.FILL, SWT.FILL, false, false, 1, tasks.size() + 1);
@@ -141,7 +141,8 @@ public class TaskSelectionPage extends WizardPage {
 			if (resolvedURL != null) {
 				resolvedURI = new URI(resolvedURL.getProtocol(), resolvedURL.getPath(), null);
 			} else {
-				resolvedURI = FileLocator.resolve(entry).toURI();
+				//resolvedURI = FileLocator.resolve(entry).toURI();	
+				return new Image(PlatformUI.getWorkbench().getDisplay(), new FileInputStream(new File(Constants.ECLIPSE_LOC_IMG_DIR + "/" + image + ".png")));
 			}
 
 			return new Image(PlatformUI.getWorkbench().getDisplay(), new FileInputStream(new File(resolvedURI)));

@@ -1,0 +1,26 @@
+SPEC de.coffee.api.Coffee
+
+OBJECTS
+int amountOfCoffee;
+de.coffee.api.Sugar sugarObj;
+
+EVENTS
+m1: Coffee();
+m2: Coffee(amountOfCoffee);
+consCoffee:= m1 | m2;
+
+addSug : addSugar(sugarObj);
+
+someMethod: statMethod();
+
+ORDER
+consCoffee, addSug, someMethod
+
+CONSTRAINTS
+amountOfCoffee in {10, 20};
+
+REQUIRES
+sugarCreated[sugarObj];
+
+//ENSURES
+//*

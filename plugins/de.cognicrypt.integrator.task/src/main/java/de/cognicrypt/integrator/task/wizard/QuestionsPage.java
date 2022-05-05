@@ -7,7 +7,7 @@
 
 package de.cognicrypt.integrator.task.wizard;
 
-import org.eclipse.jface.window.Window;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -15,17 +15,22 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import de.cognicrypt.codegenerator.question.Question;
+
 import de.cognicrypt.core.Constants;
-import de.cognicrypt.integrator.task.Activator;
-import de.cognicrypt.integrator.task.widgets.CompositeToHoldGranularUIElements;
+import de.cognicrypt.integrator.task.exceptions.ErrorMessageException;
+import de.cognicrypt.integrator.task.models.IntegratorModel;
+import de.cognicrypt.integrator.task.widgets.QuestionInformationComposite;
+import de.cognicrypt.integrator.task.widgets.QuestionsDisplayComposite;
 
-public class QuestionsPage extends PageForTaskIntegratorWizard {
-
+public class QuestionsPage extends TaskIntegratorWizardPage {
+	
+	QuestionsDisplayComposite questionsDisplayComposite;
+	QuestionInformationComposite questionInformationComposite;
+	
 	public QuestionsPage() {
 		super(Constants.PAGE_NAME_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_TITLE_FOR_HIGH_LEVEL_QUESTIONS, Constants.PAGE_DESCRIPTION_FOR_HIGH_LEVEL_QUESTIONS);
 	}
-
+	
 	@Override
 	public void createControl(final Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
@@ -35,43 +40,65 @@ public class QuestionsPage extends PageForTaskIntegratorWizard {
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		container.setLayout(new GridLayout(2, false));
 
-		setCompositeToHoldGranularUIElements(new CompositeToHoldGranularUIElements(container, getName()));
-		// fill the available space on the with the big composite
-		getCompositeToHoldGranularUIElements().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		questionsDisplayComposite = new QuestionsDisplayComposite(container, this);
+		
+		// fill the available space with the big composite
+		questionsDisplayComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		final Button addQuestionBtn = new Button(container, SWT.NONE);
+		addQuestionBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
+		addQuestionBtn.setText(Constants.ADD_QUESTION);
 
-		TaskIntegrationWizard tiWizard = null;
-
-		if (TaskIntegrationWizard.class.isInstance(getWizard())) {
-			tiWizard = (TaskIntegrationWizard) getWizard();
-		} else {
-			Activator.getDefault().logError("PageForTaskIntegratorWizard was instantiated by a wizard other than TaskIntegrationWizard");
-		}
-
-
-		final QuestionDialog questionDialog = new QuestionDialog(parent.getShell());
-		final Button qstnDialog = new Button(container, SWT.NONE);
-		qstnDialog.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, false, false));
-		qstnDialog.setText("Add Question");
-
-		qstnDialog.addSelectionListener(new SelectionAdapter() {
-
+		addQuestionBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent e) {
-				final int response = questionDialog.open();
-				final int qID = QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().size();
-				if (response == Window.OK) {
-					QuestionsPage.this.counter++;
-					// Question questionDetails = getDummyQuestion(questionDialog.getQuestionText(),questionDialog.getquestionType(),questionDialog.getAnswerValue());
-					final Question questionDetails = questionDialog.getQuestionDetails();
-					questionDetails.setId(qID);
-
-					// Update the array list.
-					QuestionsPage.this.compositeToHoldGranularUIElements.getListOfAllQuestions().add(questionDetails);
-					// rebuild the UI
-					QuestionsPage.this.compositeToHoldGranularUIElements.updateQuestionContainer();
-				}
+				addQuestion();
 			}
 		});
 	}
+	
+	
+	/**
+	 * Adds a question to the plugin state
+	 */
+	private void addQuestion() {
+		try {
+			IntegratorModel.getInstance().addQuestion();
+			
+			questionsDisplayComposite.updateQuestionContainer();
+		}catch(ErrorMessageException e) {
+			MessageDialog.openError(getShell(), "Warning", e.getMessage());
+		}
+	}
 
+	
+	/**
+	 * This method will check whether all the validations on the page were successful. The page is set to incomplete if any of the validations have an ERROR
+	 * Is used to determine whether wizard can flip to next page
+	 */
+	@Override
+	public void checkPageComplete() {
+		
+		if(questionsDisplayComposite.getQuestionsInformationComposites().isEmpty()) {
+			return;
+		}
+			
+		boolean isPageComplete = true;
+		
+		// Iterate over all question composites and check if there is any error
+		for(QuestionInformationComposite questionInformationComposite : questionsDisplayComposite.getQuestionsInformationComposites()) {
+			if (questionInformationComposite.questionDec.getDescriptionText().contains(Constants.ERROR)
+					|| questionInformationComposite.answersDec.getDescriptionText().contains(Constants.ERROR)) {
+				isPageComplete = false;
+				break;
+			}
+			
+		}
+		
+		setPageComplete(isPageComplete);
+	}
+	
+	public QuestionsDisplayComposite getQuestionsDisplayComposite() {
+		return questionsDisplayComposite;
+	}
 }

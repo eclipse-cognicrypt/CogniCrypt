@@ -13,6 +13,7 @@
 package de.cognicrypt.codegenerator.question;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -26,13 +27,13 @@ import com.google.gson.reflect.TypeToken;
 import de.cognicrypt.codegenerator.Activator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.utilities.CodeGenUtils;
+import de.cognicrypt.core.Constants;
 
 /**
  * This class reads all questions and answers of one task.
  *
  * @author Sarah Nadi
  * @author Stefan Krueger
- *
  */
 public class QuestionsJSONReader {
 
@@ -67,6 +68,7 @@ public class QuestionsJSONReader {
 	public List<Page> getPages(final String filePath) {
 		List<Page> pages = new ArrayList<>();
 		try {
+			Activator.getDefault().logError("JSON File " + filePath);
 			final BufferedReader reader = new BufferedReader(new FileReader(CodeGenUtils.getResourceFromWithin(filePath)));
 			final Gson gson = new Gson();
 
@@ -81,6 +83,54 @@ public class QuestionsJSONReader {
 		}
 		return pages;
 	}
+	
+	/**
+	 * This method reads all questions of one task using the file path to the question file.
+	 *
+	 * @param filePath
+	 *        path to the file that contains all questions for one task.
+	 * @return questions
+	 */
+	public List<Question> getCustomQuestions(final String filePath) {
+		List<Question> questions = new ArrayList<>();
+		try {
+			final BufferedReader reader = new BufferedReader(new FileReader(new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR + Constants.innerFileSeparator + filePath)));
+			final Gson gson = new Gson();
+			questions = gson.fromJson(reader, new TypeToken<List<Question>>() {}.getType());
+			checkReadQuestions(questions);
+		} catch (final FileNotFoundException e) {
+			Activator.getDefault().logError(e);
+			return null;
+		}
+		return questions;
+	}
+
+	/**
+	 * This method reads all pages of one task using the file path to the JSON file.
+	 *
+	 * @param filePath
+	 *        Path to the file that contains all questions for one task.
+	 * @return pages Return a list of all the pages in the JSON file.
+	 */
+	public List<Page> getCustomPages(final String filePath) {
+		List<Page> pages = new ArrayList<>();
+		try {
+			Activator.getDefault().logError("JSON File " + filePath);
+			final BufferedReader reader = new BufferedReader(new FileReader(new File(Constants.ECLIPSE_CogniCrypt_RESOURCE_DIR + Constants.innerFileSeparator + filePath)));
+			final Gson gson = new Gson();
+
+			pages = gson.fromJson(reader, new TypeToken<List<Page>>() {}.getType());
+			// For some tasks, we don't have questions. So, we don't need to check them.
+			if (pages.size() > 0) {
+				checkReadPages(pages);
+				checkNextIDs(pages);
+			}
+		} catch (final FileNotFoundException e) {
+			Activator.getDefault().logError(e);
+		}
+		return pages;
+	}
+
 
 	/**
 	 * This method reads all questions of one task.
@@ -92,6 +142,18 @@ public class QuestionsJSONReader {
 	public List<Question> getQuestions(final Task task) {
 		return getQuestions(task.getQuestionsJSONFile());
 	}
+	
+	/**
+	 * This method reads all custom questions of one task.
+	 *
+	 * @param task
+	 *        task whose questions should be read
+	 * @return Questions
+	 */
+	public List<Question> getCustomQuestions(final Task task) {
+		return getCustomQuestions(task.getQuestionsJSONFile());
+	}
+
 
 	/**
 	 * This method reads all pages of one task.
@@ -102,6 +164,17 @@ public class QuestionsJSONReader {
 	 */
 	public List<Page> getPages(final Task task) {
 		return getPages(task.getQuestionsJSONFile());
+	}
+	
+	/**
+	 * This method reads all custom pages of one task.
+	 *
+	 * @param task
+	 *        task whose questions should be read
+	 * @return Pages
+	 */
+	public List<Page> getCustomPages(final Task task) {
+		return getCustomPages(task.getQuestionsJSONFile());
 	}
 
 	/**

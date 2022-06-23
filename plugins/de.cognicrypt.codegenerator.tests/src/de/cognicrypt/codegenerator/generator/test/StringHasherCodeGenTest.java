@@ -18,17 +18,14 @@ import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 
-/**
- * @author Shahrzad Asghari
- */
-public class SecurePasswordCodeGenTest {
-
+public class StringHasherCodeGenTest {
+	
 	@Test
-	public void testCodeGenerationSecurePassword() {
-		String template = "securepassword";
+	public void testCodeGenerationStringHashing() {
+		//there is no task for string hashing. pur securePassword for now
 		Task SecPassTask = TestUtils.getTask("SecurePassword");
-
-		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_SecPwd");
+		String template = "stringhashing";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_StrHash");
 		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
 		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
 		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
@@ -41,11 +38,11 @@ public class SecurePasswordCodeGenTest {
 		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
 		assertEquals(1, TestUtils.countMethods(testClassUnit));
 
-		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "PasswordHasher.java");
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "StringHasher.java");
 		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
-		assertEquals(5, TestUtils.countMethods(encClassUnit));
-		assertEquals(12, TestUtils.countStatements(encClassUnit, "createPWHash"));
-		assertEquals(11, TestUtils.countStatements(encClassUnit, "verifyPWHash"));
+		assertEquals(2, TestUtils.countMethods(encClassUnit));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "createHash"));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "verifyHash"));
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 	

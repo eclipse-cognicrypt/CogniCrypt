@@ -1,63 +1,52 @@
 package de.cognicrypt.codegenerator.generator.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.util.logging.Logger;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
-import org.junit.After;
-import org.junit.Before;
+import org.eclipse.jdt.core.JavaCore;
 import org.junit.Test;
 
 import de.cognicrypt.codegenerator.generator.CodeGenerator;
 import de.cognicrypt.codegenerator.generator.CrySLBasedCodeGenerator;
 import de.cognicrypt.codegenerator.tasks.Task;
 import de.cognicrypt.codegenerator.testutilities.TestUtils;
-import de.cognicrypt.codegenerator.generator.test.Constants;
-import de.cognicrypt.codegenerator.wizard.Configuration;
+import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
+import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.DeveloperProject;
 
 /**
  * @author Shahrzad Asghari
  */
 public class DigitalSignaturesCodeGenTest {
-	private Logger log = Logger.getLogger(DigitalSignaturesCodeGenTest.class.getName());
-	private IJavaProject testJavaProject;
-	private CodeGenerator generatorDigSignature;
-	private Task digSignatureTask;
-	private Configuration configDigSignature;
-	private DeveloperProject developerProject;
-	private IResource targetFile;
-
-	@After
-	public void tearDown() throws CoreException {
-		TestUtils.deleteProject(this.testJavaProject.getProject());
-	}
-
-	@Before
-	public void setUp() throws Exception {
-		this.testJavaProject = TestUtils.createJavaProject(Constants.PROJECT_NAME);
-		targetFile = TestUtils.generateJavaClassInJavaProject(this.testJavaProject, Constants.PACKAGE_NAME,
-				Constants.CLASS_NAME);
-		this.digSignatureTask = TestUtils.getTask("DigitalSignatures");
-		this.generatorDigSignature = new CrySLBasedCodeGenerator(targetFile);
-		this.developerProject = this.generatorDigSignature.getDeveloperProject();
-	}
-
+	
 	@Test
-	public void testCodeGenerationDigSignatures() throws CoreException, IOException {
-		final ICompilationUnit testClassUnit = TestUtils.getICompilationUnit(this.developerProject,
-				Constants.PACKAGE_NAME, Constants.JAVA_CLASS_NAME);
-		TestUtils.openJavaFileInWorkspace(this.developerProject, Constants.PACKAGE_NAME, testClassUnit);
+	public void testCodeGenerationDigSignatures() {
+		String template = "digitalsignatures";
+		Task DigSigTask = TestUtils.getTask("DigitalSignatures");
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_DigSign");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, DigSigTask);
 
-		this.configDigSignature = TestUtils.createCrySLConfiguration("digitalsignatures", testClassUnit.getResource(),
-				generatorDigSignature, this.developerProject);
-		final boolean encCheck = this.generatorDigSignature.generateCodeTemplates(this.configDigSignature,
-				this.digSignatureTask.getAdditionalResources());
+		boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, "");
 		assertTrue(encCheck);
+
+		ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
+		assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureSigner.java");
+		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+		assertEquals(3, TestUtils.countMethods(encClassUnit));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "getKey"));
+		assertEquals(8, TestUtils.countStatements(encClassUnit, "sign"));
+		// assertEquals(14, TestUtils.countStatements(encClassUnit, "vfy"));
+		TestUtils.deleteProject(testJavaProject.getProject());
 	}
+	
 }

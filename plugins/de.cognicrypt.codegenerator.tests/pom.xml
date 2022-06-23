@@ -10,10 +10,16 @@
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
-	<groupId>de.cognicrypt</groupId>
 	<artifactId>de.cognicrypt.codegenerator.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
+	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>1.7.30</version>
+		</dependency>
 
+	</dependencies>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -48,6 +54,7 @@
 					<version>${tycho-version}</version>
 					<configuration>
 						<useUIHarness>true</useUIHarness>
+						<trimStackTrace>false</trimStackTrace>
 					</configuration>
 				</plugin>
 

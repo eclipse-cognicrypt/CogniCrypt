@@ -1,5 +1,5 @@
 /********************************************************************************
- * Copyright (c) 2015-2019 TU Darmstadt, Paderborn University
+ * Copyright (c) 2015-2021 TU Darmstadt, Paderborn University
  * 
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -16,6 +16,9 @@ import java.util.Base64;
 
 import de.cognicrypt.codegenerator.crysl.CrySLCodeGenerator;
 
+/**
+ * The Class StringHasher hashes a given String and verifies the hash.
+ */
 public class StringHasher {
 
 	public static java.lang.String createHash(java.lang.String msg) throws GeneralSecurityException {

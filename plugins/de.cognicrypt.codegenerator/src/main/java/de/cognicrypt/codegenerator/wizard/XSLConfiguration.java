@@ -28,13 +28,14 @@ import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.codegenerator.utilities.XMLClaferParser;
 import de.cognicrypt.core.Constants;
+import de.cognicrypt.utils.DeveloperProject;
 
 public class XSLConfiguration extends Configuration {
 
 	final private InstanceClafer instance;
 
-	public XSLConfiguration(InstanceClafer instance, Map<Question, Answer> constraints, String pathOnDisk) {
-		super(constraints, pathOnDisk);
+	public XSLConfiguration(InstanceClafer instance, Map<Question, Answer> constraints, String pathOnDisk, String taskName, DeveloperProject developerProject) throws IOException {
+		super(constraints, pathOnDisk, taskName, developerProject);
 		this.instance = instance;
 	}
 

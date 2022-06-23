@@ -52,11 +52,15 @@ public class EncryptionCodeGenTest {
 	}
 	
 	@Test
-	public void testCodeGenerationEncryptionAuth() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryptionauth", testClassUnit.getResource(), generatorEnc,
-				this.developerProject);
-		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
-				this.encTask.getAdditionalResources());
+	public void testCodeGenerationEncryptionAuth() {
+		String template = "encryptionauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENCAUTH");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 
@@ -88,11 +92,15 @@ public class EncryptionCodeGenTest {
 	}
 	
 	@Test
-	public void testCodeGenerationEncryptionHybridAuth() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybridauth", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
-		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
-				this.encTask.getAdditionalResources());
+	public void testCodeGenerationEncryptionHybridAuth() {
+		String template = "encryptionhybridauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCAUTH");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 
@@ -122,11 +130,15 @@ public class EncryptionCodeGenTest {
 	}
 	
 	@Test
-	public void testCodeGenerationEncryptionFilesAuth() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryptionfilesauth", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
-		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
-				this.encTask.getAdditionalResources());
+	public void testCodeGenerationEncryptionFilesAuth() {
+		String template = "encryptionfilesauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENCAUTHFILES");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 
@@ -158,11 +170,15 @@ public class EncryptionCodeGenTest {
 	}
 	
 	@Test
-	public void testCodeGenerationEncryptionHybridFilesAuth() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybridfilesauth", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
-		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
-				this.encTask.getAdditionalResources());
+	public void testCodeGenerationEncryptionHybridFilesAuth() {
+		String template = "encryptionhybridfilesauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCAUTHFILES");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 
@@ -192,11 +208,15 @@ public class EncryptionCodeGenTest {
 	}
 	
 	@Test
-	public void testCodeGenerationEncryptionHybridStringsAuth() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryptionhybridstringsauth", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
-		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
-				this.encTask.getAdditionalResources());
+	public void testCodeGenerationEncryptionHybridStringsAuth() {
+		String template = "encryptionhybridstringsauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCAUTHSTRING");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 	
@@ -228,11 +248,15 @@ public class EncryptionCodeGenTest {
 	}
 
 	@Test
-	public void testCodeGenerationEncryptionStringsAuth() throws CoreException, IOException {
-		this.configEnc = TestUtils.createCrySLConfiguration("encryptionstringsauth", testClassUnit.getResource(),
-				generatorEnc, this.developerProject);
-		final boolean encCheck = this.generatorEnc.generateCodeTemplates(this.configEnc,
-				this.encTask.getAdditionalResources());
+	public void testCodeGenerationEncryptionStringsAuth() {
+		String template = "encryptionstringsauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENCAUTHSTRING");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
 		assertTrue(encCheck);
 	}
 

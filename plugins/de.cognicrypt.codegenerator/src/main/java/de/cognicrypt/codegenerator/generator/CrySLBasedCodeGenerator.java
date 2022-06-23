@@ -136,6 +136,12 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 		if (chosenConfig instanceof CrySLConfiguration) {
 			ruleClass = ((CrySLConfiguration) chosenConfig).getTemplateClass();
 		}
+		try {
+			chosenConfig.persistConf();
+		} catch (IOException e) {
+			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
+		}
+		
 		ruleClass.setPackageName(Constants.PackageNameAsName);
 		ruleClass.setModifier("public");
 

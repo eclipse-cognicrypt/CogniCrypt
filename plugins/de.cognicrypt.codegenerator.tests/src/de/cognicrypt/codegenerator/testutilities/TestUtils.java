@@ -219,7 +219,7 @@ public class TestUtils {
 			for (int i = 0; i < page.getContent().size(); i++) {
 				Question tmpQuestion = page.getContent().get(i);
 				for (Answer answer : tmpQuestion.getAnswers()) {
-					if (answer.getValue().equals(answers.get(i))) {
+					if (answers.size() > i && answer.getValue().equals(answers.get(i))) {
 						contraintsForTask.put(tmpQuestion, answer);
 						break;
 					}

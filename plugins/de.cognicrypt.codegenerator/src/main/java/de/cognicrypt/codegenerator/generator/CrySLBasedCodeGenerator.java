@@ -1256,12 +1256,15 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	    String header =  matcher.group();
 	    //retrieve javaDoc
 //	    List cl = cu.getCommentList();
-		String classJavaDoc = (String) cu.getCommentList().get(1).toString();
 		
 		GeneratorClass templateClass = new GeneratorClass();
 		
 		templateClass.addHeader(header);
-		templateClass.addClassJavaDoc(classJavaDoc);
+		
+		if (cu.getCommentList().size() > 1) {
+			String classJavaDoc = (String) cu.getCommentList().get(1).toString();
+			templateClass.addClassJavaDoc(classJavaDoc);
+		}
 		
 		final ASTVisitor astVisitor = new ASTVisitor(true) {
 

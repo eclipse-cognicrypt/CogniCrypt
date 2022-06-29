@@ -91,4 +91,8 @@ public abstract class Configuration {
 	public void deleteConfFromDisk() {
 		FileUtils.deleteFile(this.pathOnDisk);
 	}
+	
+	public String getTaskName() {
+		return this.taskName;
+	}
 }

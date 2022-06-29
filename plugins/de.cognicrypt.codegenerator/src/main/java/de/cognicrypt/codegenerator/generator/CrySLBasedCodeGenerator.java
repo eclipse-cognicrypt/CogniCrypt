@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.AbstractMap.SimpleEntry;
@@ -64,6 +63,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
+import org.w3c.dom.Element;
 
 import boomerang.callgraph.ObservableDynamicICFG;
 import crypto.interfaces.ICrySLPredicateParameter;
@@ -86,7 +86,7 @@ import de.cognicrypt.codegenerator.wizard.CrySLConfiguration;
 import de.cognicrypt.core.Constants;
 import de.cognicrypt.utils.CrySLUtils;
 import de.cognicrypt.utils.Utils;
-import soot.SootResolver;
+import de.cognicrypt.utils.XMLParser;
 
 /**
  * 
@@ -129,17 +129,35 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 	public CrySLBasedCodeGenerator(IResource selectedFile) {
 		super(selectedFile);
 	}
+	
+	private File persistTemplateInformation(String taskName, GeneratorClass templateClass) throws IOException {
+		String path = this.project.getProjectPath() + "/" + templateClass.getClassName() + ".xml";
+		File file = new File(path);
+		
+		XMLParser parser = new XMLParser(file);
+		parser.createNewDoc();
+		Element root = parser.createRootElement("task");
+		root.setAttribute("description", taskName);
+		
+		if (templateClass.getPackageName() != null) {
+			parser.createChildElement(root, "Package").appendChild(parser.getDoc().createTextNode(templateClass.getPackageName()));
+		}
+		
+		Element imports = parser.createChildElement(root, "Imports");
+		
+		for (String importValue : templateClass.getImports()) {
+			parser.createChildElement(imports, "Import").appendChild(parser.getDoc().createTextNode(importValue));
+		}
+		
+		parser.writeXML(); //Flush changes	
+		return file;
+	}
 
 	@Override
 	public boolean generateCodeTemplates(Configuration chosenConfig, String pathToFolderWithAdditionalResources) {
 		GeneratorClass ruleClass = null;
 		if (chosenConfig instanceof CrySLConfiguration) {
 			ruleClass = ((CrySLConfiguration) chosenConfig).getTemplateClass();
-		}
-		try {
-			chosenConfig.persistConf();
-		} catch (IOException e) {
-			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
 		}
 		
 		ruleClass.setPackageName(Constants.PackageNameAsName);
@@ -408,6 +426,14 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 			removeCryptoPackageIfEmpty();
 		} catch (CoreException | BadLocationException | IOException e) {
 			Activator.getDefault().logError(e, Constants.CodeGenerationErrorMessage);
+		}
+		
+		for (GeneratorClass template: generatedClasses) {
+			try {
+				this.persistTemplateInformation(chosenConfig.getTaskName(), template);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 
 		return generatedClasses != null;

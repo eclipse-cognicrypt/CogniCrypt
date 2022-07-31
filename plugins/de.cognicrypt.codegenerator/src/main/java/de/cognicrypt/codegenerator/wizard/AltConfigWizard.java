@@ -14,8 +14,12 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JDialog;
@@ -124,8 +128,13 @@ public class AltConfigWizard extends Wizard {
 		//Only case that is left: BeginnerTaskQuestionPage
 		final BeginnerTaskQuestionPage curQuestionPage = (BeginnerTaskQuestionPage) currentPage;
 		final HashMap<Question, Answer> curQuestionAnswerMap = curQuestionPage.getMap();
+		
+		List<Map.Entry<Question, Answer>> curQuestionAnswerList = new LinkedList<Map.Entry<Question, Answer>>(curQuestionAnswerMap.entrySet());
+		Collections.sort(
+			curQuestionAnswerList,
+            (i1, i2) -> Integer.compare(i1.getKey().getId(), i2.getKey().getId()));
 
-		for (final Entry<Question, Answer> entry : curQuestionAnswerMap.entrySet()) {
+		for (final Map.Entry<Question, Answer> entry : curQuestionAnswerList) {
 			this.constraints.put(entry.getKey(), entry.getValue());
 		}
 

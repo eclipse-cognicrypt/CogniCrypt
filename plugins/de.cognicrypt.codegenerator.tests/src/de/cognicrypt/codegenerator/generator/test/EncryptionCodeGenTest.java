@@ -50,6 +50,32 @@ public class EncryptionCodeGenTest {
 		assertEquals(11, TestUtils.countStatements(encClassUnit, "decrypt"));
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
+	
+	@Test
+	public void testCodeGenerationEncryptionAuth() {
+		String template = "encryptionauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENCAUTH");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
+		assertTrue(encCheck);
+		
+		ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
+		assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
+		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+		assertEquals(4, TestUtils.countMethods(encClassUnit));
+		assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "getSecretKey"));
+		assertEquals(9, TestUtils.countStatements(encClassUnit, "encrypt"));
+		assertEquals(9, TestUtils.countStatements(encClassUnit, "decrypt"));
+		TestUtils.deleteProject(testJavaProject.getProject());
+	}
 
 	@Test
 	public void testCodeGenerationEncryptionHybrid() {
@@ -77,6 +103,34 @@ public class EncryptionCodeGenTest {
 		assertEquals(11, TestUtils.countStatements(encClassUnit, "decryptData"));
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
+	
+	@Test
+	public void testCodeGenerationEncryptionHybridAuth() {
+		String template = "encryptionhybridauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCAUTH");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
+		assertTrue(encCheck);
+		
+		ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
+		assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
+		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+		assertEquals(6, TestUtils.countMethods(encClassUnit));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSecretKey"));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "generateKeyPair"));
+		assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
+		assertEquals(9, TestUtils.countStatements(encClassUnit, "encryptData"));
+		assertEquals(9, TestUtils.countStatements(encClassUnit, "decryptData"));
+		TestUtils.deleteProject(testJavaProject.getProject());
+	}
 
 	@Test
 	public void testCodeGenerationEncryptionFiles() {		
@@ -100,6 +154,32 @@ public class EncryptionCodeGenTest {
 		assertEquals(12, TestUtils.countStatements(encClassUnit, "generateKey"));
 		assertEquals(15, TestUtils.countStatements(encClassUnit, "encrypt"));
 		assertEquals(13, TestUtils.countStatements(encClassUnit, "decrypt"));
+		TestUtils.deleteProject(testJavaProject.getProject());
+	}
+	
+	@Test
+	public void testCodeGenerationEncryptionFilesAuth() {
+		String template = "encryptionfilesauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENCAUTHFILES");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
+		assertTrue(encCheck);
+		
+		ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
+		assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
+		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+		assertEquals(4, TestUtils.countMethods(encClassUnit));
+		assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "getSecretKey"));
+		assertEquals(11, TestUtils.countStatements(encClassUnit, "encrypt"));
+		assertEquals(11, TestUtils.countStatements(encClassUnit, "decrypt"));
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 
@@ -129,6 +209,34 @@ public class EncryptionCodeGenTest {
 		assertEquals(13, TestUtils.countStatements(encClassUnit, "decryptData"));
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
+	
+	@Test
+	public void testCodeGenerationEncryptionHybridFilesAuth() {
+		String template = "encryptionhybridfilesauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCAUTHFILES");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
+		assertTrue(encCheck);
+		
+		ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
+		assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
+		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+		assertEquals(6, TestUtils.countMethods(encClassUnit));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSecretKey"));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "generateKeyPair"));
+		assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
+		assertEquals(11, TestUtils.countStatements(encClassUnit, "encryptData"));
+		assertEquals(11, TestUtils.countStatements(encClassUnit, "decryptData"));
+		TestUtils.deleteProject(testJavaProject.getProject());
+	}
 
 	@Test
 	public void testCodeGenerationEncryptionStrings() {		
@@ -152,6 +260,33 @@ public class EncryptionCodeGenTest {
 		assertEquals(12, TestUtils.countStatements(encClassUnit, "generateKey"));
 		assertEquals(14, TestUtils.countStatements(encClassUnit, "encrypt"));
 		assertEquals(12, TestUtils.countStatements(encClassUnit, "decrypt"));
+		TestUtils.deleteProject(testJavaProject.getProject());
+	}
+	
+	@Test
+	public void testCodeGenerationEncryptionHybridStringsAuth() {
+		String template = "encryptionhybridstringsauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_HybridENCAUTHSTRING");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
+		assertTrue(encCheck);
+		ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
+		assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
+		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+		assertEquals(6, TestUtils.countMethods(encClassUnit));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "generateSessionKey"));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "getSecretKey"));
+		assertEquals(5, TestUtils.countStatements(encClassUnit, "generateKeyPair"));
+		assertEquals(7, TestUtils.countStatements(encClassUnit, "encryptSessionKey"));
+		assertEquals(10, TestUtils.countStatements(encClassUnit, "encryptData"));
+		assertEquals(10, TestUtils.countStatements(encClassUnit, "decryptData"));
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 	
@@ -182,6 +317,32 @@ public class EncryptionCodeGenTest {
 		TestUtils.deleteProject(testJavaProject.getProject());
 	}
 
+	@Test
+	public void testCodeGenerationEncryptionStringsAuth() {
+		String template = "encryptionstringsauth";
+		IJavaProject testJavaProject = TestUtils.createJavaProject("TestProject_ENCAUTHSTRING");
+		IResource targetFile = TestUtils.generateJavaClassInJavaProject(testJavaProject, CodeGenTestConstants.PACKAGE_NAME, CodeGenTestConstants.CLASS_NAME);
+		CodeGenerator codeGenerator = new CrySLBasedCodeGenerator(targetFile);
+		DeveloperProject developerProject = codeGenerator.getDeveloperProject();
+		CrySLConfiguration chosenConfig = TestUtils.createCrySLConfiguration(template, targetFile, codeGenerator, developerProject, EncTask);
+
+		final boolean encCheck = codeGenerator.generateCodeTemplates(chosenConfig, EncTask.getAdditionalResources());
+		assertTrue(encCheck);
+		ICompilationUnit testClassUnit = JavaCore.createCompilationUnitFrom((IFile) targetFile);
+		TestUtils.openJavaFileInWorkspace(developerProject, CodeGenTestConstants.PACKAGE_NAME, testClassUnit);
+		assertEquals(1, TestUtils.countMethods(testClassUnit));
+
+		ICompilationUnit encClassUnit = TestUtils.getICompilationUnit(developerProject, Constants.PackageNameAsName, "SecureEncryptor.java");
+		TestUtils.openJavaFileInWorkspace(developerProject, Constants.PackageName, encClassUnit);
+		assertEquals(4, TestUtils.countMethods(encClassUnit));
+		assertEquals(12, TestUtils.countStatements(encClassUnit, "getKey"));
+		assertEquals(4, TestUtils.countStatements(encClassUnit, "getSecretKey"));
+		assertEquals(10, TestUtils.countStatements(encClassUnit, "encrypt"));
+		assertEquals(10, TestUtils.countStatements(encClassUnit, "decrypt"));
+		TestUtils.deleteProject(testJavaProject.getProject());
+	}
+
+	
 	@Test
 	public void testCodeGenerationSecretKeyEncryption() {
 		String template = "secretkeyencryption";

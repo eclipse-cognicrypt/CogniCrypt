@@ -12,7 +12,6 @@ package de.cognicrypt.codegenerator.wizard;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +19,7 @@ import de.cognicrypt.codegenerator.generator.GeneratorClass;
 import de.cognicrypt.codegenerator.question.Answer;
 import de.cognicrypt.codegenerator.question.Question;
 import de.cognicrypt.utils.DeveloperProject;
+import de.cognicrypt.utils.FileUtils;
 
 public class CrySLConfiguration extends Configuration {
 

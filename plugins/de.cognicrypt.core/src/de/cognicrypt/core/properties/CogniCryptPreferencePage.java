@@ -89,11 +89,11 @@ public class CogniCryptPreferencePage extends PreferencePage implements IWorkben
 	}
 
 	public static void setDefaultValues() {
-		preferenceListeners.parallelStream().forEach(e -> e.setDefaultValues());
+		preferenceListeners.stream().forEach(e -> e.setDefaultValues());
 	}
 
 	private void storeValues() {
-		preferenceListeners.parallelStream().forEach(e -> e.storeValues());
+		preferenceListeners.stream().forEach(e -> e.storeValues());
 	}
 
 }

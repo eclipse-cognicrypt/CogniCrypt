@@ -55,4 +55,10 @@
       				activate="true">
    				</javaCompletionProposalComputer>
             </extension>
+            <extension
+		       point="org.eclipse.ui.startup">
+		       <startup
+		            class="de.cognicrypt.codegenerator.handlers.StartupHandler">
+		      </startup>
+		 	</extension>
 </plugin>

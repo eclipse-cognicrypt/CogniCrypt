@@ -17,9 +17,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import de.cognicrypt.codegenerator.preferences.CodeGenPreferences;
-import de.cognicrypt.core.properties.CogniCryptPreferencePage;
-
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
@@ -77,8 +74,6 @@ public class Activator extends AbstractUIPlugin {
 	public void start(final BundleContext context) throws Exception {
 		super.start(context);
 		Activator.plugin = this;
-
-		CogniCryptPreferencePage.registerPreferenceListener(new CodeGenPreferences());
 	}
 
 	@Override

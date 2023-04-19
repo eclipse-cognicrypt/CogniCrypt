@@ -51,7 +51,7 @@ If a community member engages in unacceptable behaviour, the community organizer
 
 ## 6. Reporting Guidelines
 
-If you are subject to or witness unacceptable behavior, or have any other concerns, please notify [Stefan Krueger](mailto:stefan.krueger@crossing.tu-darmstadt.de).
+If you are subject to or witness unacceptable behavior, or have any other concerns, please notify [Michael Schlichtig](mailto:michael.schlichtig@uni-paderborn.de).
 
 Additionally, community organizers are available to help community members engage with local law enforcement or to otherwise help those experiencing unacceptable behaviour feel safe. 
 
@@ -67,7 +67,7 @@ This code of conduct and its related procedures also apply to unacceptable behav
 
 ## 9. Contact info
 
-Stefan Krueger [<stefan.krueger@crossing.tu-darmstadt.de>](mailto:stefan.krueger@crossing.tu-darmstadt.de).
+Michael Schlichtig [<michael.schlichtig@uni-paderborn.de>](mailto:michael.schlichtig@uni-paderborn.de).
 
 ## 10. License and attribution
 

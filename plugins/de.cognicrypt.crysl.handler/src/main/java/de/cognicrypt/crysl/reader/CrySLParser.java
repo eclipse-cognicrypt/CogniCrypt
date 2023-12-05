@@ -339,7 +339,6 @@ public class CrySLParser {
 	}
 
 	private CrySLPredicate extractReqPred(final ReqPred pred) {
-		final List<ICrySLPredicateParameter> variables = new ArrayList<>();
 		PredLit innerPred = (PredLit) pred;
 		EObject cons = innerPred.getCons();
 		ISLConstraint conditional = null;
@@ -348,27 +347,8 @@ public class CrySLParser {
 		} else if (cons instanceof Pred) {
 			conditional = getPredicate((Pred) cons);
 		}
-		if (innerPred.getPred().getParList() != null) {
-			for (final SuPar var : innerPred.getPred().getParList().getParameters()) {
-				if (var.getVal() != null) {
-					final LiteralExpression lit = var.getVal();
-
-					final ObjectImpl object = (ObjectImpl) ((LiteralExpression) lit.getLit().getName()).getValue();
-					final String type = ((ObjectDecl) object.eContainer()).getObjectType().getQualifiedName();
-					final String variable = object.getName();
-
-					final String part = var.getVal().getPart();
-					if (part != null) {
-						variables.add(new CrySLObject(variable, type, new CrySLSplitter(Integer.parseInt(lit.getInd()), Utils.filterQuotes(lit.getSplit()))));
-					} else {
-						variables.add(new CrySLObject(variable, type));
-					}
-				} else {
-					variables.add(new CrySLObject(UNDERSCORE, NULL));
-				}
-			}
-		}
-		return new CrySLPredicate(null, innerPred.getPred().getPredName(), variables, (innerPred.getNot() != null ? true : false), conditional);
+		CrySLPredicate islc = (CrySLPredicate) getPredicate(innerPred.getPred());
+		return new CrySLPredicate(islc.getBaseObject(), islc.getPredName(), islc.getParameters(), islc.isNegated(), conditional);	
 	}
 
 	private ISLConstraint getPredicate(Pred pred) {

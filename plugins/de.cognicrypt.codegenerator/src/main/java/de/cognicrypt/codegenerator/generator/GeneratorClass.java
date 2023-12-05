@@ -25,8 +25,10 @@ public class GeneratorClass {
 	private String className;
 	private List<GeneratorMethod> methods;
 	private File associatedFile;
+	private String customMain;
 	private String header = "";
 	private String classJavaDoc = "";
+
 
 	public GeneratorClass() {
 		imports = new HashSet<String>();
@@ -137,6 +139,14 @@ public class GeneratorClass {
 
 		classContent.append("}");
 		return classContent.toString();
+	}
+	public void setCustomMain(String cMain) {
+		this.customMain = cMain;
+
+	}
+
+	public String getCustomMain() {
+		return this.customMain;
 	}
 
 }

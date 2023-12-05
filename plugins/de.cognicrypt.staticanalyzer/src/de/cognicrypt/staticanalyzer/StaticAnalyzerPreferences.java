@@ -14,8 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -23,7 +25,9 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -31,6 +35,8 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -40,6 +46,7 @@ import de.cognicrypt.core.Constants;
 import de.cognicrypt.core.properties.PreferenceListener;
 import de.cognicrypt.staticanalyzer.utilities.RemoteRulesetDialog;
 import de.cognicrypt.staticanalyzer.utilities.ArtifactUtils;
+import de.cognicrypt.staticanalyzer.utilities.DefaultRulePreferences;
 import de.cognicrypt.staticanalyzer.utilities.LocalRulesetDialog;
 import de.cognicrypt.staticanalyzer.utilities.Ruleset;
 import de.cognicrypt.utils.CrySLUtils;
@@ -50,6 +57,10 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	private IPreferenceStore preferences = Activator.getDefault().getPreferenceStore();
 	private Preferences rulePreferences = InstanceScope.INSTANCE.getNode(de.cognicrypt.core.Activator.PLUGIN_ID);
 
+	private Composite parent;
+	private Group staticAnalysisGroup;
+	
+	private Composite tableContainer;
 	private CheckboxTableViewer table;
 	private Button automatedAnalysisCheckBox;
 	private Button providerDetectionCheckBox;
@@ -75,6 +86,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	@Override
 	public void compileBasicPreferences(Composite parent) {
+		this.parent = parent;
 		createBasicContents(parent);
 		performBasicDefaults();
 		initializeBasicValues();
@@ -82,6 +94,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 	@Override
 	public void compileAdvancedPreferences(Composite parent) {
+		parent.setLayout(new GridLayout(1,true));
 		createAdvancedContents(parent);
 		performAdvancedDefaults();
 		initializeAdvancedValues();
@@ -119,10 +132,10 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 
 		TableEditor editor = new TableEditor(table.getTable());
 		TableItem rulesRow = new TableItem(table.getTable(), SWT.NONE);
-		rulesRow.setText(0, ruleset.getFolderName());
+		rulesRow.setText(1, ruleset.getFolderName());
 		editor.grabHorizontal = true;
-		editor.setEditor(ruleset.getVersions(), rulesRow, 1);
-		rulesRow.setText(2, ruleset.getUrlOrPath());
+		editor.setEditor(ruleset.getVersions(), rulesRow, 2);
+		rulesRow.setText(3, ruleset.getUrlOrPath());
 		rulesRow.setChecked(ruleset.isChecked());
 		ruleset.setRulesRow(rulesRow);
 	}
@@ -173,18 +186,23 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 * This method creates a table with check boxes for the CrySL rule sets.
 	 */
 	private void createRulesTable() {
+		if(table != null) {
+			table.getTable().dispose();
+		}
+		table = CheckboxTableViewer.newCheckList(tableContainer, SWT.CHECK);
+		table.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
+		table.getTable().setHeaderVisible(true);
+		table.getTable().setLinesVisible(true);
+		
+		TableViewerColumn checkBoxColumn = new TableViewerColumn(table, SWT.WRAP);
+		checkBoxColumn.getColumn().setResizable(false);
 		TableViewerColumn rulesColumn = new TableViewerColumn(table, SWT.FILL);
 		TableViewerColumn versionsColumn = new TableViewerColumn(table, SWT.FILL);
 		TableViewerColumn rulesURLOrPath = new TableViewerColumn(table, SWT.FILL);
 		rulesColumn.getColumn().setText(Constants.TABLE_HEADER_RULES);
 		versionsColumn.getColumn().setText(Constants.TABLE_HEADER_VERSION);
 		rulesURLOrPath.getColumn().setText(Constants.TABLE_HEADER_URL);
-		rulesColumn.getColumn().setWidth(200);
-		versionsColumn.getColumn().setWidth(100);
-		rulesURLOrPath.getColumn().setWidth(200);
-
-		listOfRulesets = getRulesetsFromPrefs();
-		
+				
 		//remove BC-JCA provider ruleset from ruleset's table to not have conflict with JCA ruleset
 		for (Ruleset ruleset : listOfRulesets) {
 			if (ruleset.getFolderName().equals("BouncyCastle-JCA")) {
@@ -213,6 +231,15 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 				}
 			});
 		}
+		
+		
+		rulesColumn.getColumn().pack();
+		versionsColumn.getColumn().pack();
+		rulesURLOrPath.getColumn().pack();
+		
+		table.getTable().pack();
+		staticAnalysisGroup.pack();
+
 	}
 
 	/***
@@ -251,34 +278,31 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 * @param parent Instance of the eclipse preference window on which UI widgets for CogniCrypt are added.
 	 */
 	private void createBasicContents(Composite parent) {
-		final Group staticAnalysisGroup = UIUtils.addHeaderGroup(parent, "Analysis");
-
-		final Composite source = new Composite(staticAnalysisGroup, SWT.FILL);
-		source.setLayout(new GridLayout(3, true));
-		final Label ruleSource = new Label(source, SWT.NONE);
-		ruleSource.setText("Source of CrySL Rules: ");
-
-		table = CheckboxTableViewer.newCheckList(staticAnalysisGroup, SWT.CHECK);
-		table.getTable().setHeaderVisible(true);
-		table.getTable().setLinesVisible(true);
-		createRulesTable();
-		table.getTable().addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				super.widgetSelected(e);
-				if (e.detail == SWT.CHECK) {
-					TableItem item = (TableItem) e.item;
-
-					for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
-						Ruleset ruleset = (Ruleset) itr.next();
-						if (item.getText(0) == ruleset.getFolderName())
-							ruleset.setChecked(item.getChecked());
-					}
-				}
-			}
-		});
+		listOfRulesets = getRulesetsFromPrefs(); //load rules
 		
-		addNewRemoteRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
+		staticAnalysisGroup = UIUtils.addHeaderGroup(parent, "Analysis");
+
+		//final Composite source = new Composite(staticAnalysisGroup, SWT.FILL);
+		//source.setLayout(new GridLayout(3, true));
+		//final Label ruleSource = new Label(source, SWT.NONE);
+		//ruleSource.setText("Source of CrySL Rules: ");
+		UIUtils.createHeadline(staticAnalysisGroup, "Source of CrySL Rules");
+
+		tableContainer = new Composite(staticAnalysisGroup, SWT.FILL);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.heightHint = 100;
+		gd.widthHint = 400;
+		gd.minimumWidth = 400;
+		tableContainer.setLayoutData(gd);
+		tableContainer.setLayout(new GridLayout(1,true));
+		createRulesTable();
+		
+		
+		
+		Composite buttons = new Composite(staticAnalysisGroup, SWT.NONE);
+		buttons.setLayout(new RowLayout());
+		
+		addNewRemoteRulesetButton = new Button(buttons, SWT.PUSH);
 		addNewRemoteRulesetButton.setText("Add Remote Ruleset");
 		addNewRemoteRulesetButton.addListener(SWT.Selection, new Listener() {
 
@@ -288,13 +312,28 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 			}
 		});
 		
-		addNewLocalRulesetButton = new Button(staticAnalysisGroup, SWT.PUSH);
+		addNewLocalRulesetButton = new Button(buttons, SWT.PUSH);
 		addNewLocalRulesetButton.setText("Add Local Ruleset");
 		addNewLocalRulesetButton.addListener(SWT.Selection, new Listener() {
 
 			@Override
 			public void handleEvent(Event e) {
 				addNewLocalRuleset();
+			}
+		});
+		
+		Button removeRulesetButton = new Button(buttons, SWT.PUSH);
+		removeRulesetButton.setText("Remove Selected Ruleset");
+		removeRulesetButton.addListener(SWT.Selection, new Listener() {
+
+			@Override
+			public void handleEvent(Event e) {
+				int index = ((Table) tableContainer.getChildren()[0]).getSelectionIndex();
+				if(index >= 0 && index < listOfRulesets.size()) {
+					listOfRulesets.remove(index);
+					createRulesTable();
+					
+				}	
 			}
 		});
 		
@@ -495,6 +534,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 	 */
 	@Override
 	public void setDefaultValues() {
+		
 		selectCustomRulesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SELECT_CUSTOM_RULES));
 		analyzedProjectRootDirRules.setSelection(preferences.getDefaultBoolean(Constants.ANALYZED_PROJECT_DIR_RULES));
 		automatedAnalysisCheckBox.setSelection(preferences.getDefaultBoolean(Constants.AUTOMATED_ANALYSIS));
@@ -502,19 +542,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		secureObjectsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SHOW_SECURE_OBJECTS));
 		analyseDependenciesCheckBox.setSelection(preferences.getDefaultBoolean(Constants.ANALYSE_DEPENDENCIES));
 
-		if(removeNonDefaultRulesets()) {
-			createRulesTable();
-		}
-		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
-			Ruleset ruleset = (Ruleset) itr.next();
-			ruleset.getVersions().select(ruleset.getVersions().getItemCount() - 1);
-			if (ruleset.getFolderName().equals("JavaCryptographicArchitecture"))
-				ruleset.getRulesRow().setChecked(true);
-			else
-				ruleset.getRulesRow().setChecked(false);
-			ruleset.setSelectedVersion(ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
-			ruleset.setChecked(ruleset.getRulesRow().getChecked());
-		}
+		storeAndSetDefaultRulesets();
 
 		CGSelection.select(preferences.getDefaultInt(Constants.CALL_GRAPH_SELECTION));
 		forbidden.select(preferences.getDefaultInt(Constants.FORBIDDEN_METHOD_MARKER_TYPE));
@@ -526,11 +554,48 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		suppressLegacyClientErrorsCheckBox.setSelection(preferences.getDefaultBoolean(Constants.SUPPRESS_LEGACYCLIENT_ERRORS));
 	}
 	
+	private void clearRulePreferences() {
+		try {
+			for(String key: rulePreferences.childrenNames()) {
+				Preferences subPref = rulePreferences.node(key);
+				subPref.removeNode();
+			}
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void storeAndSetDefaultRulesets() {
+		// store default rulesets in preferences
+		clearRulePreferences();
+		DefaultRulePreferences.addDefaults();
+		listOfRulesets = getRulesetsFromPrefs();
+		
+		// update gui
+		createRulesTable();
+		
+		// default selection
+		listOfRulesets.forEach((ruleset) -> {
+			// only JCA should be checked
+			if(ruleset.getFolderName().equals("JavaCryptographicArchitecture")) {
+				ruleset.getRulesRow().setChecked(true);
+				ruleset.setChecked(true);
+			}
+			else {
+				ruleset.getRulesRow().setChecked(false);
+				ruleset.setChecked(false);
+			}
+			// select latest version
+			ruleset.getVersions().select(ruleset.getVersions().getItemCount() - 1);
+			ruleset.setSelectedVersion(ruleset.getVersions().getItem(ruleset.getVersions().getItemCount() - 1));
+		});
+	}
+	
 	/***
 	 * This method removes all rulesets that are not default from the {@link #rulePreferences} field
 	 * and retains only the default ones of JCA, BC-JCA, BC, and Tink. It also returns a boolean of
 	 * whether any non default ruleset was removed.
-	 */
+	 
 	private boolean removeNonDefaultRulesets() {
 		boolean areNonDefaultRulesets = true;
 		try {
@@ -549,6 +614,7 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		}
 		return areNonDefaultRulesets;
 	}
+	*/
 
 	/**
 	 * This method assign the selected values for each of the preference page options and is invoked when 'Apply'
@@ -571,6 +637,9 @@ public class StaticAnalyzerPreferences extends PreferenceListener {
 		preferences.setValue(Constants.TYPESTATE_ERROR_MARKER_TYPE, typestate.getSelectionIndex());
 		preferences.setValue(Constants.SUPPRESS_LEGACYCLIENT_ERRORS, suppressLegacyClientErrorsCheckBox.getSelection());
 
+		
+		clearRulePreferences();
+		
 		for (Iterator<Ruleset> itr = listOfRulesets.iterator(); itr.hasNext();) {
 			Ruleset ruleset = (Ruleset) itr.next();
 

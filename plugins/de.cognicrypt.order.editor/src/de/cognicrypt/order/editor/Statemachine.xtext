@@ -1,0 +1,28 @@
+grammar de.cognicrypt.order.editor.Statemachine with org.eclipse.xtext.xbase.Xtype // with org.eclipse.xtext.common.Terminals
+
+generate statemachine "http://www.cognicrypt.de/order/editor/Statemachine"
+
+Statemachine :
+	{Statemachine}
+	states+=State*
+	transitions+=Transition*
+;
+
+State:
+	'state' name=ID (isFinal?='true'|'false')
+		transitions+=Transition*
+	'end'
+;
+
+Transition:
+	'transition' name=ID
+	fromState=[State] ',' event=Event ',' endState=[State]
+	'end'
+;
+
+Event:
+	name=ID	
+;
+
+
+	

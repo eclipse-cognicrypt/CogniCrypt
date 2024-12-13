@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<description:Group xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:tool="http://www.eclipse.org/sirius/diagram/description/tool/1.1.0" xmlns:tool_1="http://www.eclipse.org/sirius/description/tool/1.1.0" name="statemachine" version="12.0.0.2017041100">
+  <ownedViewpoints name="orderViewpoint">
+    <ownedRepresentations xsi:type="description_1:DiagramDescription" name="OrderDiagram" domainClass="statemachine::Statemachine" enablePopupBars="true">
+      <metamodel href="http://www.cognicrypt.de/order/editor/Statemachine#/"/>
+      <defaultLayer name="Default">
+        <nodeMappings name="StateNode" labelDirectEdit="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@toolSections.0/@ownedTools[name='editLabel']" semanticCandidatesExpression="feature:states" domainClass="statemachine::State">
+          <style xsi:type="style:EllipseNodeDescription" borderSizeComputationExpression="service:changeBorderFinalNode()" labelSize="12" showIcon="false" labelPosition="node" resizeKind="NSEW">
+            <borderColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            <color xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='green']"/>
+          </style>
+        </nodeMappings>
+        <edgeMappings name="TransitionEdge" semanticCandidatesExpression="feature:transitions" sourceMapping="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']" targetMapping="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']" targetFinderExpression="feature:endState" sourceFinderExpression="feature:fromState" domainClass="statemachine::Transition" useDomainElement="true">
+          <style sizeComputationExpression="2">
+            <strokeColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='gray']"/>
+            <centerLabelStyleDescription labelSize="12" showIcon="false" labelExpression="aql:self.event->collect(myEvent | myEvent.name)->first()">
+              <labelColor xsi:type="description:SystemColor" href="environment:/viewpoint#//@systemColors/@entries[name='black']"/>
+            </centerLabelStyleDescription>
+          </style>
+        </edgeMappings>
+        <toolSections name="Tools">
+          <ownedTools xsi:type="tool:NodeCreationDescription" name="createState" forceRefresh="true" nodeMappings="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@nodeMappings[name='StateNode']">
+            <variable name="container"/>
+            <viewVariable name="containerView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="var:container">
+                <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::State" referenceName="states">
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="aql:'s'+container.states->filter(statemachine::State)->size()"/>
+                </subModelOperations>
+              </firstModelOperations>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="tool:DirectEditLabel" name="editLabel">
+            <mask mask="{0}"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="var:0"/>
+            </initialOperation>
+          </ownedTools>
+          <ownedTools xsi:type="tool:EdgeCreationDescription" name="setEvent" edgeMappings="//@ownedViewpoints[name='orderViewpoint']/@ownedRepresentations[name='OrderDiagram']/@defaultLayer/@edgeMappings[name='TransitionEdge']">
+            <sourceVariable name="source"/>
+            <targetVariable name="target"/>
+            <sourceViewVariable name="sourceView"/>
+            <targetViewVariable name="targetView"/>
+            <initialOperation>
+              <firstModelOperations xsi:type="tool_1:ChangeContext" browseExpression="[source.eContainer()/]">
+                <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::Transition" referenceName="transitions">
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="fromState" valueExpression="var:source"/>
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="endState" valueExpression="var:target"/>
+                  <subModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="aql:'t'"/>
+                  <subModelOperations xsi:type="tool_1:CreateInstance" typeName="statemachine::Event" referenceName="event" variableName="event">
+                    <subModelOperations xsi:type="tool_1:SetValue" featureName="name" valueExpression="aql:'newEvent'"/>
+                  </subModelOperations>
+                </subModelOperations>
+              </firstModelOperations>
+            </initialOperation>
+          </ownedTools>
+        </toolSections>
+      </defaultLayer>
+    </ownedRepresentations>
+    <ownedJavaExtensions qualifiedClassName="order.statemachine.design.Services"/>
+  </ownedViewpoints>
+</description:Group>

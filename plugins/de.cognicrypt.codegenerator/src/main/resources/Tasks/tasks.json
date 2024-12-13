@@ -40,6 +40,14 @@
     "isSelected": false
   },
   {
+    "name": "UserAuthorityManager",
+    "description": "User authorization and secure password generator",
+    "taskDescription": "Cognicrypt provides a secure username and password and verifies the validity of a given username and password in this usecase.",
+    "image": "authManager",
+    "codeGen": "CrySL",
+    "isSelected": false
+  },  
+  {
     "name": "TestCryslTask",
     "description": "TestCryslTask",
     "taskDescription": "description of task",

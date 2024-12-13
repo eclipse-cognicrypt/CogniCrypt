@@ -1,0 +1,19 @@
+[{
+  "id": "0",
+  "content": [{
+      "id": "0",
+      "element": "radio",
+      "questionText": "Which of the following tasks do you wish to generate?",
+      "answers": [ {
+          "value": "A secure random password generator",
+          "option": "passgen",
+          "defaultAnswer": true
+        },
+        {
+          "value": "User Authentication service that checks user's username and password from SQL database",
+           "option": "auth",
+           "nextID": "-1"
+        }]
+     }],
+    "nextID": "-1"
+  }]

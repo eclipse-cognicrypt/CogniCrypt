@@ -17,4 +17,6 @@ public interface RuleContext {
 	public RuleContext includeClass(String rule);
 
 	public boolean generate();
+	
+	public CrySLCodeGenerator setCustomMain(String string);
 }

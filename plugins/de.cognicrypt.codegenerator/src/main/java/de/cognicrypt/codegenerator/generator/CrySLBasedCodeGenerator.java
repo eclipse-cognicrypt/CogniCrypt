@@ -429,10 +429,14 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 
 			List<Entry<String, String>> declaredVariables = new ArrayList<>();
 			declaredVariables.addAll(tmplUsage.getParameters());
+			//check if there is a custom main method in the class
 			for (GeneratorMethod gen : generatedClass.getMethods()) {
-				if (gen.getRules().isEmpty()) {
-					continue;
+				if (generatedClass.getCustomMain() != null) {
+					if (!gen.getName().equals(generatedClass.getCustomMain())) {
+						continue;
+					}
 				}
+				else if (gen.getRules().isEmpty()) {continue;} 
 
 				tmplUsage.addExceptions(gen.getExceptions());
 				String returnType = gen.getReturnType();
@@ -1324,6 +1328,9 @@ public class CrySLBasedCodeGenerator extends CodeGenerator {
 					methLims.put(1, node.getStartPosition() + node.getLength());
 				} else if ("getInstance".equals(calledMethodName)) {
 					methLims.put(0, node.getStartPosition() - "CrySLCodeGenerator.".length());
+				}else if ("setCustomMain".equals(calledMethodName)) {
+					String cMain = Utils.filterQuotes(arguments.get(0).toString());
+					templateClass.setCustomMain(cMain);
 				}
 				return super.visit(node);
 			}

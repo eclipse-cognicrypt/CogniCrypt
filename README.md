@@ -1,3 +1,7 @@
+# IMPORTANT: This repository is no longer maintained
+
+CogniCrypt is no longer maintained *as an Eclipse plugin* and it does not work with newer Eclipse versions anymore. Instead of using CogniCrypt as a plugin that reports violations in your IDE, you can still use CogniCrypt as a program or CLI tool with various other output formats. See [CryptoAnalysis](https://github.com/CROSSINGTUD/CryptoAnalysis) for more information.
+
 # CogniCrypt
 
 CogniCrypt is an Eclipse plugin that supports Java developers in using cryptographic APIs. It supports developers in two ways. First, it may generate code snippets for a number of programming tasks that involve cryptography, e.g., communication over a secure channel, data encryption, and long-term archiving. Second, it continuously runs a suite of static analyses in the background that check the  developer's code for misuses of cryptographic APIs.
